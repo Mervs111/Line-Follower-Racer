@@ -114,3 +114,6 @@ build_flags = -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1
 - Kalau diminta bikin logbook: tanya minggu ke- dan tanggalnya, kegiatan yang benar-benar
   dilakukan, kendala yang belum selesai, dan foto/dokumentasi yang ada. Jangan mengarang kegiatan.
 - Simpan drafnya di `docs/logbook/minggu-XX.md`.
+- Ada juga logbook utama (tabel harian: Tanggal | Rincian Kegiatan | Dokumentasi) di
+  `docs/logbook/logbook-utama.md`. Laporan mingguan dirangkum dari entri di sana;
+  tambahkan entri baru ke tabel itu tiap ada kegiatan.
