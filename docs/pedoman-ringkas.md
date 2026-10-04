@@ -44,6 +44,12 @@ dibuat dari nol (elektronik, PCB, firmware, block coding). Di charter, tulis teg
 acuan = pembanding, dan seluruh sistem = pengembangan sendiri. Sasaran tetap tidak boleh lebih
 longgar dari spesifikasi kit acuan (A.2).
 
+**Kit acuan: Ichiduino Pro** (± Rp 1.999.999 per kit; unit kontrol Ultimate 5 Max Rp 825.000).
+Spesifikasi dari brosur: ATmega2560, 12 sensor garis optik, OLED 0,96", LiPo 2S 400 mAh,
+magnetic charger, USB-C, 2 port servo 5V, 1 port kipas DC, motor DC 16 mm 12V 1200 RPM,
+dimensi 12,5 × 14,3 × 5,5 (cm), pemrograman mBlock dan Arduino IDE.
+Kinerja nyata (kecepatan, akurasi, daya tahan baterai) belum diukur — ukur di lintasan uji yang sama.
+
 ## Logbook (Lampiran C) — PERSEORANGAN
 
 Tiap anggota, tiap pekan M-1 s.d. M-16, unggah PDF paling lambat **Jumat 17.00**.
