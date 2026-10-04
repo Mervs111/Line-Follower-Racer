@@ -107,7 +107,16 @@ build_flags = -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1
 - Flash dan tes di hardware dilakukan Merv. Tunggu hasil tesnya sebelum lanjut ke milestone berikutnya.
 - Kalau ada keputusan desain yang belum jelas, tanya dulu, jangan diasumsikan.
 
+## Pedoman PjBL
+- Ringkasan pedoman resmi (gerbang G1–G5, 7 butir tugas, kriteria penerimaan, penilaian):
+  `docs/pedoman-ringkas.md`. Cek ini sebelum menyusun dokumen apa pun untuk gerbang.
+- Kelompok ini jalur P: produk dikembangkan di atas kit acuan; pisahkan yang dikembangkan
+  sendiri dari bawaan kit.
+
 ## Logbook mingguan (PjBL)
+- PERHATIAN: pedoman (Lampiran C) mewajibkan logbook PERSEORANGAN dengan menit praktik
+  (dari 1020 menit) dan 5 pertanyaan. Template departemen di `docs/logbook/README.md` berbeda;
+  konfirmasi ke pembimbing mana yang dipakai (mungkin keduanya).
 - Tiap minggu kelompok wajib mengumpulkan logbook/laporan mingguan.
 - Format WAJIB mengikuti template resmi: lihat `docs/logbook/README.md`
   (1. Project Identity, 2. Weekly Report Description, 3. Obstacle(s), 4. Documentation).
