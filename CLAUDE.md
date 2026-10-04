@@ -110,8 +110,8 @@ build_flags = -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1
 ## Pedoman PjBL
 - Ringkasan pedoman resmi (gerbang G1–G5, 7 butir tugas, kriteria penerimaan, penilaian):
   `docs/pedoman-ringkas.md`. Cek ini sebelum menyusun dokumen apa pun untuk gerbang.
-- Kelompok ini jalur P: produk dikembangkan di atas kit acuan; pisahkan yang dikembangkan
-  sendiri dari bawaan kit.
+- Kelompok ini jalur P, tapi kit yang dibeli hanya contoh/pembanding: seluruh robot dibuat
+  dari nol. Di dokumen, kit acuan diposisikan sebagai pembanding.
 
 ## Logbook mingguan (PjBL)
 - PERHATIAN: pedoman (Lampiran C) mewajibkan logbook PERSEORANGAN dengan menit praktik

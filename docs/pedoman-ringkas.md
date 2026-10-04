@@ -39,6 +39,11 @@ Rubrik: lingkup harus memisahkan apa yang dikembangkan vs bawaan kit (A.1, C.1);
 kit tidak dianggarkan ulang (A.3); sasaran tidak lebih longgar dari acuan minimum kit (A.2);
 pembandingan dengan ≥ 2 produk sejenis memakai angka (C.2).
 
+**Kasus kelompok ini:** kit yang dibeli hanya menjadi CONTOH/pembanding; robot dirancang dan
+dibuat dari nol (elektronik, PCB, firmware, block coding). Di charter, tulis tegas bahwa kit
+acuan = pembanding, dan seluruh sistem = pengembangan sendiri. Sasaran tetap tidak boleh lebih
+longgar dari spesifikasi kit acuan (A.2).
+
 ## Logbook (Lampiran C) — PERSEORANGAN
 
 Tiap anggota, tiap pekan M-1 s.d. M-16, unggah PDF paling lambat **Jumat 17.00**.
