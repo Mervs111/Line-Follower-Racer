@@ -5,6 +5,6 @@ Laporan mingguan (lihat `README.md`) dirangkum dari entri-entri di sini.
 
 | Tanggal | Rincian Kegiatan | Dokumentasi |
 |---|---|---|
-| 25/09/2026 | Bimbingan komunal dengan dosen pembimbing | Screenshot rapat online |
-| 01/10/2026 | Asistensi lembar telaah bersama dosen pembimbing | Foto lembar telaah (draf) |
-| 02/10/2026 | Pemberian tanda tangan pada lembar telaah | Scan lembar telaah bertanda tangan |
+| 25/09/2026 | Bimbingan komunal dengan dosen pembimbing. Dosen menjelaskan alur pengerjaan PjBL secara keseluruhan beserta gate (tahapan pemeriksaan) yang harus dilewati sebelum lanjut ke tahap berikutnya. Setiap gate wajib diasistensikan kepada dosen pembimbing. | Screenshot rapat online |
+| 01/10/2026 | Asistensi lembar telaah bersama dosen pembimbing. Masukan: sasaran "robot tidak keluar garis" kurang berhubungan dengan risiko sensor, karena keluar jalur bisa juga disebabkan program. Sasaran direvisi menjadi akurasi sensor ≤ 2 mm yang diuji terpisah dari kendali. | Foto lembar telaah (draf) |
+| 02/10/2026 | Lembar telaah hasil revisi disetujui dan ditandatangani dosen pembimbing. | Scan lembar telaah bertanda tangan |

@@ -117,3 +117,5 @@ build_flags = -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1
 - Ada juga logbook utama (tabel harian: Tanggal | Rincian Kegiatan | Dokumentasi) di
   `docs/logbook/logbook-utama.md`. Laporan mingguan dirangkum dari entri di sana;
   tambahkan entri baru ke tabel itu tiap ada kegiatan.
+- PjBL berjalan per **gate**: tiap gate wajib diasistensikan ke dosen pembimbing sebelum
+  lanjut ke tahap berikutnya (G1 = lembar telaah & uji defisit, sudah ditandatangani 02/10/2026).
