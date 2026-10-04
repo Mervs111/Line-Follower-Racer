@@ -106,3 +106,11 @@ build_flags = -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1
 - Tiap selesai milestone: `pio run` harus sukses tanpa warning baru.
 - Flash dan tes di hardware dilakukan Merv. Tunggu hasil tesnya sebelum lanjut ke milestone berikutnya.
 - Kalau ada keputusan desain yang belum jelas, tanya dulu, jangan diasumsikan.
+
+## Logbook mingguan (PjBL)
+- Tiap minggu kelompok wajib mengumpulkan logbook/laporan mingguan.
+- Format WAJIB mengikuti template resmi: lihat `docs/logbook/README.md`
+  (1. Project Identity, 2. Weekly Report Description, 3. Obstacle(s), 4. Documentation).
+- Kalau diminta bikin logbook: tanya minggu ke- dan tanggalnya, kegiatan yang benar-benar
+  dilakukan, kendala yang belum selesai, dan foto/dokumentasi yang ada. Jangan mengarang kegiatan.
+- Simpan drafnya di `docs/logbook/minggu-XX.md`.
