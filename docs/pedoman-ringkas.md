@@ -50,6 +50,16 @@ magnetic charger, USB-C, 2 port servo 5V, 1 port kipas DC, motor DC 16 mm 12V 12
 dimensi 12,5 × 14,3 × 5,5 (cm), pemrograman mBlock dan Arduino IDE.
 Kinerja nyata (kecepatan, akurasi, daya tahan baterai) belum diukur — ukur di lintasan uji yang sama.
 
+## Arahan dosen (diterima 05/10/2026) — WAJIB
+
+- Proyek = **reverse engineering** produk contoh, lalu dibuat ulang dengan **budget maksimal Rp 900.000**;
+  fitur pengembangan disesuaikan dengan budget.
+- Produk contoh line tracer: https://id.shp.ee/b3NmXYCh dan https://store.ichibot.id/product/new-product-2/
+- Line tracer = robot edukasi untuk anak sekolah.
+- **Minimum requirement line tracer: mengikuti garis secara otomatis DAN memiliki kemampuan path planning.**
+- Charter dan RAB harus disesuaikan, lalu ditinjau ulang dosen.
+- (Kelompok lain: Mini AMR = ke titik tujuan + obstacle avoidance; Mini Arm = forward & inverse kinematics.)
+
 ## Logbook (Lampiran C) — PERSEORANGAN
 
 Tiap anggota, tiap pekan M-1 s.d. M-16, unggah PDF paling lambat **Jumat 17.00**.

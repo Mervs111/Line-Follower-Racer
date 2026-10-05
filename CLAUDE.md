@@ -113,6 +113,9 @@ build_flags = -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1
 - Kelompok ini jalur P, tapi kit yang dibeli hanya contoh/pembanding: seluruh robot dibuat
   dari nol. Di dokumen, kit acuan diposisikan sebagai pembanding.
 
+- Arahan dosen 05/10/2026: minimum requirement line tracer = ikuti garis otomatis + PATH PLANNING;
+  budget maksimal Rp 900.000; proyek berupa reverse engineering produk contoh (Ichibot).
+
 ## Logbook mingguan (PjBL)
 - PERHATIAN: pedoman (Lampiran C) mewajibkan logbook PERSEORANGAN dengan menit praktik
   (dari 1020 menit) dan 5 pertanyaan. Template departemen di `docs/logbook/README.md` berbeda;
