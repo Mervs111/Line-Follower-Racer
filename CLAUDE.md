@@ -7,6 +7,16 @@ Arsitektur 3 lapis:
 2. **Desain blok**: 1 blok = 1 fungsi library
 3. **Extension Mind+**: blok menghasilkan kode C++ yang memanggil library (compile native → PID tetap cepat)
 
+## Keputusan terbaru (menggantikan bagian Hardware/Pin map di bawah bila bertentangan)
+- 08/10/2026: MCU diganti dari ESP32-S3 ke **ESP32 biasa (DevKit CH340/CP2102)** karena harga
+  S3 di marketplace > Rp 130.000. ADC1 ESP32 biasa yang keluar di devkit hanya 6 pin, jadi
+  8 sensor garis dibaca lewat **analog multiplexer 74HC4051** (1 pin ADC + 3 pin select).
+  Jangan pakai ADC2 (bentrok WiFi, banyak pin strapping). Pin map & platformio.ini perlu
+  disusun ulang untuk ESP32 biasa sebelum milestone firmware berikutnya.
+- Sensor: 8 buah, susunan panah, di PCB sensor terpisah.
+- Baterai: 2S (2× 18650), BMS 2S, charger 2S USB-C, buck 5 V.
+- Motor: N20 + encoder; driver TB6612FNG.
+
 ## Hardware
 - MCU: ESP32-S3-WROOM-1-N4 (flash 4MB, tanpa PSRAM), USB native (GPIO19/20)
 - Sensor: 8× ITR20001/QRE1113, jarak 8–10 mm, emitter IR di-switch via MOSFET
