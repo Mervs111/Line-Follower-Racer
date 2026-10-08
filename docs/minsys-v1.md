@@ -1,8 +1,8 @@
 # Rancangan Minimum System v1 — Robot Line Tracer Micro
 
-> **Update 08/10/2026:** arah desain berubah ke *semi-terintegrasi* (lihat `docs/referensi/README.md`):
-> TB6612 dan buck 5 V jadi IC di PCB, bukan modul breakout. Pin map & sambungan sinyal di bawah tetap berlaku;
-> bagian "carrier board berbasis modul" diganti oleh rancangan semi-terintegrasi.
+> **Update 08/10/2026:** dokumen ini = **versi utama PjBL (modul, sesuai RAB)**. Versi semi-terintegrasi
+> (chip TB6612 + chip buck, seperti `docs/referensi/`) dikerjakan sebagai **side project pribadi** dengan
+> pin map yang SAMA, sehingga firmware berlaku untuk keduanya.
 
 Status: **draf rancangan untuk digambar di EasyEDA**. Dicek ulang oleh kelompok terhadap datasheet
 sebelum PCB dipesan. Referensi bentuk: produk Voltra Techno (PCB control & display, minimum system,

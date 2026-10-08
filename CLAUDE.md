@@ -19,9 +19,13 @@ Arsitektur 3 lapis:
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,
   sensor di sisi bawah, semua komponen + baterai di atas, papan OLED/tombol ditumpuk di atas ESP32.
   Visual: https://claude.ai/artifact/PHUWVJWJy2sDEXEf3AtSyx
-- Arah PCB (08/10/2026): **semi-terintegrasi seperti referensi di `docs/referensi/`** — ESP32 DevKit & OLED
-  disolder langsung, driver TB6612 dan buck 5 V berupa IC di PCB (bukan modul breakout), sensor diskrit.
-  Kelompok menganggap "tempel modul" kurang proper.
+- Dua jalur PCB (08/10/2026):
+  1. **Jalur utama PjBL (dana departemen, sesuai RAB revisi 3.2 Rp845.000):** versi modul ("tempel modul"):
+     ESP32 DevKit, modul TB6612, modul buck, dll. disolder ke PCB carrier. Rancangan: `docs/minsys-v1.md`.
+  2. **Side project pribadi (dana sendiri, di luar RAB):** PCB semi-terintegrasi seperti `docs/referensi/`:
+     chip TB6612 + chip buck di PCB, sensor diskrit, dicetak & disolder sendiri. Kalau hasilnya bagus,
+     bisa diangkat jadi versi utama (perlu persetujuan tertulis koordinator karena komponen RAB berubah).
+  Kedua versi WAJIB memakai pin map yang sama supaya firmware bisa dipakai di keduanya.
 - Perhitungan awal motor/roda dari kelompok (target 1,5 m/s, roda 60 mm, ±500 RPM, torsi desain ≥ 27 N·mm
   per roda): `docs/perhitungan-motor.md`. Masih draf, belum sinkron dengan charter (≥ 0,5 m/s) dan
   RAB (roda Ø34 mm).
