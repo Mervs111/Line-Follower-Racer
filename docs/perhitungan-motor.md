@@ -43,10 +43,20 @@ F = m·a = 0,3 · 3 = 0,9 N (akselerasi ideal, belum termasuk hambatan)
 
 Per roda (2 roda): τ_roda ≈ 27 / 2 ≈ **13,5 N·mm**
 
+## 4. Margin desain (safety factor)
+
+Jangan desain pas-pasan; perlu margin untuk gesekan roda, gearbox, hambatan permukaan, perubahan
+arah, beban baterai/chassis, akselerasi, dan kondisi lintasan.
+
+Safety factor 2: τ_design = 13,5 × 2 = **27 N·mm per roda**
+
+**Target motor: torsi output ≥ 27 N·mm per roda** (≈ 0,28 kg·cm; 1 kg·cm = 98,1 N·mm — penjual
+motor biasanya menulis torsi dalam kg·cm). Bandingkan dengan torsi rated (bukan stall) di datasheet.
+
 ## Catatan pemeriksaan (Claude)
 
 - Hitungan aritmetika di atas sudah dicek dan benar.
-- Belum memasukkan: hambatan gulir/gesekan, efisiensi gearbox, dan faktor keamanan.
+- Faktor keamanan 2 sudah ditambahkan di bagian 4 (hambatan gulir & efisiensi gearbox dicakup lewat margin ini).
   Lazimnya torsi motor dipilih beberapa kali lipat (mis. 2–3×) dari hasil hitung ideal,
   dan dibandingkan dengan torsi **rated** (bukan stall) di datasheet motor yang dipilih.
 - Belum sinkron dengan charter revisi 3 & RAB:

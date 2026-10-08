@@ -16,7 +16,7 @@ Arsitektur 3 lapis:
 - Sensor: 5 buah, susunan panah, di PCB sensor terpisah.
 - Baterai: 2S (2× 18650), BMS 2S, charger 2S USB-C, buck 5 V.
 - Motor: N20 + encoder; driver TB6612FNG.
-- Perhitungan awal motor/roda dari kelompok (target 1,5 m/s, roda 60 mm, ±500 RPM, torsi ±13,5 N·mm
+- Perhitungan awal motor/roda dari kelompok (target 1,5 m/s, roda 60 mm, ±500 RPM, torsi desain ≥ 27 N·mm
   per roda): `docs/perhitungan-motor.md`. Masih draf, belum sinkron dengan charter (≥ 0,5 m/s) dan
   RAB (roda Ø34 mm).
 
