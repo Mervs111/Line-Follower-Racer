@@ -1,6 +1,6 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
-Semester Gasal 2026/2027 · Revisi 3.2 (arahan dosen 05/10/2026: reverse engineering, path planning,
+Semester Gasal 2026/2027 · Revisi 3.3 (arahan dosen 05/10/2026: reverse engineering, path planning,
 budget maksimal Rp 900.000)
 
 ## 1. Project Identity
@@ -54,7 +54,7 @@ block coding berbasis web tanpa instalasi aplikasi.
 
 - Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
-- Elektronik: 5 sensor garis (susunan panah), motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 14500)
+- Elektronik: 5 sensor garis (susunan panah), motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
 - Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan
 - Platform block coding berbasis web (Blockly)
@@ -146,8 +146,8 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Resistor 10 kΩ | Rp200 | 10 | pcs | Rp2.000 |
 | Buzzer | Rp3.000 | 1 | pcs | Rp3.000 |
 | MOSFET (switch emitter IR) | Rp1.500 | 2 | pcs | Rp3.000 |
-| Baterai Li-ion 14500 | Rp25.000 | 2 | pcs | Rp50.000 |
-| Holder baterai 2× 14500 (seri) | Rp5.000 | 1 | pcs | Rp5.000 |
+| Baterai Li-ion 18650 | Rp40.000 | 2 | pcs | Rp80.000 |
+| Holder baterai 2× 18650 (seri) | Rp8.000 | 1 | pcs | Rp8.000 |
 | Modul BMS 2S | Rp10.000 | 1 | pcs | Rp10.000 |
 | Modul charger 2S USB-C | Rp25.000 | 1 | pcs | Rp25.000 |
 | Modul buck converter 5 V (MP1584) | Rp10.000 | 1 | pcs | Rp10.000 |
@@ -156,7 +156,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Modul IMU MPU6050 | Rp25.000 | 1 | pcs | Rp25.000 |
 | Komponen pendukung minsys (header, kapasitor, dioda SS14, konektor sensor) | Rp25.000 | 1 | paket | Rp25.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp680.000** |
+| **TOTAL** | | | | **Rp713.000** |
 
 ### Mechanical
 
@@ -172,13 +172,12 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 
 | Item | Price per unit | Qty | Unit | Total Price |
 |---|---|---|---|---|
-| Lintasan uji (banner putih + lakban hitam, lurus + grid 4×4) | Rp50.000 | 1 | paket | Rp50.000 |
-| Breadboard + kabel jumper | Rp30.000 | 1 | paket | Rp30.000 |
+| Breadboard + kabel jumper | Rp60.000 | 1 | paket | Rp60.000 |
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
-| **TOTAL** | | | | **Rp105.000** |
+| **TOTAL** | | | | **Rp85.000** |
 
-**TOTAL BUDGET: Rp845.000** (Electrical Rp680.000 + Mechanical Rp60.000 + Lain-lain Rp105.000),
-sisa Rp55.000 dari batas Rp900.000.
+**TOTAL BUDGET: Rp858.000** (Electrical Rp713.000 + Mechanical Rp60.000 + Lain-lain Rp85.000),
+sisa Rp42.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB.
 
 ### Alasan pemilihan komponen utama
 
@@ -197,8 +196,9 @@ sisa Rp55.000 dari batas Rp900.000.
   pembacaan orientasi untuk CPMK-1; memakai jalur I2C yang sama dengan OLED, tanpa pin tambahan.
 - **TB6612FNG**: penurunan tegangan jauh lebih kecil daripada L298N, sehingga motor mendapat tenaga
   penuh dari baterai 2S dan driver tidak panas.
-- **Baterai 2× 14500 (2S) + BMS + charger USB-C**: 7,4 V cukup untuk motor dan buck 5 V; ukuran AA dan ringan
-  (± 40 g) sehingga muat di atas PCB robot yang rendah; dilindungi BMS dan diisi lewat USB-C.
+- **Baterai 2× 18650 (2S) + BMS + charger USB-C**: 7,4 V cukup untuk motor dan buck 5 V; kapasitas besar
+  (± 3 jam pemakaian), arus maksimum tinggi, dan tidak mungkin tertukar dengan baterai AA; holder dipasang
+  melintang di atas PCB utama; dilindungi BMS dan diisi lewat USB-C.
 
 ## Persetujuan
 
