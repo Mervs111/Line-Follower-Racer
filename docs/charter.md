@@ -54,7 +54,7 @@ block coding berbasis web tanpa instalasi.
 Dikerjakan (seluruhnya dikembangkan sendiri, bukan modifikasi kit):
 1. Reverse engineering Ichiduino Pro: analisis fungsi, arsitektur, dan spesifikasi sebagai acuan.
 2. Perancangan robot berbasis ESP32 dari prototipe sampai desain PCB siap produksi.
-3. Sistem elektronik: ESP32, 8 sensor garis, motor DC + encoder, driver motor, OLED, catu daya baterai.
+3. Sistem elektronik: ESP32, 5 sensor garis, motor DC + encoder, driver motor, OLED, catu daya baterai.
 4. Firmware: pembacaan sensor, kalibrasi, kendali PID, deteksi persimpangan, odometri,
    path planning (pemetaan lintasan bercabang + pencarian rute terpendek), fitur keamanan.
 5. Platform block coding berbasis web (Blockly).
@@ -79,7 +79,7 @@ Lintasan uji path planning: grid garis 4 × 4 titik persimpangan, jarak antar ti
 
 | No | Sasaran | Nilai | Cara uji | Alat ukur | Alasan nilai |
 |---|---|---|---|---|---|
-| S1 | Akurasi pembacaan posisi garis | error ≤ 2 mm | Robot diam (motor mati) pada offset −30 s.d. +30 mm (langkah 5 mm); bandingkan posisi terbaca (serial) dengan offset sebenarnya; 3 ulangan tiap titik | Kertas milimeter + jangka sorong | ≈ 10% lebar garis 19 mm |
+| S1 | Akurasi pembacaan posisi garis | error ≤ 2 mm | Robot diam (motor mati) pada offset −20 s.d. +20 mm (langkah 5 mm); bandingkan posisi terbaca (serial) dengan offset sebenarnya; 3 ulangan tiap titik | Kertas milimeter + jangka sorong | ≈ 10% lebar garis 19 mm |
 | S2 | Kecepatan rata-rata | ≥ 0,5 m/s | v = panjang lintasan / waktu tempuh, 3 ulangan | Meteran, stopwatch / video | Dibatasi demi keamanan anak sekolah |
 | S3 | Keterulangan waktu tempuh | simpangan baku ≤ 5% dari rata-rata | 10 putaran pada lintasan dan kondisi baterai sama | Stopwatch / timer firmware | 5% dari ± 20 s ≈ 1 s, di atas ketelitian alat |
 | S4 | Deteksi persimpangan | ≥ 95% benar | Robot melewati ≥ 40 persimpangan pada grid; bandingkan log deteksi dengan persimpangan sebenarnya | Log serial + video | Satu persimpangan terlewat membuat rute salah |

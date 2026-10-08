@@ -9,11 +9,11 @@ Arsitektur 3 lapis:
 
 ## Keputusan terbaru (menggantikan bagian Hardware/Pin map di bawah bila bertentangan)
 - 08/10/2026: MCU diganti dari ESP32-S3 ke **ESP32 biasa (DevKit CH340/CP2102)** karena harga
-  S3 di marketplace > Rp 130.000. ADC1 ESP32 biasa yang keluar di devkit hanya 6 pin, jadi
-  8 sensor garis dibaca lewat **analog multiplexer 74HC4051** (1 pin ADC + 3 pin select).
-  Jangan pakai ADC2 (bentrok WiFi, banyak pin strapping). Pin map & platformio.ini perlu
-  disusun ulang untuk ESP32 biasa sebelum milestone firmware berikutnya.
-- Sensor: 8 buah, susunan panah, di PCB sensor terpisah.
+  S3 di marketplace > Rp 130.000. ADC1 ESP32 biasa di devkit hanya 6 pin (32, 33, 34, 35, 36, 39):
+  **5 sensor garis + 1 sensor tegangan baterai**, tanpa multiplexer. Jangan pakai ADC2 (bentrok
+  WiFi, banyak pin strapping). Posisi garis jadi −2000..2000. Acuan: Pololu 3pi (5 sensor, bisa
+  maze solving). Pin map & platformio.ini perlu disusun ulang sebelum milestone firmware berikutnya.
+- Sensor: 5 buah, susunan panah, di PCB sensor terpisah.
 - Baterai: 2S (2× 18650), BMS 2S, charger 2S USB-C, buck 5 V.
 - Motor: N20 + encoder; driver TB6612FNG.
 
