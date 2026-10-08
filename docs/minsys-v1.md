@@ -28,10 +28,18 @@ menghemat biaya PCB.
 
 v2 (opsional, setelah v1 terbukti): modul diganti chip langsung (ESP32-WROOM, TB6612 SSOP, regulator).
 
+## Bentuk fisik (revisi 08/10/2026)
+
+Robot rendah satu bidang: PCB sensor (90 × 38 mm, panah) dan PCB utama (80 × 92 mm) **sejajar** ± 6 mm dari
+lantai, disambung baut + pin header (tanpa kabel; J_SENSOR berupa header board-to-board). Sensor di sisi
+bawah PCB sensor (± 3 mm dari lantai, diatur tinggi ball caster mini). Semua komponen termasuk baterai
+2× 14500, motor N20 (roda Ø34) di sisi atas; papan OLED + 2 tombol ditumpuk di atas ESP32 dengan spacer
+(papan ketiga, disambung pin header). Visual: https://claude.ai/artifact/PHUWVJWJy2sDEXEf3AtSyx
+
 ## Diagram blok daya
 
 ```
-Baterai 2S (2×18650) ─ BMS 2S ─ SW1 ─┬─────────────────────────────► VBAT (7,4–8,4 V)
+Baterai 2S (2×14500) ─ BMS 2S ─ SW1 ─┬─────────────────────────────► VBAT (7,4–8,4 V)
    ▲                                  │                                  ├─► TB6612 VM (+ C 100 µF)
    └─ Charger 2S USB-C                ├─► R1 100k ─┬─ R2 33k ─ GND       │
                                       │            └─► GPIO33 (VBAT_SENSE)

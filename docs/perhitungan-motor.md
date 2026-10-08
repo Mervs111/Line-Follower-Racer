@@ -71,3 +71,13 @@ motor biasanya menulis torsi dalam kg·cm). Bandingkan dengan torsi rated (bukan
 - Roda Ø43 mm + motor N20 6V ± 700 RPM + encoder → v_maks teoritis ≈ 1,58 m/s.
   Kebutuhan pada roda Ø43 mm: ± 666 RPM, torsi desain (SF 2) ± 19 N·mm ≈ 0,20 kg·cm per roda.
 - PWM dibatasi ± 70% di firmware karena motor 6V dipasok baterai 2S (7,4–8,4 V).
+
+## Keputusan (revisi, 08/10/2026) — menggantikan keputusan di atas
+
+- Di marketplace hanya tersedia N20 + encoder **6V 500 RPM** → dipakai.
+- Desain robot rendah satu bidang → roda **Ø34 mm**.
+- v_maks teoritis = π × 0,034 × 500 / 60 ≈ **0,89 m/s** (sasaran ≥ 0,5 m/s tetap tercapai dengan cadangan).
+- Torsi (target 0,9 m/s dalam 0,5 s → a = 1,8 m/s², m = 0,3 kg): F = 0,54 N; τ total = 0,54 × 0,017 ≈ 9,2 N·mm;
+  per roda ≈ 4,6 N·mm; dengan SF 2 ≈ **9,2 N·mm ≈ 0,09 kg·cm per roda**. Motor 500 RPM (rasio gear lebih besar)
+  punya torsi lebih tinggi dari 700 RPM, jadi aman.
+- Baterai: 2× 14500 (± 40 g) menggantikan 2× 18650 (± 90 g).

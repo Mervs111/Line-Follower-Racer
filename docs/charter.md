@@ -1,6 +1,6 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
-Semester Gasal 2026/2027 · Revisi 3.1 (arahan dosen 05/10/2026: reverse engineering, path planning,
+Semester Gasal 2026/2027 · Revisi 3.2 (arahan dosen 05/10/2026: reverse engineering, path planning,
 budget maksimal Rp 900.000)
 
 ## 1. Project Identity
@@ -54,7 +54,7 @@ block coding berbasis web tanpa instalasi aplikasi.
 
 - Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
-- Elektronik: 5 sensor garis (susunan panah), motor DC + encoder, driver motor, OLED, catu daya baterai 2S
+- Elektronik: 5 sensor garis (susunan panah), motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 14500)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
 - Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan
 - Platform block coding berbasis web (Blockly)
@@ -139,30 +139,32 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Modul sensor garis TCRT5000 (prototipe) | Rp4.000 | 5 | pcs | Rp20.000 |
 | Sensor IR ITR20001 (PCB sensor, +1 cadangan) | Rp3.000 | 6 | pcs | Rp18.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
-| Motor N20 6V ± 700 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
-| Push button | Rp500 | 4 | pcs | Rp2.000 |
+| Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
+| Push button | Rp1.000 | 4 | pcs | Rp4.000 |
 | LED indikator | Rp200 | 10 | pcs | Rp2.000 |
 | Resistor 220 Ω | Rp200 | 10 | pcs | Rp2.000 |
 | Resistor 10 kΩ | Rp200 | 10 | pcs | Rp2.000 |
 | Buzzer | Rp3.000 | 1 | pcs | Rp3.000 |
 | MOSFET (switch emitter IR) | Rp1.500 | 2 | pcs | Rp3.000 |
-| Baterai Li-ion 18650 | Rp30.000 | 2 | pcs | Rp60.000 |
-| Holder baterai 2× 18650 (seri) | Rp8.000 | 1 | pcs | Rp8.000 |
+| Baterai Li-ion 14500 | Rp25.000 | 2 | pcs | Rp50.000 |
+| Holder baterai 2× 14500 (seri) | Rp5.000 | 1 | pcs | Rp5.000 |
 | Modul BMS 2S | Rp10.000 | 1 | pcs | Rp10.000 |
 | Modul charger 2S USB-C | Rp25.000 | 1 | pcs | Rp25.000 |
 | Modul buck converter 5 V (MP1584) | Rp10.000 | 1 | pcs | Rp10.000 |
 | Saklar on/off | Rp3.000 | 1 | pcs | Rp3.000 |
 | Konektor JST PH2.0 6 pin + header (motor encoder) | Rp5.000 | 2 | set | Rp10.000 |
+| Modul IMU MPU6050 | Rp25.000 | 1 | pcs | Rp25.000 |
+| Komponen pendukung minsys (header, kapasitor, dioda SS14, konektor sensor) | Rp25.000 | 1 | paket | Rp25.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp641.000** |
+| **TOTAL** | | | | **Rp680.000** |
 
 ### Mechanical
 
 | Item | Price per unit | Qty | Unit | Total Price |
 |---|---|---|---|---|
-| Roda N20 Ø43 mm | Rp25.000 | 1 | pasang | Rp25.000 |
+| Roda N20 Ø34 mm | Rp25.000 | 1 | pasang | Rp25.000 |
 | Bracket motor N20 | Rp10.000 | 1 | pasang | Rp10.000 |
-| Ball caster | Rp10.000 | 1 | pcs | Rp10.000 |
+| Ball caster mini (± 6 mm) | Rp10.000 | 1 | pcs | Rp10.000 |
 | Baut, mur, spacer | Rp15.000 | 1 | paket | Rp15.000 |
 | **TOTAL** | | | | **Rp60.000** |
 
@@ -170,14 +172,13 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 
 | Item | Price per unit | Qty | Unit | Total Price |
 |---|---|---|---|---|
-| Lintasan uji lurus (banner putih + lakban hitam) | Rp50.000 | 1 | paket | Rp50.000 |
-| Lintasan uji grid 4×4 (banner putih + lakban hitam) | Rp25.000 | 1 | paket | Rp25.000 |
+| Lintasan uji (banner putih + lakban hitam, lurus + grid 4×4) | Rp50.000 | 1 | paket | Rp50.000 |
 | Breadboard + kabel jumper | Rp30.000 | 1 | paket | Rp30.000 |
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
-| **TOTAL** | | | | **Rp130.000** |
+| **TOTAL** | | | | **Rp105.000** |
 
-**TOTAL BUDGET: Rp831.000** (Electrical Rp641.000 + Mechanical Rp60.000 + Lain-lain Rp130.000),
-sisa Rp69.000 dari batas Rp900.000.
+**TOTAL BUDGET: Rp845.000** (Electrical Rp680.000 + Mechanical Rp60.000 + Lain-lain Rp105.000),
+sisa Rp55.000 dari batas Rp900.000.
 
 ### Alasan pemilihan komponen utama
 
@@ -187,16 +188,17 @@ sisa Rp69.000 dari batas Rp900.000.
 - **5 sensor garis susunan panah**: dibaca langsung oleh ADC1 sehingga rangkaian dan program sederhana;
   jumlah ini terbukti cukup untuk mengikuti garis dan maze solving pada robot edukasi Pololu 3pi.
   Ichiduino Pro memakai 12 sensor karena ATmega2560 memiliki 16 kanal ADC.
-- **Motor N20 6V ± 700 RPM + encoder, roda Ø43 mm**: dipilih dari perhitungan kebutuhan RPM dan torsi
-  agar robot mampu mencapai ± 1,5 m/s (massa 0,3 kg, akselerasi 3 m/s², safety factor 2 → torsi desain
-  ± 19 N·mm ≈ 0,20 kg·cm per roda), sedangkan kecepatan operasi dibatasi ≥ 0,5 m/s demi keamanan anak.
-  Encoder dibutuhkan untuk membaca kecepatan roda (CPMK-1) dan belokan 90° yang presisi untuk path
-  planning; motor TT tanpa encoder dan gear-nya oblak. PWM dibatasi ± 70% agar motor 6V tidak
-  kelebihan tegangan dari baterai 2S.
+- **Motor N20 6V 500 RPM + encoder, roda Ø34 mm**: kecepatan maksimum teoritis ± 0,89 m/s, cukup untuk
+  sasaran ≥ 0,5 m/s dengan cadangan; roda kecil membuat robot rendah dan ringkas. Torsi desain
+  (massa 0,3 kg, akselerasi 1,8 m/s², safety factor 2) ± 9 N·mm ≈ 0,09 kg·cm per roda. Encoder dibutuhkan
+  untuk membaca kecepatan roda (CPMK-1) dan belokan 90° yang presisi untuk path planning. PWM dibatasi
+  ± 70% agar motor 6V tidak kelebihan tegangan dari baterai 2S.
+- **IMU MPU6050**: mengukur arah hadap robot sehingga belokan 90° lebih presisi (mitigasi R3) dan melengkapi
+  pembacaan orientasi untuk CPMK-1; memakai jalur I2C yang sama dengan OLED, tanpa pin tambahan.
 - **TB6612FNG**: penurunan tegangan jauh lebih kecil daripada L298N, sehingga motor mendapat tenaga
   penuh dari baterai 2S dan driver tidak panas.
-- **Baterai 2× 18650 (2S) + BMS + charger USB-C**: 7,4 V cukup untuk motor dan buck 5 V, dilindungi BMS,
-  dan dapat diisi lewat USB-C sehingga aman dan mudah bagi anak sekolah.
+- **Baterai 2× 14500 (2S) + BMS + charger USB-C**: 7,4 V cukup untuk motor dan buck 5 V; ukuran AA dan ringan
+  (± 40 g) sehingga muat di atas PCB robot yang rendah; dilindungi BMS dan diisi lewat USB-C.
 
 ## Persetujuan
 
