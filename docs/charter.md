@@ -61,8 +61,9 @@ Dikerjakan (seluruhnya dikembangkan sendiri, bukan modifikasi kit):
 6. Pengujian akurasi sensor, kecepatan, keterulangan, path planning, batas kerja aman; uji coba ke siswa.
 7. Dokumentasi dan analisis hasil pengujian.
 
-Tidak dikerjakan: produksi massal dan penjualan; lintasan selain garis hitam di atas putih; lintasan
-dengan sudut belok selain 90° di persimpangan; penghindaran halangan (obstacle avoidance); upload via
+Tidak dikerjakan: produksi massal dan penjualan; lintasan selain garis hitam di atas putih; path
+planning pada persimpangan bersudut selain 90° (peta lintasan berbentuk grid; garis berbelok dan
+melengkung tetap dapat diikuti); penghindaran halangan (obstacle avoidance); upload via
 Bluetooth dan dukungan iPad/Safari; fitur lomba (kecepatan tinggi, kipas penyedot); modifikasi kit
 Ichiduino Pro (hanya dianalisis dan diukur sebagai pembanding).
 
