@@ -17,6 +17,11 @@ Modul dipasang di header perempuan (female header) sehingga bisa dilepas-pasang:
 | OLED 1.3" I2C | Female header 1 × 4 pin |
 | BMS 2S & charger 2S USB-C | Di dekat holder baterai, disambung kabel ke konektor BAT |
 
+Pemasangan (diputuskan 08/10/2026 atas masukan kelompok): **modul kecil (TB6612, MP1584) disolder
+langsung** ke PCB lewat pin header jantan (lebih kokoh terhadap getaran, lebih tipis). **ESP32 DevKit**
+boleh disolder langsung juga, atau memakai female header tipe *round pin / machined* (jepitan lebih
+kuat) agar mudah diganti saat pengembangan. Setiap modul **dites dulu di breadboard sebelum disolder**.
+
 Dua papan: **Minsys** (ESP32, driver, power, OLED, tombol, buzzer) dan **Sensor** (5 sensor susunan panah).
 OLED & tombol digabung ke minsys (beda dengan referensi yang memisahkan PCB control & display) untuk
 menghemat biaya PCB.
