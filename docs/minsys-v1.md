@@ -147,6 +147,25 @@ Bila buzzer magnetik: dioda 1N4148 paralel buzzer (katoda ke +5V).
 J_BAT (JST XH 2 pin / XT30) dari BMS → SW1 (saklar geser) → VBAT. Charger 2S USB-C disambung ke
 terminal charge BMS (di luar PCB, ikut petunjuk modul).
 
+
+### 9. Papan OLED + tombol (papan ketiga) dan konektor J_UI
+
+Papan OLED kecil ditumpuk di atas ESP32 DevKit dengan spacer ± 11 mm (penopang mekanis saja).
+Semua sinyal lewat **J_UI: header 1 × 6 pin, 2,54 mm, pin panjang ± 11 mm** (male di papan OLED,
+female/lubang di PCB utama, diletakkan di luar jejak ESP32 DevKit):
+
+| Pin | Sinyal | PCB utama | Papan OLED |
+|---|---|---|---|
+| 1 | 3V3 | pin 3V3 DevKit | VCC OLED |
+| 2 | GND | GND | GND OLED, kaki tombol A & B |
+| 3 | SDA | GPIO21 | SDA OLED |
+| 4 | SCL | GPIO22 | SCL OLED |
+| 5 | BTN_A | GPIO15 (pull-up internal) | tombol A → GND |
+| 6 | BTN_B | GPIO2 (pull-up internal) | tombol B → GND |
+
+Tombol 6 × 6 mm di kiri & kanan layar; C 100 nF paralel tiap tombol (opsional). Spacer diletakkan
+di dekat tombol supaya papan tidak melengkung saat ditekan.
+
 ## Papan sensor (5 × ITR20001, susunan panah)
 
 Per sensor (×5):
