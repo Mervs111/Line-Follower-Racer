@@ -64,3 +64,10 @@ motor biasanya menulis torsi dalam kg·cm). Bandingkan dengan torsi rated (bukan
     Bisa konsisten bila 1,5 m/s = kemampuan maksimum desain, 0,5 m/s = batas mode pemula.
   - RAB: roda N20 Ø34 mm; hitungan ini memakai roda Ø60 mm (motor 500 RPM).
   - Massa 0,3 kg perlu dicek ulang setelah ada perkiraan berat baterai 2× 18650 (± 90–100 g) + PCB + motor.
+
+## Keputusan (08/10/2026)
+
+- Kecepatan: sasaran charter tetap ≥ 0,5 m/s; 1,5 m/s hanya dasar pemilihan motor (bukan sasaran uji).
+- Roda Ø43 mm + motor N20 6V ± 700 RPM + encoder → v_maks teoritis ≈ 1,58 m/s.
+  Kebutuhan pada roda Ø43 mm: ± 666 RPM, torsi desain (SF 2) ± 19 N·mm ≈ 0,20 kg·cm per roda.
+- PWM dibatasi ± 70% di firmware karena motor 6V dipasok baterai 2S (7,4–8,4 V).

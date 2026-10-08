@@ -139,7 +139,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Modul sensor garis TCRT5000 (prototipe) | Rp4.000 | 5 | pcs | Rp20.000 |
 | Sensor IR ITR20001 (PCB sensor, +1 cadangan) | Rp3.000 | 6 | pcs | Rp18.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
-| Motor N20 + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
+| Motor N20 6V ± 700 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
 | Push button | Rp500 | 4 | pcs | Rp2.000 |
 | LED indikator | Rp200 | 10 | pcs | Rp2.000 |
 | Resistor 220 Ω | Rp200 | 10 | pcs | Rp2.000 |
@@ -159,7 +159,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 
 | Item | Price per unit | Qty | Unit | Total Price |
 |---|---|---|---|---|
-| Roda N20 Ø34 mm | Rp25.000 | 1 | pasang | Rp25.000 |
+| Roda N20 Ø43 mm | Rp25.000 | 1 | pasang | Rp25.000 |
 | Bracket motor N20 | Rp10.000 | 1 | pasang | Rp10.000 |
 | Ball caster | Rp10.000 | 1 | pcs | Rp10.000 |
 | Baut, mur, spacer | Rp15.000 | 1 | paket | Rp15.000 |
@@ -186,8 +186,12 @@ sisa Rp79.000 dari batas Rp900.000.
 - **5 sensor garis susunan panah**: dibaca langsung oleh ADC1 sehingga rangkaian dan program sederhana;
   jumlah ini terbukti cukup untuk mengikuti garis dan maze solving pada robot edukasi Pololu 3pi.
   Ichiduino Pro memakai 12 sensor karena ATmega2560 memiliki 16 kanal ADC.
-- **Motor N20 + encoder**: encoder dibutuhkan untuk membaca kecepatan roda (CPMK-1) dan belokan 90°
-  yang presisi untuk path planning; motor TT tanpa encoder dan gear-nya oblak.
+- **Motor N20 6V ± 700 RPM + encoder, roda Ø43 mm**: dipilih dari perhitungan kebutuhan RPM dan torsi
+  agar robot mampu mencapai ± 1,5 m/s (massa 0,3 kg, akselerasi 3 m/s², safety factor 2 → torsi desain
+  ± 19 N·mm ≈ 0,20 kg·cm per roda), sedangkan kecepatan operasi dibatasi ≥ 0,5 m/s demi keamanan anak.
+  Encoder dibutuhkan untuk membaca kecepatan roda (CPMK-1) dan belokan 90° yang presisi untuk path
+  planning; motor TT tanpa encoder dan gear-nya oblak. PWM dibatasi ± 70% agar motor 6V tidak
+  kelebihan tegangan dari baterai 2S.
 - **TB6612FNG**: penurunan tegangan jauh lebih kecil daripada L298N, sehingga motor mendapat tenaga
   penuh dari baterai 2S dan driver tidak panas.
 - **Baterai 2× 18650 (2S) + BMS + charger USB-C**: 7,4 V cukup untuk motor dan buck 5 V, dilindungi BMS,
