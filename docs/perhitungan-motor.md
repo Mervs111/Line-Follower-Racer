@@ -1,0 +1,56 @@
+# Perhitungan Awal Motor & Roda (draf kelompok, 08/10/2026)
+
+Disimpan sebagai konteks. Status: **draf asumsi**, belum dikunci di charter/RAB.
+
+## Asumsi
+
+| Besaran | Nilai |
+|---|---|
+| Target kecepatan | ≈ 1,5 m/s |
+| Diameter roda | 60 mm (r = 0,03 m) |
+| Massa robot | 0,3 kg |
+| Roda penggerak | 2 |
+| Waktu akselerasi 0 → 1,5 m/s | 0,5 s |
+
+## 1. Kebutuhan RPM
+
+v = ω·r → ω = v / r = 1,5 / 0,03 = 50 rad/s
+
+RPM = ω · 60 / (2π) = 50 · 60 / (2π) ≈ 477 RPM → pilih motor ± **500 RPM**.
+
+## 2. Kecepatan teoritis motor 500 RPM vs diameter roda
+
+v = 2π·r·RPM / 60
+
+| Diameter roda | Kecepatan teoritis |
+|---|---|
+| 40 mm | 1,05 m/s |
+| 50 mm | 1,31 m/s |
+| **60 mm** | **1,57 m/s** (dipilih sebagai titik awal) |
+| 65 mm | 1,70 m/s |
+| 70 mm | 1,83 m/s |
+
+Diameter roda memengaruhi: kecepatan, torsi di roda, kemampuan melewati permukaan, kestabilan saat belok.
+Angka di atas kondisi ideal tanpa beban; kecepatan nyata lebih rendah.
+
+## 3. Gaya dan torsi
+
+a = Δv / Δt = 1,5 / 0,5 = 3 m/s²
+
+F = m·a = 0,3 · 3 = 0,9 N (akselerasi ideal, belum termasuk hambatan)
+
+τ = F·r = 0,9 · 0,03 = 0,027 N·m = 27 N·mm
+
+Per roda (2 roda): τ_roda ≈ 27 / 2 ≈ **13,5 N·mm**
+
+## Catatan pemeriksaan (Claude)
+
+- Hitungan aritmetika di atas sudah dicek dan benar.
+- Belum memasukkan: hambatan gulir/gesekan, efisiensi gearbox, dan faktor keamanan.
+  Lazimnya torsi motor dipilih beberapa kali lipat (mis. 2–3×) dari hasil hitung ideal,
+  dan dibandingkan dengan torsi **rated** (bukan stall) di datasheet motor yang dipilih.
+- Belum sinkron dengan charter revisi 3 & RAB:
+  - Charter: sasaran kecepatan ≥ 0,5 m/s (dibatasi demi keamanan anak). Hitungan ini memakai 1,5 m/s.
+    Bisa konsisten bila 1,5 m/s = kemampuan maksimum desain, 0,5 m/s = batas mode pemula.
+  - RAB: roda N20 Ø34 mm; hitungan ini memakai roda Ø60 mm (motor 500 RPM).
+  - Massa 0,3 kg perlu dicek ulang setelah ada perkiraan berat baterai 2× 18650 (± 90–100 g) + PCB + motor.
