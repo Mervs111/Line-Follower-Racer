@@ -35,3 +35,19 @@ Yang terlihat:
 | OLED + tombol | OLED modul disolder + tombol di PCB | Seperti referensi 1 |
 | Baterai, BMS, charger | Tetap modul, di dekat holder baterai | Bisa diintegrasikan di versi berikutnya |
 | Sambungan papan sensor ↔ utama | Header board-to-board | Seperti referensi 1 |
+
+## 3. `ref-lf-edu-esp32-14sensor.png` — Robot Pembelajaran Line Follower Educational (pesaing)
+
+![ref 3](ref-lf-edu-esp32-14sensor.png)
+
+Dari deskripsi produk: ESP32, **14 sensor photodiode**, OLED 1.3", pilihan desain modular/non-modular,
+driver motor MOSFET / BTN 70A, pemrograman **Blockly IoTA dari PC/laptop**, 2 EEPROM eksternal
+(31 memori lintasan × 99 "planning/index/counter"), PID, kontrol manual via Bluetooth, usia 8+.
+
+Catatan analisis:
+- 14 sensor analog > jumlah ADC ESP32 → kemungkinan besar memakai **multiplexer analog 16 kanal
+  (CD74HC4067)** atau ADC eksternal. Perlu dicek kalau ada foto PCB sisi bawah.
+- "Planning" di produk ini = urutan aksi yang **diisi manual** per persimpangan (gaya lomba LF Indonesia),
+  **bukan** pencarian rute otomatis. Path planning kita (rute terpendek dihitung robot) berbeda.
+- Produk ini **sudah memakai block coding (Blockly)** → block coding saja bukan pembeda; pembeda kita:
+  harga, path planning otomatis, fokus anak sekolah, web tanpa instalasi aplikasi.
