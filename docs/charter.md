@@ -1,6 +1,6 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
-Semester Gasal 2026/2027 · Revisi 3 (arahan dosen 05/10/2026: reverse engineering, path planning,
+Semester Gasal 2026/2027 · Revisi 3.1 (arahan dosen 05/10/2026: reverse engineering, path planning,
 budget maksimal Rp 900.000)
 
 ## 1. Project Identity
@@ -152,8 +152,9 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Modul charger 2S USB-C | Rp25.000 | 1 | pcs | Rp25.000 |
 | Modul buck converter 5 V (MP1584) | Rp10.000 | 1 | pcs | Rp10.000 |
 | Saklar on/off | Rp3.000 | 1 | pcs | Rp3.000 |
+| Konektor JST PH2.0 6 pin + header (motor encoder) | Rp5.000 | 2 | set | Rp10.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp631.000** |
+| **TOTAL** | | | | **Rp641.000** |
 
 ### Mechanical
 
@@ -175,8 +176,8 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
 | **TOTAL** | | | | **Rp130.000** |
 
-**TOTAL BUDGET: Rp821.000** (Electrical Rp631.000 + Mechanical Rp60.000 + Lain-lain Rp130.000),
-sisa Rp79.000 dari batas Rp900.000.
+**TOTAL BUDGET: Rp831.000** (Electrical Rp641.000 + Mechanical Rp60.000 + Lain-lain Rp130.000),
+sisa Rp69.000 dari batas Rp900.000.
 
 ### Alasan pemilihan komponen utama
 
