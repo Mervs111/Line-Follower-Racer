@@ -1,7 +1,7 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
-Semester Gasal 2026/2027 · Revisi 3.3 (arahan dosen 05/10/2026: reverse engineering, path planning,
-budget maksimal Rp 900.000)
+Semester Gasal 2026/2027 · Revisi 3.4 (arahan dosen 05/10/2026: reverse engineering, path planning,
+budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU)
 
 ## 1. Project Identity
 
@@ -153,10 +153,9 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Modul buck converter 5 V (MP1584) | Rp10.000 | 1 | pcs | Rp10.000 |
 | Saklar on/off | Rp3.000 | 1 | pcs | Rp3.000 |
 | Konektor JST PH2.0 6 pin + header (motor encoder) | Rp5.000 | 2 | set | Rp10.000 |
-| Modul IMU MPU6050 | Rp25.000 | 1 | pcs | Rp25.000 |
 | Komponen pendukung minsys (header, kapasitor, dioda SS14, konektor sensor) | Rp25.000 | 1 | paket | Rp25.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp713.000** |
+| **TOTAL** | | | | **Rp688.000** |
 
 ### Mechanical
 
@@ -176,8 +175,8 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
 | **TOTAL** | | | | **Rp85.000** |
 
-**TOTAL BUDGET: Rp858.000** (Electrical Rp713.000 + Mechanical Rp60.000 + Lain-lain Rp85.000),
-sisa Rp42.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB.
+**TOTAL BUDGET: Rp833.000** (Electrical Rp688.000 + Mechanical Rp60.000 + Lain-lain Rp85.000),
+sisa Rp67.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB.
 
 ### Alasan pemilihan komponen utama
 
@@ -190,10 +189,10 @@ sisa Rp42.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB.
 - **Motor N20 6V 500 RPM + encoder, roda Ø34 mm**: kecepatan maksimum teoritis ± 0,89 m/s, cukup untuk
   sasaran ≥ 0,5 m/s dengan cadangan; roda kecil membuat robot rendah dan ringkas. Torsi desain
   (massa 0,3 kg, akselerasi 1,8 m/s², safety factor 2) ± 9 N·mm ≈ 0,09 kg·cm per roda. Encoder dibutuhkan
-  untuk membaca kecepatan roda (CPMK-1) dan belokan 90° yang presisi untuk path planning. PWM dibatasi
-  ± 70% agar motor 6V tidak kelebihan tegangan dari baterai 2S.
-- **IMU MPU6050**: mengukur arah hadap robot sehingga belokan 90° lebih presisi (mitigasi R3) dan melengkapi
-  pembacaan orientasi untuk CPMK-1; memakai jalur I2C yang sama dengan OLED, tanpa pin tambahan.
+  untuk membaca kecepatan roda (CPMK-1) dan belokan 90° yang presisi untuk path planning: sudut belok
+  dihitung dari selisih putaran roda kiri dan kanan, lalu robot dikunci kembali ke garis oleh sensor
+  (tanpa IMU, sesuai arahan dosen 09/10/2026). PWM dibatasi ± 70% agar motor 6V tidak kelebihan
+  tegangan dari baterai 2S.
 - **TB6612FNG**: penurunan tegangan jauh lebih kecil daripada L298N, sehingga motor mendapat tenaga
   penuh dari baterai 2S dan driver tidak panas.
 - **Baterai 2× 18650 (2S) + BMS + charger USB-C**: 7,4 V cukup untuk motor dan buck 5 V; kapasitas besar

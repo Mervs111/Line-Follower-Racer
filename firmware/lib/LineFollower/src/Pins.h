@@ -33,7 +33,7 @@ constexpr uint8_t BUTTON_B = 18;
 constexpr uint8_t BUZZER = 21;
 constexpr uint8_t WS2812 = 48;
 
-// Header I2C (OLED/IMU)
+// Header I2C (OLED)
 constexpr uint8_t I2C_SDA = 40;
 constexpr uint8_t I2C_SCL = 41;
 

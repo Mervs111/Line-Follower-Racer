@@ -15,9 +15,14 @@ Arsitektur 3 lapis:
   maze solving). Pin map & platformio.ini perlu disusun ulang sebelum milestone firmware berikutnya.
 - Sensor: 5 buah, susunan panah, di PCB sensor terpisah.
 - Baterai: 2S (2× 18650, holder 76×42×20 mm melintang di atas PCB utama), BMS 2S, charger 2S USB-C, buck 5 V.
-- RAB final revisi 3.3: Rp858.000 (lintasan uji di luar RAB). Body 3D print = opsi B (dipilih 08/10/2026): PCB tetap jadi sasis, 3D print berupa cover/body
+- RAB revisi 3.3: Rp858.000 (digantikan revisi 3.4 Rp833.000, lihat di bawah) (lintasan uji di luar RAB). Body 3D print = opsi B (dipilih 08/10/2026): PCB tetap jadi sasis, 3D print berupa cover/body
   penutup di atas + bumper + dudukan motor & baterai. Belum di RAB (tunggu info printer lab).
-- Motor: N20 6V 500 RPM + encoder, roda Ø34 mm (v_maks ± 0,89 m/s); driver TB6612FNG. IMU MPU6050 di I2C.
+- Motor: N20 6V 500 RPM + encoder, roda Ø34 mm (v_maks ± 0,89 m/s); driver TB6612FNG.
+- 09/10/2026 (arahan dosen): **IMU MPU6050 dihapus** karena pengambilan datanya sulit. Belok 90° di
+  persimpangan pakai encoder (selisih putaran roda) lalu dikunci ke garis oleh sensor. RAB revisi 3.4:
+  Rp833.000 (sisa Rp67.000). I2C hanya untuk OLED.
+- Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
+  flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,
   sensor di sisi bawah, semua komponen + baterai di atas, papan OLED/tombol ditumpuk di atas ESP32.
   Visual: https://claude.ai/artifact/PHUWVJWJy2sDEXEf3AtSyx
