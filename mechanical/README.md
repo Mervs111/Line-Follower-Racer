@@ -1,34 +1,42 @@
-# Mekanik — Robot Line Tracer Micro (versi ringkas)
+# Mekanik — Robot Line Tracer Micro
 
-Dipilih 11/10/2026 menggantikan bentuk rata v9: motor N20 melintang di tengah, baterai 2×18650 di atas
-motor (seperti model Inventor kelompok 06/10/2026), PCB utama di depan motor, sayap sensor paling depan
-dan paling bawah. CAD lanjutan: Fusion 360.
+## Versi aktif: v10 "jangkar" (11/10/2026)
 
-Gambar konsep berdimensi: https://claude.ai/artifact/GWx6mCdbs6jLmmXVAuQGpd dan `konsep-ringkas.png`.
+Mengikuti referensi di `docs/referensi/` (PCB sensor jangkar + leher panjang ala R3D Maker dan robot LF
+edukasi 14 sensor) dan model Inventor kelompok (baterai oranye di atas motor, sayap belakang).
 
-## Ukuran utama (mm)
+- Model 3D yang bisa diputar: https://claude.ai/artifact/3rW7AaXeb6bug9ahwW6mWv
+- File untuk Fusion 360: `LTM_v10_jangkar.step` (Insert › Insert Mesh/Upload, atau buka langsung; tiap
+  bagian jadi komponen terpisah lengkap dengan warna)
+- Render untuk PPT: `render/ltm-v10-*.png` (iso, iso tanpa cover, atas, samping, belakang)
+- Sumber model (parametrik, Python + CadQuery): `cadquery/ltm_v10_jangkar.py`
+  (`pip install cadquery`, lalu `python ltm_v10_jangkar.py <folder>` → `model.json` + STEP)
 
-Sumbu: X = lebar (kanan +), Y = maju (depan +), Z = atas; titik nol = lantai di bawah tengah poros roda.
-Tanda (*) = cek ulang dengan komponen asli.
+### Susunan
 
-| Bagian | Ukuran / posisi |
+| Bagian | Bentuk / posisi |
 |---|---|
-| Total P × L × T | 121 × 96 × 44 (134 bila pakai penahan belakang) |
-| Roda | Ø34 (*), lebar 8 (*), X ±40…±48, poros Z 17 |
-| Jarak roda kiri-kanan (pusat) | 88 |
-| Motor N20 + encoder | 32 × 12 × 10 (*), X ±4…±36, saling membelakangi |
-| Holder 2×18650 | 76 × 42 × 20, Y −13…29 (geser 8 ke depan), Z 24…44; celah ke roda 2 per sisi |
-| PCB utama | 86 × 80 (≤ 100 × 100), Y 8…88, Z 12; belakang menyempit X ±34 (Y < 20) di antara roda |
-| Komponen di bawah baterai | TB6612 & MP1584, tinggi maks ± 8 di atas PCB |
-| PCB sayap sensor | 88 × 28, Y 80…108, Z 4; disambung spacer ke PCB utama di Y 84, X ±30 |
-| Sensor | 5× ITR20001, jarak lateral 10, ±2 dari lantai, ±102 di depan poros |
-| Ball caster mini (*) | Y 72, di bawah PCB utama |
-| Massa perkiraan | ±235 g; titik berat ±20 di depan poros (±72% beban di roda) |
+| PCB sensor | Jangkar: depan lebar ±26 dengan 5 sensor (pola panah ringan), lengan lurus menyapu ±54° ke belakang, 4 slot cadangan di lengan; leher 14 mm × ±33 mm terlihat; disambung ke PCB utama lewat 2 spacer M3 + header |
+| PCB utama | Siluet roket bersudut 94 × 84 (≤ 100 × 100): ESP32 DevKit melintang (USB ke kanan) separuh di bawah baterai, OLED di tengah, tombol A/B di bawah OLED, TB6612 kiri, MP1584 kanan, buzzer, saklar di tepi kiri |
+| Penggerak | 2× N20 melintang saling membelakangi, roda Ø34 di luar, rangka 3D print (dinding motor + dudukan baterai + telinga belakang) |
+| Baterai | Holder 2×18650 di atas motor, ditutup **cover oranye bersudut** (bisa dilepas) |
+| Belakang | Dinding belakang dengan port USB-C charger + ventilasi, skid anti-terjungkal, **sayap belakang** (opsional) |
 
-## Script Fusion 360
+### Ukuran utama (mm)
 
-`fusion360/LTM_Konsep_Ringkas/` — membuat model kasar (kotak/silinder) dengan ukuran di atas.
-Fusion 360: Utilities › Add-Ins › Scripts and Add-Ins › "+" › pilih folder ini › Run.
-Ukuran diubah di bagian UKURAN pada awal script. Setelah jadi: ganti kotak dengan model asli (GrabCAD),
-rancang dudukan motor/baterai dan sayap belakang (3D print), lalu ekspor sketch outline PCB ke DXF
-untuk KiCad (layer Edge.Cuts).
+| | |
+|---|---|
+| P × L × T | ±174 × 98 × 59 (tanpa sayap belakang: ±162 × 98 × 50) |
+| Jarak roda (pusat) | 88 |
+| Sensor ke poros roda | ±127 |
+| Tinggi sensor dari lantai | ±1,5 |
+| PCB utama | 94 × 84, Z 10 |
+| PCB sensor | 92 × 53 (jangkar + leher), Z 4 |
+
+Ukuran komponen modul masih nilai standar marketplace; cek ulang dengan jangka sorong saat barang datang,
+lalu ubah angka di `cadquery/ltm_v10_jangkar.py` dan ekspor ulang.
+
+## Versi lama
+
+- v9 rata (`docs/minsys-v1.md`, artifact minsys) dan konsep ringkas tanpa leher (`konsep-ringkas.png`,
+  `fusion360/` script kotak-kotak) — digantikan v10 karena tidak sesuai referensi.

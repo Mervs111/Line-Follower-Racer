@@ -21,10 +21,13 @@ Arsitektur 3 lapis:
 - 09/10/2026 (arahan dosen): **IMU MPU6050 dihapus** karena pengambilan datanya sulit. Belok 90° di
   persimpangan pakai encoder (selisih putaran roda) lalu dikunci ke garis oleh sensor. RAB revisi 3.4:
   Rp833.000 (sisa Rp67.000). I2C hanya untuk OLED.
-- 11/10/2026: **bentuk robot diganti ke versi ringkas** (menggantikan "rendah satu bidang"/v9): motor N20
-  melintang di tengah, baterai 2×18650 di atas motor, PCB utama 86×80 di depan motor (Z 12 mm), sayap
-  sensor paling depan & bawah. Total ±121×96×44 mm. CAD: Fusion 360. Detail & script: `mechanical/`.
-  Target dosen: desain mekanik + tampilan robot selesai minggu ke-8.
+- 11/10/2026: **bentuk robot = v10 "jangkar"** (menggantikan v9 rata dan konsep ringkas tanpa leher):
+  PCB sensor jangkar + leher (gaya R3D Maker / LF edukasi 14 sensor), PCB utama siluet roket 94×84,
+  motor N20 melintang di belakang, baterai 2×18650 di atas motor dengan cover oranye, sayap belakang
+  opsional. ±174×98×59 mm. Model 3D: https://claude.ai/artifact/3rW7AaXeb6bug9ahwW6mWv, STEP + sumber
+  CadQuery di `mechanical/`. CAD lanjutan: Fusion 360. Target dosen: desain mekanik selesai minggu ke-8.
+  Pelajaran: user berkali-kali kecewa karena visual tidak mengikuti referensi; selalu buka
+  `docs/referensi/` dan cocokkan siluet sebelum menggambar, dan render/cek sendiri sebelum dikirim.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,
