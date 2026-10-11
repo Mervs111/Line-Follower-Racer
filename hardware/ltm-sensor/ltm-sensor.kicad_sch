@@ -1,0 +1,3587 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid bb228095-93d4-475c-96c9-be15a0e16a38)
+
+  (paper "A3")
+
+  (title_block
+    (title "LTM - PCB Sensor Jangkar")
+    (date "2026-10-11")
+    (rev "v1-starter")
+    (company "P01 Kel.5 PjBL DTEO FV ITS")
+    (comment 1 "Acuan: docs/skematik-v1.md")
+    (comment 2 "Nilai 180R / 10k = nilai awal, setel saat uji")
+    (comment 3 "Slot sensor cadangan di lengan jangkar ditambah saat layout")
+  )
+
+  (lib_symbols
+    (symbol "Connector_Generic:Conn_02x05_Odd_Even"
+      (pin_names
+        (offset 1.016)
+        hide
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "J"
+        (at 1.27 7.62 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "Conn_02x05_Odd_Even"
+        (at 1.27 -7.62 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "connector"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_fp_filters" "Connector*:*_2x??_*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "Conn_02x05_Odd_Even_1_1"
+        (rectangle
+          (start -1.27 -4.953)
+          (end 0 -5.207)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 -2.413)
+          (end 0 -2.667)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 0.127)
+          (end 0 -0.127)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 2.667)
+          (end 0 2.413)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 5.207)
+          (end 0 4.953)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 6.35)
+          (end 3.81 -6.35)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (rectangle
+          (start 3.81 -4.953)
+          (end 2.54 -5.207)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start 3.81 -2.413)
+          (end 2.54 -2.667)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start 3.81 0.127)
+          (end 2.54 -0.127)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start 3.81 2.667)
+          (end 2.54 2.413)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start 3.81 5.207)
+          (end 2.54 4.953)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (pin passive line
+          (at -5.08 5.08 0)
+          (length 3.81)
+          (name "Pin_1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 7.62 -5.08 180)
+          (length 3.81)
+          (name "Pin_10"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "10"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 7.62 5.08 180)
+          (length 3.81)
+          (name "Pin_2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 2.54 0)
+          (length 3.81)
+          (name "Pin_3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 7.62 2.54 180)
+          (length 3.81)
+          (name "Pin_4"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 0 0)
+          (length 3.81)
+          (name "Pin_5"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "5"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 7.62 0 180)
+          (length 3.81)
+          (name "Pin_6"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "6"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 -2.54 0)
+          (length 3.81)
+          (name "Pin_7"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "7"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 7.62 -2.54 180)
+          (length 3.81)
+          (name "Pin_8"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "8"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 -5.08 0)
+          (length 3.81)
+          (name "Pin_9"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "9"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "Device:C"
+      (pin_numbers hide)
+      (pin_names
+        (offset 0.254)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "C"
+        (at 0.635 2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Value" "C"
+        (at 0.635 -2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Footprint" ""
+        (at 0.9652 -3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "cap capacitor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Unpolarized capacitor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_fp_filters" "C_*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "C_0_1"
+        (polyline
+          (pts
+            (xy -2.032 -0.762)
+            (xy 2.032 -0.762)
+          )
+          (stroke
+            (width 0.508)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.032 0.762)
+            (xy 2.032 0.762)
+          )
+          (stroke
+            (width 0.508)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "C_1_1"
+        (pin passive line
+          (at 0 3.81 270)
+          (length 2.794)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -3.81 90)
+          (length 2.794)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "Device:Q_NMOS_GSD"
+      (pin_names
+        (offset 0)
+        hide
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "Q"
+        (at 5.08 1.27 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Value" "Q_NMOS_GSD"
+        (at 5.08 -1.27 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Footprint" ""
+        (at 5.08 2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "transistor NMOS N-MOS N-MOSFET"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "N-MOSFET transistor, gate/source/drain"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "Q_NMOS_GSD_0_1"
+        (polyline
+          (pts
+            (xy 0.254 0)
+            (xy -2.54 0)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0.254 1.905)
+            (xy 0.254 -1.905)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0.762 -1.27)
+            (xy 0.762 -2.286)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0.762 0.508)
+            (xy 0.762 -0.508)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0.762 2.286)
+            (xy 0.762 1.27)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.54 2.54)
+            (xy 2.54 1.778)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.54 -2.54)
+            (xy 2.54 0)
+            (xy 0.762 0)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0.762 -1.778)
+            (xy 3.302 -1.778)
+            (xy 3.302 1.778)
+            (xy 0.762 1.778)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 1.016 0)
+            (xy 2.032 0.381)
+            (xy 2.032 -0.381)
+            (xy 1.016 0)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type outline)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.794 0.508)
+            (xy 2.921 0.381)
+            (xy 3.683 0.381)
+            (xy 3.81 0.254)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 3.302 0.381)
+            (xy 2.921 -0.254)
+            (xy 3.683 -0.254)
+            (xy 3.302 0.381)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (circle
+          (center 1.651 0)
+          (radius 2.794)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (circle
+          (center 2.54 -1.778)
+          (radius 0.254)
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type outline)
+          )
+        )
+        (circle
+          (center 2.54 1.778)
+          (radius 0.254)
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type outline)
+          )
+        )
+      )
+      (symbol "Q_NMOS_GSD_1_1"
+        (pin input line
+          (at -5.08 0 0)
+          (length 2.54)
+          (name "G"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 2.54 -5.08 90)
+          (length 2.54)
+          (name "S"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 2.54 5.08 270)
+          (length 2.54)
+          (name "D"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "Device:R"
+      (pin_numbers hide)
+      (pin_names
+        (offset 0)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "R"
+        (at 2.032 0 90)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "R"
+        (at 0 0 90)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at -1.778 0 90)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "R res resistor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Resistor"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_fp_filters" "R_*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 -2.54)
+          (end 1.016 2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 3.81 270)
+          (length 1.27)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -3.81 90)
+          (length 1.27)
+          (name "~"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "Mechanical:MountingHole"
+      (pin_names
+        (offset 1.016)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "H"
+        (at 0 5.08 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "MountingHole"
+        (at 0 3.175 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "mounting hole"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Mounting Hole without connection"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_fp_filters" "MountingHole*"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "MountingHole_0_1"
+        (circle
+          (center 0 0)
+          (radius 1.27)
+          (stroke
+            (width 1.27)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+    )
+    (symbol "ltm:ITR20001"
+      (pin_names
+        (offset 0.508)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at -5.08 5.08 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left bottom)
+        )
+      )
+      (property "Value" "ITR20001"
+        (at -5.08 -5.08 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left top)
+        )
+      )
+      (property "Footprint" "ltm:ITR20001"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "ITR20001 reflective sensor line"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Sensor reflektif IR (LED + fototransistor). Nomor pin CEK datasheet ITR20001/T."
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "ITR20001_0_1"
+        (rectangle
+          (start -5.08 3.81)
+          (end 5.08 -3.81)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (polyline
+          (pts
+            (xy -3.81 1.27)
+            (xy -1.27 1.27)
+            (xy -2.54 -0.635)
+            (xy -3.81 1.27)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -3.81 -0.635)
+            (xy -1.27 -0.635)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -0.635 0.635)
+            (xy 0.635 1.27)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -0.635 -0.635)
+            (xy 0.635 0)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.54 1.905)
+            (xy 2.54 -1.905)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.54 0.635)
+            (xy 3.81 1.905)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.54 -0.635)
+            (xy 3.81 -1.905)
+          )
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "ITR20001_1_1"
+        (pin passive line
+          (at -7.62 2.54 0)
+          (length 2.54)
+          (name "A"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -7.62 -2.54 0)
+          (length 2.54)
+          (name "K"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 7.62 2.54 180)
+          (length 2.54)
+          (name "C"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 7.62 -2.54 180)
+          (length 2.54)
+          (name "E"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "power:+3V3"
+      (power)
+      (pin_names
+        (offset 0)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "#PWR"
+        (at 0 -3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Value" "+3V3"
+        (at 0 3.556 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "global power"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Power symbol creates a global label with name \"+3V3\""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "+3V3_0_1"
+        (polyline
+          (pts
+            (xy -0.762 1.27)
+            (xy 0 2.54)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0 0)
+            (xy 0 2.54)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0 2.54)
+            (xy 0.762 1.27)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "+3V3_1_1"
+        (pin power_in line
+          (at 0 0 90)
+          (length 0)
+          hide
+          (name "+3V3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "power:+5V"
+      (power)
+      (pin_names
+        (offset 0)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "#PWR"
+        (at 0 -3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Value" "+5V"
+        (at 0 3.556 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "global power"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Power symbol creates a global label with name \"+5V\""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "+5V_0_1"
+        (polyline
+          (pts
+            (xy -0.762 1.27)
+            (xy 0 2.54)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0 0)
+            (xy 0 2.54)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0 2.54)
+            (xy 0.762 1.27)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "+5V_1_1"
+        (pin power_in line
+          (at 0 0 90)
+          (length 0)
+          hide
+          (name "+5V"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "power:GND"
+      (power)
+      (pin_names
+        (offset 0)
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "#PWR"
+        (at 0 -6.35 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Value" "GND"
+        (at 0 -3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "global power"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Power symbol creates a global label with name \"GND\" , ground"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "GND_0_1"
+        (polyline
+          (pts
+            (xy 0 0)
+            (xy 0 -1.27)
+            (xy 1.27 -1.27)
+            (xy 0 -2.54)
+            (xy -1.27 -1.27)
+            (xy 0 -1.27)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "GND_1_1"
+        (pin power_in line
+          (at 0 0 270)
+          (length 0)
+          hide
+          (name "GND"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+    )
+    (symbol "power:PWR_FLAG"
+      (power)
+      (pin_numbers hide)
+      (pin_names
+        (offset 0)
+        hide
+      )
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "#FLG"
+        (at 0 1.905 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Value" "PWR_FLAG"
+        (at 0 3.81 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "Datasheet" "~"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_keywords" "flag power"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (property "ki_description" "Special symbol for telling ERC where power comes from"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          hide
+        )
+      )
+      (symbol "PWR_FLAG_0_0"
+        (pin power_out line
+          (at 0 0 90)
+          (length 0)
+          (name "pwr"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+      (symbol "PWR_FLAG_0_1"
+        (polyline
+          (pts
+            (xy 0 0)
+            (xy 0 1.27)
+            (xy -1.016 1.905)
+            (xy 0 2.54)
+            (xy 1.016 1.905)
+            (xy 0 1.27)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+    )
+  )
+
+  (polyline (pts (xy 12.7 15.24) (xy 83.82 15.24) (xy 83.82 106.68) (xy 12.7 106.68) (xy 12.7 15.24))
+    (stroke (width 0) (type dash))
+    (uuid b68b4dd0-2cab-4ec3-a91a-e130ca86e37b)
+  )
+
+  (text "1. KE PCB UTAMA" (at 13.97 19.685 0)
+    (effects (font (size 2 2) (thickness 0.4) bold) (justify left bottom))
+    (uuid 68d2d1b3-4a36-4b54-87b7-f8977134b527)
+  )
+
+  (symbol (lib_id "Connector_Generic:Conn_02x05_Odd_Even") (at 45.72 55.88 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 85b3ecc0-9f92-4040-ba20-7583bfcbaf51)
+    (property "Reference" "J1" (at 46.99 48.26 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "KE PCB UTAMA" (at 46.99 63.5 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical" (at 45.72 55.88 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 45.72 55.88 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 0aaa614a-c5bc-48ca-93e3-c2356fb2b243))
+    (pin "2" (uuid 704c87ae-333a-4a80-b6d2-d649ee331fb2))
+    (pin "3" (uuid 84312452-301c-49b9-91de-46775ab3a42c))
+    (pin "4" (uuid 2a887f12-6196-47dd-9bfa-74a70c869be1))
+    (pin "5" (uuid 1e0d2488-3860-4d62-9719-d8966a69f8b9))
+    (pin "6" (uuid 336207a1-327f-4bc4-88f2-66a44733dc7e))
+    (pin "7" (uuid 2c87344f-dbb6-4a10-8b83-e8cf786110f3))
+    (pin "8" (uuid 726cbfdf-4a95-433a-96f0-98b943cf450c))
+    (pin "9" (uuid fa83603e-53a3-42ac-a39c-9979a78c2004))
+    (pin "10" (uuid 254c26a3-ac6f-41d7-9393-4a65c79f1291))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "J1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 40.64 50.8) (xy 38.1 50.8))
+    (stroke (width 0) (type default))
+    (uuid e5f11857-ecca-4dae-890f-f07b03abe35e)
+  )
+
+  (symbol (lib_id "power:+5V") (at 38.1 50.8 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid e679e77a-5c8d-42cc-9e37-0385d3539014)
+    (property "Reference" "#PWR001" (at 41.91 50.8 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (at 34.544 50.8 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 38.1 50.8 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 38.1 50.8 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 5492f5cf-af40-4ecb-8b3d-e0ae4959ad0e))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR001") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 53.34 50.8) (xy 55.88 50.8))
+    (stroke (width 0) (type default))
+    (uuid da60031f-f153-4e18-b35b-1c30bfa1a38a)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 55.88 50.8 270) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid ac9351d2-b524-47ee-9e06-388031d96d49)
+    (property "Reference" "#PWR002" (at 52.07 50.8 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 59.436 50.8 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 55.88 50.8 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 55.88 50.8 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid cbc4bf28-5e98-4da4-83ba-a78d730cf27c))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR002") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 40.64 53.34) (xy 33.02 53.34))
+    (stroke (width 0) (type default))
+    (uuid e4babb0f-21db-492d-8733-20eb5e6a80d4)
+  )
+
+  (symbol (lib_id "power:GND") (at 33.02 53.34 270) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 2753d50b-eb96-42f8-8713-d44833dc2925)
+    (property "Reference" "#PWR003" (at 26.67 53.34 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 29.21 53.34 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 33.02 53.34 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 33.02 53.34 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 5bae71ec-8082-4e91-a0c7-0d60272ddcf2))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR003") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 53.34 53.34) (xy 60.96 53.34))
+    (stroke (width 0) (type default))
+    (uuid 1dcb6762-1bd4-431c-80be-1b87a81276fd)
+  )
+
+  (symbol (lib_id "power:GND") (at 60.96 53.34 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 0c578357-8d3a-4e6f-8ab6-7112226b7b2a)
+    (property "Reference" "#PWR004" (at 67.31 53.34 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 64.77 53.34 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 60.96 53.34 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 60.96 53.34 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid e667ac5c-a1f8-4451-a866-1a88669d9647))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR004") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 40.64 55.88) (xy 38.1 55.88))
+    (stroke (width 0) (type default))
+    (uuid c9385d42-4fa8-4a73-a5b4-32ea7c7512db)
+  )
+
+  (label "IR_EN" (at 38.1 55.88 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid ac43f3e4-0787-406a-8347-771ccfb1650b)
+  )
+
+  (wire (pts (xy 53.34 55.88) (xy 55.88 55.88))
+    (stroke (width 0) (type default))
+    (uuid 2aca846c-d7eb-41ca-9d2d-50519aaa1a54)
+  )
+
+  (label "S1" (at 55.88 55.88 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 65630a0b-1e5c-4732-8e6f-8801e7726994)
+  )
+
+  (wire (pts (xy 40.64 58.42) (xy 38.1 58.42))
+    (stroke (width 0) (type default))
+    (uuid 3427fc81-f175-4178-8f51-b8ed5c31bd7c)
+  )
+
+  (label "S2" (at 38.1 58.42 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 7dd116c1-3873-4110-9329-44b1b68be695)
+  )
+
+  (wire (pts (xy 53.34 58.42) (xy 55.88 58.42))
+    (stroke (width 0) (type default))
+    (uuid a5477e92-2ea1-4af0-b134-d50f95132350)
+  )
+
+  (label "S3" (at 55.88 58.42 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid ab88ffdc-a142-4140-8930-96214ce7ecca)
+  )
+
+  (wire (pts (xy 40.64 60.96) (xy 38.1 60.96))
+    (stroke (width 0) (type default))
+    (uuid 25eb57f9-e5fd-4781-ba92-9069edb9ea56)
+  )
+
+  (label "S4" (at 38.1 60.96 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid b88eefe5-d995-413e-bb70-2a7f5e9d9f0e)
+  )
+
+  (wire (pts (xy 53.34 60.96) (xy 55.88 60.96))
+    (stroke (width 0) (type default))
+    (uuid 8f672781-e7ee-4149-a9e4-af855376d2f7)
+  )
+
+  (label "S5" (at 55.88 60.96 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 981dcada-68e8-4aec-838f-7a385ff4f08a)
+  )
+
+  (text "PWR_FLAG (untuk ERC)" (at 17.78 81.28 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 964b1d8d-4a64-4874-b580-53ee5ac2b0c8)
+  )
+
+  (symbol (lib_id "power:PWR_FLAG") (at 25.4 86.36 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b2d0a5e6-d0ce-4f80-b8c4-2569ffa0336d)
+    (property "Reference" "#FLG005" (at 25.4 84.455 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "PWR_FLAG" (at 25.4 82.55 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 25.4 86.36 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 25.4 86.36 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid b9127c2a-1aed-4169-8dec-877c898d617b))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#FLG005") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 25.4 86.36) (xy 25.4 88.9))
+    (stroke (width 0) (type default))
+    (uuid 535adc28-02fb-4e96-86e3-62d0d5092ab8)
+  )
+
+  (symbol (lib_id "power:+5V") (at 25.4 88.9 180) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 1408167b-f87a-493e-b04b-6bb984628875)
+    (property "Reference" "#PWR006" (at 25.4 85.09 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (at 25.4 92.456 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 25.4 88.9 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 25.4 88.9 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 3e82c5e0-a75b-4f9d-9324-f9eba0556093))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR006") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:PWR_FLAG") (at 43.18 86.36 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 30e1c590-99bf-490b-8d5f-f1945d17f4e0)
+    (property "Reference" "#FLG007" (at 43.18 84.455 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "PWR_FLAG" (at 43.18 82.55 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 43.18 86.36 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 43.18 86.36 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 90218183-4127-42bb-9d05-429b9b312421))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#FLG007") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 43.18 86.36) (xy 43.18 88.9))
+    (stroke (width 0) (type default))
+    (uuid 2b623eed-0b23-4813-b02b-c25bc2a73ea3)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 43.18 88.9 180) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 4d6c89a0-6ede-4c7b-9aef-f0b534527101)
+    (property "Reference" "#PWR008" (at 43.18 85.09 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 43.18 92.456 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 43.18 88.9 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 43.18 88.9 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 1d9bac38-02c1-43c7-869e-8aec019a718b))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR008") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:PWR_FLAG") (at 60.96 86.36 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 8908851d-3bfe-4931-80ce-4d700190edfe)
+    (property "Reference" "#FLG009" (at 60.96 84.455 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "PWR_FLAG" (at 60.96 82.55 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 60.96 86.36 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 60.96 86.36 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid f5e353c0-08a4-4ef8-acce-5807513483b3))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#FLG009") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 60.96 86.36) (xy 60.96 88.9))
+    (stroke (width 0) (type default))
+    (uuid 396f3bee-bb57-43dd-bc34-921b7ad8bc02)
+  )
+
+  (symbol (lib_id "power:GND") (at 60.96 88.9 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid ee23f0cd-3da6-461c-bd88-178443793401)
+    (property "Reference" "#PWR010" (at 60.96 95.25 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 60.96 92.71 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 60.96 88.9 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 60.96 88.9 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid e6a9296d-7ece-418c-8b2b-37cb8ac0c97d))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR010") (unit 1)
+        )
+      )
+    )
+  )
+
+  (polyline (pts (xy 91.44 15.24) (xy 408.94 15.24) (xy 408.94 132.08) (xy 91.44 132.08) (xy 91.44 15.24))
+    (stroke (width 0) (type dash))
+    (uuid b8378f7b-035b-4b4d-b486-5cd6d8bb1eea)
+  )
+
+  (text "2. SENSOR GARIS S1-S5 (ITR20001)" (at 92.71 19.685 0)
+    (effects (font (size 2 2) (thickness 0.4) bold) (justify left bottom))
+    (uuid e7288485-fe15-4b33-b3fc-89a09734c2d6)
+  )
+
+  (symbol (lib_id "Device:R") (at 111.76 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 094f34db-13b0-4fea-b365-9e84bfa25524)
+    (property "Reference" "R1" (at 115.57 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "180" (at 115.57 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 109.982 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 111.76 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 6d34e4ef-c499-496b-b8a3-0a27d3c72163))
+    (pin "2" (uuid a9840037-b056-43f5-ac38-6c8a3e61c56e))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 111.76 41.91) (xy 111.76 39.37))
+    (stroke (width 0) (type default))
+    (uuid 46428b2b-6497-4c87-a5ed-384fe61a7279)
+  )
+
+  (symbol (lib_id "power:+5V") (at 111.76 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid bacea802-8693-4b74-8ae8-1fa6b6eebf02)
+    (property "Reference" "#PWR011" (at 111.76 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (at 111.76 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 111.76 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 111.76 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 1e79c3ea-3f95-408f-8b52-467a5b5541fe))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR011") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 111.76 49.53) (xy 111.76 52.07))
+    (stroke (width 0) (type default))
+    (uuid d55aefb7-fd13-4c87-a8df-e5c74602fe9c)
+  )
+
+  (label "LED_A1" (at 111.76 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid bbcccc34-c13d-4235-94f0-5138555df173)
+  )
+
+  (symbol (lib_id "ltm:ITR20001") (at 134.62 81.28 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid dfbafcf9-7d40-44af-89ac-d9c6e6fbe6d6)
+    (property "Reference" "U1" (at 129.54 76.2 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Value" "ITR20001 (S1)" (at 129.54 86.36 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (property "Footprint" "ltm:ITR20001" (at 134.62 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 134.62 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 28266d47-67ee-42e8-9492-eb63ba74759e))
+    (pin "2" (uuid 7f3e8ac7-814e-43fd-9730-2d32d2d2e07e))
+    (pin "3" (uuid 14e66be7-3197-475d-adb3-6cc82e8ab10d))
+    (pin "4" (uuid a949c22d-2594-4a3d-88e8-ce7647388eaf))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "U1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 127 78.74) (xy 124.46 78.74))
+    (stroke (width 0) (type default))
+    (uuid 4f023606-bff8-4742-9db4-c113fe4f05ed)
+  )
+
+  (label "LED_A1" (at 124.46 78.74 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid c28b5799-22ee-4663-9905-4cc89b7472b8)
+  )
+
+  (wire (pts (xy 127 83.82) (xy 124.46 83.82))
+    (stroke (width 0) (type default))
+    (uuid b682a5cb-a3aa-435d-82c5-c61749258853)
+  )
+
+  (label "LED_K" (at 124.46 83.82 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 656c6ea0-57d9-46bd-960d-9384fc75da53)
+  )
+
+  (wire (pts (xy 142.24 78.74) (xy 144.78 78.74))
+    (stroke (width 0) (type default))
+    (uuid f150b417-159c-4523-9d16-810142ca4740)
+  )
+
+  (label "S1" (at 144.78 78.74 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid d825ac74-c9f1-4f35-b934-28ae3bafda71)
+  )
+
+  (wire (pts (xy 142.24 83.82) (xy 144.78 83.82))
+    (stroke (width 0) (type default))
+    (uuid d3a58285-3d0c-430e-9faf-42b29d2d9722)
+  )
+
+  (symbol (lib_id "power:GND") (at 144.78 83.82 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid d56130e8-5cf3-4d84-81ee-20acae190af5)
+    (property "Reference" "#PWR012" (at 151.13 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 148.59 83.82 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 144.78 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 144.78 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid c4ff23f7-268a-4029-943c-e9f7bf281c4d))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR012") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 152.4 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b4e794ee-d667-4224-abed-5550b4573b9f)
+    (property "Reference" "R6" (at 156.21 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "10k" (at 156.21 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 150.622 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 152.4 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 9ef68221-2168-4b67-af47-07520ac75ce0))
+    (pin "2" (uuid 31adf1ce-2593-40ae-bb9d-90cae3758681))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R6") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 152.4 41.91) (xy 152.4 39.37))
+    (stroke (width 0) (type default))
+    (uuid 1c325c01-b31f-4ca2-8e72-cbf270603f61)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 152.4 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 4d965114-e86f-4610-902d-2050471a4978)
+    (property "Reference" "#PWR013" (at 152.4 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 152.4 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 152.4 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 152.4 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 67866b26-2440-4bce-9875-e5f4cda2a280))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR013") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 152.4 49.53) (xy 152.4 52.07))
+    (stroke (width 0) (type default))
+    (uuid 6e408f59-3767-4a1e-96a3-13f38c119277)
+  )
+
+  (label "S1" (at 152.4 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 2c5a46b4-f9c5-4a9f-a01d-f5046d70ed98)
+  )
+
+  (symbol (lib_id "Device:R") (at 172.72 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 781768b3-3ffe-4c44-83ad-ae660239d6fa)
+    (property "Reference" "R2" (at 176.53 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "180" (at 176.53 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 170.942 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 172.72 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 42430e7d-553d-4694-b7ad-8cff62b7d4b9))
+    (pin "2" (uuid 2e97b98e-83ae-441e-a4c1-91fd85b06151))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R2") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 172.72 41.91) (xy 172.72 39.37))
+    (stroke (width 0) (type default))
+    (uuid 49089dcf-baca-4d0a-ba17-66705e56739e)
+  )
+
+  (symbol (lib_id "power:+5V") (at 172.72 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 2acd4a0e-9fc1-4e0f-9f88-06105a701354)
+    (property "Reference" "#PWR014" (at 172.72 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (at 172.72 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 172.72 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 172.72 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 7fddee7b-c9ff-4e88-a113-7ea4858fff78))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR014") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 172.72 49.53) (xy 172.72 52.07))
+    (stroke (width 0) (type default))
+    (uuid a85e3ad9-b5a2-471d-ab04-838106639c6d)
+  )
+
+  (label "LED_A2" (at 172.72 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 09458cec-0c61-43bb-9995-78aa243a9997)
+  )
+
+  (symbol (lib_id "ltm:ITR20001") (at 195.58 81.28 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 8563ff1b-43f5-4754-942a-bf0d0840c979)
+    (property "Reference" "U2" (at 190.5 76.2 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Value" "ITR20001 (S2)" (at 190.5 86.36 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (property "Footprint" "ltm:ITR20001" (at 195.58 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 195.58 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid bf0f6faf-93ba-41af-b2e6-b2f05f5cb8c8))
+    (pin "2" (uuid c19272f4-177c-444f-bf9c-c9b13d4a5eb3))
+    (pin "3" (uuid c54d298c-52d1-4dfc-bfbe-15afa3cc4e1b))
+    (pin "4" (uuid 77a34e22-0fef-4825-91af-2f501fcf90bd))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "U2") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 187.96 78.74) (xy 185.42 78.74))
+    (stroke (width 0) (type default))
+    (uuid f93cd4ee-a264-4850-aba6-b1bf4f4ef894)
+  )
+
+  (label "LED_A2" (at 185.42 78.74 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 3bd06332-d4c4-4926-ab45-89706823253b)
+  )
+
+  (wire (pts (xy 187.96 83.82) (xy 185.42 83.82))
+    (stroke (width 0) (type default))
+    (uuid cb752dd1-cdba-4d8d-ab38-0db227418ac2)
+  )
+
+  (label "LED_K" (at 185.42 83.82 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 13c9b9fc-923f-4b89-86c4-147b3378bd90)
+  )
+
+  (wire (pts (xy 203.2 78.74) (xy 205.74 78.74))
+    (stroke (width 0) (type default))
+    (uuid dab75782-29e4-4c1a-a61a-fbc9a6f3047e)
+  )
+
+  (label "S2" (at 205.74 78.74 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid a4474ae4-4044-46c6-936f-d3507e884fd9)
+  )
+
+  (wire (pts (xy 203.2 83.82) (xy 205.74 83.82))
+    (stroke (width 0) (type default))
+    (uuid b4149030-02e6-4e7a-9aa9-af94e7ed9f12)
+  )
+
+  (symbol (lib_id "power:GND") (at 205.74 83.82 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid f1a64807-a850-4f1e-a588-a04d002a5c46)
+    (property "Reference" "#PWR015" (at 212.09 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 209.55 83.82 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 205.74 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 205.74 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 7aa34aa8-491c-4dbf-9fd0-58c6d57d23c4))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR015") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 213.36 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 1cae614c-beaf-43be-8b38-d9bdb3f555f4)
+    (property "Reference" "R7" (at 217.17 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "10k" (at 217.17 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 211.582 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 213.36 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid fda0f8ec-afb9-49f9-b792-737f576cfc46))
+    (pin "2" (uuid 961b2c6d-47e3-4835-b5f7-075108e5dc81))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R7") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 213.36 41.91) (xy 213.36 39.37))
+    (stroke (width 0) (type default))
+    (uuid b2f2bcc3-4894-46ef-a077-5ac9450ca32b)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 213.36 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid a9a66bfe-8301-46be-8d6f-4a462b2901e1)
+    (property "Reference" "#PWR016" (at 213.36 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 213.36 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 213.36 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 213.36 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 59ed4d86-043b-49aa-bdd3-75562d752146))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR016") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 213.36 49.53) (xy 213.36 52.07))
+    (stroke (width 0) (type default))
+    (uuid b3c8ac60-7535-4a8e-89f5-ffe021623c37)
+  )
+
+  (label "S2" (at 213.36 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 8d7ac7f9-927b-4c3c-a3a6-bd88b55c670c)
+  )
+
+  (symbol (lib_id "Device:R") (at 233.68 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 78d706e0-11bf-4ff8-aa11-220e6cdff0f4)
+    (property "Reference" "R3" (at 237.49 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "180" (at 237.49 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 231.902 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 233.68 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid edd61e1a-ac5c-4874-8771-cae1ba14d69f))
+    (pin "2" (uuid 262c7055-6089-49e2-a998-011a243be0c9))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R3") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 233.68 41.91) (xy 233.68 39.37))
+    (stroke (width 0) (type default))
+    (uuid 77ade840-4f7d-464a-9beb-c3b1ac9a43b1)
+  )
+
+  (symbol (lib_id "power:+5V") (at 233.68 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid e8cd0afd-f862-487d-9ba3-2ad37b69b390)
+    (property "Reference" "#PWR017" (at 233.68 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (at 233.68 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 233.68 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 233.68 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 5b3e3a7a-7553-4bca-937a-764171f434b6))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR017") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 233.68 49.53) (xy 233.68 52.07))
+    (stroke (width 0) (type default))
+    (uuid 4a24b172-d588-4e7b-87de-dd61a913d7c8)
+  )
+
+  (label "LED_A3" (at 233.68 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid fcb4f993-b573-4948-b3c9-dbea3633be70)
+  )
+
+  (symbol (lib_id "ltm:ITR20001") (at 256.54 81.28 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 4368988a-29fa-44b4-ad85-f8e44196a3a0)
+    (property "Reference" "U3" (at 251.46 76.2 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Value" "ITR20001 (S3)" (at 251.46 86.36 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (property "Footprint" "ltm:ITR20001" (at 256.54 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 256.54 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 8fd8999d-2e26-483c-b133-be177267acc6))
+    (pin "2" (uuid 6cc07f0e-8604-4edf-bdd3-e17195a00424))
+    (pin "3" (uuid f6b8233f-990b-4b7d-b1f6-df0ed1d3e008))
+    (pin "4" (uuid 2199b668-2173-448c-81bd-83d272ac66c5))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "U3") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 248.92 78.74) (xy 246.38 78.74))
+    (stroke (width 0) (type default))
+    (uuid df190f04-727a-4d6a-942f-cbcb8d6419f5)
+  )
+
+  (label "LED_A3" (at 246.38 78.74 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid c364a759-8ebd-43ee-8be4-256ae57c9d31)
+  )
+
+  (wire (pts (xy 248.92 83.82) (xy 246.38 83.82))
+    (stroke (width 0) (type default))
+    (uuid 284e50b8-ce89-43b0-8fdf-aa789448e9f0)
+  )
+
+  (label "LED_K" (at 246.38 83.82 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 4a70cda4-857c-48a7-a961-87eaf6b48548)
+  )
+
+  (wire (pts (xy 264.16 78.74) (xy 266.7 78.74))
+    (stroke (width 0) (type default))
+    (uuid 3ca6304a-ac78-4f9e-904e-ebe9f26a775c)
+  )
+
+  (label "S3" (at 266.7 78.74 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 8a0ac272-26a1-422b-ba1f-0dd2647194b1)
+  )
+
+  (wire (pts (xy 264.16 83.82) (xy 266.7 83.82))
+    (stroke (width 0) (type default))
+    (uuid 9b866ed1-a56a-492b-8518-7703937083d3)
+  )
+
+  (symbol (lib_id "power:GND") (at 266.7 83.82 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid ce41cdda-ca67-4560-964e-a28aee3f23b6)
+    (property "Reference" "#PWR018" (at 273.05 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 270.51 83.82 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 266.7 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 266.7 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 39bcede1-b6ad-4c3b-b48f-bc1586dbbb9a))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR018") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 274.32 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid d297a3c0-47e8-45f2-8189-2487bdd08375)
+    (property "Reference" "R8" (at 278.13 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "10k" (at 278.13 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 272.542 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 274.32 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 0f0d7d29-f39e-4216-ba42-77d2b3bdc9ae))
+    (pin "2" (uuid 4caf0508-abe6-40ca-9d73-36a57ae049fe))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R8") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 274.32 41.91) (xy 274.32 39.37))
+    (stroke (width 0) (type default))
+    (uuid 7b22b256-ee84-40a0-bc97-c34456dba8f5)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 274.32 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid c9f04b95-c7ff-4a6f-9dc8-1fb13d884a2d)
+    (property "Reference" "#PWR019" (at 274.32 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 274.32 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 274.32 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 274.32 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 5d798b65-1da9-4a4b-b1ae-ba56a88b9b8e))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR019") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 274.32 49.53) (xy 274.32 52.07))
+    (stroke (width 0) (type default))
+    (uuid 500f595c-95d2-4721-a2c2-0e8937e7c604)
+  )
+
+  (label "S3" (at 274.32 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 2c9f726c-317d-4ebe-88b2-2f953abfb473)
+  )
+
+  (symbol (lib_id "Device:R") (at 294.64 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 8bd54863-11c0-4e89-807e-707298ddd248)
+    (property "Reference" "R4" (at 298.45 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "180" (at 298.45 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 292.862 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 294.64 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid ae85f514-372d-4f0e-802c-041c5b0a1107))
+    (pin "2" (uuid ac4c89a3-e460-416b-b924-797cf96a9595))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R4") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 294.64 41.91) (xy 294.64 39.37))
+    (stroke (width 0) (type default))
+    (uuid 7f1eb3a4-bdfa-4a67-8829-19c259dce409)
+  )
+
+  (symbol (lib_id "power:+5V") (at 294.64 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 50e5bd78-2835-4b06-a531-ed4736f6b25c)
+    (property "Reference" "#PWR020" (at 294.64 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (at 294.64 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 294.64 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 294.64 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid d30d855e-f6de-4bb0-a694-512e6d3e7430))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR020") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 294.64 49.53) (xy 294.64 52.07))
+    (stroke (width 0) (type default))
+    (uuid 3e8fb741-d047-41a3-8c97-55307c0e57d7)
+  )
+
+  (label "LED_A4" (at 294.64 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 3b214c9b-c5cc-46e0-ad13-df0141fe4a0d)
+  )
+
+  (symbol (lib_id "ltm:ITR20001") (at 317.5 81.28 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 35b50f27-ff85-4c71-960b-d0c92b06f568)
+    (property "Reference" "U4" (at 312.42 76.2 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Value" "ITR20001 (S4)" (at 312.42 86.36 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (property "Footprint" "ltm:ITR20001" (at 317.5 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 317.5 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 89bc76b3-3a5f-4db4-80d7-a4b8ab6cd436))
+    (pin "2" (uuid 610f5664-f877-4331-8bc5-3acc939a5914))
+    (pin "3" (uuid a279d137-8827-44da-b05a-2f6fe731e797))
+    (pin "4" (uuid d73d9bc7-4e18-4a9b-8b5c-f95c33b81210))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "U4") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 309.88 78.74) (xy 307.34 78.74))
+    (stroke (width 0) (type default))
+    (uuid 4199231c-726f-45eb-813b-9c9aefb48195)
+  )
+
+  (label "LED_A4" (at 307.34 78.74 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 6cc9367c-8e04-4113-9ebd-3bbaa57114db)
+  )
+
+  (wire (pts (xy 309.88 83.82) (xy 307.34 83.82))
+    (stroke (width 0) (type default))
+    (uuid 0fddd149-9229-409e-82c6-42811d39ff3f)
+  )
+
+  (label "LED_K" (at 307.34 83.82 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid e6fdc359-63c4-4a3e-9125-b8ae2c579697)
+  )
+
+  (wire (pts (xy 325.12 78.74) (xy 327.66 78.74))
+    (stroke (width 0) (type default))
+    (uuid 4dddbad6-c18b-4e8d-80f7-ad82106ec819)
+  )
+
+  (label "S4" (at 327.66 78.74 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 06548e70-972d-43ce-8698-f0dd6c750671)
+  )
+
+  (wire (pts (xy 325.12 83.82) (xy 327.66 83.82))
+    (stroke (width 0) (type default))
+    (uuid 612a9eed-7ee3-4596-8463-bd4468c6fb5b)
+  )
+
+  (symbol (lib_id "power:GND") (at 327.66 83.82 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 2bc16ae3-6d41-489e-ae2b-2c71fe05f68d)
+    (property "Reference" "#PWR021" (at 334.01 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 331.47 83.82 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 327.66 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 327.66 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 95ca49de-67eb-46df-a6c6-cc58b8489fa1))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR021") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 335.28 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 35e0c0da-f904-4e1a-9feb-2d1abc3f15b9)
+    (property "Reference" "R9" (at 339.09 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "10k" (at 339.09 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 333.502 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 335.28 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid c396fb7f-5ca2-461e-8f1a-421045feaef0))
+    (pin "2" (uuid 9504dbca-f1c3-400a-be73-24d95cf9078d))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R9") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 335.28 41.91) (xy 335.28 39.37))
+    (stroke (width 0) (type default))
+    (uuid fb777e09-7dc8-4dee-94c8-2093245d616a)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 335.28 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 63fed30f-23eb-4408-b977-e0cbb8e706b6)
+    (property "Reference" "#PWR022" (at 335.28 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 335.28 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 335.28 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 335.28 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 97b6643e-369e-4473-b985-8c90ca124583))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR022") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 335.28 49.53) (xy 335.28 52.07))
+    (stroke (width 0) (type default))
+    (uuid 0f17a148-3a8e-435c-aa07-abe81009858e)
+  )
+
+  (label "S4" (at 335.28 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid b7c90318-1fc5-46fa-b5b2-e60508a82cdd)
+  )
+
+  (symbol (lib_id "Device:R") (at 355.6 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b0fc708e-de4b-404d-bd07-d601f2ae62fe)
+    (property "Reference" "R5" (at 359.41 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "180" (at 359.41 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 353.822 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 355.6 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 000e0c95-064f-4e8e-95e9-cbf41b876151))
+    (pin "2" (uuid 24252e30-2cfc-4e6e-ab39-364e584ecd62))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R5") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 355.6 41.91) (xy 355.6 39.37))
+    (stroke (width 0) (type default))
+    (uuid 5cf526aa-7f37-4b67-b170-31fb8d76c024)
+  )
+
+  (symbol (lib_id "power:+5V") (at 355.6 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid da59fdce-1e01-4e48-8f66-4777a288789e)
+    (property "Reference" "#PWR023" (at 355.6 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+5V" (at 355.6 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 355.6 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 355.6 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 26fa629e-2cd8-4ec5-b6a5-9d01e3b86d2a))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR023") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 355.6 49.53) (xy 355.6 52.07))
+    (stroke (width 0) (type default))
+    (uuid 7f312546-8d19-4b89-94b1-d889774e4815)
+  )
+
+  (label "LED_A5" (at 355.6 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid e632f3f7-6bbc-48ef-a9a5-df44b4d30e9d)
+  )
+
+  (symbol (lib_id "ltm:ITR20001") (at 378.46 81.28 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 5718251b-66d5-40a3-bef7-270b9126cf69)
+    (property "Reference" "U5" (at 373.38 76.2 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Value" "ITR20001 (S5)" (at 373.38 86.36 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (property "Footprint" "ltm:ITR20001" (at 378.46 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 378.46 81.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 512c4dbd-67db-4784-adfe-f9c5f68eed46))
+    (pin "2" (uuid 6561039c-4832-4975-9565-9fab594f9bc3))
+    (pin "3" (uuid bb580a4a-3346-497f-86e1-8bb834e31fd8))
+    (pin "4" (uuid 101c4186-418c-4ebc-ae0f-98fbd7c42518))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "U5") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 370.84 78.74) (xy 368.3 78.74))
+    (stroke (width 0) (type default))
+    (uuid 1b522122-e029-4a1c-b85b-091c4fc8ea57)
+  )
+
+  (label "LED_A5" (at 368.3 78.74 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid 4f586959-ff73-4fd1-b291-19dbd6f3e433)
+  )
+
+  (wire (pts (xy 370.84 83.82) (xy 368.3 83.82))
+    (stroke (width 0) (type default))
+    (uuid a9623b97-018f-4e60-bbd3-211c4b523aac)
+  )
+
+  (label "LED_K" (at 368.3 83.82 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid ab2aa477-3e83-464c-be4b-1ee45f32b1e7)
+  )
+
+  (wire (pts (xy 386.08 78.74) (xy 388.62 78.74))
+    (stroke (width 0) (type default))
+    (uuid dcd40bae-100e-46ec-a410-cf93fff64b47)
+  )
+
+  (label "S5" (at 388.62 78.74 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 8db8e789-06cc-4573-8619-034862ac99cb)
+  )
+
+  (wire (pts (xy 386.08 83.82) (xy 388.62 83.82))
+    (stroke (width 0) (type default))
+    (uuid 41a18810-dc91-4c4c-8ecd-306fcb4f81d3)
+  )
+
+  (symbol (lib_id "power:GND") (at 388.62 83.82 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 2b6fee6d-c2f6-44db-b018-255259406825)
+    (property "Reference" "#PWR024" (at 394.97 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 392.43 83.82 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 388.62 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 388.62 83.82 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 45a655d6-342d-4438-a1eb-3fe60547be61))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR024") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 396.24 45.72 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 697a5756-acb7-4d80-8013-7c29ab179a52)
+    (property "Reference" "R10" (at 400.05 44.45 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "10k" (at 400.05 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 394.462 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 396.24 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 46fa23dd-3460-4c3e-85b4-1414c35bd4c9))
+    (pin "2" (uuid 08c7aac1-26ae-48a9-a92c-11cf47a2144a))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R10") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 396.24 41.91) (xy 396.24 39.37))
+    (stroke (width 0) (type default))
+    (uuid d040c1df-1264-4c8b-ae6c-6864d7def40e)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 396.24 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid eaad83b8-e8fe-45f4-aa73-6f6b12032d05)
+    (property "Reference" "#PWR025" (at 396.24 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 396.24 35.814 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 396.24 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 396.24 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid e6c7e74a-87c2-4a08-b241-ec538f32131b))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR025") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 396.24 49.53) (xy 396.24 52.07))
+    (stroke (width 0) (type default))
+    (uuid e47cb8bd-e2ef-4025-8f21-fec4e080b96b)
+  )
+
+  (label "S5" (at 396.24 52.07 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid ccca52bc-f09c-4100-81ab-6bfd93bb1710)
+  )
+
+  (text "LED IR: (5 V - 1,2 V) / 180 = 21 mA per sensor, total +-105 mA lewat Q1" (at 96.52 124.46 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 1b81bda7-79f5-4d7a-9cea-b492441c2c9b)
+  )
+
+  (polyline (pts (xy 12.7 142.24) (xy 160.02 142.24) (xy 160.02 233.68) (xy 12.7 233.68) (xy 12.7 142.24))
+    (stroke (width 0) (type dash))
+    (uuid ae478544-7b9f-4ca2-862a-056222c3b53e)
+  )
+
+  (text "3. SAKLAR LED IR (emitter ON/OFF)" (at 13.97 146.685 0)
+    (effects (font (size 2 2) (thickness 0.4) bold) (justify left bottom))
+    (uuid 96d7cc51-0548-4f69-87b6-d97bf65a04c4)
+  )
+
+  (symbol (lib_id "Device:Q_NMOS_GSD") (at 96.52 190.5 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 720b52d0-3d1a-46d9-bc8c-2e4193261d5d)
+    (property "Reference" "Q1" (at 101.6 189.23 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "AO3400" (at 101.6 191.77 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 101.6 187.96 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 96.52 190.5 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 5e037f0f-9d73-460e-bb0d-9e2632f0803e))
+    (pin "2" (uuid 373544ab-9b2c-4911-aff0-f3fa46c02bf4))
+    (pin "3" (uuid 0613f82f-cd3a-46e2-afb7-0921f392d943))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "Q1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 91.44 190.5) (xy 88.9 190.5))
+    (stroke (width 0) (type default))
+    (uuid 95ec0d02-69e8-4a72-ad66-fbe6c1fd6014)
+  )
+
+  (label "IR_G" (at 88.9 190.5 180) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid c4a7b871-939b-4949-9587-f6036f8af7f1)
+  )
+
+  (wire (pts (xy 99.06 195.58) (xy 99.06 198.12))
+    (stroke (width 0) (type default))
+    (uuid 0943d77e-6dc6-446f-94f8-bef341996c53)
+  )
+
+  (symbol (lib_id "power:GND") (at 99.06 198.12 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 72a446b6-3b8a-4dde-b08b-cd409bd3728d)
+    (property "Reference" "#PWR026" (at 99.06 204.47 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 99.06 201.93 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 99.06 198.12 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 99.06 198.12 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 550f6f64-7460-400b-a128-81ab5dc1b0d2))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR026") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 99.06 185.42) (xy 99.06 182.88))
+    (stroke (width 0) (type default))
+    (uuid b8cd5d03-395b-4ebf-8f2f-8636bd554ce6)
+  )
+
+  (label "LED_K" (at 99.06 182.88 90) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid a9a9d802-c43a-419c-be0a-b2f30088d911)
+  )
+
+  (symbol (lib_id "Device:R") (at 55.88 182.88 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 7d46640c-2c7c-43fc-bb84-04043f0e0cfb)
+    (property "Reference" "R11" (at 59.69 181.61 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "100" (at 59.69 184.15 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 54.102 182.88 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 55.88 182.88 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid a97bc7ba-3a02-410f-bddb-82fe214bfce8))
+    (pin "2" (uuid 70fa71ab-350a-4024-9e49-18c0da4df4af))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R11") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 55.88 179.07) (xy 55.88 176.53))
+    (stroke (width 0) (type default))
+    (uuid d4445157-8099-41f5-878a-547931c420ce)
+  )
+
+  (label "IR_EN" (at 55.88 176.53 90) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 47567c3c-e0d4-41e8-83b3-9b9593bddb11)
+  )
+
+  (wire (pts (xy 55.88 186.69) (xy 55.88 189.23))
+    (stroke (width 0) (type default))
+    (uuid 2c005dc8-4c64-4191-a96d-a82e6cb66a10)
+  )
+
+  (label "IR_G" (at 55.88 189.23 270) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify right bottom))
+    (uuid c382840e-0fac-498d-ab45-3634d324cd04)
+  )
+
+  (symbol (lib_id "Device:R") (at 71.12 208.28 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b0a96a46-37b4-43e0-a00e-02ed24e128d2)
+    (property "Reference" "R12" (at 74.93 207.01 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "10k" (at 74.93 209.55 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" (at 69.342 208.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 71.12 208.28 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 907f9a41-0526-4a5c-bcfb-5dd9a13d9b68))
+    (pin "2" (uuid cd013b83-fe6f-41a4-a805-e25e404c094e))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "R12") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 71.12 204.47) (xy 71.12 201.93))
+    (stroke (width 0) (type default))
+    (uuid 725b8293-e037-41cd-b5b6-36b15e06ba8e)
+  )
+
+  (label "IR_G" (at 71.12 201.93 90) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid eb2afbfe-a213-4b48-9fd5-49866ae79ba4)
+  )
+
+  (wire (pts (xy 71.12 212.09) (xy 71.12 214.63))
+    (stroke (width 0) (type default))
+    (uuid be3a6432-b4cd-4e9c-bc11-44d548f039a8)
+  )
+
+  (symbol (lib_id "power:GND") (at 71.12 214.63 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid c040a0a8-f0f2-41ea-901e-58902f486935)
+    (property "Reference" "#PWR027" (at 71.12 220.98 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 71.12 218.44 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 71.12 214.63 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 71.12 214.63 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 761f5089-9e7c-4d44-b5eb-f6d86db904a3))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR027") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:C") (at 134.62 190.5 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b26ab14a-e603-4c72-bc83-2fa375f95d1a)
+    (property "Reference" "C1" (at 138.43 189.23 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "100nF" (at 138.43 191.77 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder" (at 135.5852 194.31 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 134.62 190.5 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 7c489778-85cb-4132-93b5-5ac234f82702))
+    (pin "2" (uuid 01cc0b28-aea5-4a7c-9c32-dd6e6c48ee23))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "C1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 134.62 186.69) (xy 134.62 184.15))
+    (stroke (width 0) (type default))
+    (uuid d807d9a5-5ddd-4fbb-8234-6bd7e3f38f69)
+  )
+
+  (symbol (lib_id "power:+3V3") (at 134.62 184.15 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 33cd07aa-fd41-4c2f-be25-598cd2c0e9b0)
+    (property "Reference" "#PWR028" (at 134.62 187.96 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 134.62 180.594 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 134.62 184.15 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 134.62 184.15 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid c76c7b33-bdcc-4ee3-9c4e-fca9143258d9))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR028") (unit 1)
+        )
+      )
+    )
+  )
+
+  (wire (pts (xy 134.62 194.31) (xy 134.62 196.85))
+    (stroke (width 0) (type default))
+    (uuid 29cbaa26-143b-4ec1-a345-d2f27dfe23fd)
+  )
+
+  (symbol (lib_id "power:GND") (at 134.62 196.85 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 638473d7-8420-4435-9b44-9f7009df30fd)
+    (property "Reference" "#PWR029" (at 134.62 203.2 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 134.62 200.66 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 134.62 196.85 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 134.62 196.85 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 0df027f4-cab9-4746-b823-1ca17ab6b2b9))
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "#PWR029") (unit 1)
+        )
+      )
+    )
+  )
+
+  (text "IR_EN HIGH = LED menyala (baca ON - OFF)" (at 17.78 228.6 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 0453fcb2-e5f1-40b1-b645-3df8bcdc6c0d)
+  )
+
+  (polyline (pts (xy 167.64 142.24) (xy 241.3 142.24) (xy 241.3 190.5) (xy 167.64 190.5) (xy 167.64 142.24))
+    (stroke (width 0) (type dash))
+    (uuid d19a8739-ec58-488e-b618-6c7a3161cde4)
+  )
+
+  (text "4. LUBANG BAUT M3" (at 168.91 146.685 0)
+    (effects (font (size 2 2) (thickness 0.4) bold) (justify left bottom))
+    (uuid 102669f1-2ad1-406d-9ac5-036ee0bbef10)
+  )
+
+  (symbol (lib_id "Mechanical:MountingHole") (at 185.42 167.64 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 12f3fc1d-7be6-4ebd-a5b3-ef542df594ef)
+    (property "Reference" "H1" (at 185.42 162.56 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "M3" (at 185.42 164.465 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3" (at 185.42 167.64 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 185.42 167.64 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "H1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Mechanical:MountingHole") (at 210.82 167.64 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid a1fac575-8c6b-4bd2-9871-837d9f9ce3ad)
+    (property "Reference" "H2" (at 210.82 162.56 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "M3" (at 210.82 164.465 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3" (at 210.82 167.64 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 210.82 167.64 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+
+    (instances
+      (project "ltm-sensor"
+        (path "/bb228095-93d4-475c-96c9-be15a0e16a38"
+          (reference "H2") (unit 1)
+        )
+      )
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
