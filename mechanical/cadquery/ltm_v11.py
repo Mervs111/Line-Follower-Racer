@@ -8,8 +8,8 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else "."
 
 # ------------------------------ ukuran (mm) ------------------------------
 D_RODA = 26.0                 # diameter roda (11/10/2026: Ø34 -> Ø26 atas permintaan kelompok)
-R_W, W_W = D_RODA / 2, 8.0    # jari-jari & lebar roda
-RIM_R = R_W - 3.5             # jari-jari velg (ban karet tebal 3,5)
+R_W, W_W = D_RODA / 2, 14.0   # jari-jari & lebar roda (roda lebar "lonjong" seperti referensi)
+RIM_R = R_W - 4.5             # jari-jari velg (ban silikon tebal 4,5, tepi membulat)
 WX0 = 40.0                    # sisi dalam roda
 PCB_Z, T = 8.0, 1.6           # PCB utama
 TOP = PCB_Z + T
@@ -223,7 +223,10 @@ for s in (-1, 1):
     # roda: ban + velg
     x0, x1 = X(WX0, WX0 + W_W)
     tire = cyl_x(x0, x1, 0, R_W, R_W).cut(cyl_x(x0 - 1, x1 + 1, 0, R_W, RIM_R))
-    tire = try_fillet(tire, "%CIRCLE", 1.2)
+    try:
+        tire = tire.edges(cq.selectors.RadiusNthSelector(1)).fillet(3.2)   # tepi luar ban membulat
+    except Exception:
+        tire = try_fillet(tire, "%CIRCLE", 1.0)
     add("Ban", tire, "rubber")
     x0, x1 = X(WX0 + 0.6, WX0 + W_W - 0.6)
     rim = cyl_x(x0, x1, 0, R_W, RIM_R + 0.05)
@@ -232,7 +235,9 @@ for s in (-1, 1):
         rc = 0.58 * RIM_R
         rim = rim.cut(cyl_x(x0 - 1, x1 + 1, rc * math.cos(a), R_W + rc * math.sin(a), 0.2 * RIM_R))
     x0, x1 = X(WX0 + W_W - 1.5, WX0 + W_W + 0.8)
-    rim = rim.union(cyl_x(x0, x1, 0, R_W, 0.33 * RIM_R))
+    xo0, xo1 = X(WX0 + W_W - 2.6, WX0 + W_W + 1)
+    rim = rim.cut(cyl_x(xo0, xo1, 0, R_W, RIM_R - 1.0))                    # cekungan muka luar
+    rim = rim.union(cyl_x(x0, x1, 0, R_W, 0.33 * RIM_R))                    # hub
     add("Velg", rim, "rb_yellow")
 
 # ---------- rangka 3D print ----------

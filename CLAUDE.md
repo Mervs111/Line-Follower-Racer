@@ -26,8 +26,9 @@ Arsitektur 3 lapis:
   motor N20 melintang di belakang, baterai 2×18650 di atas motor dengan cover oranye, sayap belakang
   opsional. ±174×98×59 mm. Model 3D: https://claude.ai/artifact/3rW7AaXeb6bug9ahwW6mWv, STEP + sumber
   CadQuery di `mechanical/`. CAD lanjutan: Fusion 360. Target dosen: desain mekanik selesai minggu ke-8.
-  v11 (11/10/2026): livery navy-merah-kuning (inspirasi Red Bull Racing, TANPA logo/merek) + roda Ø26
-  (v_maks ±0,68 m/s; ketersediaan roda belum dicek → RAB & perhitungan motor menyusul).
+  v11 (11/10/2026): livery navy-merah-kuning (inspirasi Red Bull Racing, TANPA logo/merek) + roda lebar
+  "lonjong" Ø26 × 14 (lebar robot ±110; v_maks ±0,68 m/s; ketersediaan roda belum dicek → RAB & perhitungan
+  motor menyusul).
   Pelajaran: user berkali-kali kecewa karena visual tidak mengikuti referensi; selalu buka
   `docs/referensi/` dan cocokkan siluet sebelum menggambar, dan render/cek sendiri sebelum dikirim.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
