@@ -31,6 +31,14 @@ Arsitektur 3 lapis:
   motor menyusul).
   Pelajaran: user berkali-kali kecewa karena visual tidak mengikuti referensi; selalu buka
   `docs/referensi/` dan cocokkan siluet sebelum menggambar, dan render/cek sendiri sebelum dikirim.
+- 11/10/2026: **layout PCB v1-draft** di `hardware/` (KiCad 7; user pakai KiCad 8/9): penempatan ikut
+  koordinat mekanik v11, jalur FreeRouting + pour GND dua sisi, DRC 0 error/0 unconnected. Generator
+  `hardware/tools/gen_pcb.py` (menimpa .kicad_pcb). J5 = lubang tembus: pin header J1 PCB sensor disolder di
+  atas PCB utama (celah antar papan ±2,4 mm). OLED wajib socket 8,5 mm (R3–R8, Q1 di bawahnya); header
+  OLED di belakang → layar diputar 180° di firmware. Belum disinkronkan ke model 3D: saklar & konektor
+  baterai di tepi kiri (Y 22–42), lubang bahu H3/H4 (±37,5; 69), lubang spacer (±10,5; 83), pangkal leher
+  PCB sensor ±14, JST motor X ±(17–27). Pelajaran: net dari label lokal KiCad berawalan "/" (pola net class
+  harus "/VBAT", bukan "VBAT").
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,

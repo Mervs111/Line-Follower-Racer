@@ -107,7 +107,10 @@ Urutan kabel encoder N20 beda-beda tiap penjual: cocokkan dengan kabel motor yan
 | BZ1 buzzer aktif 5 V | + = +5V, − = kolektor Q1 |
 
 ### Konektor ke PCB sensor
-J5, header 2×5 pin 2,54 mm (dipasang di sisi **bawah** PCB utama):
+J5 = 10 lubang tembus 2×5, pitch 2,54 mm, **tanpa komponen**. Pin header male 2×5 (J1) yang disolder di PCB sensor
+masuk dari bawah lewat lubang J5 lalu disolder di atas PCB utama. Plastik header (2,5 mm) sekaligus jadi jarak
+antar PCB; celah di mekanik v11 cuma ±2,4 mm sehingga socket tidak muat. Kalau papan perlu dilepas: sedot timah
+10 titik J5.
 
 | Pin | Net | | Pin | Net |
 |---|---|---|---|---|
@@ -123,7 +126,7 @@ Lubang baut: 6× M3 (2 dudukan rangka, 2 bahu, 2 spacer PCB sensor).
 
 | Komponen | Sambungan |
 |---|---|
-| J1 header 2×5 | sama dengan J5 PCB utama |
+| J1 pin header male 2×5 (sisi atas, pin panjang ke atas menembus J5) | urutan pin sama dengan J5 PCB utama |
 | U1–U5 ITR20001 | anoda LED ← R1–R5 180 Ω ← +5V; katoda LED → LED_K; kolektor → S1–S5 dan R6–R10 10 kΩ ke +3V3; emitor → GND |
 | Q1 AO3400 (SOT-23) | drain = LED_K, source = GND, gate ← R11 100 Ω ← IR_EN; gate–R12 10 kΩ–GND |
 | C1 100 nF | +3V3 ke GND |
@@ -135,7 +138,7 @@ jangkar belum masuk skematik (footprint kosong ditambahkan saat layout).
 
 PCB utama: U1 ESP32 DevKit, U2 TB6612, U3 MP1584, D1 SS14, C1 100 µF, C2 C4 C5 C6 100 nF, C3 10 µF,
 R1 100k, R2 33k, R3 1k, R4 10k, R5–R8 10k, Q1 S8050, BZ1, SW1 saklar geser, SW2 SW3 tombol 6×6,
-J1 JST XH 2, J2 J3 JST PH 6, J4 1×4, J5 2×5, H1–H6 M3.
+J1 JST XH 2, J2 J3 JST PH 6, J4 1×4, J5 lubang tembus 2×5 (tanpa komponen), H1–H6 M3.
 
 PCB sensor: U1–U5 ITR20001, R1–R5 180 Ω, R6–R10 10k, R11 100 Ω, R12 10k, Q1 AO3400, C1 100 nF, J1 2×5,
 H1 H2 M3.

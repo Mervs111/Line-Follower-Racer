@@ -1,0 +1,5 @@
+(version 1)
+
+# Pad GND yang dikepung jalur boleh tersambung ke pour dengan 1 spoke (jalur GND tetap ada)
+(rule "spoke_min_1"
+  (constraint min_resolved_spokes 1))

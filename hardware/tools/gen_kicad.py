@@ -27,7 +27,7 @@ def num(v):
 
 
 def q(s):
-    return '"' + str(s).replace("\\", "\\\\").replace('"', '\\"') + '"'
+    return '"' + str(s).replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
 
 
 # ------------------------------------------------------------------ s-expression
@@ -320,7 +320,7 @@ class Sheet:
         return self.libs[lib_id]
 
     # -------------------------------------------------- penempatan simbol
-    def place(self, lib_id, ref, value, x, y, fp="", rot=0, fields="lib", hidden_ref=False):
+    def place(self, lib_id, ref, value, x, y, fp="", rot=0, fields="lib", hidden_ref=False, in_bom=True):
         sym = self.get_sym(lib_id)
         pins = sym_pins(sym)
         props = sym_props(sym)
@@ -355,7 +355,7 @@ class Sheet:
         pin_uuids = "\n".join(f'    (pin {q(n)} (uuid {U()}))' for n in sorted(pins, key=lambda s: (len(s), s)))
         self.items.append(
             f'  (symbol (lib_id {q(lib_id)}) (at {num(x)} {num(y)} {rot}) (unit 1)\n'
-            f'    (in_bom yes) (on_board yes) (dnp no)\n    (uuid {U()})\n' + "\n".join(fl) + "\n"
+            f'    (in_bom {"yes" if in_bom else "no"}) (on_board yes) (dnp no)\n    (uuid {U()})\n' + "\n".join(fl) + "\n"
             + pin_uuids + "\n"
             f'    (instances\n      (project {q(self.project)}\n        (path "/{self.root}"\n'
             f'          (reference {q(ref)}) (unit 1)\n        )\n      )\n    )\n  )')
@@ -422,8 +422,8 @@ class Sheet:
             else:
                 self.label(net, ex, ey, d)
 
-    def part(self, lib_id, ref, value, x, y, fp, mapping, fields="lib"):
-        pins = self.place(lib_id, ref, value, x, y, fp, fields=fields)
+    def part(self, lib_id, ref, value, x, y, fp, mapping, fields="lib", in_bom=True):
+        pins = self.place(lib_id, ref, value, x, y, fp, fields=fields, in_bom=in_bom)
         self.connect(ref, pins, mapping)
         return pins
 
@@ -467,8 +467,9 @@ def write_project(folder, name, root_uuid):
         "meta": {"filename": f"{name}.kicad_pro", "version": 1},
         "net_settings": {"classes": [default, power], "meta": {"version": 3},
                          "net_colors": None, "netclass_assignments": None,
+                         # net dari label lokal diberi awalan "/" oleh KiCad (mis. "/VBAT")
                          "netclass_patterns": [{"netclass": "Power", "pattern": p} for p in
-                                               ("GND", "VBAT", "BAT+", "+5V", "+5V_BUCK", "ML_*", "MR_*", "LED_K")]},
+                                               ("GND", "+5V", "/VBAT", "/BAT+", "/+5V_BUCK", "/ML_*", "/MR_*", "/LED_K")]},
         "sheets": [[root_uuid, ""]],
         "text_variables": {},
     }
@@ -551,11 +552,12 @@ def build_main(ltm):
     s.text("Buzzer magnetik: tambah 1N4148 paralel", 121.92, 228.6)
 
     # ---- 6. KONEKTOR PCB SENSOR
-    s.frame(223.52, 142.24, 312.42, 233.68, "6. KE PCB SENSOR (J5 di sisi bawah)")
-    s.part("Connector_Generic:Conn_02x05_Odd_Even", "J5", "KE PCB SENSOR", 264.16, 185.42, FP["SOCK2x5"],
+    s.frame(223.52, 142.24, 312.42, 233.68, "6. KE PCB SENSOR (J5 = lubang tembus)")
+    s.part("Connector_Generic:Conn_02x05_Odd_Even", "J5", "KE PCB SENSOR", 264.16, 185.42, FP["HDR2x5"],
            {"1": "+5V", "2": "+3V3", "3": "GND", "4": "GND", "5": "IR_EN", "6": "S1", "7": "S2", "8": "S3",
-            "9": "S4", "10": "S5"})
+            "9": "S4", "10": "S5"}, in_bom=False)
     s.text("Urutan pin sama persis dengan J1 PCB sensor", 228.6, 213.36)
+    s.text("J5 tidak dipasang komponen: pin header J1 PCB sensor\nmasuk dari bawah lewat lubang J5, disolder di atas", 228.6, 222.25)
 
     # ---- 7. LUBANG BAUT
     s.frame(320.04, 142.24, 408.94, 190.5, "7. LUBANG BAUT M3")

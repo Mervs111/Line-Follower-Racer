@@ -45,7 +45,7 @@ tim F1 Red Bull Racing (navy doff, merah, kuning) tanpa logo/merek.
 | PCB sensor | 92 × 53 (jangkar + leher), Z 4 |
 
 Ukuran komponen modul masih nilai standar marketplace; cek ulang dengan jangka sorong saat barang datang,
-lalu ubah angka di `cadquery/ltm_v10_jangkar.py` dan ekspor ulang.
+lalu ubah angka di `cadquery/ltm_v11.py` dan ekspor ulang.
 
 ## Versi lama
 
