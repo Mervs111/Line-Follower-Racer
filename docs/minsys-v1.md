@@ -1,5 +1,9 @@
 # Rancangan Minimum System v1 — Robot Line Tracer Micro
 
+> **Update 11/10/2026:** untuk menggambar skematik pakai **`docs/skematik-v1.md`**. Bagian dokumen ini yang
+> sudah tidak berlaku: baterai 14500 (sekarang 2×18650), papan OLED terpisah + J_UI (OLED & tombol langsung
+> di PCB utama), konektor sensor 1×9 (sekarang header 2×5), bentuk fisik (sekarang mekanik v11).
+
 > **Update 08/10/2026:** dokumen ini = **versi utama PjBL (modul, sesuai RAB)**. Versi semi-terintegrasi
 > (chip TB6612 + chip buck, seperti `docs/referensi/`) dikerjakan sebagai **side project pribadi** dengan
 > pin map yang SAMA, sehingga firmware berlaku untuk keduanya.
