@@ -6,7 +6,7 @@ Mengikuti referensi di `docs/referensi/` (PCB sensor jangkar + leher panjang ala
 edukasi 14 sensor) dan model Inventor kelompok (baterai oranye di atas motor, sayap belakang).
 
 - Model 3D yang bisa diputar: https://claude.ai/artifact/3rW7AaXeb6bug9ahwW6mWv
-- File untuk Fusion 360: `LTM_v10_jangkar.step` (Insert › Insert Mesh/Upload, atau buka langsung; tiap
+- File untuk Fusion 360: `LTM_v10_jangkar.step` (File › Open › Open from my computer, atau Upload di Data Panel; tiap
   bagian jadi komponen terpisah lengkap dengan warna)
 - Render untuk PPT: `render/ltm-v10-*.png` (iso, iso tanpa cover, atas, samping, belakang)
 - Sumber model (parametrik, Python + CadQuery): `cadquery/ltm_v10_jangkar.py`
@@ -16,7 +16,7 @@ edukasi 14 sensor) dan model Inventor kelompok (baterai oranye di atas motor, sa
 
 | Bagian | Bentuk / posisi |
 |---|---|
-| PCB sensor | Jangkar: depan lebar ±26 dengan 5 sensor (pola panah ringan), lengan lurus menyapu ±54° ke belakang, 4 slot cadangan di lengan; leher 14 mm × ±33 mm terlihat; disambung ke PCB utama lewat 2 spacer M3 + header |
+| PCB sensor | Jangkar: depan lebar ±26 dengan 5 sensor (pola panah ringan), lengan lurus menyapu ±54° ke belakang, 4 slot cadangan di lengan; leher lebar 14 mm, ±28 mm terlihat; disambung ke PCB utama lewat 2 spacer M3 + header |
 | PCB utama | Siluet roket bersudut 94 × 84 (≤ 100 × 100): ESP32 DevKit melintang (USB ke kanan) separuh di bawah baterai, OLED di tengah, tombol A/B di bawah OLED, TB6612 kiri, MP1584 kanan, buzzer, saklar di tepi kiri |
 | Penggerak | 2× N20 melintang saling membelakangi, roda Ø34 di luar, rangka 3D print (dinding motor + dudukan baterai + telinga belakang) |
 | Baterai | Holder 2×18650 di atas motor, ditutup **cover oranye bersudut** (bisa dilepas) |
