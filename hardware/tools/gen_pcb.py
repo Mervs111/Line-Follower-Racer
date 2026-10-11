@@ -508,11 +508,13 @@ MAIN_PLACE = {
     "C1": (-30.25, 69.0, 0), "C2": (-20.2, 45.5, 90), "C6": (-20.2, 53.5, 90),
     "R1": (28.0, 42.67, 270), "R2": (31.3, 35.05, 90), "C5": (34.6, 36.0, 90), "C4": (37.9, 36.0, 90),
     "C3": (42.0, 39.0, 0),
-    "Q1": (11.0, 66.0, 0), "R3": (4.0, 61.0, 0), "R4": (4.0, 57.0, 0),       # di bawah OLED (socket 8,5 mm)
-    "R5": (-14.0, 62.0, 90), "R6": (-11.0, 62.0, 90), "R7": (-8.0, 62.0, 90), "R8": (-5.0, 62.0, 90),
+    "Q1": (11.0, 66.0, 0), "R3": (7.0, 61.0, 0), "R4": (7.0, 57.0, 0),       # di bawah OLED (socket 8,5 mm)
+    "R5": (-16.5, 62.0, 90), "R6": (-13.5, 62.0, 90), "R7": (-10.5, 62.0, 90), "R8": (-7.5, 62.0, 90),
     **{k: (x, y, 0) for k, (x, y) in HOLES_MAIN.items()},
 }
 ANTENNA = (-26.0, 14.0, -18.5, 42.0)       # ujung antena ESP32 (X0, Y0, X1, Y1)
+CASTER = (0.0, 62.0, 5.5)                  # ball caster di bawah PCB utama (X, Y, jari-jari rumah)
+BMS = (-22.0, 22.0, 22.0, 37.0)            # modul BMS 2S ditempel di bawah PCB utama
 
 
 def build_main(route=True):
@@ -549,6 +551,20 @@ def build_main(route=True):
     T("OUT", 26.6, 52.5, 0.9)
     T("IN", 41.6, 52.5, 0.9)
     T("SENSOR", 0.0, 87.6, 0.8)
+    # sisi bawah: tanda tempat ball caster & BMS (tidak boleh ada kaki solder di area caster)
+    cx, cy, cr = CASTER
+    b.line([(cx + cr * math.cos(math.radians(a)), cy + cr * math.sin(math.radians(a))) for a in range(0, 361, 10)],
+           pcbnew.B_SilkS, 0.15)
+    T("CASTER", cx, cy, 1.0, layer=pcbnew.B_SilkS)
+    x0, x1, y0, y1 = BMS
+    b.line([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], pcbnew.B_SilkS, 0.15, close=True)
+    T("BMS 2S (ditempel di sini)", 0.0, (y0 + y1) / 2, 1.2, layer=pcbnew.B_SilkS)
+    for fp in b.fps.values():
+        for pad in fp.Pads():
+            if pad.GetAttribute() in (pcbnew.PAD_ATTRIB_PTH, pcbnew.PAD_ATTRIB_NPTH):
+                px, py = mech(pad.GetPosition())
+                if math.hypot(px - cx, py - cy) < cr + 1.0:
+                    raise SystemExit(f"pad {fp.GetReference()}.{pad.GetNumber()} kena area ball caster")
     b.auto_refs(hide=tuple(HOLES_MAIN) + ("J5",), inside=("U1", "U2", "U3"))
 
     if route:

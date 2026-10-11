@@ -2,6 +2,9 @@
 
 ## Versi aktif: v11 (11/10/2026) — bentuk jangkar v10 + livery navy-merah-kuning + roda lebar Ø26 × 14
 
+**Sudah disamakan dengan layout PCB v1-draft (`hardware/`, 11/10/2026 sore):** posisi komponen, lubang
+baut, dan outline kedua PCB di model ini = koordinat di `hardware/tools/gen_pcb.py`.
+
 Mengikuti referensi di `docs/referensi/` (PCB sensor jangkar + leher panjang ala R3D Maker dan robot LF
 edukasi 14 sensor) dan model Inventor kelompok (baterai di atas motor, sayap belakang). Warna terinspirasi
 tim F1 Red Bull Racing (navy doff, merah, kuning) tanpa logo/merek.
@@ -27,8 +30,8 @@ tim F1 Red Bull Racing (navy doff, merah, kuning) tanpa logo/merek.
 
 | Bagian | Bentuk / posisi |
 |---|---|
-| PCB sensor | Jangkar: depan lebar ±26 dengan 5 sensor (pola panah ringan), lengan lurus menyapu ±54° ke belakang, 4 slot cadangan di lengan; leher lebar 14 mm, ±28 mm terlihat; disambung ke PCB utama lewat 2 spacer M3 + header |
-| PCB utama | Siluet roket bersudut 94 × 84 (≤ 100 × 100): ESP32 DevKit melintang (USB ke kanan) separuh di bawah baterai, OLED di tengah, tombol A/B di bawah OLED, TB6612 kiri, MP1584 kanan, buzzer, saklar di tepi kiri |
+| PCB sensor | Jangkar: depan lebar ±26 dengan 5 sensor ITR20001 di sisi bawah (pola panah ringan), lengan lurus menyapu ±54° ke belakang; leher lebar 14 mm, ±28 mm terlihat, pangkal leher ±14 mm; resistor, MOSFET, kapasitor di sisi bawah leher; disambung ke PCB utama lewat pin header 2×5 (tembus ke J5) + 2 spacer nilon M3 di (±10,5; 83) |
+| PCB utama | Siluet roket bersudut 94 × 84 (≤ 100 × 100): ESP32 DevKit melintang (USB ke kanan) separuh di bawah baterai, OLED di tengah di atas socket 8,5 mm (ada resistor & transistor di bawahnya), tombol A/B di depan, TB6612 kiri, MP1584 kanan, buzzer kanan depan, saklar + konektor baterai JST XH di tepi kiri belakang, konektor motor JST PH di belakang, lubang M3: standoff baterai (±32; 16), bahu (±37,5; 69), spacer sensor (±10,5; 83) |
 | Penggerak | 2× N20 melintang saling membelakangi, roda lebar Ø26 × 14 (velg kuning, ban tepi bulat) di luar, rangka 3D print navy (dinding motor + dudukan baterai + telinga belakang) |
 | Baterai | Holder 2×18650 di atas motor, ditutup **cover navy bersudut** (strip merah, garis & hidung kuning; bisa dilepas) |
 | Belakang | Dinding belakang dengan port USB-C charger + ventilasi, skid anti-terjungkal, **sayap belakang** navy dengan endplate merah (opsional) |
@@ -41,8 +44,8 @@ tim F1 Red Bull Racing (navy doff, merah, kuning) tanpa logo/merek.
 | Jarak roda (pusat) | 94 |
 | Sensor ke poros roda | ±127 |
 | Tinggi sensor dari lantai | ±1,5 |
-| PCB utama | 94 × 84, Z 8; BMS di sisi bawahnya |
-| PCB sensor | 92 × 53 (jangkar + leher), Z 4 |
+| PCB utama | 94 × 84, Z 8; BMS ditempel di sisi bawahnya (ada tanda silkscreen), ball caster di (0; 62) |
+| PCB sensor | 92 × 53 (jangkar + leher), Z 4; jarak ke PCB utama 2,4 mm (plastik pin header) |
 
 Ukuran komponen modul masih nilai standar marketplace; cek ulang dengan jangka sorong saat barang datang,
 lalu ubah angka di `cadquery/ltm_v11.py` dan ekspor ulang.

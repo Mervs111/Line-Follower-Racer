@@ -38,7 +38,7 @@ Symbol dan footprint standar (R, C, konektor, power) memakai library bawaan KiCa
 |---|---|---|
 | Ukuran | 94 × 84 mm (siluet roket, sama dengan model mekanik v11) | 92 × 53 mm (jangkar + leher) |
 | Lapisan | 2 layer, 1,6 mm | 2 layer, 1,6 mm |
-| Jalur | 435 segmen, 26 via | 234 segmen, 14 via |
+| Jalur | 401 segmen, 25 via | 234 segmen, 14 via |
 | Pour GND | atas + bawah (kecuali di bawah antena ESP32) | atas + bawah |
 | DRC (KiCad 7.0.11) | 0 pelanggaran, 0 belum tersambung | 0 pelanggaran, 0 belum tersambung |
 
@@ -72,14 +72,13 @@ FreeRouting lalu dicek DRC.
    (JST PH tegak) ada di sini, cek colokan + kabelnya muat.
 7. Antena ESP32 (ujung kiri modul) bebas tembaga di kedua sisi.
 
-### Perubahan dibanding model mekanik v11 (belum disinkronkan ke `mechanical/`)
+### Disamakan dengan model mekanik v11 (11/10/2026)
 
-- Saklar SW1 pindah dari depan-kiri ke **tepi kiri belakang** (Y 22–34 mm), konektor baterai J1 di atasnya
-  (Y 34–42 mm). Alasannya: jalur kabel motor dari TB6612 butuh lorong lega di sisi kiri.
-- Lubang bahu H3/H4 pindah dari (±42; 30) ke **(±37,5; 69)**, karena (±42; 30) menghalangi colokan USB.
-- Lubang spacer antar papan pindah dari (±8; 87,5) ke **(±10,5; 83)** dan pangkal leher PCB sensor
-  dilebarkan dari ±12 ke **±14 mm**, karena lubang lama bertabrakan dengan header 2×5.
-- Konektor motor JST PH bergeser ke X ±(17–27) mm supaya tidak mentok standoff baterai H1/H2 (±32; 16).
+Model 3D di `mechanical/` sudah diubah mengikuti PCB ini: saklar SW1 dan konektor baterai J1 di tepi kiri
+belakang (Y 22–42 mm), lubang bahu H3/H4 di (±37,5; 69), lubang spacer antar papan di (±10,5; 83) dengan
+pangkal leher PCB sensor ±14 mm, konektor motor di X ±(17–27) mm, OLED di atas socket 8,5 mm, komponen
+PCB sensor di sisi bawah. Di sisi bawah PCB utama ada tanda tempat **ball caster** (0; 62), area itu
+sengaja bebas kaki solder, dan tanda tempat **BMS**.
 
 ## Checklist sebelum pesan PCB
 
