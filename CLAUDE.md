@@ -21,6 +21,10 @@ Arsitektur 3 lapis:
 - 09/10/2026 (arahan dosen): **IMU MPU6050 dihapus** karena pengambilan datanya sulit. Belok 90° di
   persimpangan pakai encoder (selisih putaran roda) lalu dikunci ke garis oleh sensor. RAB revisi 3.4:
   Rp833.000 (sisa Rp67.000). I2C hanya untuk OLED.
+- 11/10/2026: **bentuk robot diganti ke versi ringkas** (menggantikan "rendah satu bidang"/v9): motor N20
+  melintang di tengah, baterai 2×18650 di atas motor, PCB utama 86×80 di depan motor (Z 12 mm), sayap
+  sensor paling depan & bawah. Total ±121×96×44 mm. CAD: Fusion 360. Detail & script: `mechanical/`.
+  Target dosen: desain mekanik + tampilan robot selesai minggu ke-8.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,

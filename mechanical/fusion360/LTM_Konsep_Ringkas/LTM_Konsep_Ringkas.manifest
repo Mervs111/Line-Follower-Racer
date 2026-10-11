@@ -1,0 +1,10 @@
+{
+	"autodeskProduct": "Fusion360",
+	"type": "script",
+	"author": "Kelompok 5 PjBL",
+	"description": {
+		"": "Model kasar Robot Line Tracer Micro versi ringkas (kotak/silinder)"
+	},
+	"supportedOS": "windows|mac",
+	"editEnabled": true
+}
