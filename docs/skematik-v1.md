@@ -83,7 +83,16 @@ library Sensor_Optical) dengan footprint buatan sendiri dari datasheet ITR20001.
 | C3 10 µF + C4 100 nF | +5V ke GND, dekat pin VIN ESP32 |
 | R1 100 kΩ, R2 33 kΩ, C5 100 nF | VBAT–R1–VBAT_SENSE–R2–GND; C5 dari VBAT_SENSE ke GND |
 
-BMS dan modul charger berada di luar PCB (BMS di bawah PCB utama, charger di belakang), disambung kabel ke J1.
+BMS dan modul charger berada di luar PCB (BMS di bawah PCB utama, charger di dinding belakang rangka dengan
+port USB-C menghadap belakang; diputuskan tetap di sana 11/10/2026). Sambungan kabel:
+
+| Dari | Ke |
+|---|---|
+| Baterai 2S (holder) | B−, BM, B+ di BMS |
+| Modul charger 2S USB-C, OUT+ / OUT− | P+ / P− di BMS |
+| P+ / P− di BMS | J1 PCB utama (BAT+ / GND) |
+
+Charger tersambung langsung ke BMS, tidak lewat SW1, jadi robot bisa dicas saat saklar OFF.
 
 ### ESP32, driver, motor
 | Komponen | Sambungan |

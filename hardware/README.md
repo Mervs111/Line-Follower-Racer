@@ -65,6 +65,9 @@ FreeRouting lalu dicek DRC.
    Sisi atas hanya J1 dan tulisan. Nomor 1–5 di silkscreen atas = S1–S5.
 5. **Baterai & saklar** ada di tepi kiri PCB utama, di luar dudukan baterai. J1: pin kotak = BAT+
    (tanda `+`). Posisi ON saklar: cek dengan multimeter (pin tengah tersambung ke BAT+).
+   **Ngecas tidak lewat PCB:** modul charger 2S USB-C ada di dinding belakang rangka (port menghadap
+   belakang), OUT+/OUT− modul ke P+/P− BMS, P+/P− BMS ke J1. Bisa dicas saat saklar OFF. Detail kabel:
+   `docs/skematik-v1.md` bagian Daya.
 6. Area belakang (Y < 30 mm) ada di bawah plat dudukan baterai (ruang ±9,9 mm): konektor motor J2/J3
    (JST PH tegak) ada di sini, cek colokan + kabelnya muat.
 7. Antena ESP32 (ujung kiri modul) bebas tembaga di kedua sisi.
