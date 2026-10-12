@@ -88,11 +88,19 @@ port USB-C menghadap belakang; diputuskan tetap di sana 11/10/2026). Sambungan k
 
 | Dari | Ke |
 |---|---|
-| Baterai 2S (holder) | B−, BM, B+ di BMS |
+| Kabel hitam holder (− sel 1) | B− di BMS |
+| Plat penghubung antar sel di ujung holder (titik tengah) | BM di BMS, **kabel tambahan** disolder ke plat |
+| Kabel merah holder (+ sel 2) | B+ di BMS |
 | Modul charger 2S USB-C, OUT+ / OUT− | P+ / P− di BMS |
 | P+ / P− di BMS | J1 PCB utama (BAT+ / GND) |
 
 Charger tersambung langsung ke BMS, tidak lewat SW1, jadi robot bisa dicas saat saklar OFF.
+
+Holder seri 2 kabel (RAB) tetap dipakai, tapi BMS 2S butuh titik tengah (BM) untuk mengukur tegangan tiap
+sel, jadi 1 kabel tambahan disolder ke plat yang menyambung + sel 1 dengan − sel 2. Tanpa BM, proteksi
+BMS tidak bekerja benar. Urutan menyambung: B−, lalu BM, lalu B+. BMS jenis ini umumnya hanya pelindung
+(tidak menyeimbangkan sel), jadi pakai 2 sel merek & kapasitas sama dengan tegangan nyaris sama
+(selisih ≤ 0,05 V) saat pertama dirangkai.
 
 ### ESP32, driver, motor
 | Komponen | Sambungan |
