@@ -1,5 +1,23 @@
 # Mekanik — Robot Line Tracer Micro
 
+## Usulan v12 (13/10/2026): leher sensor dipendekkan 20 mm, PCB belum diubah
+
+v11 dengan ujung depan jangkar dimundurkan 20 mm (`F` 132 → 112). Belum dipakai: PCB sensor di
+`hardware/` masih ukuran v11.
+
+| | v11 | v12 (usulan) |
+|---|---|---|
+| P × L × T | ±174 × 110 × 55 | ±154 × 110 × 55 (tanpa sayap ±142) |
+| Sensor tengah ke poros roda | ±127 | ±107,5 |
+| PCB sensor | 92 × 53 | 92 × 33 (leher terlihat ±8 mm) |
+
+- Tulisan "LINE TRACER MICRO" dan "P01 KEL.5" pindah ke lengan jangkar (leher terlalu pendek).
+- R1–R10 sebaris di bawah pangkal leher, R11/R12/Q1/C1 di depannya: posisi usulan, belum dirouting.
+- Ini batas terpendek tanpa mengubah PCB utama (J5 dan tombol A/B ada di hidung PCB utama). Kalau mau lebih
+  pendek (sensor ±80 mm dari poros), hidung PCB utama ikut dirombak.
+- File: `cadquery/ltm_v12.py`, `LTM_v12.step`, `render/ltm-v12-*.png`. Cek tabrakan antar bagian: tidak ada
+  tabrakan baru dibanding v11.
+
 ## Versi aktif: v11 (11/10/2026) — bentuk jangkar v10 + livery navy-merah-kuning + roda lebar Ø26 × 14
 
 **Sudah disamakan dengan layout PCB v1-draft (`hardware/`, 11/10/2026 sore):** posisi komponen, lubang
