@@ -1,5 +1,6 @@
 # Model 3D Robot Line Tracer Micro v12 = v11 dengan leher PCB sensor dipendekkan 20 mm (usulan 13/10/2026,
-# PCB belum diubah). Basis v11 (livery navy-merah-kuning, roda kecil), gaya jangkar (referensi R3D Maker + LF edukasi 14 sensor
+# PCB sensor belum diubah) + PCB utama v2 (13/10/2026: ESP32 & TB6612 & OLED di socket, ESP32 keluar dari bawah
+# dudukan baterai, buck di bawah dudukan baterai). Basis v11 (livery navy-merah-kuning, roda kecil), gaya jangkar (referensi R3D Maker + LF edukasi 14 sensor
 # + model Inventor kelompok). Sumbu: X kanan, Y maju, Z atas; nol = lantai di bawah tengah poros.
 # 11/10/2026 sore: posisi komponen, lubang, dan outline PCB disamakan dengan layout PCB v1-draft
 # (hardware/tools/gen_pcb.py memakai koordinat yang sama: MAIN_PLACE, HOLES_MAIN, SB_HALF, SENSOR_PLACE).
@@ -106,13 +107,16 @@ add("Pad lubang", gold, "gold")
 silk = None
 for x in (-20, 20):                                   # tombol
     silk = U(silk, frame_rect(x, 83, 9, 9, 0, TOP))
-silk = U(silk, frame_rect(-33.85, 54.15, 21.8, 20.4, 0, TOP, 0.15))     # garis modul TB6612
-silk = U(silk, frame_rect(34.0, 52.5, 22.2, 17.2, 0, TOP, 0.15))        # garis modul MP1584
+silk = U(silk, frame_rect(-0.5, 69.15, 20.4, 20.3, 0, TOP, 0.15))      # garis modul TB6612
+silk = U(silk, frame_rect(-22.3, 68.8, 21.8, 18.8, 0, TOP, 0.15))      # kotak blok SUARA
+silk = U(silk, frame_rect(26.1, 46.25, 31.0, 29.3, 0, TOP, 0.15))      # kotak blok LAYAR (di bawah OLED)
 for t in (text("A", 2.2, -26.5, 83, TOP), text("B", 2.2, 26.5, 83, TOP),
-          text("P01 KEL.5", 2.2, -36, 27, TOP, 90), text("LINE TRACER MICRO  v1", 1.4, -33, 29, TOP, 90),
-          text("SENSOR", 1.1, 0, 87.6, TOP), text("PWR", 1.25, -39.6, 28.2, TOP), text("BAT", 1.25, -39, 41.9, TOP),
-          text("+", 1.8, -39, 37, TOP), text("-", 1.8, -39, 39.5, TOP),
-          text("ML", 1.25, -31.5, 9.9, TOP), text("MR", 1.25, 31.5, 9.9, TOP)):
+          text("LINE TRACER MICRO v2", 1.4, 0, 89.3, TOP), text("KE SENSOR", 1.1, 0, 86.6, TOP),
+          text("SUARA", 1.3, -26.0, 61.4, TOP), text("ALUR DAYA", 1.2, 25.6, 77.6, TOP),
+          text("BATERAI", 1.0, 22.4, 75.5, TOP), text("SAKLAR", 1.0, 22.4, 72.4, TOP),
+          text("BUCK 5V", 1.0, 22.4, 69.3, TOP), text("MOTOR", 1.0, 30.6, 69.3, TOP),
+          text("ESP32 + SENSOR", 1.0, 22.4, 66.2, TOP), text("DAYA", 2.0, -20, 27.4, TOP),
+          text("KIRI", 1.1, -31.6, 9.9, TOP), text("KANAN", 1.1, 31.6, 9.9, TOP)):
     silk = U(silk, t)
 add("Silkscreen utama", silk, "silk")
 # ujung pin header PCB sensor yang menembus J5 (disolder di atas PCB utama)
@@ -123,71 +127,76 @@ for k in range(5):
         j5 = U(j5, cyl_z(x, y, TOP, 0.25, 0.85).union(box(x - 0.32, x + 0.32, y - 0.32, y + 0.32, TOP, TOP + 1.6)))
 add("Pin J5 (tembus)", j5, "gold")
 
-# ---------- ESP32 DevKit (melintang, USB ke kanan, disolder langsung) ----------
-EY0, EY1 = 14.0, 42.0
-pins = box(-19.5, 19.5, EY0 + 0.6, EY0 + 3.1, TOP, TOP + 2.5).union(box(-19.5, 19.5, EY1 - 3.1, EY1 - 0.6, TOP, TOP + 2.5))
-add("ESP32 header", pins, "black_plastic")
-dz = TOP + 2.5
-add("ESP32 PCB", box(-25.5, 25.5, EY0, EY1, dz, dz + T), "pcb")
-add("ESP32 antena", box(-25.5, -19.5, 19, 37, dz + T, dz + T + 0.8), "pcb_dark")
-add("ESP32 modul", box(-19.5, -1.5, 19, 37, dz + T, dz + T + 3.0), "shield")
-add("ESP32 USB-C", box(18.5, 26.2, 23.5, 32.5, dz + T, dz + T + 3.2), "shield")
-add("ESP32 chip", box(4, 14, 17, 21, dz + T, dz + T + 1.4).union(box(6, 12, 34, 38, dz + T, dz + T + 1.6)), "black_plastic")
-add("ESP32 tombol", box(15, 18, 15.2, 17.8, dz + T, dz + T + 1.6).union(box(15, 18, 38.2, 40.8, dz + T, dz + T + 1.6)), "shield")
+SOCK = 8.5                         # tinggi socket header female (ESP32, TB6612, OLED bisa dicabut)
+# ---------- ESP32 DevKit (PCB v2: melintang di depan dudukan baterai, USB ke kiri, di socket) ----------
+EY0, EY1 = 30.2, 58.6
+for yr in (31.7, 57.1):            # 2 socket 1x15
+    add("ESP32 socket", box(-43.65, -5.55, yr - 1.27, yr + 1.27, TOP, TOP + SOCK), "black_plastic")
+dz = TOP + SOCK
 
-# ---------- OLED 1.3" ----------
-oz = TOP + 8.5                     # OLED wajib socket female 8,5 mm (ada R3-R8 dan Q1 di bawahnya)
-add("OLED socket", box(-5.08, 5.08, 44.18, 46.72, TOP, oz), "black_plastic")
-add("OLED PCB", box(-17.7, 17.7, 44, 77.5, oz, oz + 1.2), "pcb_blue")
-add("OLED kaca", box(-17.2, 17.2, 49, 73.5, oz + 1.2, oz + 2.7), "glass")
+
+def esp(x0, x1, y0, y1):
+    """kotak di atas modul ESP32; koordinat lama (antena di -X, Y tengah 28) diputar 180 derajat"""
+    return (-21.1 - x1, -21.1 - x0, 72.4 - y1, 72.4 - y0)
+
+
+add("ESP32 PCB", box(-46.6, 4.4, EY0, EY1, dz, dz + T), "pcb")
+add("ESP32 antena", box(*esp(-25.5, -19.5, 19, 37), dz + T, dz + T + 0.8), "pcb_dark")
+add("ESP32 modul", box(*esp(-19.5, -1.5, 19, 37), dz + T, dz + T + 3.0), "shield")
+add("ESP32 USB-C", box(*esp(18.5, 26.2, 23.5, 32.5), dz + T, dz + T + 3.2), "shield")
+add("ESP32 chip", box(*esp(4, 14, 17, 21), dz + T, dz + T + 1.4).union(box(*esp(6, 12, 34, 38), dz + T, dz + T + 1.6)),
+    "black_plastic")
+add("ESP32 tombol", box(*esp(15, 18, 15.2, 17.8), dz + T, dz + T + 1.6).union(box(*esp(15, 18, 38.2, 40.8), dz + T, dz + T + 1.6)),
+    "shield")
+
+# ---------- OLED 1.3" (header di sisi depan, tampilan tegak dilihat dari belakang robot) ----------
+oz = TOP + SOCK
+add("OLED socket", box(23.02, 33.18, 61.28, 63.82, TOP, oz), "black_plastic")
+add("OLED PCB", box(10.4, 45.8, 30.5, 64.0, oz, oz + 1.2), "pcb_blue")
+add("OLED kaca", box(10.9, 45.3, 34.5, 59.0, oz + 1.2, oz + 2.7), "glass")
 gz = oz + 2.71
 bars = None
-for i, (x0, x1) in enumerate([(-13, 6), (-13, 10), (-13, 3), (-13, 8)]):
-    y = 69.5 - i * 5.0
-    b = box(x0, x1, y - 0.9, y + 0.9, gz, gz + 0.02)
-    bars = b if bars is None else bars.union(b)
-bars = bars.union(box(-15.5, -14.2, 63.6, 65.4, gz, gz + 0.02))     # kursor menu
+for i, x1 in enumerate((19, 23, 16, 21)):
+    y = 55.0 - i * 5.0
+    b_ = box(15.1, 15.1 + x1, y - 0.9, y + 0.9, gz, gz + 0.02)
+    bars = b_ if bars is None else bars.union(b_)
+bars = bars.union(box(12.6, 13.9, 49.1, 50.9, gz, gz + 0.02))     # kursor menu
 add("OLED tampilan", bars, "screen")
 
-# ---------- driver & buck ----------
-add("TB6612 header", box(-43, -25, 45, 47.5, TOP, TOP + 2.5).union(box(-43, -25, 60.5, 63, TOP, TOP + 2.5)), "black_plastic")
-add("TB6612 PCB", box(-44, -23.7, 44, 64.3, TOP + 2.5, TOP + 4.1), "pcb_purple")
-add("TB6612 chip", box(-36.5, -31, 51, 57.5, TOP + 4.1, TOP + 5.2), "black_plastic")
-add("MP1584 PCB", box(23, 45, 44, 61, TOP + 2.5, TOP + 4.1), "pcb_blue")
-add("MP1584 pin", box(24, 26.5, 45, 60, TOP, TOP + 2.5).union(box(41.5, 44, 45, 60, TOP, TOP + 2.5)), "black_plastic")
-add("MP1584 induktor", box(31, 37, 49, 55, TOP + 4.1, TOP + 8.1), "black_plastic")
-add("MP1584 trimpot", box(27, 30, 56, 59, TOP + 4.1, TOP + 6.6), "pot")
+# ---------- driver (tengah depan, di socket) & buck (di bawah dudukan baterai, disolder) ----------
+for xc in (-8.12, 7.12):           # 2 socket 1x8
+    add("TB6612 socket", box(xc - 1.27, xc + 1.27, 58.99, 79.31, TOP, TOP + SOCK), "black_plastic")
+add("TB6612 PCB", box(-10.65, 9.65, 59.0, 79.3, TOP + SOCK, TOP + SOCK + 1.6), "pcb_purple")
+add("TB6612 chip", box(-3.75, 2.75, 66.4, 71.9, TOP + SOCK + 1.6, TOP + SOCK + 2.7), "black_plastic")
+add("MP1584 PCB", box(-11, 11, 12.6, 29.6, TOP + 2.5, TOP + 4.1), "pcb_blue")
+add("MP1584 pin", box(-11, -8.5, 13.6, 28.6, TOP, TOP + 2.5).union(box(8.5, 11, 13.6, 28.6, TOP, TOP + 2.5)), "black_plastic")
+add("MP1584 induktor", box(-3, 3, 18.1, 24.1, TOP + 4.1, TOP + 8.1), "black_plastic")
+add("MP1584 trimpot", box(4, 7, 14.6, 17.6, TOP + 4.1, TOP + 6.6), "pot")
 
 # ---------- UI: tombol, buzzer, saklar ----------
 for x in (-20, 20):
     add("Tombol", box(x - 3, x + 3, 80, 86, TOP, TOP + 3.5), "black_plastic")
     add("Tombol tutup", cyl_z(x, 83, TOP + 3.5, 1.5, 1.8), "rb_red" if x < 0 else "rb_yellow")
-bz = cyl_z(27.5, 71.5, TOP, 9.5, 6).cut(cyl_z(27.5, 71.5, TOP + 8.5, 2, 1.2))
+bz = cyl_z(-26.0, 70.0, TOP, 9.5, 6).cut(cyl_z(-26.0, 70.0, TOP + 8.5, 2, 1.2))
 add("Buzzer", try_fillet(bz, ">Z", 0.6), "black_plastic")
-# saklar geser SW1 di tepi kiri, tuas keluar ke -X; konektor baterai J1 (JST XH 2 pin) di atasnya
-add("Saklar", box(-47.0, -42.6, 23.9, 32.5, TOP, TOP + 4.4), "shield")
-add("Saklar tuas", box(-51.0, -47.0, 28.2, 30.2, TOP + 1.4, TOP + 3.0), "black_plastic")
-add("JST XH baterai", box(-46.5, -40.55, 34.5, 42.0, TOP, TOP + 7.0), "jst")
+# saklar geser SW1 di tepi kanan (di bawah OLED), tuas keluar ke +X; konektor baterai J1 (JST XH 2 pin) di belakangnya
+add("Saklar", box(42.6, 47.0, 32.7, 41.3, TOP, TOP + 4.4), "shield")
+add("Saklar tuas", box(47.0, 51.0, 35.0, 37.0, TOP + 1.4, TOP + 3.0), "black_plastic")
+add("JST XH baterai", box(40.5, 46.45, 23.1, 30.6, TOP, TOP + 7.0), "jst")
 for x0, x1 in ((-28.95, -15.05), (15.05, 28.95)):     # konektor motor JST PH 6 pin (J2, J3)
     add("JST PH motor", box(x0, x1, 8.5, 13.0, TOP, TOP + 6), "jst")
-# komponen kecil (posisi = MAIN_PLACE di gen_pcb.py)
+# komponen kecil (posisi = MAIN_PLACE di gen_pcb.py), semua kaki tembus
 res = None
-for xc, yc, along_y in ((28.0, 38.86, 1), (31.3, 38.86, 1), (10.81, 61.0, 0), (10.81, 57.0, 0),
-                       (-16.5, 65.81, 1), (-13.5, 65.81, 1), (-10.5, 65.81, 1), (-7.5, 65.81, 1)):
+for xc, yc, along_y in ((20.81, 26.0, 0), (20.81, 21.0, 0), (-16.5, 64.81, 1), (-13.5, 64.81, 1)):    # R1 R2 R3 R4
     r_ = cyl_y(yc - 3.15, yc + 3.15, xc, TOP + 1.25, 1.25) if along_y else cyl_x(xc - 3.15, xc + 3.15, yc, TOP + 1.25, 1.25)
     res = U(res, r_)
 add("Resistor THT", res, "resistor")
-disc = None
-for xc, yc in ((-20.2, 48.0), (-20.2, 56.0), (34.6, 38.5), (37.9, 38.5)):     # C2 C6 C5 C4, pin sejajar Y
-    disc = U(disc, cyl_x(xc - 1.25, xc + 1.25, yc, TOP + 4.0, 2.5))
-add("Kapasitor keramik", disc, "cap_orange")
-for xc, yc, r_, nm in ((-29.0, 69.0, 3.15, "Elko C1 100uF"), (43.0, 39.0, 2.5, "Elko C3 10uF")):
-    add(nm, cyl_z(xc, yc, TOP + 0.3, 10.7, r_), "elko")
-    add(nm + " tutup", cyl_z(xc, yc, TOP + 11.0, 0.15, r_ - 0.3), "shield")
-to92 = cyl_z(12.27, 66.4, TOP + 3.0, 4.5, 2.3).intersect(box(9.9, 14.7, 65.3, 68.8, TOP + 2.9, TOP + 7.6))
+add("Elko C1 100uF", cyl_z(13.65, 75.5, TOP + 0.3, 10.7, 3.15), "elko")
+add("Elko C1 100uF tutup", cyl_z(13.65, 75.5, TOP + 11.0, 0.15, 2.85), "shield")
+to92 = cyl_z(-15.23, 74.9, TOP + 3.0, 4.5, 2.3).intersect(box(-17.63, -12.83, 73.8, 77.3, TOP + 2.9, TOP + 7.6))
 add("Transistor S8050", to92, "black_plastic")
-add("Dioda SS14", box(19.2, 21.8, 46.35, 50.65, TOP, TOP + 2.2), "black_plastic")
-add("Dioda SS14 cincin", box(19.2, 21.8, 49.6, 50.1, TOP + 2.2, TOP + 2.25), "silk")
+add("Dioda 1N5819", cyl_x(-22.5, -17.3, 17.5, TOP + 1.35, 1.35), "black_plastic")
+add("Dioda 1N5819 cincin", cyl_x(-22.2, -21.5, 17.5, TOP + 1.35, 1.38), "silk")
 
 # ---------- bawah PCB utama: ball caster, header antar papan, spacer ----------
 add("Ball caster rumah", cyl_z(0, 62, 4.6, PCB_Z - 4.6, 5.5), "black_plastic")
@@ -280,7 +289,7 @@ for s in (-1, 1):
     add("Velg", rim, "rb_yellow")
 
 # ---------- rangka 3D print ----------
-plate = (cq.Workplane("XY").moveTo(-39, 30).lineTo(39, 30).lineTo(39, -14)
+plate = (cq.Workplane("XY").moveTo(-39, 29.5).lineTo(39, 29.5).lineTo(39, -14)   # tepi depan 29,5: ESP32 mulai Y 30,2
          .threePointArc((46.5, -17.5), (49, -24)).threePointArc((32, -27.5), (0, -30))
          .threePointArc((-32, -27.5), (-49, -24)).threePointArc((-46.5, -17.5), (-39, -14)).close()
          .extrude(PLATE_Z1 - PLATE_Z0).translate((0, 0, PLATE_Z0)))
@@ -311,7 +320,7 @@ for s in (-1, 1):
     add("Standoff M3", cyl_z(s * 32, 16, TOP, PLATE_Z0 - TOP, 2.75), "brass")
 add("Modul charger 2S", box(-12.5, 12.5, -24.5, -7.5, R_W - 5, R_W - 3.4), "pcb_blue")
 add("USB-C charger", box(-4.5, 4.5, -26.6, -19.5, R_W - 3.4, R_W - 0.2), "shield")
-add("BMS 2S", box(-22, 22, 22, 37, PCB_Z - 2.4, PCB_Z), "pcb_green")      # di bawah PCB utama
+add("BMS 2S", box(-46.5, -2.5, 37, 52, PCB_Z - 2.4, PCB_Z), "pcb_green")      # di bawah PCB utama, di antara baris pin ESP32
 
 # ---------- baterai ----------
 hz0 = PLATE_Z1

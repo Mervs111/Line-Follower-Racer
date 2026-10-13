@@ -40,6 +40,16 @@ Arsitektur 3 lapis:
   PCB sensor ±14, JST motor X ±(17–27), area ball caster (0; 62) bebas kaki solder). Charger 2S USB-C TETAP
   di dinding belakang rangka (keputusan user 11/10), kabel OUT ke P+/P− BMS. Pelajaran: net dari label lokal
   KiCad berawalan "/" (pola net class harus "/VBAT", bukan "VBAT").
+- 13/10/2026: **mekanik v12 (usulan)** = v11 dengan leher sensor dipendekkan 20 mm (panjang ±154, sensor
+  ±107,5 mm dari poros); PCB sensor di `hardware/` BELUM ikut dipendekkan (user: nanti). Model 3D v12:
+  https://claude.ai/artifact/MjwounZ25sDKUH1FWent3d. **PCB utama v2** (permintaan user: kurangi clutter, gampang
+  diakses untuk edukasi): 34 → 25 komponen (C2–C6, R5–R8 dibuang: modul sudah punya kapasitor, encoder pakai
+  INPUT_PULLUP; buzzer + Q1/R3/R4 tetap atas pilihan user), D1 SS14 → 1N5819 (semua kaki tembus). ESP32
+  keluar dari bawah dudukan baterai (Y 30,2–58,6, USB ke kiri) di socket female 8,5 mm, TB6612 tengah depan
+  di socket, OLED kanan di socket (header di depan → layar TIDAK diputar, U8G2_R0), MP1584 + D1 + R1/R2 di
+  bawah dudukan baterai (set 5 V sebelum rangka dipasang), J1 + SW1 di tepi kanan, BMS di bawah PCB di antara
+  baris pin ESP32. Silkscreen: kotak blok (DAYA, OTAK, DRIVER MOTOR, LAYAR, SUARA) + peta "ALUR DAYA" di
+  depan kanan. Tepi depan dudukan baterai (rangka) jadi Y 29,5. DRC 0/0, 294 segmen, 9 via.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,

@@ -1,7 +1,8 @@
 # Acuan Skematik v1 — Robot Line Tracer Micro (KiCad)
 
-Dibuat 11/10/2026. Menggantikan bagian `docs/minsys-v1.md` yang sudah tidak berlaku (baterai 14500, papan
-OLED terpisah/J_UI, IMU). Mengikuti mekanik v11 (`mechanical/`): dua papan, **PCB utama** dan **PCB sensor
+Dibuat 11/10/2026, PCB utama diperbarui ke **v2 13/10/2026** (disederhanakan: kapasitor kecil dan pull-up
+encoder dibuang, D1 jadi 1N5819 kaki tembus). Menggantikan bagian `docs/minsys-v1.md` yang sudah tidak berlaku (baterai 14500, papan
+OLED terpisah/J_UI, IMU). Mengikuti mekanik v11 (PCB sensor) dan v12 (PCB utama v2) di `mechanical/`: dua papan, **PCB utama** dan **PCB sensor
 jangkar**, disambung header 2×5 board-to-board.
 
 Pin modul di bawah = susunan umum di marketplace. **Wajib dicocokkan dengan modul yang dibeli** (tulisan
@@ -77,11 +78,13 @@ library Sensor_Optical) dengan footprint buatan sendiri dari datasheet ITR20001.
 |---|---|
 | J1 baterai, JST XH 2 pin | 1 = BAT+ (P+ dari BMS), 2 = GND (P−) |
 | SW1 saklar geser SPDT | kaki tengah = VBAT, satu kaki samping = BAT+, kaki lain tidak dipakai |
-| C1 100 µF/16 V elko + C2 100 nF | VBAT ke GND, dekat pin VM TB6612 |
+| C1 100 µF/16 V elko | VBAT ke GND, dekat pin VM TB6612 (meredam lonjakan arus motor) |
 | U3 MP1584 | lihat tabel modul; set 5,0 V sebelum ESP32 dipasang |
-| D1 SS14 | anoda = +5V_BUCK, katoda = +5V |
-| C3 10 µF + C4 100 nF | +5V ke GND, dekat pin VIN ESP32 |
-| R1 100 kΩ, R2 33 kΩ, C5 100 nF | VBAT–R1–VBAT_SENSE–R2–GND; C5 dari VBAT_SENSE ke GND |
+| D1 1N5819 (kaki tembus) | anoda = +5V_BUCK, katoda = +5V (mencegah arus balik saat USB dicolok) |
+| R1 100 kΩ, R2 33 kΩ | VBAT–R1–VBAT_SENSE–R2–GND (bacaan dirata-rata di firmware) |
+
+Kapasitor 100 nF/10 µF tambahan (C2–C6 di v1) tidak dipasang: modul TB6612, MP1584, dan ESP32 DevKit sudah
+punya kapasitor sendiri.
 
 BMS dan modul charger berada di luar PCB (BMS di bawah PCB utama, charger di dinding belakang rangka dengan
 port USB-C menghadap belakang; diputuskan tetap di sana 11/10/2026). Sambungan kabel:
@@ -106,10 +109,10 @@ BMS tidak bekerja benar. Urutan menyambung: B−, lalu BM, lalu B+. BMS jenis in
 | Komponen | Sambungan |
 |---|---|
 | U1 ESP32 DevKit | tabel ESP32 di atas |
-| U2 TB6612 | tabel TB6612 di atas; C6 100 nF di +3V3 dekat pin VCC |
+| U2 TB6612 | tabel TB6612 di atas |
 | J2 motor kiri, JST PH 6 pin | 1 ML_P, 2 +3V3, 3 ENC_L_A, 4 ENC_L_B, 5 GND, 6 ML_N |
 | J3 motor kanan, JST PH 6 pin | 1 MR_P, 2 +3V3, 3 ENC_R_A, 4 ENC_R_B, 5 GND, 6 MR_N |
-| R5–R8 10 kΩ (boleh tidak dipasang) | pull-up ENC_L_A, ENC_L_B, ENC_R_A, ENC_R_B ke +3V3 |
+| Encoder | tanpa resistor: pull-up internal ESP32 (`INPUT_PULLUP`) di GPIO 18, 19, 23, 5 |
 
 Urutan kabel encoder N20 beda-beda tiap penjual: cocokkan dengan kabel motor yang dibeli.
 
@@ -153,11 +156,12 @@ jangkar belum masuk skematik (footprint kosong ditambahkan saat layout).
 
 ## 5. Daftar komponen (ringkas)
 
-PCB utama: U1 ESP32 DevKit, U2 TB6612, U3 MP1584, D1 SS14, C1 100 µF, C2 C4 C5 C6 100 nF, C3 10 µF,
-R1 100k, R2 33k, R3 1k, R4 10k, R5–R8 10k, Q1 S8050, BZ1, SW1 saklar geser, SW2 SW3 tombol 6×6,
-J1 JST XH 2, J2 J3 JST PH 6, J4 1×4, J5 lubang tembus 2×5 (tanpa komponen), H1–H6 M3.
+PCB utama v2 (semua kaki tembus): U1 ESP32 DevKit, U2 TB6612, U3 MP1584, D1 1N5819, C1 100 µF, R1 100k,
+R2 33k, R3 1k, R4 10k, Q1 S8050, BZ1, SW1 saklar geser, SW2 SW3 tombol 6×6, J1 JST XH 2, J2 J3 JST PH 6,
+J4 socket 1×4 (OLED), J5 lubang tembus 2×5 (tanpa komponen), H1–H6 M3. Socket header female untuk modul:
+1×15 ×2 (ESP32), 1×8 ×2 (TB6612).
 
 PCB sensor: U1–U5 ITR20001, R1–R5 180 Ω, R6–R10 10k, R11 100 Ω, R12 10k, Q1 AO3400, C1 100 nF, J1 2×5,
 H1 H2 M3.
 
-Resistor 10 kΩ terpakai: 11 (RAB: 10 pcs, kurang 1).
+Resistor 10 kΩ terpakai: 7 (RAB: 10 pcs, cukup).

@@ -1,9 +1,15 @@
 # Mekanik — Robot Line Tracer Micro
 
-## Usulan v12 (13/10/2026): leher sensor dipendekkan 20 mm, PCB belum diubah
+## Usulan v12 (13/10/2026): leher sensor dipendekkan 20 mm + PCB utama v2
 
-v11 dengan ujung depan jangkar dimundurkan 20 mm (`F` 132 → 112). Belum dipakai: PCB sensor di
-`hardware/` masih ukuran v11.
+v11 dengan ujung depan jangkar dimundurkan 20 mm (`F` 132 → 112). PCB sensor di `hardware/` masih ukuran
+v11 (belum ikut dipendekkan). PCB utama sudah mengikuti **PCB utama v2** (`hardware/`, 13/10/2026):
+
+- ESP32 keluar dari bawah dudukan baterai, di socket female 8,5 mm, USB menghadap ke kiri (gampang dicolok).
+- TB6612 di tengah depan dan OLED di kanan, keduanya di socket (bisa dicabut kalau rusak).
+- MP1584, dioda, dan pembagi tegangan baterai pindah ke bawah dudukan baterai.
+- Saklar + konektor baterai di tepi kanan; BMS ditempel di bawah PCB di sisi kiri.
+- Tepi depan dudukan baterai dimundurkan ke Y 29,5 supaya tidak mepet dengan ESP32.
 
 | | v11 | v12 (usulan) |
 |---|---|---|
@@ -22,7 +28,8 @@ v11 dengan ujung depan jangkar dimundurkan 20 mm (`F` 132 → 112). Belum dipaka
 ## Versi aktif: v11 (11/10/2026) — bentuk jangkar v10 + livery navy-merah-kuning + roda lebar Ø26 × 14
 
 **Sudah disamakan dengan layout PCB v1-draft (`hardware/`, 11/10/2026 sore):** posisi komponen, lubang
-baut, dan outline kedua PCB di model ini = koordinat di `hardware/tools/gen_pcb.py`.
+baut, dan outline kedua PCB di model ini = koordinat di `hardware/tools/gen_pcb.py` saat itu. PCB utama di
+`hardware/` sekarang v2 (13/10/2026), yang sudah diikuti model v12 di atas.
 
 Mengikuti referensi di `docs/referensi/` (PCB sensor jangkar + leher panjang ala R3D Maker dan robot LF
 edukasi 14 sensor) dan model Inventor kelompok (baterai di atas motor, sayap belakang). Warna terinspirasi

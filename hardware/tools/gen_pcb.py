@@ -5,7 +5,7 @@ Alur: skematik -> netlist (kicad-cli) -> outline dari model mekanik v11 -> footp
       -> DSN -> FreeRouting (autorouter) -> SES -> jalur & via -> pour GND -> DRC -> .kicad_pcb
 
 Koordinat penempatan di script ini = koordinat model mekanik (mm; X kanan, Y maju, nol = tengah poros
-roda), sama dengan mechanical/cadquery/ltm_v11.py. Di KiCad: x = X + OX, y = OY - Y.
+roda): PCB utama v2 = mechanical/cadquery/ltm_v12.py, PCB sensor = ltm_v11.py. Di KiCad: x = X + OX, y = OY - Y.
 
 Jalankan dengan Python yang punya modul pcbnew (Python bawaan KiCad), butuh kicad-cli, java 21+ dan
 FreeRouting (FREEROUTING_JAR):
@@ -101,7 +101,7 @@ def read_netlist(path):
 
 # ------------------------------------------------------------------ papan
 class Board:
-    def __init__(self, name, title):
+    def __init__(self, name, title, rev="v1-draft", date="2026-10-11", mech="v11"):
         self.name, self.title = name, title
         self.dir = os.path.join(HW, name)
         self.path = os.path.join(self.dir, name + ".kicad_pcb")
@@ -123,10 +123,10 @@ class Board:
         self.outline_pts = None
         tb = self.b.GetTitleBlock()
         tb.SetTitle(title)
-        tb.SetDate("2026-10-11")
-        tb.SetRevision("v1-draft")
+        tb.SetDate(date)
+        tb.SetRevision(rev)
         tb.SetCompany("P01 Kel.5 PjBL DTEO FV ITS")
-        tb.SetComment(0, "Layout mengikuti mekanik v11; footprint modul SEMENTARA (ukur ulang)")
+        tb.SetComment(0, f"Layout mengikuti mekanik {mech}; footprint modul SEMENTARA (ukur ulang)")
         tb.SetComment(1, "Jalur dirouting otomatis FreeRouting: routing ulang setelah footprint final")
 
     # -------------------------------------------------- aturan desain
@@ -343,6 +343,14 @@ class Board:
             s.SetWidth(mm(w))
             self.b.Add(s)
 
+    def arrow(self, a, b, layer=pcbnew.F_SilkS, w=0.2, head=0.9):
+        """panah dari a ke b (ujung di b)"""
+        self.line([a, b], layer, w)
+        d = _unit(_sub(a, b))
+        for s in (1, -1):
+            c, n = math.cos(math.radians(28)), s * math.sin(math.radians(28))
+            self.line([b, _add(b, _mul((d[0] * c - d[1] * n, d[0] * n + d[1] * c), head))], layer, w)
+
     # -------------------------------------------------- zone
     def _zone(self, pts, layers):
         z = pcbnew.ZONE(self.b)
@@ -486,39 +494,41 @@ def import_ses(brd, ses_path):
 
 
 # ================================================================== PCB UTAMA
-# outline = MAIN_PTS di mechanical/cadquery/ltm_v11.py (fillet 2,5)
+# outline = MAIN_PTS di mechanical/cadquery/ltm_v12.py (fillet 2,5)
 MAIN_PTS = [(-36, 8), (36, 8), (36, 18), (47, 22), (47, 62), (28, 86), (13, 92), (-13, 92), (-28, 86),
             (-47, 62), (-47, 22), (-36, 18)]
 HOLES_MAIN = {"H1": (-32, 16), "H2": (32, 16),          # standoff ke dudukan baterai (sama dengan model)
               "H3": (-37.5, 69), "H4": (37.5, 69),      # bahu depan
               "H5": (-10.5, 83), "H6": (10.5, 83)}      # spacer ke PCB sensor
+# v2 (13/10/2026): ESP32 keluar dari bawah dudukan baterai (dudukan berakhir di Y 30) dan dipasang di socket
+# female; buck, dioda, dan pembaca baterai pindah ke bawah dudukan baterai; kapasitor kecil & pull-up dibuang.
 MAIN_PLACE = {
     # ref: (X, Y, rotasi)  = posisi ORIGIN footprint (pin 1 untuk konektor), koordinat mekanik
-    "U1": (3.5, 28.0, 90),      # ESP32 melintang, USB ke kanan (+X); baris pin 1-15 di belakang
-    "U2": (-33.85, 54.15, 270),  # TB6612: baris belakang = VM/VCC/GND/output, baris depan = input
-    "U3": (34.0, 52.5, 180),    # MP1584: OUT di kiri, IN di kanan
-    "J4": (3.81, 45.45, 270),   # socket OLED (header OLED di sisi belakang)
+    "U1": (-24.6, 44.4, 270),   # ESP32 melintang, USB ke kiri (-X), antena ke kanan;
+                                # baris pin 1-15 di depan (Y 57,1), 16-30 di belakang (Y 31,7)
+    "U2": (-0.5, 69.15, 0),      # TB6612 tengah depan: kolom kiri = input, kolom kanan = VM/VCC/GND/output
+    "U3": (0.0, 21.1, 180),     # MP1584 di bawah dudukan baterai: IN di kanan, OUT di kiri
+    "J4": (24.29, 62.55, 90),   # socket OLED, header OLED di sisi depan (tampilan tegak, tidak diputar)
     "J5": (-5.08, 81.23, 90),   # lubang tembus pin header PCB sensor
     "SW2": (-23.25, 85.25, 0), "SW3": (16.75, 85.25, 0),
-    "BZ1": (23.7, 71.5, 0),
+    "BZ1": (-29.8, 70.0, 0), "Q1": (-16.5, 74.5, 0), "R3": (-16.5, 61.0, 90), "R4": (-13.5, 61.0, 90),
     "J2": (-27.0, 11.3, 0), "J3": (17.0, 11.3, 0),           # motor kiri / kanan
-    "SW1": (-44.8, 30.2, 270),  # saklar geser di tepi kiri, tuas keluar ke -X
-    "J1": (-44.1, 37.0, 90),    # baterai (dari BMS), tepi kiri di luar dudukan baterai
-    "D1": (20.5, 48.5, 270),
-    "C1": (-30.25, 69.0, 0), "C2": (-20.2, 45.5, 90), "C6": (-20.2, 53.5, 90),
-    "R1": (28.0, 42.67, 270), "R2": (31.3, 35.05, 90), "C5": (34.6, 36.0, 90), "C4": (37.9, 36.0, 90),
-    "C3": (42.0, 39.0, 0),
-    "Q1": (11.0, 66.0, 0), "R3": (7.0, 61.0, 0), "R4": (7.0, 57.0, 0),       # di bawah OLED (socket 8,5 mm)
-    "R5": (-16.5, 62.0, 90), "R6": (-13.5, 62.0, 90), "R7": (-10.5, 62.0, 90), "R8": (-7.5, 62.0, 90),
+    "J1": (42.9, 25.6, 90),     # baterai (dari BMS), tepi kanan di luar dudukan baterai
+    "SW1": (44.8, 35.0, 90),    # saklar geser di tepi kanan (di bawah OLED), tuas keluar ke +X
+    "D1": (-25.0, 17.5, 0),
+    "R1": (17.0, 26.0, 0), "R2": (17.0, 21.0, 0),
+    "C1": (12.4, 75.5, 0),      # dekat pin VM TB6612
     **{k: (x, y, 0) for k, (x, y) in HOLES_MAIN.items()},
 }
-ANTENNA = (-26.0, 14.0, -18.5, 42.0)       # ujung antena ESP32 (X0, Y0, X1, Y1)
+ANTENNA = (-1.4, 30.2, 4.7, 58.6)          # ujung antena ESP32 (X0, Y0, X1, Y1)
 CASTER = (0.0, 62.0, 5.5)                  # ball caster di bawah PCB utama (X, Y, jari-jari rumah)
-BMS = (-22.0, 22.0, 22.0, 37.0)            # modul BMS 2S ditempel di bawah PCB utama
+BMS = (-46.5, 37.0, -2.5, 52.0)            # modul BMS 2S ditempel di bawah PCB utama, di antara baris pin ESP32
+DAYA = [(-27.8, 14.4), (-12.2, 14.4), (-12.2, 12.0), (12.2, 12.0), (12.2, 14.4), (27.2, 14.4), (27.2, 29.9),
+        (-27.8, 29.9)]                     # kotak blok DAYA (di bawah dudukan baterai)
 
 
 def build_main(route=True):
-    b = Board("ltm-main", "LTM - PCB Utama")
+    b = Board("ltm-main", "LTM - PCB Utama", rev="v2", date="2026-10-13", mech="v12")
     b.rules()
     b.outline(MAIN_PTS, 2.5)
     for ref, (x, y, r) in MAIN_PLACE.items():
@@ -529,42 +539,71 @@ def build_main(route=True):
     x0, y0, x1, y1 = ANTENNA
     b.keepout(x0, y0 + 4, x1, y1 - 4, "antena ESP32")                 # tanpa jalur, via, pour
 
-    # ---- silkscreen
-    T = b.text
-    T("P01 KEL.5", -36.0, 27.0, 1.6, 90, bold=True)
-    T("LINE TRACER MICRO  v1", -33.0, 29.0, 1.0, 90)
+    # ---- silkscreen: blok (kotak + nama). Modul bersocket: nama di dalam garis modul (terbaca saat dicabut)
+    T, L = b.text, b.line
+    L(DAYA, close=True)
+    T("DAYA", -20.0, 27.4, 1.6, bold=True)
+    b.arrow((26.4, 17.2), (12.6, 17.2))
+    T("VBAT", 19.5, 18.2, 0.8)
+    b.arrow((-22.0, 20.4), (-22.0, 23.8))
+    T("5V", -19.8, 22.1, 0.9, bold=True)
+    T("BUCK 5V", 0.0, 24.4, 1.1, bold=True)
+    T("IN", 6.4, 21.1, 0.9)
+    T("OUT", -6.0, 21.1, 0.9)
+    T("BACA BATERAI", 20.8, 29.0, 0.8)
+    T("BATERAI", 37.9, 26.9, 0.9, 90)
+    T("+", 39.3, 25.6, 1.3, bold=True)
+    T("-", 39.3, 28.1, 1.3, bold=True)
+    T("SAKLAR", 40.4, 37.0, 0.9, 90)
+    T("MOTOR", -31.6, 11.2, 0.8)
+    T("KIRI", -31.6, 9.8, 0.8)
+    T("MOTOR", 31.6, 11.2, 0.8)
+    T("KANAN", 31.6, 9.8, 0.8)
+    T("OTAK: ESP32", -21.1, 51.0, 1.8, bold=True)
+    T("< USB", -41.0, 41.0, 1.0)
+    T("ANTENA", 1.7, 44.6, 0.9, 90)
+    T("DRIVER MOTOR", -0.5, 75.6, 1.1, bold=True)
+    L([(10.6, 31.6), (41.6, 31.6), (41.6, 60.9), (10.6, 60.9)], close=True)
+    T("LAYAR (OLED)", 26.1, 46.0, 1.6, bold=True)
+    for i, s in enumerate(("GND", "VCC", "SCL", "SDA")):
+        T(s, 24.29 + 2.54 * i, 58.8, 0.8, 90)
+    L([(-33.2, 59.4), (-11.4, 59.4), (-11.4, 78.2), (-33.2, 78.2)], close=True)
+    T("SUARA", -26.0, 61.4, 1.0, bold=True)
     T("A", -26.5, 83.0, 1.6, bold=True)
     T("B", 26.5, 83.0, 1.6, bold=True)
-    T("PWR", -39.6, 28.2, 0.9)
-    T("+", -39.0, 37.0, 1.3, bold=True)
-    T("-", -39.0, 39.5, 1.3, bold=True)
-    T("BAT", -39.0, 41.9, 0.9)
-    T("ML", -31.5, 9.9, 0.9)
-    T("MR", 31.5, 9.9, 0.9)
-    for i, s in enumerate(("GND", "VCC", "SCL", "SDA")):
-        T(s, 3.81 - 2.54 * i, 48.1, 0.8)
-    T("OLED", 0.0, 50.0, 1.0)
-    T("ESP32 DEVKIT 30P", 0.0, 32.0, 1.2)
-    T("USB >", 22.6, 28.0, 1.0, 90)
-    T("TB6612", -33.85, 51.0, 1.2)
-    T("MP1584 5V", 34.0, 55.5, 1.0)
-    T("OUT", 26.6, 52.5, 0.9)
-    T("IN", 41.6, 52.5, 0.9)
-    T("SENSOR", 0.0, 87.6, 0.8)
-    # sisi bawah: tanda tempat ball caster & BMS (tidak boleh ada kaki solder di area caster)
+    T("KE SENSOR", 0.0, 86.6, 0.9)
+    T("LINE TRACER MICRO v2", 0.0, 89.3, 1.0, bold=True)
+    # peta alur daya di depan kanan (tetap terlihat setelah robot dirakit)
+    T("ALUR DAYA", 25.6, 77.6, 0.9, bold=True)
+    T("BATERAI", 22.4, 75.5, 0.8)
+    b.arrow((22.4, 74.7), (22.4, 73.3), w=0.15, head=0.6)
+    T("SAKLAR", 22.4, 72.4, 0.8)
+    b.arrow((22.4, 71.6), (22.4, 70.2), w=0.15, head=0.6)
+    b.arrow((25.0, 71.9), (28.6, 70.2), w=0.15, head=0.6)
+    T("BUCK 5V", 22.4, 69.3, 0.8)
+    T("MOTOR", 30.6, 69.3, 0.8)
+    b.arrow((22.4, 68.5), (22.4, 67.1), w=0.15, head=0.6)
+    T("ESP32 + SENSOR", 22.4, 66.2, 0.8)
+    # sisi bawah: nama papan, tanda tempat ball caster & BMS (tidak boleh ada kaki solder di area caster)
+    B = pcbnew.B_SilkS
+    T("LINE TRACER MICRO v2", 24.0, 52.0, 1.4, layer=B, bold=True)
+    T("P01 KEL.5", 24.0, 49.0, 1.4, layer=B, bold=True)
+    T("PjBL DTEO FV ITS 2026", 24.0, 46.4, 1.0, layer=B)
     cx, cy, cr = CASTER
     b.line([(cx + cr * math.cos(math.radians(a)), cy + cr * math.sin(math.radians(a))) for a in range(0, 361, 10)],
-           pcbnew.B_SilkS, 0.15)
-    T("CASTER", cx, cy, 1.0, layer=pcbnew.B_SilkS)
-    x0, x1, y0, y1 = BMS
-    b.line([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], pcbnew.B_SilkS, 0.15, close=True)
-    T("BMS 2S (ditempel di sini)", 0.0, (y0 + y1) / 2, 1.2, layer=pcbnew.B_SilkS)
+           B, 0.15)
+    T("CASTER", cx, cy, 1.0, layer=B)
+    x0, y0, x1, y1 = BMS
+    b.line([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], B, 0.15, close=True)
+    T("BMS 2S (ditempel di sini)", (x0 + x1) / 2, (y0 + y1) / 2, 1.2, layer=B)
     for fp in b.fps.values():
         for pad in fp.Pads():
             if pad.GetAttribute() in (pcbnew.PAD_ATTRIB_PTH, pcbnew.PAD_ATTRIB_NPTH):
                 px, py = mech(pad.GetPosition())
                 if math.hypot(px - cx, py - cy) < cr + 1.0:
                     raise SystemExit(f"pad {fp.GetReference()}.{pad.GetNumber()} kena area ball caster")
+                if x0 - 1 < px < x1 + 1 and y0 - 1 < py < y1 + 1:
+                    raise SystemExit(f"pad {fp.GetReference()}.{pad.GetNumber()} kena area BMS")
     b.auto_refs(hide=tuple(HOLES_MAIN) + ("J5",), inside=("U1", "U2", "U3"))
 
     if route:

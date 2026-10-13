@@ -237,14 +237,14 @@ def pad(n, x, y, size=1.7, drill=1.0, shape=None):
             f'(drill {num(drill)}) (layers "*.Cu" "*.Mask") (tstamp {U()}))')
 
 
-def write_fp(name, descr, body, pads, texts=()):
+def write_fp(name, descr, body, pads, texts=(), crt=0.25):
     x0, y0, x1, y1 = body
     items = [f'(footprint {q(name)} (version 20221018) (generator pcbnew)', '  (layer "F.Cu")',
              f'  (descr {q(descr)})', f'  (tags {q("LTM sementara cek ukur")})', '  (attr through_hole)',
              fp_text("reference", "REF**", 0, y0 - 1.5, "F.SilkS"), fp_text("value", name, 0, y1 + 1.5, "F.Fab"),
              fp_text("user", "${REFERENCE}", 0, 0, "F.Fab"),
              fp_rect(x0, y0, x1, y1, "F.SilkS", 0.12), fp_rect(x0, y0, x1, y1, "F.Fab", 0.1),
-             fp_rect(x0 - 0.25, y0 - 0.25, x1 + 0.25, y1 + 0.25, "F.CrtYd", 0.05)]
+             fp_rect(x0 - crt, y0 - crt, x1 + crt, y1 + crt, "F.CrtYd", 0.05)]
     items += [fp_text("user", t, x, y, "F.Fab", 0.8) for t, x, y in texts]
     items += pads
     path = os.path.join(HW, "ltm-lib", "ltm.pretty")
@@ -262,7 +262,7 @@ def build_footprints():
     pads = [pad(str(i + 1), -7.62, -8.89 + 2.54 * i) for i in range(8)]
     pads += [pad(str(9 + i), 7.62, -8.89 + 2.54 * i) for i in range(8)]
     write_fp("TB6612_Module_2x8_W15.24", "Modul TB6612FNG 2x8 pin, jarak baris 15,24 mm. SEMENTARA: ukur modul asli.",
-             (-10.2, -10.9, 10.2, 10.9), pads, [("UKUR ULANG", 0, 0)])
+             (-10.2, -10.15, 10.2, 10.15), pads, [("UKUR ULANG", 0, 0)], crt=0.1)   # rapat dengan ESP32 di PCB v2
     pads = [pad("1", -9.5, -6.0, 2.0, 1.2), pad("2", -9.5, 6.0, 2.0, 1.2),
             pad("3", 9.5, -6.0, 2.0, 1.2), pad("4", 9.5, 6.0, 2.0, 1.2)]
     write_fp("MP1584_Module", "Modul MP1584 22x17 mm, 4 titik solder di sudut. SEMENTARA: ukur modul asli.",
@@ -281,7 +281,7 @@ FP = {
     "C_SMD": "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder",
     "CP100": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
     "CP10": "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm",
-    "SS14": "Diode_SMD:D_SMA",
+    "1N5819": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
     "TO92": "Package_TO_SOT_THT:TO-92_Inline",
     "SOT23": "Package_TO_SOT_SMD:SOT-23",
     "BTN": "Button_Switch_THT:SW_PUSH_6mm",
@@ -440,11 +440,11 @@ class Sheet:
         self.text(title, x0 + 1.27, y0 + 4.445, 2.0, bold=True)
 
     # -------------------------------------------------- tulis file
-    def save(self, path):
+    def save(self, path, rev="v1-starter", date=DATE):
         comments = "\n".join(f'    (comment {i + 1} {q(c)})' for i, c in enumerate(self.comments))
         libs = "\n".join("    " + dump(self.libs[k], 2) for k in sorted(self.libs))
         text = (f'(kicad_sch (version 20230121) (generator eeschema)\n\n  (uuid {self.root})\n\n  (paper "A3")\n\n'
-                f'  (title_block\n    (title {q(self.title)})\n    (date {q(DATE)})\n    (rev "v1-starter")\n'
+                f'  (title_block\n    (title {q(self.title)})\n    (date {q(date)})\n    (rev {q(rev)})\n'
                 f'    (company "P01 Kel.5 PjBL DTEO FV ITS")\n{comments}\n  )\n\n'
                 f'  (lib_symbols\n{libs}\n  )\n\n' + "\n\n".join(self.items) +
                 '\n\n  (sheet_instances\n    (path "/" (page "1"))\n  )\n)\n')
@@ -484,7 +484,7 @@ def write_project(folder, name, root_uuid):
 def build_main(ltm):
     s = Sheet("ltm-main", "LTM - PCB Utama",
               ["Acuan: docs/skematik-v1.md", "Pin modul = susunan umum, CEK dengan modul yang dibeli",
-               "Format KiCad 7, dibuka KiCad 8/9 otomatis di-upgrade"], ltm)
+               "v2 (13/10/2026): disederhanakan, semua komponen kaki tembus"], ltm)
     G = 2.54
 
     # ---- 1. DAYA
@@ -492,16 +492,13 @@ def build_main(ltm):
     s.part("Connector_Generic:Conn_01x02", "J1", "BATERAI (dari BMS)", 30.48, 38.1, FP["XH2"], {"1": "BAT+", "2": "GND"})
     s.part("Switch:SW_SPDT", "SW1", "ON/OFF", 63.5, 38.1, FP["SLIDE"], {"2": "VBAT", "1": "BAT+", "3": None})
     s.part("Device:C_Polarized", "C1", "100uF/16V", 86.36, 38.1, FP["CP100"], {"1": "VBAT", "2": "GND"}, "right")
-    s.part("Device:C", "C2", "100nF", 99.06, 38.1, FP["C"], {"1": "VBAT", "2": "GND"}, "right")
     s.part("ltm:MP1584_Module", "U3", "MP1584 (5,0 V)", 63.5, 66.04, "ltm:MP1584_Module",
            {"1": "VBAT", "2": "GND", "3": "+5V_BUCK", "4": "GND"})
-    s.part("Device:D_Schottky", "D1", "SS14", 106.68, 66.04, FP["SS14"], {"2": "+5V_BUCK", "1": "+5V"})
-    s.part("Device:C_Polarized", "C3", "10uF/16V", 129.54, 66.04, FP["CP10"], {"1": "+5V", "2": "GND"}, "right")
-    s.part("Device:C", "C4", "100nF", 142.24, 66.04, FP["C"], {"1": "+5V", "2": "GND"}, "right")
+    s.part("Device:D_Schottky", "D1", "1N5819", 106.68, 66.04, FP["1N5819"], {"2": "+5V_BUCK", "1": "+5V"})
     s.part("Device:R", "R1", "100k", 30.48, 96.52, FP["R"], {"1": "VBAT", "2": "VBAT_SENSE"}, "right")
     s.part("Device:R", "R2", "33k", 48.26, 96.52, FP["R"], {"1": "VBAT_SENSE", "2": "GND"}, "right")
-    s.part("Device:C", "C5", "100nF", 66.04, 96.52, FP["C"], {"1": "VBAT_SENSE", "2": "GND"}, "right")
     s.text("Pembaca baterai: 8,4 V -> 2,08 V ke GPIO33", 20.32, 127.0)
+    s.text("Kapasitor kecil tidak dipasang: modul TB6612,\nMP1584, dan ESP32 sudah punya kapasitor sendiri", 20.32, 119.38)
     s.text("PWR_FLAG (untuk ERC)", 99.06, 91.44)
     s.flag("GND", 101.6, 96.52)
     s.flag("VBAT", 116.84, 96.52)
@@ -524,14 +521,11 @@ def build_main(ltm):
     s.part("ltm:TB6612_Module", "U2", "TB6612FNG", 304.8, 50.8, "ltm:TB6612_Module_2x8_W15.24",
            {"1": "PWMA", "2": "AIN2", "3": "AIN1", "4": "STBY", "5": "BIN1", "6": "BIN2", "7": "PWMB", "8": "GND",
             "9": "VBAT", "10": "+3V3", "11": "GND", "12": "ML_P", "13": "ML_N", "14": "MR_N", "15": "MR_P", "16": "GND"})
-    s.part("Device:C", "C6", "100nF", 294.64, 81.28, FP["C"], {"1": "+3V3", "2": "GND"}, "right")
     s.part("Connector_Generic:Conn_01x06", "J2", "MOTOR KIRI", 365.76, 45.72, FP["PH6"],
            {"1": "ML_P", "2": "+3V3", "3": "ENC_L_A", "4": "ENC_L_B", "5": "GND", "6": "ML_N"})
     s.part("Connector_Generic:Conn_01x06", "J3", "MOTOR KANAN", 365.76, 76.2, FP["PH6"],
            {"1": "MR_P", "2": "+3V3", "3": "ENC_R_A", "4": "ENC_R_B", "5": "GND", "6": "MR_N"})
-    for i, net in enumerate(("ENC_L_A", "ENC_L_B", "ENC_R_A", "ENC_R_B")):
-        s.part("Device:R", f"R{5 + i}", "10k", 327.66 + i * 17.78, 106.68, FP["R"], {"1": "+3V3", "2": net}, "right")
-    s.text("R5-R8 pull-up encoder: boleh tidak dipasang bila encoder sudah punya pull-up", 276.86, 124.46)
+    s.text("Encoder: pakai pull-up internal ESP32 (INPUT_PULLUP)", 276.86, 124.46)
     s.text("Urutan kabel N20 beda tiap penjual: cocokkan", 340.36, 91.44)
 
     # ---- 4. OLED + TOMBOL
@@ -565,7 +559,7 @@ def build_main(ltm):
         s.place("Mechanical:MountingHole", f"H{i + 1}", "M3", 332.74 + i * 13.97, 167.64, FP["HOLE"])
     s.text("H1-H2 rangka, H3-H4 bahu, H5-H6 spacer PCB sensor", 325.12, 185.42)
 
-    s.save(os.path.join(HW, "ltm-main", "ltm-main.kicad_sch"))
+    s.save(os.path.join(HW, "ltm-main", "ltm-main.kicad_sch"), rev="v2", date="2026-10-13")
     write_project(os.path.join(HW, "ltm-main"), "ltm-main", s.root)
     return s
 
@@ -610,9 +604,18 @@ def build_sensor(ltm):
 
 
 if __name__ == "__main__":
-    ltm = build_library()
-    build_footprints()
-    sheets = {"ltm-main": build_main(ltm), "ltm-sensor": build_sensor(ltm)}
-    expect = {k: {f"{r}.{p}": n for (r, p), n in v.expect.items()} for k, v in sheets.items()}
-    json.dump(expect, open(os.path.join(HW, "tools", "expected_nets.json"), "w"), indent=1, sort_keys=True)
+    # tanpa argumen: semua (library, footprint, dua skematik). "main": skematik PCB utama saja
+    # (library & PCB sensor tidak disentuh, UUID-nya tetap cocok dengan .kicad_pcb sensor)
+    exp_path = os.path.join(HW, "tools", "expected_nets.json")
+    if sys.argv[1:] == ["main"]:
+        ltm = parse(open(os.path.join(HW, "ltm-lib", "ltm.kicad_sym")).read())
+        sheets = {"ltm-main": build_main(ltm)}
+        expect = json.load(open(exp_path))
+    else:
+        ltm = build_library()
+        build_footprints()
+        sheets = {"ltm-main": build_main(ltm), "ltm-sensor": build_sensor(ltm)}
+        expect = {}
+    expect.update({k: {f"{r}.{p}": n for (r, p), n in v.expect.items()} for k, v in sheets.items()})
+    json.dump(expect, open(exp_path, "w"), indent=1, sort_keys=True)
     print("ok")
