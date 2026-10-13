@@ -15,6 +15,7 @@ v11 dengan ujung depan jangkar dimundurkan 20 mm (`F` 132 → 112). Belum dipaka
 - R1–R10 sebaris di bawah pangkal leher, R11/R12/Q1/C1 di depannya: posisi usulan, belum dirouting.
 - Ini batas terpendek tanpa mengubah PCB utama (J5 dan tombol A/B ada di hidung PCB utama). Kalau mau lebih
   pendek (sensor ±80 mm dari poros), hidung PCB utama ikut dirombak.
+- Model 3D yang bisa diputar: https://claude.ai/artifact/MjwounZ25sDKUH1FWent3d
 - File: `cadquery/ltm_v12.py`, `LTM_v12.step`, `render/ltm-v12-*.png`. Cek tabrakan antar bagian: tidak ada
   tabrakan baru dibanding v11.
 
