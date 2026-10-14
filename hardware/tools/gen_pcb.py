@@ -13,7 +13,7 @@ FreeRouting (FREEROUTING_JAR):
     python3 hardware/tools/gen_pcb.py main       # PCB utama saja
 PERINGATAN: menjalankan ulang MENIMPA .kicad_pcb (jalur yang diedit manual hilang).
 """
-import math, os, re, shutil, subprocess, sys
+import json, math, os, re, shutil, subprocess, sys
 import pcbnew
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -25,8 +25,37 @@ LTM_PRETTY = os.path.join(HW, "ltm-lib", "ltm.pretty")
 FREEROUTING = os.environ.get("FREEROUTING_JAR", "/opt/freerouting/freerouting.jar")
 JAVA = os.environ.get("JAVA", shutil.which("java") or "java")
 WORK = os.environ.get("LTM_WORK", os.path.join(HW, "build"))
+FR_ARGS = os.environ.get("LTM_FR_ARGS", "").split()        # argumen tambahan FreeRouting (eksperimen)
+ROUNDS = int(os.environ.get("LTM_ROUNDS", "3"))              # ronde FreeRouting (hasil diumpankan lagi)
 OX, OY = 100.0, 150.0
 mm = pcbnew.FromMM
+# aturan cetak PCB di tempat user (13/10/2026): jalur minimal 0,8 mm. Jarak 0,5 mm dan via 1,6/0,8 mm =
+# asumsi aman untuk cetak lokal (cek ke tempat cetak).
+FAB = dict(track=0.8, power=1.2, clearance=0.5, via=1.6, via_drill=0.8, edge=0.5)
+DRU = """(version 1)
+
+# Pad GND yang dikepung jalur boleh tersambung ke pour dengan 1 spoke (jalur GND tetap ada)
+(rule "spoke_min_1"
+  (constraint min_resolved_spokes 1))
+
+# Tab logam saklar geser (tanpa net) bawaan footprint berjarak 0,25 mm dari kaki 1/3. Kalau tersambung
+# saat dicetak tidak apa-apa: tab hanya pegangan mekanik.
+(rule "tab_saklar_SW1"
+  (condition "A.Type == 'Pad' && B.Type == 'Pad' && A.intersectsCourtyard('SW1') && B.intersectsCourtyard('SW1')")
+  (constraint clearance (min 0.2mm)))
+"""
+
+
+def fab_project(pro_path):
+    """tulis aturan FAB ke net class & aturan desain di .kicad_pro (dibaca pcbnew.NewBoard)"""
+    pro = json.load(open(pro_path))
+    for c in pro["net_settings"]["classes"]:
+        c.update(clearance=FAB["clearance"], via_diameter=FAB["via"], via_drill=FAB["via_drill"],
+                 track_width=FAB["power"] if c["name"] == "Power" else FAB["track"])
+    pro.setdefault("board", {}).setdefault("design_settings", {}).setdefault("rules", {}).update(
+        min_clearance=FAB["clearance"], min_track_width=FAB["track"], min_via_diameter=FAB["via"],
+        min_copper_edge_clearance=FAB["edge"])
+    json.dump(pro, open(pro_path, "w"), indent=2)
 
 
 def P(x, y):
@@ -112,6 +141,8 @@ class Board:
         self.comps, self.pinnet = read_netlist(net_path)
         if os.path.exists(self.path):
             os.remove(self.path)
+        fab_project(os.path.join(self.dir, name + ".kicad_pro"))
+        open(os.path.join(self.dir, name + ".kicad_dru"), "w").write(DRU)
         self.b = pcbnew.NewBoard(self.path)          # memuat net class dari .kicad_pro
         self.b.SetFileName(self.path)                # dipakai DRC untuk membaca .kicad_dru
         self.nets = {}
@@ -132,12 +163,12 @@ class Board:
     # -------------------------------------------------- aturan desain
     def rules(self):
         ds = self.b.GetDesignSettings()
-        ds.m_MinClearance = mm(0.2)
-        ds.m_TrackMinWidth = mm(0.2)
-        ds.m_ViasMinSize = mm(0.5)
+        ds.m_MinClearance = mm(FAB["clearance"])
+        ds.m_TrackMinWidth = mm(FAB["track"])
+        ds.m_ViasMinSize = mm(FAB["via"])
         ds.m_MinThroughDrill = mm(0.3)
         ds.m_ViasMinAnnularWidth = mm(0.13)
-        ds.m_CopperEdgeClearance = mm(0.3)
+        ds.m_CopperEdgeClearance = mm(FAB["edge"])
         ds.m_HoleClearance = mm(0.25)
         ds.m_HoleToHoleMin = mm(0.5)
         ds.m_SilkClearance = mm(0.0)
@@ -305,13 +336,6 @@ class Board:
             layer = pcbnew.B_Cu if fp.IsFlipped() else pcbnew.F_Cu
             self.keepout(X0, Y0, X1, Y1, f"celah pad {ref}", pour=False, layers=(layer,))
 
-    def check_pair(self, other, ref_a, ref_b):
-        """pastikan pad header antar papan berada di posisi yang sama"""
-        for p in self.fps[ref_a].Pads():
-            q = next(q for q in other.fps[ref_b].Pads() if q.GetNumber() == p.GetNumber())
-            if p.GetPosition() != q.GetPosition():
-                raise SystemExit(f"posisi pin {ref_a}.{p.GetNumber()} != {ref_b}.{q.GetNumber()}")
-
     def pad_xy(self, ref, num):
         for p in self.fps[ref].Pads():
             if p.GetNumber() == num:
@@ -385,41 +409,55 @@ class Board:
         z.SetNet(self.nets["GND"])
         z.SetZoneName("GND " + ("atas" if layer == pcbnew.F_Cu else "bawah"))
         z.SetAssignedPriority(prio)
-        z.SetLocalClearance(mm(0.3))
-        z.SetMinThickness(mm(0.25))
+        z.SetLocalClearance(mm(FAB["clearance"]))
+        z.SetMinThickness(mm(FAB["track"]))
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_THERMAL)
-        z.SetThermalReliefGap(mm(0.4))
-        z.SetThermalReliefSpokeWidth(mm(0.5))
+        z.SetThermalReliefGap(mm(FAB["clearance"]))
+        z.SetThermalReliefSpokeWidth(mm(FAB["track"]))
         z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
         self.b.Add(z)
         return z
 
     # -------------------------------------------------- routing
-    def autoroute(self, passes=40, thin_nets=()):
-        """thin_nets: net Power yang dirouting dengan lebar default (mis. GND: nanti dibantu pour)"""
+    def autoroute(self, passes=40, thin_nets=(), rounds=1):
+        """thin_nets: net Power yang dirouting dengan lebar default (mis. GND: nanti dibantu pour).
+        rounds > 1: hasil diumpankan lagi ke FreeRouting (jalur lama boleh dibongkar) sampai semua tersambung"""
         dsn = os.path.join(WORK, self.name + ".dsn")
         ses = os.path.join(WORK, self.name + ".ses")
-        if os.path.exists(ses):
-            os.remove(ses)
-        if not pcbnew.ExportSpecctraDSN(self.b, dsn):
-            raise SystemExit("ekspor DSN gagal")
-        if thin_nets:                                 # pindahkan net dari class Power ke class default
-            txt = open(dsn).read()
-            i = txt.index("(class Power ") + len("(class Power ")
-            j = txt.index("(circuit", i)
-            names = [n for n in txt[i:j].split() if n not in thin_nets]
-            txt = txt[:i] + " ".join(names) + "\n      " + txt[j:]
-            i = txt.index('(class kicad_default ""')
-            j = txt.index("(circuit", i)
-            txt = txt[:j] + " ".join(thin_nets) + "\n      " + txt[j:]
-            open(dsn, "w").write(txt)
-        cmd = [JAVA, "-jar", FREEROUTING, "-de", dsn, "-do", ses, "-mp", str(passes), "-mt", "1",
-               "--gui.enabled=false", "--router.automatic_neckdown=false"]
-        r = subprocess.run(cmd, capture_output=True, text=True, cwd=WORK)
-        open(os.path.join(WORK, self.name + ".freerouting.log"), "w").write(r.stdout + r.stderr)
-        if not os.path.exists(ses):
-            raise SystemExit("FreeRouting tidak menghasilkan SES, lihat log di " + WORK)
-        return import_ses(self, ses)
+        for k in range(rounds):
+            if os.path.exists(ses):
+                os.remove(ses)
+            if not pcbnew.ExportSpecctraDSN(self.b, dsn):
+                raise SystemExit("ekspor DSN gagal")
+            if thin_nets:                                 # pindahkan net dari class Power ke class default
+                txt = open(dsn).read()
+                i = txt.index("(class Power ") + len("(class Power ")
+                j = txt.index("(circuit", i)
+                names = [n for n in txt[i:j].split() if n not in thin_nets]
+                txt = txt[:i] + " ".join(names) + "\n      " + txt[j:]
+                i = txt.index('(class kicad_default ""')
+                j = txt.index("(circuit", i)
+                txt = txt[:j] + " ".join(thin_nets) + "\n      " + txt[j:]
+                open(dsn, "w").write(txt)
+            if k == 0:
+                shutil.copy(dsn, os.path.join(WORK, self.name + "-r1.dsn"))
+            cmd = [JAVA, "-jar", FREEROUTING, "-de", dsn, "-do", ses, "-mp", str(passes), "-mt", "1",
+                   "--gui.enabled=false", "--router.automatic_neckdown=false",
+                   # via murah: dengan jalur 0,8 mm router perlu bebas pindah lapisan (default berhenti di 1-7 sisa)
+                   "--router.scoring.via_costs=10"] + FR_ARGS
+            r = subprocess.run(cmd, capture_output=True, text=True, cwd=WORK)
+            open(os.path.join(WORK, f"{self.name}.freerouting{k + 1}.log"), "w").write(r.stdout + r.stderr)
+            if not os.path.exists(ses):
+                raise SystemExit("FreeRouting tidak menghasilkan SES, lihat log di " + WORK)
+            for t in list(self.b.GetTracks()):        # SES berisi seluruh jalur: ganti jalur lama
+                self.b.Remove(t)
+            n = import_ses(self, ses)
+            self.b.BuildConnectivity()
+            left = self.b.GetConnectivity().GetUnconnectedCount(False)
+            print(f"    ronde {k + 1}: {n[0]} segmen, {n[1]} via, belum tersambung {left}")
+            if left == 0:
+                break
+        return n
 
     def fill_and_check(self):
         rpt = os.path.join(WORK, self.name + "-drc.rpt")
@@ -466,7 +504,7 @@ def import_ses(brd, ses_path):
             for w in find(net, "wire"):
                 path = find(w, "path")[0]
                 layer = layer_id[path[1].strip('"')]
-                width = max(mm(float(path[2]) * scale), mm(0.2))
+                width = max(mm(float(path[2]) * scale), mm(FAB["track"]))
                 xy = path[3:]
                 pts = [pt(xy[i], xy[i + 1]) for i in range(0, len(xy) - 1, 2)]
                 for a, b in zip(pts, pts[1:]):
@@ -498,23 +536,23 @@ def import_ses(brd, ses_path):
 MAIN_PTS = [(-36, 8), (36, 8), (36, 18), (47, 22), (47, 62), (28, 86), (13, 92), (-13, 92), (-28, 86),
             (-47, 62), (-47, 22), (-36, 18)]
 HOLES_MAIN = {"H1": (-32, 16), "H2": (32, 16),          # standoff ke dudukan baterai (sama dengan model)
-              "H3": (-37.5, 69), "H4": (37.5, 69),      # bahu depan
-              "H5": (-10.5, 83), "H6": (10.5, 83)}      # spacer ke PCB sensor
+              "H3": (-37.5, 69), "H4": (37.5, 69)}      # bahu depan + dudukan 3D print PCB sensor
 # v2 (13/10/2026): ESP32 keluar dari bawah dudukan baterai (dudukan berakhir di Y 30) dan dipasang di socket
 # female; buck, dioda, dan pembaca baterai pindah ke bawah dudukan baterai; kapasitor kecil & pull-up dibuang.
 MAIN_PLACE = {
     # ref: (X, Y, rotasi)  = posisi ORIGIN footprint (pin 1 untuk konektor), koordinat mekanik
     "U1": (-24.6, 44.4, 270),   # ESP32 melintang, USB ke kiri (-X), antena ke kanan;
                                 # baris pin 1-15 di depan (Y 57,1), 16-30 di belakang (Y 31,7)
-    "U2": (-0.5, 69.15, 0),      # TB6612 tengah depan: kolom kiri = input, kolom kanan = VM/VCC/GND/output
+    "U2": (-0.5, 70.8, 0),      # TB6612 tengah depan: kolom kiri = input, kolom kanan = VM/VCC/GND/output
     "U3": (0.0, 21.1, 180),     # MP1584 di bawah dudukan baterai: IN di kanan, OUT di kiri
     "J4": (24.29, 62.55, 90),   # socket OLED, header OLED di sisi depan (tampilan tegak, tidak diputar)
-    "J5": (-5.08, 81.23, 90),   # lubang tembus pin header PCB sensor
+    "J5": (-6.35, 85.8, 90),    # box header IDC 2x6 ke kabel pita PCB sensor (baris belakang = 6 sinyal)
+    "R5": (-13.75, 80.6, 90), "R6": (13.75, 80.6, 90),     # pull-up tombol (GPIO34/35)
     "SW2": (-23.25, 85.25, 0), "SW3": (16.75, 85.25, 0),
-    "BZ1": (-29.8, 70.0, 0), "Q1": (-16.5, 74.5, 0), "R3": (-16.5, 61.0, 90), "R4": (-13.5, 61.0, 90),
+    "BZ1": (-29.8, 70.0, 0), "Q1": (-18.4, 74.5, 0), "R3": (-16.5, 61.0, 90), "R4": (-13.5, 61.0, 90),
     "J2": (-27.0, 11.3, 0), "J3": (17.0, 11.3, 0),           # motor kiri / kanan
-    "J1": (42.9, 25.6, 90),     # baterai (dari BMS), tepi kanan di luar dudukan baterai
-    "SW1": (44.8, 35.0, 90),    # saklar geser di tepi kanan (di bawah OLED), tuas keluar ke +X
+    "J1": (43.6, 28.1, 270),    # baterai (dari BMS), tepi kanan di luar dudukan baterai; pin 1 (BAT+) di depan
+    "SW1": (44.6, 35.0, 90),    # saklar geser di tepi kanan (di bawah OLED), tuas keluar ke +X
     "D1": (-25.0, 17.5, 0),
     "R1": (17.0, 26.0, 0), "R2": (17.0, 21.0, 0),
     "C1": (12.4, 75.5, 0),      # dekat pin VM TB6612
@@ -536,8 +574,8 @@ def build_main(route=True):
     left = sorted(set(b.comps) - set(MAIN_PLACE))
     if left:
         raise SystemExit(f"komponen belum ditempatkan: {left}")
-    x0, y0, x1, y1 = ANTENNA
-    b.keepout(x0, y0 + 4, x1, y1 - 4, "antena ESP32")                 # tanpa jalur, via, pour
+    # antena ESP32: modul di socket 8,5 mm (antena +-10 mm di atas tembaga), jadi jalur boleh lewat di bawahnya;
+    # pour GND tetap dikosongkan (keepout dipasang setelah routing)
 
     # ---- silkscreen: blok (kotak + nama). Modul bersocket: nama di dalam garis modul (terbaca saat dicabut)
     T, L = b.text, b.line
@@ -552,8 +590,8 @@ def build_main(route=True):
     T("OUT", -6.0, 21.1, 0.9)
     T("BACA BATERAI", 20.8, 29.0, 0.8)
     T("BATERAI", 37.9, 26.9, 0.9, 90)
-    T("+", 39.3, 25.6, 1.3, bold=True)
-    T("-", 39.3, 28.1, 1.3, bold=True)
+    T("+", 39.1, 28.1, 1.3, bold=True)
+    T("-", 39.1, 25.6, 1.3, bold=True)
     T("SAKLAR", 40.4, 37.0, 0.9, 90)
     T("MOTOR", -31.6, 11.2, 0.8)
     T("KIRI", -31.6, 9.8, 0.8)
@@ -571,8 +609,6 @@ def build_main(route=True):
     T("SUARA", -26.0, 61.4, 1.0, bold=True)
     T("A", -26.5, 83.0, 1.6, bold=True)
     T("B", 26.5, 83.0, 1.6, bold=True)
-    T("KE SENSOR", 0.0, 86.6, 0.9)
-    T("LINE TRACER MICRO v2", 0.0, 89.3, 1.0, bold=True)
     # peta alur daya di depan kanan (tetap terlihat setelah robot dirakit)
     T("ALUR DAYA", 25.6, 77.6, 0.9, bold=True)
     T("BATERAI", 22.4, 75.5, 0.8)
@@ -607,7 +643,7 @@ def build_main(route=True):
     b.auto_refs(hide=tuple(HOLES_MAIN) + ("J5",), inside=("U1", "U2", "U3"))
 
     if route:
-        print("  routing ltm-main ...", b.autoroute(40, thin_nets=("GND",)))
+        print("  routing ltm-main ...", b.autoroute(100, thin_nets=("GND", "/BAT+"), rounds=ROUNDS))
     b.keepout(*ANTENNA, "antena ESP32 (tanpa pour)", tracks=False)
     b.gnd_pour(pcbnew.F_Cu)
     b.gnd_pour(pcbnew.B_Cu)
@@ -617,29 +653,35 @@ def build_main(route=True):
 
 
 # ================================================================== PCB SENSOR
-F_TIP = 132.0
-# outline = R_HALF di ltm_v11.py; pangkal leher dilebarkan ke ±14 untuk lubang spacer (fillet 1,2)
-SB_HALF = [(0, F_TIP), (26, F_TIP - 2), (46, F_TIP - 30), (32.5, F_TIP - 30), (20, F_TIP - 12.6),
-           (7, F_TIP - 11.6), (7, 90), (14, 90), (14, 79)]
-SB_PTS = SB_HALF[:-1] + [(14, 79)] + [(-x, y) for x, y in reversed(SB_HALF)][:-1]
-SENS = [(-20, F_TIP - 8.0, 6), (-10, F_TIP - 6.0, 4), (0, F_TIP - 4.5, 0), (10, F_TIP - 6.0, -4),
-        (20, F_TIP - 8.0, -6)]
+# v2 (13/10/2026): batang lurus 16 sensor (jarak 6 mm) di dudukan 3D print di depan PCB utama, disambung kabel
+# pita 12 pin. ITR20001 di sisi bawah; LED indikator + resistornya di atas; pull-up & resistor LED IR di bawah;
+# modul mux, MCP23017 (socket), dan J1 di bagian belakang batang.
+F_TIP = 137.0
+SB_PTS = [(-55, 86), (55, 86), (55, F_TIP), (-55, F_TIP)]
+SX = [-48.75 + 6.5 * i for i in range(16)]    # X sensor S1 (kiri) .. S16 (kanan); jarak 6,5: 1 jalur muat di sela
+SY = F_TIP - 4.0                               # Y baris sensor
+MUX_X = -8.5                                   # X kaki C0 modul mux
 SENSOR_PLACE = {
     # ref: (X, Y, rotasi, sisi)
-    "J1": (-5.08, 81.23, 90, "F"),          # pin header male, pin panjang ke atas menembus J5 PCB utama
-    "H1": (-10.5, 83, 0, "F"), "H2": (10.5, 83, 0, "F"),
-    "C1": (0, 87.6, 0, "B"),
-    "Q1": (0, 92.2, 0, "B"), "R11": (-4.3, 92.2, 90, "B"), "R12": (4.3, 92.2, 90, "B"),
-    **{f"U{i + 1}": (x, y, a, "B") for i, (x, y, a) in enumerate(SENS)},   # sensor menghadap lantai
-    **{f"R{1 + i}": (-3.4, 113.0 - 4.0 * i, 90, "B") for i in range(5)},  # 180R LED, R1 paling atas
-    **{f"R{10 - i}": (3.4, 113.0 - 4.0 * i, 90, "B") for i in range(5)},  # 10k pull-up, R10 paling atas
+    # sensor menghadap lantai, diputar: kaki A/K (LED IR) di depan, C/E (fototransistor) di belakang
+    **{f"U{k + 1}": (SX[k], SY, 270, "B") for k in range(16)},
+    **{f"D{k + 1}": (SX[k], SY - 4.8, 0, "F") for k in range(16)},        # LED indikator di belakang sensor
+    **{f"R{25 + k}": (SX[k], SY - 8.0, 0, "F") for k in range(16)},       # resistor LED 330R
+    **{f"R{9 + k}": (MUX_X + 2.54 * k, 108.5, 90, "B") for k in range(16)},  # pull-up 10k, di bawah kaki C0-C15
+    **{f"R{j + 1}": (SX[2 * j] - 3.25, SY, 90, "F") for j in range(8)},   # LED IR 120R, di sela antar pasangan
+    "U18": (-46.5, 95.5, 90, "F"),     # MCP23017 DIP-28: GPA di baris depan, GPB di baris belakang
+    "U17": (MUX_X, 112.5, 0, "F"),     # modul mux: C0-C15 di baris depan, SIG..GND di belakang
+    "J1": (44.5, 114.3, 0, "F"),       # box header IDC 2x6 (berdiri): kolom dalam = sinyal, kolom luar = daya
+    "C1": (MUX_X + 25.4, 93.0, 0, "F"), "C2": (-26.18, 91.5, 0, "F"),
+    "Q1": (37.5, 104.0, 0, "B"), "R41": (34.0, 104.0, 90, "B"), "R42": (37.5, 108.5, 0, "B"),
+    "H1": (-52.0, 92.5, 0, "F"), "H2": (52.0, 92.5, 0, "F"),            # baut ke lengan dudukan 3D print
 }
 
 
 def build_sensor(route=True):
-    b = Board("ltm-sensor", "LTM - PCB Sensor Jangkar")
+    b = Board("ltm-sensor", "LTM - PCB Sensor 16 titik", rev="v2", date="2026-10-13", mech="v12")
     b.rules()
-    b.outline(SB_PTS, 1.2)
+    b.outline(SB_PTS, 2.0)
     for ref, (x, y, r, side) in SENSOR_PLACE.items():
         b.place(ref, x, y, r, side)
     left = sorted(set(b.comps) - set(SENSOR_PLACE))
@@ -647,16 +689,16 @@ def build_sensor(route=True):
         raise SystemExit(f"komponen belum ditempatkan: {left}")
 
     T = b.text
-    T("LINE TRACER MICRO", 0.0, 106.0, 1.5, 90, bold=True)
-    for i, (x, y, a) in enumerate(SENS):
-        T(str(i + 1), x - 4.3, y, 1.2, bold=True)
-    T("P01 KEL.5", -33.5, 110.0, 1.3, 54.4, bold=True)
-    T("PjBL DTEO ITS", 33.5, 110.0, 1.1, -54.4)
+    for k, x in enumerate(SX):
+        T(str(k + 1), x, F_TIP - 1.3, 0.9, bold=True)
+    T("LINE TRACER MICRO  SENSOR 16", 0.0, 118.6, 1.3, bold=True)
+    T("MCP23017 (LED)", -30.5, 106.6, 1.0)
+    T("MUX 16 KANAL", 11.0, 104.0, 1.0)
+    T("KABEL KE PCB UTAMA", 38.4, 107.5, 0.8, 90)
     b.auto_refs(hide=("H1", "H2"))
-    b.no_track_between_pads(("R", "C"))
 
     if route:
-        print("  routing ltm-sensor ...", b.autoroute(40, thin_nets=("GND",)))
+        print("  routing ltm-sensor ...", b.autoroute(100, thin_nets=("GND", "+5V", "/LED_K"), rounds=ROUNDS))
     b.gnd_pour(pcbnew.F_Cu)
     b.gnd_pour(pcbnew.B_Cu)
     rpt = b.fill_and_check()
@@ -683,6 +725,9 @@ if __name__ == "__main__":
         boards[w] = brd
         kinds, unc = summary(rpt)
         print(f"  DRC: {kinds or 'bersih'}; unconnected: {unc}; laporan: {rpt}")
-    if len(boards) == 2:
-        boards["main"].check_pair(boards["sensor"], "J5", "J1")
-        print("  posisi pin J5 (utama) = J1 (sensor): cocok")
+    if len(boards) == 2:          # kabel pita lurus: pin n J5 = pin n J1
+        a, c = boards["main"].pinnet, boards["sensor"].pinnet
+        bad = [n for n in map(str, range(1, 13)) if a[("J5", n)].lstrip("/") != c[("J1", n)].lstrip("/")]
+        if bad:
+            raise SystemExit(f"pin kabel pita tidak cocok: {bad}")
+        print("  net pin J5 (utama) = J1 (sensor): cocok")

@@ -1,6 +1,6 @@
-# Model 3D Robot Line Tracer Micro v12 = v11 dengan leher PCB sensor dipendekkan 20 mm (usulan 13/10/2026,
-# PCB sensor belum diubah) + PCB utama v2 (13/10/2026: ESP32 & TB6612 & OLED di socket, ESP32 keluar dari bawah
-# dudukan baterai, buck di bawah dudukan baterai). Basis v11 (livery navy-merah-kuning, roda kecil), gaya jangkar (referensi R3D Maker + LF edukasi 14 sensor
+# Model 3D Robot Line Tracer Micro v12 (13/10/2026) = v11 dengan PCB utama v2 (ESP32 & TB6612 & OLED di socket,
+# ESP32 keluar dari bawah dudukan baterai, buck di bawah dudukan baterai) + PCB sensor batang 16 titik (mux +
+# LED indikator) di dudukan 3D print, disambung kabel pita 12 pin. Basis v11 (livery navy-merah-kuning, roda kecil), gaya jangkar (referensi R3D Maker + LF edukasi 14 sensor
 # + model Inventor kelompok). Sumbu: X kanan, Y maju, Z atas; nol = lantai di bawah tengah poros.
 # 11/10/2026 sore: posisi komponen, lubang, dan outline PCB disamakan dengan layout PCB v1-draft
 # (hardware/tools/gen_pcb.py memakai koordinat yang sama: MAIN_PLACE, HOLES_MAIN, SB_HALF, SENSOR_PLACE).
@@ -95,7 +95,7 @@ MAIN_PTS = [(-36, 8), (36, 8), (36, 18), (47, 22), (47, 62), (28, 86), (13, 92),
             (-13, 92), (-28, 86), (-47, 62), (-47, 22), (-36, 18)]
 main = cq.Workplane("XY").polyline(MAIN_PTS).close().extrude(T).translate((0, 0, PCB_Z))
 main = try_fillet(main, "|Z", 2.5)
-HOLES_MAIN = [(-32, 16), (32, 16), (-37.5, 69), (37.5, 69), (-10.5, 83), (10.5, 83)]   # = gen_pcb.py
+HOLES_MAIN = [(-32, 16), (32, 16), (-37.5, 69), (37.5, 69)]   # = gen_pcb.py (H3/H4 juga untuk dudukan PCB sensor)
 for hx, hy in HOLES_MAIN:
     main = main.cut(cyl_z(hx, hy, PCB_Z - 1, T + 2, 1.6))
 add("PCB utama", main, "pcb")
@@ -107,11 +107,10 @@ add("Pad lubang", gold, "gold")
 silk = None
 for x in (-20, 20):                                   # tombol
     silk = U(silk, frame_rect(x, 83, 9, 9, 0, TOP))
-silk = U(silk, frame_rect(-0.5, 69.15, 20.4, 20.3, 0, TOP, 0.15))      # garis modul TB6612
+silk = U(silk, frame_rect(-0.5, 70.8, 20.4, 20.3, 0, TOP, 0.15))      # garis modul TB6612
 silk = U(silk, frame_rect(-22.3, 68.8, 21.8, 18.8, 0, TOP, 0.15))      # kotak blok SUARA
 silk = U(silk, frame_rect(26.1, 46.25, 31.0, 29.3, 0, TOP, 0.15))      # kotak blok LAYAR (di bawah OLED)
 for t in (text("A", 2.2, -26.5, 83, TOP), text("B", 2.2, 26.5, 83, TOP),
-          text("LINE TRACER MICRO v2", 1.4, 0, 89.3, TOP), text("KE SENSOR", 1.1, 0, 86.6, TOP),
           text("SUARA", 1.3, -26.0, 61.4, TOP), text("ALUR DAYA", 1.2, 25.6, 77.6, TOP),
           text("BATERAI", 1.0, 22.4, 75.5, TOP), text("SAKLAR", 1.0, 22.4, 72.4, TOP),
           text("BUCK 5V", 1.0, 22.4, 69.3, TOP), text("MOTOR", 1.0, 30.6, 69.3, TOP),
@@ -119,13 +118,10 @@ for t in (text("A", 2.2, -26.5, 83, TOP), text("B", 2.2, 26.5, 83, TOP),
           text("KIRI", 1.1, -31.6, 9.9, TOP), text("KANAN", 1.1, 31.6, 9.9, TOP)):
     silk = U(silk, t)
 add("Silkscreen utama", silk, "silk")
-# ujung pin header PCB sensor yang menembus J5 (disolder di atas PCB utama)
-j5 = None
-for k in range(5):
-    for y in (81.23, 83.77):
-        x = -5.08 + 2.54 * k
-        j5 = U(j5, cyl_z(x, y, TOP, 0.25, 0.85).union(box(x - 0.32, x + 0.32, y - 0.32, y + 0.32, TOP, TOP + 1.6)))
-add("Pin J5 (tembus)", j5, "gold")
+# J5: box header IDC 2x6 untuk kabel pita ke PCB sensor (pin 1 di (-6,35; 85,8))
+idc = box(-11.7, 11.7, 82.3, 91.8, TOP, TOP + 9.0).cut(box(-8.9, 8.9, 83.7, 90.4, TOP + 2.0, TOP + 9.5)).cut(
+    box(-2.25, 2.25, 81.7, 82.8, TOP + 2.0, TOP + 9.5))
+add("Box header IDC J5", idc, "black_plastic")
 
 SOCK = 8.5                         # tinggi socket header female (ESP32, TB6612, OLED bisa dicabut)
 # ---------- ESP32 DevKit (PCB v2: melintang di depan dudukan baterai, USB ke kiri, di socket) ----------
@@ -165,9 +161,9 @@ add("OLED tampilan", bars, "screen")
 
 # ---------- driver (tengah depan, di socket) & buck (di bawah dudukan baterai, disolder) ----------
 for xc in (-8.12, 7.12):           # 2 socket 1x8
-    add("TB6612 socket", box(xc - 1.27, xc + 1.27, 58.99, 79.31, TOP, TOP + SOCK), "black_plastic")
-add("TB6612 PCB", box(-10.65, 9.65, 59.0, 79.3, TOP + SOCK, TOP + SOCK + 1.6), "pcb_purple")
-add("TB6612 chip", box(-3.75, 2.75, 66.4, 71.9, TOP + SOCK + 1.6, TOP + SOCK + 2.7), "black_plastic")
+    add("TB6612 socket", box(xc - 1.27, xc + 1.27, 60.64, 80.96, TOP, TOP + SOCK), "black_plastic")
+add("TB6612 PCB", box(-10.65, 9.65, 60.65, 80.95, TOP + SOCK, TOP + SOCK + 1.6), "pcb_purple")
+add("TB6612 chip", box(-3.75, 2.75, 68.05, 73.55, TOP + SOCK + 1.6, TOP + SOCK + 2.7), "black_plastic")
 add("MP1584 PCB", box(-11, 11, 12.6, 29.6, TOP + 2.5, TOP + 4.1), "pcb_blue")
 add("MP1584 pin", box(-11, -8.5, 13.6, 28.6, TOP, TOP + 2.5).union(box(8.5, 11, 13.6, 28.6, TOP, TOP + 2.5)), "black_plastic")
 add("MP1584 induktor", box(-3, 3, 18.1, 24.1, TOP + 4.1, TOP + 8.1), "black_plastic")
@@ -187,67 +183,121 @@ for x0, x1 in ((-28.95, -15.05), (15.05, 28.95)):     # konektor motor JST PH 6 
     add("JST PH motor", box(x0, x1, 8.5, 13.0, TOP, TOP + 6), "jst")
 # komponen kecil (posisi = MAIN_PLACE di gen_pcb.py), semua kaki tembus
 res = None
-for xc, yc, along_y in ((20.81, 26.0, 0), (20.81, 21.0, 0), (-16.5, 64.81, 1), (-13.5, 64.81, 1)):    # R1 R2 R3 R4
+for xc, yc, along_y in ((20.81, 26.0, 0), (20.81, 21.0, 0), (-16.5, 64.81, 1), (-13.5, 64.81, 1),     # R1-R4
+                       (-13.75, 84.41, 1), (13.75, 84.41, 1)):                                          # R5 R6
     r_ = cyl_y(yc - 3.15, yc + 3.15, xc, TOP + 1.25, 1.25) if along_y else cyl_x(xc - 3.15, xc + 3.15, yc, TOP + 1.25, 1.25)
     res = U(res, r_)
 add("Resistor THT", res, "resistor")
 add("Elko C1 100uF", cyl_z(13.65, 75.5, TOP + 0.3, 10.7, 3.15), "elko")
 add("Elko C1 100uF tutup", cyl_z(13.65, 75.5, TOP + 11.0, 0.15, 2.85), "shield")
-to92 = cyl_z(-15.23, 74.9, TOP + 3.0, 4.5, 2.3).intersect(box(-17.63, -12.83, 73.8, 77.3, TOP + 2.9, TOP + 7.6))
+to92 = cyl_z(-15.86, 74.9, TOP + 3.0, 4.5, 2.3).intersect(box(-18.26, -13.46, 73.8, 77.3, TOP + 2.9, TOP + 7.6))
 add("Transistor S8050", to92, "black_plastic")
 add("Dioda 1N5819", cyl_x(-22.5, -17.3, 17.5, TOP + 1.35, 1.35), "black_plastic")
 add("Dioda 1N5819 cincin", cyl_x(-22.2, -21.5, 17.5, TOP + 1.35, 1.38), "silk")
 
-# ---------- bawah PCB utama: ball caster, header antar papan, spacer ----------
+# ---------- bawah PCB utama: ball caster ----------
 add("Ball caster rumah", cyl_z(0, 62, 4.6, PCB_Z - 4.6, 5.5), "black_plastic")
 add("Ball caster bola", cq.Workplane("XY").sphere(3.0).translate((0, 62, 3.0)), "chrome")
-add("Header antar papan", box(-6.35, 6.35, 79.96, 85.04, SB_Z + T, PCB_Z), "black_plastic")
-for x in (-10.5, 10.5):
-    add("Spacer nilon", cyl_z(x, 83, SB_Z + T, PCB_Z - SB_Z - T, 2.6), "nylon")
-    add("Baut M3", cyl_z(x, 83, TOP, 1.8, 2.7), "chrome")
 
-# ============================== PCB SENSOR (jangkar + leher) ==============================
-F = 112.0                                     # ujung depan jangkar (v11: 132; v12: leher dipendekkan 20 mm)
-D = (0.581, -0.814)                           # arah lengan (±54° ke belakang)
-ARM_ANG = math.degrees(math.atan2(D[1], D[0]))
-R_HALF = [(0, F), (26, F - 2), (46, F - 30), (32.5, F - 30), (20, F - 12.6), (7, F - 11.6), (7, 90), (14, 90), (14, 79)]
-pts = R_HALF + [(-x, y) for x, y in reversed(R_HALF)]
-pts = [p for i, p in enumerate(pts) if i == 0 or p != pts[i - 1]]
-if pts[-1] == pts[0]:
-    pts = pts[:-1]
-sb = cq.Workplane("XY").polyline(pts).close().extrude(T)
-sb = try_fillet(sb, "|Z", 1.2)
-for x in (-10.5, 10.5):
-    sb = sb.cut(cyl_z(x, 83, -1, 4, 1.6))
-sb = sb.translate((0, 0, SB_Z))
-add("PCB sensor jangkar", sb, "pcb")
+# ============================== PCB SENSOR (batang 16 titik, v2 13/10/2026) ==============================
+# Koordinat = SENSOR_PLACE di hardware/tools/gen_pcb.py. Dipasang di dudukan 3D print (2 lengan dari lubang
+# bahu H3/H4 PCB utama + spacer ke lubang H1/H2 batang), disambung kabel pita 12 pin.
+F = 137.0                                      # ujung depan batang
+SX = [-48.75 + 6.5 * i for i in range(16)]
+SY = F - 4.0
+SB_HOLES = [(-52.0, 92.5), (52.0, 92.5)]
+sb = box(-55, 55, 86, F, SB_Z, SB_Z + T)
+sb = try_fillet(sb, "|Z", 2.0)
+for hx, hy in SB_HOLES:
+    sb = sb.cut(cyl_z(hx, hy, SB_Z - 1, T + 2, 1.6))
+add("PCB sensor 16 titik", sb, "pcb")
 SZ_TOP = SB_Z + T
-SENS = [(-20, F - 8.0, 6), (-10, F - 6.0, 4), (0, F - 4.5, 0), (10, F - 6.0, -4), (20, F - 8.0, -6)]
-gold = None; silk = None; sens = None
-for i, (cx, cy, a) in enumerate(SENS):
-    ca, sa = math.cos(math.radians(a)), math.sin(math.radians(a))
-    for dx in (-1.27, 1.27):                       # pad THT sensor (footprint sementara 2x2, 2,54 mm)
-        for dy in (-1.27, 1.27):
-            gold = U(gold, cyl_z(cx + dx * ca - dy * sa, cy + dx * sa + dy * ca, SZ_TOP, 0.06, 0.7))
-    s_ = cq.Workplane("XY").box(4.0, 3.2, 2.5).rotate((0, 0, 0), (0, 0, 1), a).translate((cx, cy, SB_Z - 1.25))
-    sens = U(sens, s_)
-    silk = U(silk, text(str(i + 1), 1.7, cx - 4.3, cy, SZ_TOP))
-for t in (text("LINE TRACER MICRO", 1.8, -30.7, F - 18.1, SZ_TOP, 54.4),      # leher pendek: tulisan pindah ke lengan
-          text("P01 KEL.5", 1.8, 30.7, F - 18.1, SZ_TOP, -54.4)):
+sens = None; smd_b = None; leds = None; smd_t = None; silk = None
+for k, x in enumerate(SX):
+    sens = U(sens, box(x - 1.6, x + 1.6, SY - 2.0, SY + 2.0, SB_Z - 2.5, SB_Z))           # ITR20001 (bawah, diputar)
+    xp = -8.5 + 2.54 * k                                                                 # pull-up di bawah modul mux
+    smd_b = U(smd_b, box(xp - 0.62, xp + 0.62, 107.5, 109.5, SB_Z - 0.5, SB_Z))
+    leds = U(leds, box(x - 1.0, x + 1.0, SY - 5.4, SY - 4.2, SZ_TOP, SZ_TOP + 0.8))   # LED indikator (atas)
+    smd_t = U(smd_t, box(x - 1.0, x + 1.0, SY - 8.6, SY - 7.4, SZ_TOP, SZ_TOP + 0.5))  # resistor LED (atas)
+    silk = U(silk, text(str(k + 1), 1.0, x, F - 1.3, SZ_TOP))
+for j in range(8):                                                                      # resistor LED IR (atas, di sela)
+    x = SX[2 * j] - 3.25
+    smd_t = U(smd_t, box(x - 0.62, x + 0.62, SY - 1.0, SY + 1.0, SZ_TOP, SZ_TOP + 0.5))
+add("Sensor ITR20001 x16", sens, "black_plastic")
+add("Resistor SMD bawah", smd_b, "black_plastic")
+add("LED indikator x16", leds, "led_red")
+add("Resistor SMD atas", smd_t, "black_plastic")
+for t in (text("LINE TRACER MICRO  SENSOR 16", 1.6, 0, 118.6, SZ_TOP), text("MCP23017 (LED)", 1.2, -30.5, 106.6, SZ_TOP)):
     silk = U(silk, t)
-add("Sensor ITR20001 x5", sens, "black_plastic")
-add("Pad sensor", gold, "gold")
 add("Silkscreen sensor", silk, "silk")
-# komponen SMD di sisi BAWAH PCB sensor (posisi = SENSOR_PLACE di gen_pcb.py)
-smd = None
-for k in range(10):                                # R1-R10 sebaris di bawah pangkal leher (posisi usulan, PCB belum diubah)
-    x = -12.6 + 2.8 * k
-    smd = U(smd, box(x - 0.62, x + 0.62, 86.5, 88.5, SB_Z - 0.5, SB_Z))
-for x in (-4.3, 4.3):                              # R11, R12
-    smd = U(smd, box(x - 0.62, x + 0.62, 94.0, 96.0, SB_Z - 0.5, SB_Z))
-add("Resistor SMD sensor", smd, "black_plastic")
-add("MOSFET AO3400", box(-0.65, 0.65, 93.55, 96.45, SB_Z - 1.0, SB_Z), "black_plastic")
-add("Kapasitor C1 sensor", box(-1.0, 1.0, 97.88, 99.12, SB_Z - 0.6, SB_Z), "cap_ceramic")
+gold = None
+for hx, hy in SB_HOLES:
+    gold = U(gold, cyl_z(hx, hy, SZ_TOP, 0.05, 2.9).cut(cyl_z(hx, hy, SZ_TOP - 1, 2, 1.6)))
+add("Pad lubang sensor", gold, "gold")
+# MCP23017 DIP-28 di socket (baris pin Y 95,5 dan 103,12)
+add("MCP23017 socket", box(-47.9, -12.1, 94.2, 104.4, SZ_TOP, SZ_TOP + 3.0), "black_plastic")
+add("MCP23017", box(-47.5, -12.5, 96.0, 102.6, SZ_TOP + 3.0, SZ_TOP + 6.5), "black_plastic")
+# modul mux CD74HC4067 di socket female (baris C0-C15 Y 112,5; baris SIG..GND Y 97,26)
+add("Mux socket", box(-9.77, 30.87, 111.23, 113.77, SZ_TOP, SZ_TOP + SOCK).union(
+    box(0.39, 20.71, 95.99, 98.53, SZ_TOP, SZ_TOP + SOCK)), "black_plastic")
+add("Modul mux PCB", box(-9.75, 30.85, 95.99, 113.77, SZ_TOP + SOCK, SZ_TOP + SOCK + T), "pcb_blue")
+add("Modul mux chip", box(6.5, 14.5, 101.0, 109.0, SZ_TOP + SOCK + T, SZ_TOP + SOCK + T + 1.5), "black_plastic")
+# J1: box header IDC 2x6 berdiri (pin 1 di (44,5; 114,3))
+j1 = box(41.0, 50.5, 96.4, 119.9, SZ_TOP, SZ_TOP + 9.0).cut(box(42.4, 49.1, 99.2, 117.1, SZ_TOP + 2.0, SZ_TOP + 9.5)).cut(
+    box(40.4, 41.5, 105.7, 110.2, SZ_TOP + 2.0, SZ_TOP + 9.5))
+add("Box header IDC J1", j1, "black_plastic")
+add("SMD kecil sensor", box(15.9, 17.9, 92.4, 93.6, SZ_TOP, SZ_TOP + 0.6).union(box(-27.18, -25.18, 90.9, 92.1, SZ_TOP, SZ_TOP + 0.6))
+    .union(box(36.0, 39.0, 102.7, 105.3, SB_Z - 1.0, SB_Z)), "black_plastic")
+
+# ---------- kabel pita 12 pin: J5 PCB utama -> J1 PCB sensor ----------
+RB_W = 15.2                                   # lebar kabel pita 12 kabel
+
+
+def _v(a, b, k=1.0):
+    return tuple(a[i] + k * b[i] for i in range(3))
+
+
+def _unit3(a):
+    d = math.sqrt(sum(c * c for c in a))
+    return tuple(c / d for c in a)
+
+
+def _cross(a, b):
+    return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
+
+
+def ribbon(p0, p3, rise, n=24):
+    """kabel pita: naik tegak dari p0, melengkung, turun tegak ke p3; lebar kabel berputar dari sumbu X ke Y"""
+    p1, p2 = _v(p0, (0, 0, rise)), _v(p3, (0, 0, rise))
+    def bez(t):
+        return tuple((1 - t) ** 3 * p0[i] + 3 * (1 - t) ** 2 * t * p1[i] + 3 * (1 - t) * t ** 2 * p2[i] + t ** 3 * p3[i]
+                     for i in range(3))
+    wires = []
+    for k in range(n + 1):
+        t = k / n
+        c = bez(t)
+        tan = _unit3(tuple(bez(min(1, t + 1e-3))[i] - bez(max(0, t - 1e-3))[i] for i in range(3)))
+        w0 = _unit3((1 - t, t, 0.0))
+        dot = sum(w0[i] * tan[i] for i in range(3))
+        w = _unit3(tuple(w0[i] - dot * tan[i] for i in range(3)))
+        nrm = _cross(tan, w)
+        pts = [_v(_v(c, w, sw * RB_W / 2), nrm, sn * 0.5) for sw, sn in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+        wires.append(cq.Wire.makePolygon([cq.Vector(*q) for q in pts], close=True))
+    return cq.Solid.makeLoft(wires)
+
+
+add("Kabel pita 12 pin", ribbon((0.0, 87.07, TOP + 9.0), (45.77, 107.95, SZ_TOP + 9.0), 20.0), "ribbon")
+
+# ---------- dudukan PCB sensor (3D print): 2 lengan pendek di antara PCB utama dan PCB sensor ----------
+# lengan setebal celah antar papan (Z 5,6-8): baut dari atas lewat H3/H4 PCB utama, baut dari bawah lewat H1/H2 PCB sensor
+for s in (-1, 1):
+    x0, y0, x1, y1 = s * 37.5, 69.0, s * 52.0, 92.5
+    L = math.hypot(x1 - x0, y1 - y0)
+    arm = cq.Workplane("XY").box(7.0, L + 7.0, PCB_Z - SZ_TOP).rotate((0, 0, 0), (0, 0, 1), math.degrees(math.atan2(y1 - y0, x1 - x0)) - 90)
+    arm = arm.translate(((x0 + x1) / 2, (y0 + y1) / 2, (PCB_Z + SZ_TOP) / 2))
+    arm = arm.edges("|Z").fillet(3.4)
+    add("Lengan dudukan sensor", arm, "frame")
+    add("Baut dudukan", cyl_z(x0, y0, TOP, 1.8, 2.7).union(cyl_z(x1, y1, SB_Z - 1.8, 1.8, 2.7)), "chrome")
 
 # ============================== PENGGERAK ==============================
 for s in (-1, 1):
@@ -383,6 +433,7 @@ MATS = {
     "frame": ("#1f2c57", 0.7, 0.05), "brass": ("#c9a24a", 0.35, 0.9),
     "cell": ("#2d62b0", 0.4, 0.1),
     "resistor": ("#cdb88e", 0.6, 0.0), "elko": ("#1f2340", 0.45, 0.1), "cap_ceramic": ("#b08d57", 0.6, 0.0),
+    "led_red": ("#ff3b3b", 0.35, 0.0), "ribbon": ("#9aa0a8", 0.7, 0.0),
 }
 meshes = []
 for name, shape, mat, group in parts:

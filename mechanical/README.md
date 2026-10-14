@@ -1,29 +1,29 @@
 # Mekanik — Robot Line Tracer Micro
 
-## Usulan v12 (13/10/2026): leher sensor dipendekkan 20 mm + PCB utama v2
+## Usulan v12 (13/10/2026): PCB utama v2 + PCB sensor 16 titik di dudukan + kabel pita
 
-v11 dengan ujung depan jangkar dimundurkan 20 mm (`F` 132 → 112). PCB sensor di `hardware/` masih ukuran
-v11 (belum ikut dipendekkan). PCB utama sudah mengikuti **PCB utama v2** (`hardware/`, 13/10/2026):
+Model mengikuti `hardware/` (PCB utama v2 dan PCB sensor v2):
 
-- ESP32 keluar dari bawah dudukan baterai, di socket female 8,5 mm, USB menghadap ke kiri (gampang dicolok).
-- TB6612 di tengah depan dan OLED di kanan, keduanya di socket (bisa dicabut kalau rusak).
-- MP1584, dioda, dan pembagi tegangan baterai pindah ke bawah dudukan baterai.
-- Saklar + konektor baterai di tepi kanan; BMS ditempel di bawah PCB di sisi kiri.
+- **PCB utama v2:** ESP32 keluar dari bawah dudukan baterai (socket female 8,5 mm, USB ke kiri), TB6612 tengah
+  depan dan OLED kanan (socket), MP1584 + dioda + pembagi tegangan baterai di bawah dudukan baterai, saklar +
+  konektor baterai di tepi kanan, BMS ditempel di bawah PCB sisi kiri, box header IDC J5 di hidung.
+- **PCB sensor batang lurus 110 × 51 mm:** 16 ITR20001 (jarak 6,5 mm, lebar baca ± 97 mm) di sisi bawah,
+  16 LED indikator di atas, modul mux CD74HC4067 dan MCP23017 (socket) di belakang, box header IDC J1 di kanan.
+- **Dudukan 3D print:** 2 lengan pendek setebal celah antar papan (Z 5,6–8 mm), dibaut dari atas lewat lubang
+  bahu H3/H4 PCB utama dan dari bawah lewat lubang H1/H2 di sudut belakang PCB sensor.
+- **Kabel pita 12 pin** dari J5 ke J1 (melengkung di atas TB6612).
 - Tepi depan dudukan baterai dimundurkan ke Y 29,5 supaya tidak mepet dengan ESP32.
 
 | | v11 | v12 (usulan) |
 |---|---|---|
-| P × L × T | ±174 × 110 × 55 | ±154 × 110 × 55 (tanpa sayap ±142) |
-| Sensor tengah ke poros roda | ±127 | ±107,5 |
-| PCB sensor | 92 × 53 | 92 × 33 (leher terlihat ±8 mm) |
+| P × L × T | ±174 × 110 × 55 | ±179 × 111 × 55 |
+| Sensor ke poros roda | ±127 (tengah) | ±133 (16 sensor sebaris) |
+| PCB sensor | 92 × 53 jangkar, 5 sensor | 110 × 51 batang, 16 sensor |
 
-- Tulisan "LINE TRACER MICRO" dan "P01 KEL.5" pindah ke lengan jangkar (leher terlalu pendek).
-- R1–R10 sebaris di bawah pangkal leher, R11/R12/Q1/C1 di depannya: posisi usulan, belum dirouting.
-- Ini batas terpendek tanpa mengubah PCB utama (J5 dan tombol A/B ada di hidung PCB utama). Kalau mau lebih
-  pendek (sensor ±80 mm dari poros), hidung PCB utama ikut dirombak.
 - Model 3D yang bisa diputar: https://claude.ai/artifact/MjwounZ25sDKUH1FWent3d
 - File: `cadquery/ltm_v12.py`, `LTM_v12.step`, `render/ltm-v12-*.png`. Cek tabrakan antar bagian: tidak ada
-  tabrakan baru dibanding v11.
+  tabrakan baru (yang bersentuhan memang disengaja: lengan dudukan dengan pad lubang, kabel dengan konektor).
+- Ukuran modul (ESP32, TB6612, OLED, modul mux) masih nilai umum marketplace: ukur ulang saat barang datang.
 
 ## Versi aktif: v11 (11/10/2026) — bentuk jangkar v10 + livery navy-merah-kuning + roda lebar Ø26 × 14
 

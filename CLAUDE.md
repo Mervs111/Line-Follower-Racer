@@ -13,7 +13,8 @@ Arsitektur 3 lapis:
   **5 sensor garis + 1 sensor tegangan baterai**, tanpa multiplexer. Jangan pakai ADC2 (bentrok
   WiFi, banyak pin strapping). Posisi garis jadi −2000..2000. Acuan: Pololu 3pi (5 sensor, bisa
   maze solving). Pin map & platformio.ini perlu disusun ulang sebelum milestone firmware berikutnya.
-- Sensor: 5 buah, susunan panah, di PCB sensor terpisah.
+- Sensor: 5 buah, susunan panah, di PCB sensor terpisah. **Diganti 13/10/2026: 16 sensor + multiplexer
+  CD74HC4067 + LED indikator tiap sensor (MCP23017), lihat catatan 13/10 di bawah.**
 - Baterai: 2S (2× 18650, holder 76×42×20 mm melintang di atas PCB utama), BMS 2S, charger 2S USB-C, buck 5 V.
 - RAB revisi 3.3: Rp858.000 (digantikan revisi 3.4 Rp833.000, lihat di bawah) (lintasan uji di luar RAB). Body 3D print = opsi B (dipilih 08/10/2026): PCB tetap jadi sasis, 3D print berupa cover/body
   penutup di atas + bumper + dudukan motor & baterai. Belum di RAB (tunggu info printer lab).
@@ -40,16 +41,30 @@ Arsitektur 3 lapis:
   PCB sensor ±14, JST motor X ±(17–27), area ball caster (0; 62) bebas kaki solder). Charger 2S USB-C TETAP
   di dinding belakang rangka (keputusan user 11/10), kabel OUT ke P+/P− BMS. Pelajaran: net dari label lokal
   KiCad berawalan "/" (pola net class harus "/VBAT", bukan "VBAT").
-- 13/10/2026: **mekanik v12 (usulan)** = v11 dengan leher sensor dipendekkan 20 mm (panjang ±154, sensor
-  ±107,5 mm dari poros); PCB sensor di `hardware/` BELUM ikut dipendekkan (user: nanti). Model 3D v12:
-  https://claude.ai/artifact/MjwounZ25sDKUH1FWent3d. **PCB utama v2** (permintaan user: kurangi clutter, gampang
-  diakses untuk edukasi): 34 → 25 komponen (C2–C6, R5–R8 dibuang: modul sudah punya kapasitor, encoder pakai
-  INPUT_PULLUP; buzzer + Q1/R3/R4 tetap atas pilihan user), D1 SS14 → 1N5819 (semua kaki tembus). ESP32
-  keluar dari bawah dudukan baterai (Y 30,2–58,6, USB ke kiri) di socket female 8,5 mm, TB6612 tengah depan
-  di socket, OLED kanan di socket (header di depan → layar TIDAK diputar, U8G2_R0), MP1584 + D1 + R1/R2 di
-  bawah dudukan baterai (set 5 V sebelum rangka dipasang), J1 + SW1 di tepi kanan, BMS di bawah PCB di antara
-  baris pin ESP32. Silkscreen: kotak blok (DAYA, OTAK, DRIVER MOTOR, LAYAR, SUARA) + peta "ALUR DAYA" di
-  depan kanan. Tepi depan dudukan baterai (rangka) jadi Y 29,5. DRC 0/0, 294 segmen, 9 via.
+- 13/10/2026: **PCB utama v2** (permintaan user: kurangi clutter, gampang diakses untuk edukasi): C2–C6 &
+  R5–R8 lama dibuang (modul sudah punya kapasitor; encoder INPUT_PULLUP), buzzer + Q1/R3/R4 tetap, D1 SS14 →
+  1N5819 (semua kaki tembus). ESP32 keluar dari bawah dudukan baterai (Y 30,2–58,6, USB ke kiri) di socket female
+  8,5 mm, TB6612 tengah depan & OLED kanan di socket (header OLED di depan → layar TIDAK diputar, U8G2_R0),
+  MP1584 + D1 + R1/R2 di bawah dudukan baterai (set 5 V sebelum rangka dipasang), J1 + SW1 di tepi kanan, BMS
+  di bawah PCB sisi kiri. Silkscreen kotak blok (DAYA, OTAK, DRIVER MOTOR, LAYAR, SUARA) + peta "ALUR DAYA".
+  Tepi depan dudukan baterai (rangka) jadi Y 29,5.
+- 13/10/2026: **16 sensor + mux + LED** (keputusan user; sebelumnya kukira mux cuma pertanyaan, jangan ulangi:
+  konfirmasi keputusan besar). PCB sensor batang lurus 110 × 51 mm, 16 ITR20001 jarak 6,5 mm (diputar 270°:
+  A/K di depan), LED IR seri berdua (R 120 Ω), modul breakout CD74HC4067 (C0–C15 satu baris, di socket; DIP
+  tidak bisa dirouting dengan jalur 0,8), MCP23017 DIP-28 (I2C 0x20) untuk 16 LED 0805 (LED1–8 = GPA7..0,
+  LED9–16 = GPB7..0). Pin ESP32 baru (tabel di docs/skematik-v1.md): SIG GPIO36, VBAT GPIO39, BTN_A/B
+  GPIO34/35 (+R5/R6 10k pull-up), MUX_S0–S3 GPIO26/25/33/32, IR_EN 27, ENC_R 23/19, ENC_L 13/14, TB6612 di
+  baris belakang (PWMA 18, AIN1 5, AIN2 17, PWMB 16, BIN1 4, BIN2 15, STBY 2 = LOW saat boot). firmware/Pins.h masih peta lama (S3). **Kabel pita IDC 12 pin** (box header J5 ↔ J1; pin ganjil = sinyal, genap = daya/I2C)
+  + dudukan 3D print 2 lengan (H3/H4 PCB utama ↔ H1/H2 PCB sensor), konsep dari referensi Hackster user
+  (QTR-8RC + kabel pita). Robot ±179 × 111 mm (user terima). RAB naik ke Rp896.000 (sisa Rp4.000; modul
+  TCRT5000 prototipe dihapus).
+- 13/10/2026: **aturan cetak PCB di tempat user: jalur min 0,8 mm**; jarak 0,5 mm & via 1,6/0,8 = asumsi aman
+  (user belum tahu, 2 layer PTH bisa). Konstanta `FAB` di `gen_pcb.py`; IC SOIC tidak bisa (kaki 1,27 mm).
+  Tab logam saklar SW1 dikecualikan lewat `.kicad_dru` (`intersectsCourtyard`; `memberOfFootprint` tidak jalan
+  di KiCad 7). FreeRouting bisa mentok: cari leher botol (celah antar baris kaki) daripada menambah passes.
+- 13/10/2026: mekanik v12 = PCB utama v2 + batang sensor + dudukan + kabel pita. Model 3D:
+  https://claude.ai/artifact/MjwounZ25sDKUH1FWent3d (link v11 tetap). Usulan "leher pendek" sebelumnya
+  digantikan konsep kabel pita.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,

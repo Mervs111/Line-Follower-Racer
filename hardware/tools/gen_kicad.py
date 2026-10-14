@@ -171,6 +171,8 @@ ESP32_RIGHT = [("16", "GPIO23", "bidirectional"), ("17", "GPIO22", "bidirectiona
                ("28", "GPIO15", "bidirectional"), ("29", "GND", "power_in"), ("30", "3V3", "power_out")]
 TB_LEFT = [("1", "PWMA", "input"), ("2", "AIN2", "input"), ("3", "AIN1", "input"), ("4", "STBY", "input"),
            ("5", "BIN1", "input"), ("6", "BIN2", "input"), ("7", "PWMB", "input"), ("8", "GND", "power_in")]
+MUX_CTRL = [("SIG", "passive"), ("S3", "input"), ("S2", "input"), ("S1", "input"), ("S0", "input"), ("EN", "input"),
+            ("VCC", "power_in"), ("GND", "power_in")]
 TB_RIGHT = [("9", "VM", "power_in"), ("10", "VCC", "power_in"), ("11", "GND", "power_in"), ("12", "AO1", "output"),
             ("13", "AO2", "output"), ("14", "BO2", "output"), ("15", "BO1", "output"), ("16", "GND", "power_in")]
 
@@ -212,6 +214,13 @@ def build_library():
     syms.append(make_symbol("ITR20001", "U", "ITR20001", "ltm:ITR20001",
                             "Sensor reflektif IR (LED + fototransistor). Nomor pin CEK datasheet ITR20001/T.",
                             "ITR20001 reflective sensor line", (-5.08, 3.81, 5.08, -3.81), pins, led, 0.508))
+    pins = [("passive", -12.7, 19.05 - 2.54 * i, 0, 2.54, f"C{i}", str(i + 1)) for i in range(16)]
+    for i, (nm, t) in enumerate(MUX_CTRL):
+        pins.append((t, 12.7, 8.89 - 2.54 * i, 180, 2.54, nm, str(17 + i)))
+    syms.append(make_symbol("CD74HC4067_Module", "U", "CD74HC4067_Modul", "ltm:CD74HC4067_Module",
+                            "Modul breakout multiplexer analog 16 kanal CD74HC4067 (C0-C15 satu baris). "
+                            "Urutan pin = susunan umum, CEK modul asli.",
+                            "CD74HC4067 multiplexer mux 16 kanal modul", (-10.16, 21.59, 10.16, -21.59), pins))
     text = "(kicad_symbol_lib (version 20220914) (generator kicad_symbol_editor)\n" + "\n".join(syms) + "\n)\n"
     os.makedirs(os.path.join(HW, "ltm-lib"), exist_ok=True)
     open(os.path.join(HW, "ltm-lib", "ltm.kicad_sym"), "w").write(text)
@@ -265,6 +274,11 @@ def build_footprints():
              (-10.2, -10.15, 10.2, 10.15), pads, [("UKUR ULANG", 0, 0)], crt=0.1)   # rapat dengan ESP32 di PCB v2
     pads = [pad("1", -9.5, -6.0, 2.0, 1.2), pad("2", -9.5, 6.0, 2.0, 1.2),
             pad("3", 9.5, -6.0, 2.0, 1.2), pad("4", 9.5, 6.0, 2.0, 1.2)]
+    pads = [pad(str(i + 1), 2.54 * i, 0) for i in range(16)]
+    pads += [pad(str(17 + i), 10.16 + 2.54 * i, 15.24) for i in range(8)]
+    write_fp("CD74HC4067_Module", "Modul mux CD74HC4067 40,6 x 17,8 mm: C0-C15 satu baris, SIG..GND baris kedua. "
+             "SEMENTARA: ukur modul asli (jarak baris, urutan pin).",
+             (-1.25, -1.27, 39.35, 16.51), pads, [("C0..C15", 19.05, 2.5), ("UKUR ULANG", 19.05, 8)])
     write_fp("MP1584_Module", "Modul MP1584 22x17 mm, 4 titik solder di sudut. SEMENTARA: ukur modul asli.",
              (-11.0, -8.5, 11.0, 8.5), pads, [("IN", -6.5, 0), ("OUT", 6.5, 0), ("UKUR ULANG", 0, 3.5)])
     pads = [pad("1", -1.27, -1.27, 1.4, 0.8), pad("2", -1.27, 1.27, 1.4, 0.8),
@@ -282,7 +296,7 @@ FP = {
     "CP100": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
     "CP10": "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm",
     "1N5819": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
-    "TO92": "Package_TO_SOT_THT:TO-92_Inline",
+    "TO92": "Package_TO_SOT_THT:TO-92_Inline_Wide",     # kaki berjarak 2,54: aman untuk jarak 0,5 mm
     "SOT23": "Package_TO_SOT_SMD:SOT-23",
     "BTN": "Button_Switch_THT:SW_PUSH_6mm",
     "SLIDE": "Button_Switch_THT:SW_Slide_SPDT_Angled_CK_OS102011MA1Q",
@@ -292,6 +306,10 @@ FP = {
     "SOCK4": "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical",
     "SOCK2x5": "Connector_PinSocket_2.54mm:PinSocket_2x05_P2.54mm_Vertical",
     "HDR2x5": "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical",
+    "IDC2x6": "Connector_IDC:IDC-Header_2x06_P2.54mm_Vertical",          # kabel pita PCB utama <-> PCB sensor
+    "DIP24W": "Package_DIP:DIP-24_W15.24mm_Socket",
+    "DIP28": "Package_DIP:DIP-28_W7.62mm_Socket",
+    "LED_SMD": "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder",
     "HOLE": "MountingHole:MountingHole_3.2mm_M3",
 }
 POWER_SYMS = {"GND": "GND", "+5V": "+5V", "+3V3": "+3V3"}
@@ -422,8 +440,8 @@ class Sheet:
             else:
                 self.label(net, ex, ey, d)
 
-    def part(self, lib_id, ref, value, x, y, fp, mapping, fields="lib", in_bom=True):
-        pins = self.place(lib_id, ref, value, x, y, fp, fields=fields, in_bom=in_bom)
+    def part(self, lib_id, ref, value, x, y, fp, mapping, fields="lib", in_bom=True, rot=0):
+        pins = self.place(lib_id, ref, value, x, y, fp, rot=rot, fields=fields, in_bom=in_bom)
         self.connect(ref, pins, mapping)
         return pins
 
@@ -454,16 +472,17 @@ class Sheet:
 
 def write_project(folder, name, root_uuid):
     os.makedirs(folder, exist_ok=True)
-    cls = dict(bus_width=12, clearance=0.2, diff_pair_gap=0.25, diff_pair_via_gap=0.25, diff_pair_width=0.2,
+    # jalur minimal 0,8 mm (tempat cetak user); gen_pcb.py menulis ulang nilai ini dari FAB
+    cls = dict(bus_width=12, clearance=0.5, diff_pair_gap=0.25, diff_pair_via_gap=0.25, diff_pair_width=0.2,
                line_style=0, microvia_diameter=0.3, microvia_drill=0.1, pcb_color="rgba(0, 0, 0, 0.000)",
-               schematic_color="rgba(0, 0, 0, 0.000)", track_width=0.25, via_diameter=0.6, via_drill=0.3, wire_width=6)
-    power = dict(cls, name="Power", track_width=0.8)
+               schematic_color="rgba(0, 0, 0, 0.000)", track_width=0.8, via_diameter=1.6, via_drill=0.8, wire_width=6)
+    power = dict(cls, name="Power", track_width=1.2)
     default = dict(cls, name="Default")
     pro = {
         "board": {"design_settings": {"rules": {
-            "min_clearance": 0.2, "min_copper_edge_clearance": 0.3, "min_hole_clearance": 0.25,
-            "min_hole_to_hole": 0.5, "min_through_hole_diameter": 0.3, "min_track_width": 0.2,
-            "min_via_annular_width": 0.13, "min_via_diameter": 0.5}}},
+            "min_clearance": 0.5, "min_copper_edge_clearance": 0.5, "min_hole_clearance": 0.25,
+            "min_hole_to_hole": 0.5, "min_through_hole_diameter": 0.3, "min_track_width": 0.8,
+            "min_via_annular_width": 0.13, "min_via_diameter": 1.6}}},
         "meta": {"filename": f"{name}.kicad_pro", "version": 1},
         "net_settings": {"classes": [default, power], "meta": {"version": 3},
                          "net_colors": None, "netclass_assignments": None,
@@ -478,6 +497,13 @@ def write_project(folder, name, root_uuid):
         '(sym_lib_table\n  (lib (name "ltm")(type "KiCad")(uri "${KIPRJMOD}/../ltm-lib/ltm.kicad_sym")(options "")(descr "Simbol LTM"))\n)\n')
     open(os.path.join(folder, "fp-lib-table"), "w").write(
         '(fp_lib_table\n  (lib (name "ltm")(type "KiCad")(uri "${KIPRJMOD}/../ltm-lib/ltm.pretty")(options "")(descr "Footprint LTM"))\n)\n')
+
+
+# pin kabel pita PCB utama (J5) <-> PCB sensor (J1)
+# baris ganjil (dalam) = 6 sinyal, baris genap (luar) = daya + I2C; di kabel pita SIG diapit +5V dan GND
+J_PINS = {"1": "IR_EN", "2": "+5V", "3": "SIG", "4": "GND", "5": "MUX_S0", "6": "+3V3", "7": "MUX_S1", "8": "GND",
+          "9": "MUX_S2", "10": "SDA", "11": "MUX_S3", "12": "SCL"}
+N_SENS = 16
 
 
 # ================================================================== PCB UTAMA
@@ -497,7 +523,7 @@ def build_main(ltm):
     s.part("Device:D_Schottky", "D1", "1N5819", 106.68, 66.04, FP["1N5819"], {"2": "+5V_BUCK", "1": "+5V"})
     s.part("Device:R", "R1", "100k", 30.48, 96.52, FP["R"], {"1": "VBAT", "2": "VBAT_SENSE"}, "right")
     s.part("Device:R", "R2", "33k", 48.26, 96.52, FP["R"], {"1": "VBAT_SENSE", "2": "GND"}, "right")
-    s.text("Pembaca baterai: 8,4 V -> 2,08 V ke GPIO33", 20.32, 127.0)
+    s.text("Pembaca baterai: 8,4 V -> 2,08 V ke GPIO39", 20.32, 127.0)
     s.text("Kapasitor kecil tidak dipasang: modul TB6612,\nMP1584, dan ESP32 sudah punya kapasitor sendiri", 20.32, 119.38)
     s.text("PWR_FLAG (untuk ERC)", 99.06, 91.44)
     s.flag("GND", 101.6, 96.52)
@@ -507,10 +533,13 @@ def build_main(ltm):
 
     # ---- 2. ESP32
     s.frame(160.02, 15.24, 264.16, 132.08, "2. ESP32 DevKit 30 pin")
-    esp_left = {"1": None, "2": "S1", "3": "S2", "4": "S3", "5": "S4", "6": "S5", "7": "VBAT_SENSE", "8": "PWMA",
-                "9": "AIN1", "10": "AIN2", "11": "PWMB", "12": "BUZ", "13": "IR_EN", "14": "GND", "15": "+5V"}
-    esp_right = {"16": "ENC_R_A", "17": "SCL", "18": None, "19": None, "20": "SDA", "21": "ENC_L_B", "22": "ENC_L_A",
-                 "23": "ENC_R_B", "24": "BIN2", "25": "BIN1", "26": "STBY", "27": "BTN_B", "28": "BTN_A",
+    # baris depan (1-15): sinyal ke J5/tombol/buzzer (lewat kiri); baris belakang (16-30): TB6612, I2C, encoder kanan
+    esp_left = {"1": None, "2": "SIG", "3": "VBAT_SENSE", "4": "BTN_A", "5": "BTN_B", "6": "MUX_S3", "7": "MUX_S2",
+                "8": "MUX_S1", "9": "MUX_S0", "10": "IR_EN", "11": "ENC_L_B", "12": "BUZ", "13": "ENC_L_A",
+                "14": "GND", "15": "+5V"}
+    # GPIO2 = STBY: LOW saat boot (pull-down TB6612) -> mode download aman & motor mati sampai firmware siap
+    esp_right = {"16": "ENC_R_A", "17": "SCL", "18": None, "19": None, "20": "SDA", "21": "ENC_R_B", "22": "PWMA",
+                 "23": "AIN1", "24": "AIN2", "25": "PWMB", "26": "BIN1", "27": "STBY", "28": "BIN2",
                  "29": "GND", "30": "+3V3"}
     s.part("ltm:ESP32_DevKit_30", "U1", "ESP32 DevKit 30P CH340", 212.09, 73.66, "ltm:ESP32_DevKit_30P_W25.4",
            {**esp_left, **esp_right})
@@ -535,7 +564,9 @@ def build_main(ltm):
     s.text("Sebagian OLED urutannya VCC-GND: cek", 20.32, 180.34)
     s.part("Switch:SW_Push", "SW2", "A (MENU)", 50.8, 198.12, FP["BTN"], {"1": "BTN_A", "2": "GND"})
     s.part("Switch:SW_Push", "SW3", "B (OK)", 50.8, 215.9, FP["BTN"], {"1": "BTN_B", "2": "GND"})
-    s.text("Pull-up internal ESP32 (INPUT_PULLUP)", 20.32, 228.6)
+    s.part("Device:R", "R5", "10k", 81.28, 198.12, FP["R"], {"1": "+3V3", "2": "BTN_A"}, "right")
+    s.part("Device:R", "R6", "10k", 81.28, 215.9, FP["R"], {"1": "+3V3", "2": "BTN_B"}, "right")
+    s.text("GPIO34/35 tanpa pull-up internal: R5, R6", 20.32, 228.6)
 
     # ---- 5. BUZZER
     s.frame(116.84, 142.24, 215.9, 233.68, "5. BUZZER")
@@ -546,18 +577,16 @@ def build_main(ltm):
     s.text("Buzzer magnetik: tambah 1N4148 paralel", 121.92, 228.6)
 
     # ---- 6. KONEKTOR PCB SENSOR
-    s.frame(223.52, 142.24, 312.42, 233.68, "6. KE PCB SENSOR (J5 = lubang tembus)")
-    s.part("Connector_Generic:Conn_02x05_Odd_Even", "J5", "KE PCB SENSOR", 264.16, 185.42, FP["HDR2x5"],
-           {"1": "+5V", "2": "+3V3", "3": "GND", "4": "GND", "5": "IR_EN", "6": "S1", "7": "S2", "8": "S3",
-            "9": "S4", "10": "S5"}, in_bom=False)
+    s.frame(223.52, 142.24, 312.42, 233.68, "6. KE PCB SENSOR (kabel pita IDC 12 pin)")
+    s.part("Connector_Generic:Conn_02x06_Odd_Even", "J5", "KE PCB SENSOR", 264.16, 185.42, FP["IDC2x6"], J_PINS)
     s.text("Urutan pin sama persis dengan J1 PCB sensor", 228.6, 213.36)
-    s.text("J5 tidak dipasang komponen: pin header J1 PCB sensor\nmasuk dari bawah lewat lubang J5, disolder di atas", 228.6, 222.25)
+    s.text("Mux: SIG GPIO36, S0-S3 GPIO32/33/2/15\nLED sensor: MCP23017 di bus I2C (0x20)", 228.6, 222.25)
 
     # ---- 7. LUBANG BAUT
     s.frame(320.04, 142.24, 408.94, 190.5, "7. LUBANG BAUT M3")
-    for i in range(6):
+    for i in range(4):
         s.place("Mechanical:MountingHole", f"H{i + 1}", "M3", 332.74 + i * 13.97, 167.64, FP["HOLE"])
-    s.text("H1-H2 rangka, H3-H4 bahu, H5-H6 spacer PCB sensor", 325.12, 185.42)
+    s.text("H1-H2 rangka, H3-H4 bahu + dudukan PCB sensor", 325.12, 185.42)
 
     s.save(os.path.join(HW, "ltm-main", "ltm-main.kicad_sch"), rev="v2", date="2026-10-13")
     write_project(os.path.join(HW, "ltm-main"), "ltm-main", s.root)
@@ -565,51 +594,91 @@ def build_main(ltm):
 
 
 # ================================================================== PCB SENSOR
+# v2 (13/10/2026): 16 sensor (batang lurus) + multiplexer CD74HC4067 + LED indikator lewat MCP23017 (I2C),
+# disambung ke PCB utama dengan kabel pita IDC 12 pin.
+
+
+def led_pin(k):
+    """LED ke-k (1..16) -> pin MCP23017: LED1-8 = GPA7..GPA0, LED9-16 = GPB7..GPB0 (urutan ikut layout)"""
+    return f"GPA{8 - k}" if k <= 8 else f"GPB{16 - k}"
+
+
 def build_sensor(ltm):
-    s = Sheet("ltm-sensor", "LTM - PCB Sensor Jangkar",
-              ["Acuan: docs/skematik-v1.md", "Nilai 180R / 10k = nilai awal, setel saat uji",
-               "Slot sensor cadangan di lengan jangkar ditambah saat layout"], ltm)
+    s = Sheet("ltm-sensor", "LTM - PCB Sensor 16 titik",
+              ["Acuan: docs/skematik-v1.md", "S1 = paling kiri (dilihat dari atas, robot maju ke atas)",
+               "v2 (13/10/2026): 16 sensor + mux CD74HC4067 + LED via MCP23017"], ltm)
     s.frame(12.7, 15.24, 83.82, 106.68, "1. KE PCB UTAMA")
-    s.part("Connector_Generic:Conn_02x05_Odd_Even", "J1", "KE PCB UTAMA", 45.72, 55.88, FP["HDR2x5"],
-           {"1": "+5V", "2": "+3V3", "3": "GND", "4": "GND", "5": "IR_EN", "6": "S1", "7": "S2", "8": "S3",
-            "9": "S4", "10": "S5"})
-    s.text("PWR_FLAG (untuk ERC)", 17.78, 81.28)
-    s.flag("+5V", 25.4, 86.36)
-    s.flag("+3V3", 43.18, 86.36)
-    s.flag("GND", 60.96, 86.36)
+    s.part("Connector_Generic:Conn_02x06_Odd_Even", "J1", "KABEL PITA 12 PIN", 45.72, 55.88, FP["IDC2x6"], J_PINS)
+    s.text("Kabel pita IDC 2x6 ke J5 PCB utama", 17.78, 76.2)
+    s.text("PWR_FLAG (untuk ERC)", 17.78, 83.82)
+    s.flag("+5V", 25.4, 88.9)
+    s.flag("+3V3", 43.18, 88.9)
+    s.flag("GND", 60.96, 88.9)
 
-    s.frame(91.44, 15.24, 408.94, 132.08, "2. SENSOR GARIS S1-S5 (ITR20001)")
-    for i in range(5):
-        x = 111.76 + i * 60.96
-        s.part("Device:R", f"R{1 + i}", "180", x, 45.72, FP["R_SMD"], {"1": "+5V", "2": f"LED_A{i + 1}"}, "right")
-        s.part("ltm:ITR20001", f"U{1 + i}", f"ITR20001 (S{i + 1})", x + 22.86, 81.28, "ltm:ITR20001",
-               {"1": f"LED_A{i + 1}", "2": "LED_K", "3": f"S{i + 1}", "4": "GND"})
-        s.part("Device:R", f"R{6 + i}", "10k", x + 40.64, 45.72, FP["R_SMD"], {"1": "+3V3", "2": f"S{i + 1}"}, "right")
-    s.text("LED IR: (5 V - 1,2 V) / 180 = 21 mA per sensor, total +-105 mA lewat Q1", 96.52, 124.46)
+    s.frame(91.44, 15.24, 408.94, 152.4, "2. SENSOR GARIS S1-S16 (ITR20001), LED IR dipasang seri berdua")
+    for k in range(1, N_SENS + 1):
+        c, r = (k - 1) % 8, (k - 1) // 8
+        x0, y0 = 96.52 + c * 38.1, 25.4 + r * 63.5
+        j = (k + 1) // 2
+        if k % 2:
+            s.part("Device:R", f"R{j}", "120", x0 + 5.08, y0 + 15.24, FP["R_SMD"], {"1": "+5V", "2": f"IR_A{j}"}, "right")
+            ir = {"1": f"IR_A{j}", "2": f"IR_M{j}"}
+        else:
+            ir = {"1": f"IR_M{j}", "2": "LED_K"}
+        s.part("ltm:ITR20001", f"U{k}", f"ITR20001 (S{k})", x0 + 20.32, y0 + 40.64, "ltm:ITR20001",
+               {**ir, "3": f"S{k}", "4": "GND"})
+        s.part("Device:R", f"R{8 + k}", "10k", x0 + 30.48, y0 + 15.24, FP["R_SMD"], {"1": "+3V3", "2": f"S{k}"}, "right")
+    s.text("LED IR: (5 V - 2 x 1,2 V) / 120 = +-21 mA per pasang, total +-170 mA lewat Q1", 96.52, 147.32)
 
-    s.frame(12.7, 142.24, 160.02, 233.68, "3. SAKLAR LED IR (emitter ON/OFF)")
-    s.part("Device:Q_NMOS_GSD", "Q1", "AO3400", 96.52, 190.5, FP["SOT23"], {"1": "IR_G", "2": "GND", "3": "LED_K"})
-    s.part("Device:R", "R11", "100", 55.88, 182.88, FP["R_SMD"], {"1": "IR_EN", "2": "IR_G"}, "right")
-    s.part("Device:R", "R12", "10k", 71.12, 208.28, FP["R_SMD"], {"1": "IR_G", "2": "GND"}, "right")
-    s.part("Device:C", "C1", "100nF", 134.62, 190.5, FP["C_SMD"], {"1": "+3V3", "2": "GND"}, "right")
-    s.text("IR_EN HIGH = LED menyala (baca ON - OFF)", 17.78, 228.6)
+    s.frame(12.7, 111.76, 83.82, 152.4, "3. SAKLAR LED IR")
+    s.part("Device:Q_NMOS_GSD", "Q1", "AO3400", 55.88, 132.08, FP["SOT23"], {"1": "IR_G", "2": "GND", "3": "LED_K"})
+    s.part("Device:R", "R41", "100", 22.86, 129.54, FP["R_SMD"], {"1": "IR_EN", "2": "IR_G"}, "right")
+    s.part("Device:R", "R42", "10k", 38.1, 139.7, FP["R_SMD"], {"1": "IR_G", "2": "GND"}, "right")
 
-    s.frame(167.64, 142.24, 241.3, 190.5, "4. LUBANG BAUT M3")
+    s.frame(12.7, 157.48, 132.08, 279.4, "4. MULTIPLEXER 16 KE 1 (modul CD74HC4067)")
+    mux = {"17": "SIG", "18": "MUX_S3", "19": "MUX_S2", "20": "MUX_S1", "21": "MUX_S0", "22": "GND", "23": "+3V3",
+           "24": "GND"}
+    mux.update({str(k): f"S{k}" for k in range(1, 17)})          # C0 = S1 ... C15 = S16
+    s.part("ltm:CD74HC4067_Module", "U17", "Modul CD74HC4067", 66.04, 218.44, "ltm:CD74HC4067_Module", mux)
+    s.part("Device:C", "C1", "100nF", 109.22, 182.88, FP["C_SMD"], {"1": "+3V3", "2": "GND"}, "right")
+    s.text("Kanal C0-C15 = S1-S16 (C0 = S1). Modul dicolok di socket female", 17.78, 274.32)
+
+    s.frame(137.16, 157.48, 408.94, 279.4, "5. LED INDIKATOR TIAP SENSOR (MCP23017, I2C alamat 0x20)")
+    pins = dict(sym_pin_names("Interface_Expansion:MCP23017_SP", s))
+    mcp = {"9": "+3V3", "10": "GND", "12": "SCL", "13": "SDA", "15": "GND", "16": "GND", "17": "GND", "18": "+3V3",
+           "19": None, "20": None, "11": None, "14": None}
+    for k in range(1, 17):
+        mcp[pins[led_pin(k)]] = f"LD{k}"
+    s.part("Interface_Expansion:MCP23017_SP", "U18", "MCP23017", 182.88, 218.44, FP["DIP28"], mcp)
+    s.part("Device:C", "C2", "100nF", 223.52, 175.26, FP["C_SMD"], {"1": "+3V3", "2": "GND"}, "right")
+    for k in range(1, 17):
+        x0, y0 = 238.76 + (k - 1) * 10.16, 190.5
+        s.part("Device:R", f"R{24 + k}", "330", x0, y0, FP["R_SMD"], {"1": f"LD{k}", "2": f"LDA{k}"}, "right")
+        s.part("Device:LED", f"D{k}", "LED", x0, y0 + 25.4, FP["LED_SMD"], {"2": f"LDA{k}", "1": "GND"}, rot=90)
+    s.text("LED1-8 = GPA7..GPA0, LED9-16 = GPB7..GPB0. MCP sumber arus: (3,3 - 1,9) / 330 = +-4 mA", 142.24, 274.32)
+
     for i in range(2):
-        s.place("Mechanical:MountingHole", f"H{i + 1}", "M3", 185.42 + i * 25.4, 167.64, FP["HOLE"])
+        s.place("Mechanical:MountingHole", f"H{i + 1}", "M3", 68.58 + i * 10.16, 96.52, FP["HOLE"])
+    s.text("H1-H2: baut ke dudukan 3D print", 17.78, 104.14)
 
-    s.save(os.path.join(HW, "ltm-sensor", "ltm-sensor.kicad_sch"))
+    s.save(os.path.join(HW, "ltm-sensor", "ltm-sensor.kicad_sch"), rev="v2", date="2026-10-13")
     write_project(os.path.join(HW, "ltm-sensor"), "ltm-sensor", s.root)
     return s
 
 
+def sym_pin_names(lib_id, sheet):
+    """(nama pin, nomor pin) dari symbol library"""
+    return [(v[4], n) for n, v in sym_pins(sheet.get_sym(lib_id)).items()]
+
+
 if __name__ == "__main__":
-    # tanpa argumen: semua (library, footprint, dua skematik). "main": skematik PCB utama saja
-    # (library & PCB sensor tidak disentuh, UUID-nya tetap cocok dengan .kicad_pcb sensor)
+    # tanpa argumen: semua (library, footprint, dua skematik). "main" / "sensor": skematik itu saja
+    # (library & footprint tidak disentuh)
     exp_path = os.path.join(HW, "tools", "expected_nets.json")
-    if sys.argv[1:] == ["main"]:
+    if sys.argv[1:] in (["main"], ["sensor"], ["main", "sensor"]):
         ltm = parse(open(os.path.join(HW, "ltm-lib", "ltm.kicad_sym")).read())
-        sheets = {"ltm-main": build_main(ltm)}
+        build = {"main": ("ltm-main", build_main), "sensor": ("ltm-sensor", build_sensor)}
+        sheets = {build[a][0]: build[a][1](ltm) for a in sys.argv[1:]}
         expect = json.load(open(exp_path))
     else:
         ltm = build_library()

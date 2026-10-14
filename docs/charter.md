@@ -54,7 +54,7 @@ block coding berbasis web tanpa instalasi aplikasi.
 
 - Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
-- Elektronik: 5 sensor garis (susunan panah), motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
+- Elektronik: 16 sensor garis (batang lurus) + multiplexer + LED indikator tiap sensor, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
 - Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan
 - Platform block coding berbasis web (Blockly)
@@ -136,13 +136,14 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 |---|---|---|---|---|
 | ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | pcs | Rp76.000 |
 | OLED 1.3" 128×64 I2C | Rp52.000 | 1 | pcs | Rp52.000 |
-| Modul sensor garis TCRT5000 (prototipe) | Rp4.000 | 5 | pcs | Rp20.000 |
-| Sensor IR ITR20001 (PCB sensor, +1 cadangan) | Rp3.000 | 6 | pcs | Rp18.000 |
+| Sensor IR ITR20001 (PCB sensor 16 titik, +1 cadangan) | Rp3.000 | 17 | pcs | Rp51.000 |
+| Modul multiplexer analog CD74HC4067 16 kanal | Rp15.000 | 1 | pcs | Rp15.000 |
+| IC MCP23017 DIP-28 + socket (LED indikator sensor) | Rp22.000 | 1 | pcs | Rp22.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
 | Push button | Rp1.000 | 4 | pcs | Rp4.000 |
-| LED indikator | Rp200 | 10 | pcs | Rp2.000 |
-| Resistor 220 Ω | Rp200 | 10 | pcs | Rp2.000 |
+| LED SMD 0805 (indikator sensor, +4 cadangan) | Rp100 | 20 | pcs | Rp2.000 |
+| Resistor SMD 0805 (120 Ω, 330 Ω, 10 kΩ untuk PCB sensor) | Rp100 | 50 | pcs | Rp5.000 |
 | Resistor 10 kΩ | Rp200 | 10 | pcs | Rp2.000 |
 | Buzzer | Rp3.000 | 1 | pcs | Rp3.000 |
 | MOSFET (switch emitter IR) | Rp1.500 | 2 | pcs | Rp3.000 |
@@ -153,9 +154,10 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Modul buck converter 5 V (MP1584) | Rp10.000 | 1 | pcs | Rp10.000 |
 | Saklar on/off | Rp3.000 | 1 | pcs | Rp3.000 |
 | Konektor JST PH2.0 6 pin + header (motor encoder) | Rp5.000 | 2 | set | Rp10.000 |
-| Komponen pendukung minsys (header, kapasitor, dioda SS14, konektor sensor) | Rp25.000 | 1 | paket | Rp25.000 |
+| Komponen pendukung (header & socket female, kapasitor, dioda 1N5819) | Rp25.000 | 1 | paket | Rp25.000 |
+| Kabel pita 12 pin + 2 box header IDC 2×6 + 2 konektor IDC | Rp10.000 | 1 | set | Rp10.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp688.000** |
+| **TOTAL** | | | | **Rp751.000** |
 
 ### Mechanical
 
@@ -175,17 +177,21 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
 | **TOTAL** | | | | **Rp85.000** |
 
-**TOTAL BUDGET: Rp833.000** (Electrical Rp688.000 + Mechanical Rp60.000 + Lain-lain Rp85.000),
-sisa Rp67.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB.
+**TOTAL BUDGET: Rp896.000** (Electrical Rp751.000 + Mechanical Rp60.000 + Lain-lain Rp85.000),
+sisa Rp4.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
+multiplexer + LED indikator (+Rp63.000); modul TCRT5000 prototipe dihapus (prototipe memakai ITR20001).
 
 ### Alasan pemilihan komponen utama
 
 - **ESP32 DevKit** (Rp76.000): prosesor 240 MHz dual-core dengan WiFi/Bluetooth, jauh lebih murah dari
-  ESP32-S3 (> Rp130.000). Enam kanal ADC1 cukup untuk 5 sensor garis dan 1 sensor tegangan baterai
-  tanpa multiplexer.
-- **5 sensor garis susunan panah**: dibaca langsung oleh ADC1 sehingga rangkaian dan program sederhana;
-  jumlah ini terbukti cukup untuk mengikuti garis dan maze solving pada robot edukasi Pololu 3pi.
-  Ichiduino Pro memakai 12 sensor karena ATmega2560 memiliki 16 kanal ADC.
+  ESP32-S3 (> Rp130.000). 16 sensor garis dibaca bergantian lewat multiplexer CD74HC4067 ke satu kanal
+  ADC1 (GPIO36), tegangan baterai ke kanal ADC1 lain (GPIO39).
+- **16 sensor garis batang lurus (jarak 6 mm, lebar baca ± 90 mm) + LED indikator tiap sensor**: posisi
+  garis lebih halus dan garis tetap terbaca di belokan tajam serta persimpangan. Multiplexer membuat 16
+  sensor cukup memakai 5 pin ESP32 (1 ADC + 4 pemilih kanal). LED indikator (lewat MCP23017 di bus I2C
+  yang sama dengan OLED) menunjukkan apa yang "dilihat" robot setelah kalibrasi, sehingga mudah dipahami
+  siswa. PCB sensor dipasang di dudukan 3D print dan disambung kabel pita, jadi gampang dilepas dan tinggi
+  sensor bisa diatur.
 - **Motor N20 6V 500 RPM + encoder, roda Ø34 mm**: kecepatan maksimum teoritis ± 0,89 m/s, cukup untuk
   sasaran ≥ 0,5 m/s dengan cadangan; roda kecil membuat robot rendah dan ringkas. Torsi desain
   (massa 0,3 kg, akselerasi 1,8 m/s², safety factor 2) ± 9 N·mm ≈ 0,09 kg·cm per roda. Encoder dibutuhkan

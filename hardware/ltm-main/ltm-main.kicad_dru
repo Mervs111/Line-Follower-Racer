@@ -3,3 +3,9 @@
 # Pad GND yang dikepung jalur boleh tersambung ke pour dengan 1 spoke (jalur GND tetap ada)
 (rule "spoke_min_1"
   (constraint min_resolved_spokes 1))
+
+# Tab logam saklar geser (tanpa net) bawaan footprint berjarak 0,25 mm dari kaki 1/3. Kalau tersambung
+# saat dicetak tidak apa-apa: tab hanya pegangan mekanik.
+(rule "tab_saklar_SW1"
+  (condition "A.Type == 'Pad' && B.Type == 'Pad' && A.intersectsCourtyard('SW1') && B.intersectsCourtyard('SW1')")
+  (constraint clearance (min 0.2mm)))
