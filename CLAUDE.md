@@ -14,7 +14,7 @@ Arsitektur 3 lapis:
   WiFi, banyak pin strapping). Posisi garis jadi −2000..2000. Acuan: Pololu 3pi (5 sensor, bisa
   maze solving). Pin map & platformio.ini perlu disusun ulang sebelum milestone firmware berikutnya.
 - Sensor: 5 buah, susunan panah, di PCB sensor terpisah. **Diganti 13/10/2026: 16 sensor + multiplexer
-  CD74HC4067 + LED indikator tiap sensor (MCP23017), lihat catatan 13/10 di bawah.**
+  CD74HC4067 + LED indikator tiap sensor (MCP23017), lihat catatan 13/10 di bawah. 15/10/2026: jadi 12 TCRT5000.**
 - Baterai: 2S (2× 18650, holder 76×42×20 mm melintang di atas PCB utama), BMS 2S, charger 2S USB-C, buck 5 V.
 - RAB revisi 3.3: Rp858.000 (digantikan revisi 3.4 Rp833.000, lihat di bawah) (lintasan uji di luar RAB). Body 3D print = opsi B (dipilih 08/10/2026): PCB tetap jadi sasis, 3D print berupa cover/body
   penutup di atas + bumper + dudukan motor & baterai. Belum di RAB (tunggu info printer lab).
@@ -62,6 +62,12 @@ Arsitektur 3 lapis:
   (user belum tahu, 2 layer PTH bisa). Konstanta `FAB` di `gen_pcb.py`; IC SOIC tidak bisa (kaki 1,27 mm).
   Tab logam saklar SW1 dikecualikan lewat `.kicad_dru` (`intersectsCourtyard`; `memberOfFootprint` tidak jalan
   di KiCad 7). FreeRouting bisa mentok: cari leher botol (celah antar baris kaki) daripada menambah passes.
+- 15/10/2026: **user menggambar skematik sendiri di KiCad** (wiring diagram panduan per blok:
+  https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY). Keputusan user: **12 sensor TCRT5000** (tiap LED IR
+  R 330 Ω sendiri, selalu nyala; fototransistor COLL ← 4k7 ← +3V3, E → GND; jarak ± 8 mm, batang ± 100 mm),
+  mux tetap (C0–C11, C12–C15 kosong), MCP23017 tetap (LED1–8 GPA7..0, LED9–12 GPB7..4). PCB utama target
+  **12 × 12 cm** (kompromi; user awalnya minta 18 × 18). Charter/RAB sudah 12 TCRT5000: Rp882.500, sisa
+  Rp17.500. File di hardware/ (generator, 16 ITR20001) dan model v12 BELUM ikut keputusan ini.
 - 13/10/2026: mekanik v12 = PCB utama v2 + batang sensor + dudukan + kabel pita. Model 3D:
   https://claude.ai/artifact/MjwounZ25sDKUH1FWent3d (link v11 tetap). Usulan "leher pendek" sebelumnya
   digantikan konsep kabel pita.
