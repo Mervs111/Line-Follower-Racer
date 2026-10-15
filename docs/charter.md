@@ -118,7 +118,7 @@ sehingga posisi garis dan persimpangan tidak terbaca akurat.
 
 | No | Risiko | Dampak | Penanganan |
 |---|---|---|---|
-| R1 | Sensor IR terganggu cahaya ruangan / permukaan lintasan | Akurasi posisi dan deteksi persimpangan gagal | Emitter IR ON–OFF (selisih), kalibrasi tiap dinyalakan |
+| R1 | Sensor IR terganggu cahaya ruangan / permukaan lintasan | Akurasi posisi dan deteksi persimpangan gagal | Kalibrasi hitam-putih tiap dinyalakan, pelindung cahaya di sekeliling sensor, TCRT5000 dengan filter cahaya siang |
 | R2 | Persimpangan terlewat atau terdeteksi ganda | Rute dan titik berhenti salah | Konfirmasi deteksi dengan jarak tempuh encoder |
 | R3 | Belokan 90° di persimpangan tidak presisi | Rute dan titik berhenti salah | Belok berbasis encoder, lalu dikunci kembali ke garis oleh sensor |
 | R4 | PID tidak stabil saat kecepatan/tegangan baterai berubah | Kecepatan dan keterulangan gagal | Tuning lewat serial, kompensasi tegangan baterai |
@@ -146,7 +146,6 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Resistor SMD 0805 (330 Ω, 4,7 kΩ untuk PCB sensor) | Rp100 | 40 | pcs | Rp4.000 |
 | Resistor 10 kΩ | Rp200 | 10 | pcs | Rp2.000 |
 | Buzzer | Rp3.000 | 1 | pcs | Rp3.000 |
-| MOSFET (switch emitter IR) | Rp1.500 | 2 | pcs | Rp3.000 |
 | Baterai Li-ion 18650 | Rp40.000 | 2 | pcs | Rp80.000 |
 | Holder baterai 2× 18650 (seri) | Rp8.000 | 1 | pcs | Rp8.000 |
 | Modul BMS 2S | Rp10.000 | 1 | pcs | Rp10.000 |
@@ -157,7 +156,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Komponen pendukung (header & socket female, kapasitor, dioda 1N5819) | Rp25.000 | 1 | paket | Rp25.000 |
 | Kabel pita 12 pin + 2 box header IDC 2×6 + 2 konektor IDC | Rp10.000 | 1 | set | Rp10.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp737.500** |
+| **TOTAL** | | | | **Rp734.500** |
 
 ### Mechanical
 
@@ -177,9 +176,9 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
 | **TOTAL** | | | | **Rp85.000** |
 
-**TOTAL BUDGET: Rp882.500** (Electrical Rp737.500 + Mechanical Rp60.000 + Lain-lain Rp85.000),
-sisa Rp17.500 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
-multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000 (−Rp13.500).
+**TOTAL BUDGET: Rp879.500** (Electrical Rp734.500 + Mechanical Rp60.000 + Lain-lain Rp85.000),
+sisa Rp20.500 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
+multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000, LED IR selalu nyala tanpa MOSFET (−Rp16.500).
 
 ### Alasan pemilihan komponen utama
 

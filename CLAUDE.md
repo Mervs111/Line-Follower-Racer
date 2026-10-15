@@ -66,8 +66,8 @@ Arsitektur 3 lapis:
   https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY). Keputusan user: **12 sensor TCRT5000** (tiap LED IR
   R 330 Ω sendiri, selalu nyala; fototransistor COLL ← 4k7 ← +3V3, E → GND; jarak ± 8 mm, batang ± 100 mm),
   mux tetap (C0–C11, C12–C15 kosong), MCP23017 tetap (LED1–8 GPA7..0, LED9–12 GPB7..4). PCB utama target
-  **12 × 12 cm** (kompromi; user awalnya minta 18 × 18). Charter/RAB sudah 12 TCRT5000: Rp882.500, sisa
-  Rp17.500. File di hardware/ (generator, 16 ITR20001) dan model v12 BELUM ikut keputusan ini.
+  **12 × 12 cm** (kompromi; user awalnya minta 18 × 18). LED IR selalu nyala (tanpa MOSFET/IR_EN, keputusan user;
+  pin 1 kabel pita kosong). Charter/RAB: Rp879.500, sisa Rp20.500; risiko R1 = kalibrasi + pelindung cahaya. File di hardware/ (generator, 16 ITR20001) dan model v12 BELUM ikut keputusan ini.
 - 13/10/2026: mekanik v12 = PCB utama v2 + batang sensor + dudukan + kabel pita. Model 3D:
   https://claude.ai/artifact/MjwounZ25sDKUH1FWent3d (link v11 tetap). Usulan "leher pendek" sebelumnya
   digantikan konsep kabel pita.
@@ -150,7 +150,8 @@ bool buttonPressed(uint8_t id);
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` → `ledcAttach`). Bungkus pakai `#if ESP_ARDUINO_VERSION_MAJOR >= 3`, karena Mind+ bisa jadi pakai core yang lebih lama.
 - PWM motor 20 kHz, resolusi 8-bit.
 - ADC cuma boleh pakai ADC1 (ADC2 bentrok dengan WiFi), atenuasi 11 dB.
-- Pembacaan sensor: emitter ON → baca → emitter OFF → baca → selisih (anti cahaya ruangan).
+- Pembacaan sensor: emitter ON → baca → emitter OFF → baca → selisih (anti cahaya ruangan). **15/10/2026: tidak
+  dipakai, LED IR selalu nyala (keputusan user); andalkan kalibrasi + pelindung cahaya.**
 - Posisi pakai weighted average dari nilai ternormalisasi 0–1000. Kalau garis hilang, return ±3500 sesuai sisi terakhir.
 - `follow()` jalan di rate tetap (mis. 1 kHz, cek pakai `micros()`). Kalau dipanggil lebih cepat, langsung return. Nggak boleh ada `delay()`.
 - Nggak pakai `String` dan alokasi dinamis di loop.
