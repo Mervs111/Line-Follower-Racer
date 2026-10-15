@@ -54,7 +54,7 @@ block coding berbasis web tanpa instalasi aplikasi.
 
 - Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
-- Elektronik: 12 sensor garis TCRT5000 (batang lurus) + multiplexer + LED indikator tiap sensor, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
+- Elektronik: 12 sensor garis TCRT5000 (PCB sensor bentuk jangkar) + multiplexer + LED indikator tiap sensor, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
 - Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan
 - Platform block coding berbasis web (Blockly)
@@ -185,8 +185,10 @@ multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5
 - **ESP32 DevKit** (Rp76.000): prosesor 240 MHz dual-core dengan WiFi/Bluetooth, jauh lebih murah dari
   ESP32-S3 (> Rp130.000). 12 sensor garis dibaca bergantian lewat multiplexer CD74HC4067 ke satu kanal
   ADC1 (GPIO36), tegangan baterai ke kanal ADC1 lain (GPIO39).
-- **12 sensor garis TCRT5000 batang lurus (jarak ± 8 mm, lebar baca ± 88 mm) + LED indikator tiap
-  sensor**: posisi garis lebih halus dan garis tetap terbaca di belokan tajam serta persimpangan. TCRT5000
+- **12 sensor garis TCRT5000 pada PCB bentuk jangkar (jarak ke samping 10 mm, lebar baca ± 110 mm) + LED
+  indikator tiap sensor**: 4 sensor di sisi depan dan 4 di tiap sayap yang miring 45° ke belakang, sehingga
+  belokan tajam terlihat lebih awal dan garis tetap terbaca di persimpangan; jarak ke samping yang seragam
+  membuat perhitungan posisi garis tetap sederhana. TCRT5000
   mudah dicari, banyak contoh rangkaiannya, punya filter cahaya siang, dan kakinya besar sehingga mudah
   disolder siswa. Multiplexer membuat 12 sensor cukup memakai 5 pin ESP32 (1 ADC + 4 pemilih kanal). LED indikator (lewat MCP23017 di bus I2C
   yang sama dengan OLED) menunjukkan apa yang "dilihat" robot setelah kalibrasi, sehingga mudah dipahami

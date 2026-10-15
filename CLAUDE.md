@@ -64,7 +64,9 @@ Arsitektur 3 lapis:
   di KiCad 7). FreeRouting bisa mentok: cari leher botol (celah antar baris kaki) daripada menambah passes.
 - 15/10/2026: **user menggambar skematik sendiri di KiCad** (wiring diagram panduan per blok:
   https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY). Keputusan user: **12 sensor TCRT5000** (tiap LED IR
-  R 330 Ω sendiri, selalu nyala; fototransistor COLL ← 4k7 ← +3V3, E → GND; jarak ± 8 mm, batang ± 100 mm),
+  R 330 Ω sendiri, selalu nyala; fototransistor COLL ← 4k7 ← +3V3, E → GND; PCB sensor bentuk jangkar 120 × 60 mm: sisi depan 40 mm, sayap 45°, batang tengah; sensor tegak
+  (90° di footprint ltm:OPTO_TCRT5000) dengan jarak ke samping 10 mm: X ±5, ±15 (Y 8), ±25/35/45/55 (Y 18/28/38/48)
+  dari tengah tepi depan = KiCad (212,5; 75); R330/R4k7 di sisi atas 7,5 mm di belakang tiap sensor, X ∓2),
   mux tetap (C0–C11, C12–C15 kosong), MCP23017 tetap (LED1–8 GPA7..0, LED9–12 GPB7..4). PCB utama target
   **12 × 12 cm** (kompromi; user awalnya minta 18 × 18). LED IR selalu nyala (tanpa MOSFET/IR_EN, keputusan user;
   pin 1 kabel pita kosong). Charter/RAB: Rp879.500, sisa Rp20.500; risiko R1 = kalibrasi + pelindung cahaya. File di hardware/ (generator, 16 ITR20001) dan model v12 BELUM ikut keputusan ini.
