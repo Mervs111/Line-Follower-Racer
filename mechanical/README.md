@@ -1,5 +1,65 @@
 # Mekanik — Robot Line Tracer Micro
 
+## Usulan v13 (16/10/2026): gaya Ichiduino Pro, komponen RAB sekarang
+
+Permintaan kelompok: bentuk dibuat semirip mungkin dengan Ichiduino Pro (foto produk), komponen tetap komponen
+RAB sekarang, OLED diganti 0,96". PCB-nya dirancang kelompok sesudah ini; model ini memberi outline, lubang, dan
+ruang untuk tiap komponen.
+
+- Model 3D yang bisa diputar: https://claude.ai/artifact/MPiswHWgW5SBjHc9BhH8u4 (tombol "Pelindung cahaya" dan
+  "Sayap belakang" untuk melihat bagian di bawahnya)
+- Perbandingan siluet dengan foto Ichiduino: `render/ltm-v13-banding-ichiduino.png`
+- Sumber: `cadquery/ltm_v13.py` (parametrik; `python ltm_v13.py <folder>`, tambah `CHECK=1` untuk cek tabrakan
+  antar bagian: hasil terakhir 0 tabrakan)
+
+### File per bagian (`v13/`)
+
+| File | Isi | Cara buat |
+|---|---|---|
+| `step/cetak_dudukan_motor_baterai.step` + `.stl` | alas holder 2×18650 + penjepit 2 motor N20 + 4 tiang baut ke PCB utama + dudukan tiang sayap | 3D print, ±16 cm³ |
+| `step/cetak_sayap_belakang.step` + `.stl` | sayap 3 panel (panel luar naik 12°) + endplate; sekaligus penutup baterai | 3D print berdiri di tepi belakang (tanpa support), ±12 cm³ |
+| `step/cetak_tiang_sayap.step` + `.stl` | tiang sayap, cetak **2×** (kiri = kanan diputar) | 3D print, tab bawah masuk alas, tab atas tembus sayap |
+| `step/cetak_pelindung_cahaya.step` + `.stl` | dinding pelindung cahaya di bawah baris sensor (risiko R1 charter), 1,8 mm di atas lantai | 3D print, ditempel/dibaut ke sisi bawah PCB sensor |
+| `step/pcb_sensor.step`, `step/pcb_utama.step` | papan kosong (outline + lubang) | acuan layout PCB |
+| `dxf/pcb_sensor_outline.dxf`, `dxf/pcb_utama_outline.dxf` | outline untuk KiCad (File › Import › Graphics → Edge.Cuts) | PCB sensor: 0,0 = tengah tepi depan (sama dengan koordinat sensor 15/10); PCB utama: 0,0 = tengah poros roda |
+| `dxf/pcb_sensor_posisi_tcrt5000.dxf` | kotak 12 TCRT5000 (5,8 × 10,2) | impor ke layer F.Fab/User sebagai acuan |
+| `step/roda_43x19.step` | roda Ø43 × 19 (beli) | acuan |
+| `step/LTM_v13_rakitan.step` | rakitan lengkap 112 bagian berwarna | buka di Fusion 360 |
+
+### Susunan dan alasannya
+
+| Bagian | v13 | Alasan |
+|---|---|---|
+| PCB sensor | capit/jangkar 120 × 80 (sayap 45°, ujung tanduk ke belakang, batang tengah 44 → 34 mm masuk ke bawah hidung PCB utama), 12 TCRT5000 di posisi keputusan 15/10 | bentuk Ichiduino; susunan sensor tidak berubah |
+| Sambungan PCB sensor ↔ utama | 4 spacer nilon M3 × 4 mm di batang + kabel pita 12 pin pendek (J5 di hidung PCB utama, J1 di batang) | kabel pita tetap (keputusan 13/10), dudukan 3D print 2 lengan tidak perlu lagi |
+| Mux + MCP23017 | di **sisi bawah** batang PCB sensor (mux disolder menggantung, MCP23017 di socket DIP); jarak ke lantai ±3,7 dan ±2,8 mm | sisi atas PCB sensor bersih seperti Ichiduino; LED indikator tetap di atas |
+| Tinggi | PCB sensor sisi bawah Z 9,3 (muka TCRT5000 ±2,3 mm dari lantai), PCB utama Z 14,9–16,5, motor duduk di atas PCB utama | TCRT5000 tingginya 7 mm, jadi PCB sensor tidak bisa serendah Ichiduino (sensor SMD) |
+| Roda | **Ø43 × 19** merah, 2 alur, velg abu-abu | lebar seperti Ichiduino; poros di Z 21,5 menyisakan celah 4 mm antara PCB sensor dan PCB utama; v_maks ≈ 1,13 m/s |
+| PCB utama | depan membulat 74 × 97, OLED 0,96" di tengah (socket 8,5), tombol A/B kiri-kanan, TB6612 di kanan OLED (socket, diputar 90°), buzzer + saklar di kiri | tata letak Ichiduino |
+| ESP32 DevKit | **di sisi bawah PCB utama, disolder terbalik** (port USB ke kiri, Z 7,6–14,9) | supaya panjang robot ±160 mm; kalau ESP32 tetap di socket di atas, robot jadi ±180 mm |
+| Belakang | motor N20 di atas PCB utama, dijepit dudukan 3D print; holder 2×18650 di atasnya; MP1584, charger (USB-C ke belakang), konektor baterai di bawah dudukan; BMS di sisi bawah PCB utama | baterai besar hanya muat di atas motor |
+| Sayap | hitam, 3 panel, ujung depan runcing, endplate, 2 tiang miring | bentuk Ichiduino; sekaligus menutup baterai |
+| Penahan depan | ball caster di bawah palm PCB sensor (tinggi total 9,3 mm) + 2 baut nilon anti-jungkit di ujung tanduk | |
+
+### Ukuran (mm)
+
+| | Ichiduino Pro | v12 | v13 |
+|---|---|---|---|
+| L × P × T | 125 × 143 × 55 | 111 × 179 × 55 | 120 × 160 × 70 |
+| Sensor ke poros roda | – | ±133 | ±114 (sensor depan) |
+
+Lebih tinggi dari Ichiduino karena holder 2×18650 (Ichiduino memakai LiPo 2S 400 mAh) dan sayap di atasnya.
+
+### Yang perlu dicek / diputuskan
+
+- **Roda Ø43 × 19 untuk as N20 (D 3 mm)**: cek ada di marketplace; RAB masih "Roda N20 Ø34 mm". Perhitungan
+  motor perlu disesuaikan (jari-jari lebih besar → torsi di roda lebih besar).
+- **OLED 0,96"** menggantikan 1,3" di RAB (lebih murah).
+- **Ball caster** tinggi total 9,3 mm (RAB: "ball caster mini ±6 mm") → pakai spacer atau caster yang lebih tinggi.
+- ESP32 tanpa socket dan mux/MCP23017 di sisi bawah PCB sensor: konfirmasi dulu, karena sebelumnya ESP32 di
+  socket supaya mudah diakses.
+- Ukuran modul masih nilai umum marketplace; ukur ulang dengan jangka sorong saat barang datang.
+
 ## Usulan v12 (13/10/2026): PCB utama v2 + PCB sensor 16 titik di dudukan + kabel pita
 
 Model mengikuti `hardware/` (PCB utama v2 dan PCB sensor v2):
