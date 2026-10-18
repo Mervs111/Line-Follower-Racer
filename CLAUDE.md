@@ -75,10 +75,11 @@ Arsitektur 3 lapis:
   digantikan konsep kabel pita.
 - 16/10/2026: **usulan mekanik v13 gaya Ichiduino Pro** (permintaan user: semirip mungkin dengan foto produk,
   komponen RAB sekarang, OLED 0,96"). PCB sensor capit 120 × 80 (12 TCRT5000 posisi 15/10, batang masuk ke bawah
-  hidung PCB utama + 4 spacer 4 mm), roda Ø43 × 19 merah, ESP32 di sisi bawah PCB utama (tanpa socket), mux +
-  MCP23017 di sisi bawah PCB sensor, pelindung cahaya 3D print, sayap 3 panel. ±120 × 160 × 70. Model:
-  https://claude.ai/artifact/MPiswHWgW5SBjHc9BhH8u4, file per bagian di `mechanical/v13/`. Belum dikonfirmasi user:
-  roda Ø43, ESP32 tanpa socket, mux/MCP di bawah. User merancang PCB sendiri sesudah ini.
+  PCB utama + 4 spacer 4 mm), roda Ø43 × 19 merah, mux + MCP23017 di sisi bawah PCB sensor, pelindung cahaya
+  3D print, sayap 3 panel. ±120 × 160 × 70. 18/10: **ESP32 jangan di bawah** (keputusan user) → ESP32 di socket di
+  atas, melintang di depan dudukan baterai; PCB utama jadi 100 × 121 (bahu di depan roda, hidung menutupi tengah PCB
+  sensor). Model: https://claude.ai/artifact/MPiswHWgW5SBjHc9BhH8u4, file per bagian di `mechanical/v13/`. Belum
+  dikonfirmasi user: roda Ø43, mux/MCP di bawah. User merancang PCB sendiri sesudah ini.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,

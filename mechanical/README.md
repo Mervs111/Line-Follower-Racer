@@ -20,7 +20,7 @@ ruang untuk tiap komponen.
 | `step/cetak_sayap_belakang.step` + `.stl` | sayap 3 panel (panel luar naik 12°) + endplate; sekaligus penutup baterai | 3D print berdiri di tepi belakang (tanpa support), ±12 cm³ |
 | `step/cetak_tiang_sayap.step` + `.stl` | tiang sayap, cetak **2×** (kiri = kanan diputar) | 3D print, tab bawah masuk alas, tab atas tembus sayap |
 | `step/cetak_pelindung_cahaya.step` + `.stl` | dinding pelindung cahaya di bawah baris sensor (risiko R1 charter), 1,8 mm di atas lantai | 3D print, ditempel/dibaut ke sisi bawah PCB sensor |
-| `step/pcb_sensor.step`, `step/pcb_utama.step` | papan kosong (outline + lubang) | acuan layout PCB |
+| `step/pcb_sensor.step`, `step/pcb_utama.step` | papan kosong (outline + lubang): PCB sensor 120 × 80, PCB utama 100 × 121 | acuan layout PCB |
 | `dxf/pcb_sensor_outline.dxf`, `dxf/pcb_utama_outline.dxf` | outline untuk KiCad (File › Import › Graphics → Edge.Cuts) | PCB sensor: 0,0 = tengah tepi depan (sama dengan koordinat sensor 15/10); PCB utama: 0,0 = tengah poros roda |
 | `dxf/pcb_sensor_posisi_tcrt5000.dxf` | kotak 12 TCRT5000 (5,8 × 10,2) | impor ke layer F.Fab/User sebagai acuan |
 | `step/roda_43x19.step` | roda Ø43 × 19 (beli) | acuan |
@@ -31,15 +31,16 @@ ruang untuk tiap komponen.
 | Bagian | v13 | Alasan |
 |---|---|---|
 | PCB sensor | capit/jangkar 120 × 80 (sayap 45°, ujung tanduk ke belakang, batang tengah 44 → 34 mm masuk ke bawah hidung PCB utama), 12 TCRT5000 di posisi keputusan 15/10 | bentuk Ichiduino; susunan sensor tidak berubah |
-| Sambungan PCB sensor ↔ utama | 4 spacer nilon M3 × 4 mm di batang + kabel pita 12 pin pendek (J5 di hidung PCB utama, J1 di batang) | kabel pita tetap (keputusan 13/10), dudukan 3D print 2 lengan tidak perlu lagi |
-| Mux + MCP23017 | di **sisi bawah** batang PCB sensor (mux disolder menggantung, MCP23017 di socket DIP); jarak ke lantai ±3,7 dan ±2,8 mm | sisi atas PCB sensor bersih seperti Ichiduino; LED indikator tetap di atas |
+| Sambungan PCB sensor ↔ utama | 4 spacer nilon M3 × 4 mm (di palm dan ujung batang) + kabel pita 12 pin pendek (J5 di hidung PCB utama, J1 di palm PCB sensor tepat di depannya) | kabel pita tetap (keputusan 13/10), dudukan 3D print 2 lengan tidak perlu lagi |
+| Mux + MCP23017 | di **sisi bawah** batang PCB sensor (mux disolder menggantung, MCP23017 di socket DIP); jarak ke lantai ±3,7 dan ±2,8 mm | sisi atas PCB sensor bersih seperti Ichiduino (hidung PCB utama bisa menutupinya); LED indikator tetap di atas |
 | Tinggi | PCB sensor sisi bawah Z 9,3 (muka TCRT5000 ±2,3 mm dari lantai), PCB utama Z 14,9–16,5, motor duduk di atas PCB utama | TCRT5000 tingginya 7 mm, jadi PCB sensor tidak bisa serendah Ichiduino (sensor SMD) |
 | Roda | **Ø43 × 19** merah, 2 alur, velg abu-abu | lebar seperti Ichiduino; poros di Z 21,5 menyisakan celah 4 mm antara PCB sensor dan PCB utama; v_maks ≈ 1,13 m/s |
-| PCB utama | depan membulat 74 × 97, OLED 0,96" di tengah (socket 8,5), tombol A/B kiri-kanan, TB6612 di kanan OLED (socket, diputar 90°), buzzer + saklar di kiri | tata letak Ichiduino |
-| ESP32 DevKit | **di sisi bawah PCB utama, disolder terbalik** (port USB ke kiri, Z 7,6–14,9) | supaya panjang robot ±160 mm; kalau ESP32 tetap di socket di atas, robot jadi ±180 mm |
+| PCB utama | 100 × 121: belakang selebar celah antar roda (74), "bahu" 100 di depan roda, hidung membulat menutupi tengah PCB sensor | muat ESP32 + OLED berderet tanpa menambah panjang robot; dekat target 12 × 12 cm |
+| ESP32 DevKit | **di atas, di socket**, melintang tepat di depan dudukan baterai, port USB ke kiri (18/10: jangan di bawah) | mudah dilihat, dicabut, dan dicolok USB |
+| OLED + tombol | OLED 0,96" (socket 8,5) di tengah depan ESP32, tombol A/B kiri-kanan OLED, TB6612 (socket, diputar 90°) + buzzer di bahu kanan, saklar + C1 di bahu kiri | tata letak depan seperti Ichiduino |
 | Belakang | motor N20 di atas PCB utama, dijepit dudukan 3D print; holder 2×18650 di atasnya; MP1584, charger (USB-C ke belakang), konektor baterai di bawah dudukan; BMS di sisi bawah PCB utama | baterai besar hanya muat di atas motor |
 | Sayap | hitam, 3 panel, ujung depan runcing, endplate, 2 tiang miring | bentuk Ichiduino; sekaligus menutup baterai |
-| Penahan depan | ball caster di bawah palm PCB sensor (tinggi total 9,3 mm) + 2 baut nilon anti-jungkit di ujung tanduk | |
+| Penahan depan | ball caster di bawah palm PCB sensor (Y 92, tinggi total 9,3 mm) + 2 baut nilon anti-jungkit di ujung tanduk | |
 
 ### Ukuran (mm)
 
@@ -56,8 +57,7 @@ Lebih tinggi dari Ichiduino karena holder 2×18650 (Ichiduino memakai LiPo 2S 40
   motor perlu disesuaikan (jari-jari lebih besar → torsi di roda lebih besar).
 - **OLED 0,96"** menggantikan 1,3" di RAB (lebih murah).
 - **Ball caster** tinggi total 9,3 mm (RAB: "ball caster mini ±6 mm") → pakai spacer atau caster yang lebih tinggi.
-- ESP32 tanpa socket dan mux/MCP23017 di sisi bawah PCB sensor: konfirmasi dulu, karena sebelumnya ESP32 di
-  socket supaya mudah diakses.
+- Mux/MCP23017 di sisi bawah PCB sensor: konfirmasi dulu (sebelumnya mux di socket di sisi atas).
 - Ukuran modul masih nilai umum marketplace; ukur ulang dengan jangka sorong saat barang datang.
 
 ## Usulan v12 (13/10/2026): PCB utama v2 + PCB sensor 16 titik di dudukan + kabel pita
