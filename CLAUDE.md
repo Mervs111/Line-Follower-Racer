@@ -14,7 +14,7 @@ Arsitektur 3 lapis:
   WiFi, banyak pin strapping). Posisi garis jadi −2000..2000. Acuan: Pololu 3pi (5 sensor, bisa
   maze solving). Pin map & platformio.ini perlu disusun ulang sebelum milestone firmware berikutnya.
 - Sensor: 5 buah, susunan panah, di PCB sensor terpisah. **Diganti 13/10/2026: 16 sensor + multiplexer
-  CD74HC4067 + LED indikator tiap sensor (MCP23017), lihat catatan 13/10 di bawah. 15/10/2026: jadi 12 TCRT5000.**
+  CD74HC4067 + LED indikator tiap sensor (MCP23017), lihat catatan 13/10 di bawah. 15/10/2026: jadi 12 TCRT5000. 20/10/2026: jadi 12 LED merah + fototransistor SMD 1206.**
 - Baterai: 2S (2× 18650, holder 76×42×20 mm melintang di atas PCB utama), BMS 2S, charger 2S USB-C, buck 5 V.
 - RAB revisi 3.3: Rp858.000 (digantikan revisi 3.4 Rp833.000, lihat di bawah) (lintasan uji di luar RAB). Body 3D print = opsi B (dipilih 08/10/2026): PCB tetap jadi sasis, 3D print berupa cover/body
   penutup di atas + bumper + dudukan motor & baterai. Belum di RAB (tunggu info printer lab).
@@ -80,6 +80,18 @@ Arsitektur 3 lapis:
   atas, melintang di depan dudukan baterai; PCB utama jadi 100 × 121 (bahu di depan roda, hidung menutupi tengah PCB
   sensor). Model: https://claude.ai/artifact/MPiswHWgW5SBjHc9BhH8u4, file per bagian di `mechanical/v13/`. Belum
   dikonfirmasi user: roda Ø43, mux/MCP di bawah. User merancang PCB sendiri sesudah ini.
+- 20/10/2026: **rombak sensor (keputusan user)**: 12 pasang **LED superbright merah + fototransistor bening, keduanya
+  SMD 1206**, di sisi bawah PCB sensor capit (posisi 15/10; LED di depan, PT di belakang, jarak tengah 3,8 mm). LED:
+  R 330 Ω dari +5V (±8 mA); PT: kolektor ← R 10k (uji 4k7–47k) ← +3V3, emitor → GND, kolektor ke mux. **MCP23017 +
+  LED indikator dihapus** (bacaan sensor = bar di OLED). Kabel pita 12 pin tetap, pin 1, 10, 12 kosong. **Roda Ø34**
+  (RAB). Model v14: https://claude.ai/artifact/5zf7kFLtjenLFpFJ7Ukids, file di `mechanical/v14/` (PCB utama = v13;
+  PCB sensor Z 4,8, mux di socket di atas palm PCB sensor di depan hidung PCB utama, masker 3D print hitam dengan
+  jendela per LED/PT, skid nilon pengganti ball caster; ±120 × 174 × 62). Wiring diagram artifact Enb11oGXVb5YkwQmU6DhJY
+  sudah diperbarui (sumber: `docs/wiring-diagram.html`). RAB Rp859.500 (sisa Rp40.500): OLED 0,96" Rp33.000, LED 1206
+  15×Rp500, PT 1206 impor 15×Rp4.000 (perkiraan, mis. Everlight PT15-21C / Vishay TEMT6000X01; tidak ada di toko
+  lokal → risiko R8, pesan paling lambat minggu 8). Charter docx dibuat ulang dengan `docs/charter-docx/gen_charter.js`
+  (`npm i docx`, lalu `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `docs/charter.md`).
+  Belum ikut 20/10: `docs/skematik-v1.md`, `docs/minsys-v1.md`, RAB pemeliharaan (`gen_rab_pemeliharaan.py`), `hardware/`.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,

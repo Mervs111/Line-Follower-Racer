@@ -1,5 +1,51 @@
 # Mekanik — Robot Line Tracer Micro
 
+## Usulan v14 (20/10/2026): sensor LED merah + fototransistor SMD, tanpa MCP23017, roda Ø34
+
+Keputusan kelompok 20/10: sensor garis dirombak dari TCRT5000 ke **LED superbright merah + fototransistor bening,
+keduanya SMD 1206**, tetap 12 titik di PCB sensor bentuk capit (posisi 15/10). MCP23017 + 12 LED indikator
+dihapus (bacaan sensor tampil sebagai bar di OLED). Roda kembali **Ø34** sesuai RAB. PCB utama sama dengan v13.
+
+- Model 3D yang bisa diputar: https://claude.ai/artifact/5zf7kFLtjenLFpFJ7Ukids (tombol "Masker sensor" dan
+  "Sayap belakang")
+- Perbandingan siluet dengan foto Ichiduino: `render/ltm-v14-banding-ichiduino.png`
+- Sumber: `cadquery/ltm_v14.py` (`python ltm_v14.py <folder>`, `CHECK=1` untuk cek tabrakan: hasil terakhir 0)
+
+### File per bagian (`v14/`)
+
+| File | Isi | Cara buat |
+|---|---|---|
+| `step/cetak_dudukan_motor_baterai.step` + `.stl` | alas holder 2×18650 + penjepit 2 motor N20 + tiang baut + dudukan tiang sayap | 3D print |
+| `step/cetak_sayap_belakang.step` + `.stl` | sayap 3 panel + endplate, sekaligus penutup baterai | 3D print berdiri di tepi belakang |
+| `step/cetak_tiang_sayap.step` + `.stl` | tiang sayap, cetak **2×** | 3D print |
+| `step/cetak_masker_sensor.step` + `.stl` | pelat hitam 2,8 mm di bawah baris sensor, jendela 3,6 × 2,0 terpisah untuk tiap LED dan fototransistor (sekat 1,8 mm), 2 mm di atas lantai, 3 baut M2 | 3D print **hitam**, dibaut ke sisi bawah PCB sensor |
+| `step/pcb_sensor.step`, `step/pcb_utama.step` | papan kosong: PCB sensor 120 × 80, PCB utama 100 × 121 | acuan layout PCB |
+| `dxf/pcb_sensor_outline.dxf`, `dxf/pcb_utama_outline.dxf` | outline untuk KiCad (Edge.Cuts) | 0,0 sama dengan v13 |
+| `dxf/pcb_sensor_posisi_led_fototransistor.dxf` | kotak 3,2 × 1,6 tiap LED (depan) dan fototransistor (belakang), jarak tengah 3,8 mm, sisi panjang melintang | impor ke F.Fab/User; komponen dipasang di **sisi bawah** (B.Cu) |
+| `step/roda_34x12.step` | roda Ø34 × 12 (lebar diasumsikan, ukur roda yang dibeli) | acuan |
+| `step/LTM_v14_rakitan.step` | rakitan lengkap berwarna | buka di Fusion 360 |
+
+### Yang berubah dari v13
+
+| Bagian | v14 | Alasan |
+|---|---|---|
+| Sensor | 12 pasang LED merah + fototransistor SMD 1206 di sisi bawah PCB sensor, LED di depan, fototransistor di belakang | keputusan 20/10; komponen rendah (1,1 mm) jadi PCB sensor bisa dekat lantai seperti Ichiduino |
+| Tinggi | sisi bawah PCB sensor Z 4,8 (muka sensor ±3,7 mm dari lantai), PCB utama Z 10,4–12, celah antar papan 4 mm (spacer nilon M3 × 4) | roda Ø34: poros Z 17, motor N20 duduk di atas PCB utama |
+| Mux | modul CD74HC4067 di socket di **sisi atas palm PCB sensor**, di depan hidung PCB utama (kelihatan) | celah 4 mm terlalu sempit untuk modul di bawah hidung; sisi bawah dipakai sensor + masker |
+| MCP23017 + LED indikator | **dihapus** | bacaan 12 sensor jadi bar di OLED; PCB sensor lebih sederhana |
+| Kabel pita | tetap 12 pin; pin 1, 10, 12 kosong (tidak ada I2C di PCB sensor) | |
+| Roda | Ø34 × 12 (RAB), v_maks ±0,89 m/s | sesuai RAB |
+| Penahan depan | skid nilon di bawah batang PCB sensor + 2 skid anti-jungkit (1 mm di atas lantai) di ujung tanduk | ball caster tidak muat di bawah PCB sensor setinggi 4,8 mm |
+| Ukuran | ±120 × 174 × 62 mm (v13: 120 × 160 × 70) | lebih panjang karena mux di depan hidung, lebih rendah karena roda kecil |
+
+### Yang perlu dicek / diputuskan
+
+- **Fototransistor SMD** tidak ditemukan di toko lokal: pesan impor (LCSC/DigiKey/AliExpress) paling lambat minggu 8
+  (risiko R8 charter). Harga di RAB (Rp4.000) masih perkiraan.
+- **R pull-up fototransistor** 10 kΩ dulu; uji 4k7–47k di breadboard sampai selisih hitam-putih paling besar.
+- Lebar roda 12 mm masih asumsi; ukur roda yang dibeli.
+- Skid nilon menggantikan ball caster di RAB: cek gesekannya di lintasan.
+
 ## Usulan v13 (16/10/2026): gaya Ichiduino Pro, komponen RAB sekarang
 
 Permintaan kelompok: bentuk dibuat semirip mungkin dengan Ichiduino Pro (foto produk), komponen tetap komponen

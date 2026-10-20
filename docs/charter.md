@@ -1,7 +1,7 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
 Semester Gasal 2026/2027 · Revisi 3.4 (arahan dosen 05/10/2026: reverse engineering, path planning,
-budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU)
+budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU) · diperbarui 20/10/2026: sensor LED merah + fototransistor SMD
 
 ## 1. Project Identity
 
@@ -54,7 +54,7 @@ block coding berbasis web tanpa instalasi aplikasi.
 
 - Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
-- Elektronik: 12 sensor garis TCRT5000 (PCB sensor bentuk jangkar) + multiplexer + LED indikator tiap sensor, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
+- Elektronik: 12 sensor garis (LED merah + fototransistor SMD, PCB sensor bentuk jangkar) + multiplexer, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
 - Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan
 - Platform block coding berbasis web (Blockly)
@@ -113,18 +113,19 @@ Lintasan uji path planning berupa grid garis 4 × 4 titik persimpangan dengan ja
 | 6 | Path planning, PCB, platform block coding, pengujian seluruh sasaran, uji coba siswa (G4 Pembuktian) | Minggu 11–14 |
 | 7 | Laporan akhir, manual, serah terima, demo akhir (G5 Serah Terima) | Minggu 15–16 |
 
-**Risiko terbesar:** pembacaan sensor IR terganggu cahaya ruangan dan kondisi permukaan lintasan,
+**Risiko terbesar:** pembacaan sensor garis terganggu cahaya ruangan dan kondisi permukaan lintasan,
 sehingga posisi garis dan persimpangan tidak terbaca akurat.
 
 | No | Risiko | Dampak | Penanganan |
 |---|---|---|---|
-| R1 | Sensor IR terganggu cahaya ruangan / permukaan lintasan | Akurasi posisi dan deteksi persimpangan gagal | Kalibrasi hitam-putih tiap dinyalakan, pelindung cahaya di sekeliling sensor, TCRT5000 dengan filter cahaya siang |
+| R1 | Sensor garis terganggu cahaya ruangan / permukaan lintasan | Akurasi posisi dan deteksi persimpangan gagal | Kalibrasi hitam-putih tiap dinyalakan, PCB sensor rendah (±4 mm dari lantai), masker 3D print dengan jendela terpisah untuk tiap LED dan fototransistor |
 | R2 | Persimpangan terlewat atau terdeteksi ganda | Rute dan titik berhenti salah | Konfirmasi deteksi dengan jarak tempuh encoder |
 | R3 | Belokan 90° di persimpangan tidak presisi | Rute dan titik berhenti salah | Belok berbasis encoder, lalu dikunci kembali ke garis oleh sensor |
 | R4 | PID tidak stabil saat kecepatan/tegangan baterai berubah | Kecepatan dan keterulangan gagal | Tuning lewat serial, kompensasi tegangan baterai |
 | R5 | PCB salah desain atau terlambat datang | Jadwal G3–G4 mundur | Prototipe breadboard dulu, pesan PCB paling lambat minggu 10 |
 | R6 | Biaya melebihi Rp 900.000 | Sasaran biaya gagal | RAB dipantau tiap pembelian |
 | R7 | Baterai Li-ion overcharge / overdischarge / korsleting | Bahaya keselamatan | BMS 2S, cutoff firmware, ruang baterai tertutup |
+| R8 | Fototransistor SMD tidak dijual di toko lokal (harus impor) dan terlambat datang | Prototipe sensor mundur | Pesan paling lambat minggu 8 bersama PCB; cadangan fototransistor bening 3 mm lokal untuk prototipe breadboard |
 
 ## 8. Budget Summary
 
@@ -135,15 +136,14 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Item | Price per unit | Qty | Unit | Total Price |
 |---|---|---|---|---|
 | ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | pcs | Rp76.000 |
-| OLED 1.3" 128×64 I2C | Rp52.000 | 1 | pcs | Rp52.000 |
-| Sensor IR TCRT5000 (PCB sensor 12 titik, +1 cadangan) | Rp3.000 | 13 | pcs | Rp39.000 |
+| OLED 0.96" 128×64 I2C | Rp33.000 | 1 | pcs | Rp33.000 |
+| LED SMD 1206 merah superbright (sensor, 12 + 3 cadangan) | Rp500 | 15 | pcs | Rp7.500 |
+| Fototransistor SMD 1206 bening, impor (mis. Everlight PT15-21C; 12 + 3 cadangan) | Rp4.000 | 15 | pcs | Rp60.000 |
 | Modul multiplexer analog CD74HC4067 16 kanal (dipakai 12) | Rp15.000 | 1 | pcs | Rp15.000 |
-| IC MCP23017 DIP-28 + socket (LED indikator sensor) | Rp22.000 | 1 | pcs | Rp22.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
 | Push button | Rp1.000 | 4 | pcs | Rp4.000 |
-| LED SMD 0805 (indikator sensor, +3 cadangan) | Rp100 | 15 | pcs | Rp1.500 |
-| Resistor SMD 0805 (330 Ω, 4,7 kΩ untuk PCB sensor) | Rp100 | 40 | pcs | Rp4.000 |
+| Resistor SMD 0805 (330 Ω dan 10 kΩ untuk PCB sensor) | Rp100 | 30 | pcs | Rp3.000 |
 | Resistor 10 kΩ | Rp200 | 10 | pcs | Rp2.000 |
 | Buzzer | Rp3.000 | 1 | pcs | Rp3.000 |
 | Baterai Li-ion 18650 | Rp40.000 | 2 | pcs | Rp80.000 |
@@ -156,7 +156,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Komponen pendukung (header & socket female, kapasitor, dioda 1N5819) | Rp25.000 | 1 | paket | Rp25.000 |
 | Kabel pita 12 pin + 2 box header IDC 2×6 + 2 konektor IDC | Rp10.000 | 1 | set | Rp10.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp734.500** |
+| **TOTAL** | | | | **Rp719.500** |
 
 ### Mechanical
 
@@ -164,9 +164,9 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 |---|---|---|---|---|
 | Roda N20 Ø34 mm | Rp25.000 | 1 | pasang | Rp25.000 |
 | Bracket motor N20 | Rp10.000 | 1 | pasang | Rp10.000 |
-| Ball caster mini (± 6 mm) | Rp10.000 | 1 | pcs | Rp10.000 |
+| Skid nilon M3 (pengganti ball caster; baut, spacer, mur nilon) | Rp5.000 | 1 | paket | Rp5.000 |
 | Baut, mur, spacer | Rp15.000 | 1 | paket | Rp15.000 |
-| **TOTAL** | | | | **Rp60.000** |
+| **TOTAL** | | | | **Rp55.000** |
 
 ### Lain-lain
 
@@ -176,24 +176,27 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
 | **TOTAL** | | | | **Rp85.000** |
 
-**TOTAL BUDGET: Rp879.500** (Electrical Rp734.500 + Mechanical Rp60.000 + Lain-lain Rp85.000),
-sisa Rp20.500 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
+**TOTAL BUDGET: Rp859.500** (Electrical Rp719.500 + Mechanical Rp55.000 + Lain-lain Rp85.000),
+sisa Rp40.500 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
 multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000, LED IR selalu nyala tanpa MOSFET (−Rp16.500).
+Revisi 20/10/2026: sensor jadi 12 pasang LED merah + fototransistor SMD 1206, MCP23017 + LED indikator dihapus
+(bacaan sensor tampil di OLED), OLED 0,96", skid nilon pengganti ball caster (−Rp20.000). Harga fototransistor
+masih perkiraan (impor, belum termasuk ongkir); cek ulang sebelum pitching RAB.
 
 ### Alasan pemilihan komponen utama
 
 - **ESP32 DevKit** (Rp76.000): prosesor 240 MHz dual-core dengan WiFi/Bluetooth, jauh lebih murah dari
   ESP32-S3 (> Rp130.000). 12 sensor garis dibaca bergantian lewat multiplexer CD74HC4067 ke satu kanal
   ADC1 (GPIO36), tegangan baterai ke kanal ADC1 lain (GPIO39).
-- **12 sensor garis TCRT5000 pada PCB bentuk jangkar (jarak ke samping 10 mm, lebar baca ± 110 mm) + LED
-  indikator tiap sensor**: 4 sensor di sisi depan dan 4 di tiap sayap yang miring 45° ke belakang, sehingga
-  belokan tajam terlihat lebih awal dan garis tetap terbaca di persimpangan; jarak ke samping yang seragam
-  membuat perhitungan posisi garis tetap sederhana. TCRT5000
-  mudah dicari, banyak contoh rangkaiannya, punya filter cahaya siang, dan kakinya besar sehingga mudah
-  disolder siswa. Multiplexer membuat 12 sensor cukup memakai 5 pin ESP32 (1 ADC + 4 pemilih kanal). LED indikator (lewat MCP23017 di bus I2C
-  yang sama dengan OLED) menunjukkan apa yang "dilihat" robot setelah kalibrasi, sehingga mudah dipahami
-  siswa. PCB sensor dipasang di dudukan 3D print dan disambung kabel pita, jadi gampang dilepas dan tinggi
-  sensor bisa diatur.
+- **12 sensor garis (LED merah superbright + fototransistor bening, SMD 1206) pada PCB bentuk jangkar (jarak
+  ke samping 10 mm, lebar baca ± 110 mm)**: 4 sensor di sisi depan dan 4 di tiap sayap yang miring 45° ke
+  belakang, sehingga belokan tajam terlihat lebih awal dan garis tetap terbaca di persimpangan; jarak ke samping
+  yang seragam membuat perhitungan posisi garis tetap sederhana. Komponen SMD membuat PCB sensor tipis dan
+  rendah (± 4 mm dari lantai) seperti kit pembanding; cahaya merahnya terlihat siswa sehingga cara kerja sensor
+  mudah dijelaskan. Masker 3D print memisahkan LED dan fototransistor serta menahan cahaya ruangan.
+  Multiplexer membuat 12 sensor cukup memakai 5 pin ESP32 (1 ADC + 4 pemilih kanal). Bacaan 12 sensor
+  ditampilkan sebagai bar di OLED, menggantikan LED indikator + MCP23017 (lebih murah dan PCB sensor lebih
+  sederhana). PCB sensor dibaut ke bawah PCB utama dengan 4 spacer nilon dan disambung kabel pita pendek.
 - **Motor N20 6V 500 RPM + encoder, roda Ø34 mm**: kecepatan maksimum teoritis ± 0,89 m/s, cukup untuk
   sasaran ≥ 0,5 m/s dengan cadangan; roda kecil membuat robot rendah dan ringkas. Torsi desain
   (massa 0,3 kg, akselerasi 1,8 m/s², safety factor 2) ± 9 N·mm ≈ 0,09 kg·cm per roda. Encoder dibutuhkan
