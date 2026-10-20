@@ -1,5 +1,5 @@
 // Membuat Project Charter (.docx) dengan format sama seperti versi Google Docs 09/10/2026.
-// Isi diperbarui sesuai keputusan 20/10/2026 (12 sensor LED merah + fototransistor SMD, tanpa MCP23017, RAB Rp859.500).
+// Isi diperbarui sesuai keputusan 20/10/2026 (12 sensor QRE1113GR, PCB sensor gaya XLINE, tanpa MCP23017, RAB Rp867.000).
 const fs = require("fs");
 const path = require("path");
 const {
@@ -140,7 +140,7 @@ const objectives = table(W2, [
 const lingkup = [
   "Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)",
   "Robot line tracer edukasi berbasis ESP32, dirancang dari nol",
-  "Elektronik: 12 sensor garis (LED merah + fototransistor SMD, PCB sensor bentuk jangkar) + multiplexer, " +
+  "Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk sayap) + multiplexer, " +
     "motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)",
   "Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan",
   "Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan",
@@ -247,13 +247,12 @@ const W8 = [4100, 1700, 800, 1160, TABLE_W - 4100 - 1700 - 800 - 1160];
 const electrical = [
   ["ESP32 DevKit WiFi Bluetooth CH340 Type-C", 76000, 1, "pcs"],
   ["OLED 0.96\" 128×64 I2C", 33000, 1, "pcs"],
-  ["LED SMD 1206 merah superbright (sensor, 12 + 3 cadangan)", 500, 15, "pcs"],
-  ["Fototransistor SMD 1206 bening, impor (mis. Everlight PT15-21C; 12 + 3 cadangan)", 4000, 15, "pcs"],
+  ["Sensor reflektif QRE1113GR SMD, impor (12 + 3 cadangan)", 5000, 15, "pcs"],
   ["Modul multiplexer analog CD74HC4067 16 kanal", 15000, 1, "pcs"],
   ["Modul driver motor TB6612FNG", 25000, 1, "pcs"],
   ["Motor N20 6V ± 500 RPM + encoder", 55000, 2, "pcs"],
   ["Push button", 1000, 4, "pcs"],
-  ["Resistor SMD 0805 (330 Ω dan 10 kΩ untuk PCB sensor)", 100, 30, "pcs"],
+  ["Resistor SMD 0805 (220 Ω dan 10 kΩ untuk PCB sensor)", 100, 30, "pcs"],
   ["Resistor 10 kΩ", 200, 10, "pcs"],
   ["Buzzer", 3000, 1, "pcs"],
   ["Baterai Li-ion 18650", 40000, 2, "pcs"],
@@ -270,7 +269,7 @@ const electrical = [
 const mechanical = [
   ["Roda N20 Ø34 mm", 25000, 1, "pasang"],
   ["Bracket motor N20", 10000, 1, "pasang"],
-  ["Skid nilon M3 (pengganti ball caster; baut, spacer, mur nilon)", 5000, 1, "paket"],
+  ["Skid nilon (pengganti ball caster; baut M2/M3, spacer, mur nilon)", 5000, 1, "paket"],
   ["Baut, mur, spacer", 15000, 1, "paket"],
 ];
 const lain = [
@@ -298,7 +297,7 @@ const gE = groupRows("Electrical", electrical);
 const gM = groupRows("Mechanical", mechanical);
 const gL = groupRows("Lain-Lain", lain);
 const TOTAL = gE.sub + gM.sub + gL.sub;
-if (TOTAL !== 859500) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
+if (TOTAL !== 867000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
 const budget = table(W8, [
   sectionHead("8. Budget Summary", W8),
   italicNote("Summary of what are required items to be used", W8),

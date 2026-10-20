@@ -1,0 +1,171 @@
+<title>Line Tracer v15</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: panggung 3D satu layar penuh, bar kontrol di atas; satu tema studio terang yang sengaja dipakai (sama dengan v11/v12) */
+:root {
+  --stage: #E9EDF1; --panel: #FFFFFF; --ink: #14202E; --muted: #536274; --line: #CDD6DF;
+  --accent: #D3202E; --accent-ink: #FFFFFF;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--stage); color: var(--ink); font-family: var(--f-body); overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; outline: none; }
+.bar { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+  top: calc(env(safe-area-inset-top, 0px) + 16px); display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
+  justify-content: space-between; pointer-events: none; }
+.title { display: grid; gap: 2px; pointer-events: auto; min-width: 0; }
+.title b { font-size: 18px; letter-spacing: .01em; }
+.title span { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.ctrl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; pointer-events: auto; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+.ctrl button { font: 600 13px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 5px;
+  padding: 7px 11px; cursor: pointer; min-height: 32px; }
+.ctrl button:hover { background: #F1F4F7; }
+.ctrl button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.ctrl button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sep { width: 1px; align-self: stretch; background: var(--line); }
+.ctrl label { display: flex; gap: 6px; align-items: center; font-size: 13px; padding: 0 6px; cursor: pointer; }
+.ctrl input { accent-color: var(--accent); }
+.note { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  margin-right: max(16px, env(safe-area-inset-right, 0px)); font-size: 12px; color: var(--muted);
+  background: rgb(255 255 255 / .85); border-radius: 6px; padding: 6px 10px; pointer-events: none; }
+#loading { position: fixed; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px;
+  color: var(--muted); pointer-events: none; }
+body.shot .bar, body.shot .note { display: none; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+
+<div id="stage" aria-label="Model 3D Robot Line Tracer Micro v15, bisa diputar dengan mouse atau jari"></div>
+<div id="loading">memuat model…</div>
+<div class="bar">
+  <div class="title"><b>Robot Line Tracer Micro</b><span>v15 · PCB sensor gaya XLINE · 12 QRE1113GR · ±119 × 168 × 62 mm</span></div>
+  <div class="ctrl" role="group" aria-label="Sudut pandang dan bagian">
+    <button type="button" data-view="iso" aria-pressed="true">Iso</button>
+    <button type="button" data-view="top" aria-pressed="false">Atas</button>
+    <button type="button" data-view="side" aria-pressed="false">Samping</button>
+    <button type="button" data-view="front" aria-pressed="false">Depan</button>
+    <button type="button" data-view="rear" aria-pressed="false">Belakang</button>
+    <button type="button" data-view="bottom" aria-pressed="false">Bawah</button>
+    <span class="sep"></span>
+    <label><input type="checkbox" id="tg-wing" checked> Sayap belakang</label>
+  </div>
+</div>
+<div class="note">Seret untuk memutar · scroll / cubit untuk zoom · garis hitam = lintasan 19 mm</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(stage.clientWidth, stage.clientHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#E9EDF1');
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(30, stage.clientWidth / stage.clientHeight, 1, 5000);
+camera.up.set(0, 0, 1);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 45, 18);
+
+// lantai + lintasan (Z ke atas, satuan mm)
+const floorMat = new THREE.MeshStandardMaterial({ color: '#F4F4F1', roughness: 0.95 });
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), floorMat);
+floor.receiveShadow = true;
+scene.add(floor);
+const tape = new THREE.MeshStandardMaterial({ color: '#141414', roughness: 0.8 });
+const tapes = new THREE.Group(); scene.add(tapes);
+function strip(x0, x1, y0, y1) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, y1 - y0), tape);
+  m.position.set((x0 + x1) / 2, (y0 + y1) / 2, 0.05); m.receiveShadow = true; tapes.add(m);
+}
+strip(-9.5, 9.5, -600, 520);       // garis lurus di bawah robot
+strip(-600, 600, 300, 319);        // persimpangan 90°
+
+const key = new THREE.DirectionalLight('#ffffff', 2.2);
+key.position.set(-180, 160, 420);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -160, right: 160, top: 160, bottom: -160, near: 50, far: 1200 });
+key.shadow.bias = -0.0004; key.shadow.radius = 4;
+key.target.position.set(0, 40, 0); scene.add(key.target);
+scene.add(key);
+scene.add(new THREE.HemisphereLight('#ffffff', '#c9ced6', 0.6));
+
+const groups = { base: new THREE.Group(), wing: new THREE.Group(), sensor: new THREE.Group() };
+Object.values(groups).forEach(g => scene.add(g));
+
+const data = await (await fetch('model.json')).json();
+const mats = {};
+for (const [k, [c, r, m]] of Object.entries(data.mats)) {
+  mats[k] = new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m });
+}
+mats.screen.emissive = new THREE.Color('#7fc4ff'); mats.screen.emissiveIntensity = 1.4;
+mats.led_red.emissive = new THREE.Color('#ff2a2a'); mats.led_red.emissiveIntensity = 0.6;
+mats.glass.envMapIntensity = 1.6;
+for (const o of data.meshes) {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(o.p, 3));
+  g.setIndex(o.i);
+  g.computeVertexNormals();
+  const mesh = new THREE.Mesh(g, mats[o.m]);
+  mesh.name = o.n; mesh.castShadow = !['screen', 'silk', 'gold'].includes(o.m); mesh.receiveShadow = true;
+  (groups[o.g] || groups.base).add(mesh);
+}
+document.getElementById('loading').remove();
+
+const VIEWS = {
+  iso:    { pos: [-215, 300, 195], tgt: [0, 42, 16] },
+  top:    { pos: [0, 42, 480],     tgt: [0, 42, 0] },
+  side:   { pos: [-460, 42, 30],   tgt: [0, 42, 26] },
+  front:  { pos: [0, 470, 60],     tgt: [0, 42, 26] },
+  rear:   { pos: [210, -250, 175], tgt: [0, 30, 20] },
+  bottom: { pos: [-60, 60, -420],  tgt: [0, 42, 0] },
+};
+function setView(v) {
+  const s = VIEWS[v]; if (!s) return;
+  camera.position.set(...s.pos); controls.target.set(...s.tgt); controls.update();
+  floor.visible = v !== 'bottom'; tapes.visible = v !== 'bottom';
+  key.position.set(-180, 160, v === 'bottom' ? -420 : 420);   // tampak bawah: lampu dari bawah supaya sensor terlihat
+  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+}
+window.setView = setView;
+window.setCamera = (pos, tgt, up) => {
+  if (up) camera.up.set(...up);
+  camera.position.set(...pos); controls.target.set(...tgt); controls.update();
+};
+window.lightBelow = () => { key.position.set(-180, 160, -420); floor.visible = false; tapes.visible = false; };
+window.setStudio = (bg, floorColor, showTape) => {
+  scene.background = new THREE.Color(bg); floorMat.color.set(floorColor); tapes.visible = showTape;
+};
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+const toggles = { wing: document.getElementById('tg-wing') };
+for (const [g, el] of Object.entries(toggles)) el.addEventListener('change', () => { groups[g].visible = el.checked; });
+window.showGroup = (g, on) => { groups[g].visible = on; if (toggles[g]) toggles[g].checked = on; };
+setView(Object.keys(VIEWS).includes(location.hash.slice(1)) ? location.hash.slice(1) : 'iso');
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+window.modelReady = true;
+</script>

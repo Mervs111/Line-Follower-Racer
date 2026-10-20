@@ -14,7 +14,7 @@ Arsitektur 3 lapis:
   WiFi, banyak pin strapping). Posisi garis jadi −2000..2000. Acuan: Pololu 3pi (5 sensor, bisa
   maze solving). Pin map & platformio.ini perlu disusun ulang sebelum milestone firmware berikutnya.
 - Sensor: 5 buah, susunan panah, di PCB sensor terpisah. **Diganti 13/10/2026: 16 sensor + multiplexer
-  CD74HC4067 + LED indikator tiap sensor (MCP23017), lihat catatan 13/10 di bawah. 15/10/2026: jadi 12 TCRT5000. 20/10/2026: jadi 12 LED merah + fototransistor SMD 1206.**
+  CD74HC4067 + LED indikator tiap sensor (MCP23017), lihat catatan 13/10 di bawah. 15/10/2026: jadi 12 TCRT5000. 20/10/2026: jadi 12 QRE1113GR, PCB gaya XLINE.**
 - Baterai: 2S (2× 18650, holder 76×42×20 mm melintang di atas PCB utama), BMS 2S, charger 2S USB-C, buck 5 V.
 - RAB revisi 3.3: Rp858.000 (digantikan revisi 3.4 Rp833.000, lihat di bawah) (lintasan uji di luar RAB). Body 3D print = opsi B (dipilih 08/10/2026): PCB tetap jadi sasis, 3D print berupa cover/body
   penutup di atas + bumper + dudukan motor & baterai. Belum di RAB (tunggu info printer lab).
@@ -92,6 +92,14 @@ Arsitektur 3 lapis:
   lokal → risiko R8, pesan paling lambat minggu 8). Charter docx dibuat ulang dengan `docs/charter-docx/gen_charter.js`
   (`npm i docx`, lalu `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `docs/charter.md`).
   Belum ikut 20/10: `docs/skematik-v1.md`, `docs/minsys-v1.md`, RAB pemeliharaan (`gen_rab_pemeliharaan.py`), `hardware/`.
+- 20/10/2026 (kedua, menggantikan sensor LED merah + PT di atas): **12 QRE1113GR** (LED IR + fototransistor satu
+  kemasan SMD; pin 1 A, 2 K, 3 C, 4 E; R LED 220 Ω dari +5V ±17 mA, pull-up 10k ke +3V3) dan **PCB sensor gaya JSumo
+  XLINE** (foto `docs/referensi/ref-jsumo-xline.png`; pilihan user: tetap 12 sensor, warna hitam): pita 13 mm, tengah
+  lurus + sayap 30°, jarak 9 mm, sensor 4 & 9 di tekukan, mux + J1 di badan tengah, tab 2 baut di bawah OLED, tanpa
+  masker. Model v15: https://claude.ai/artifact/AKgsuWNwB9LYzNtRYeSRqo, file `mechanical/v15/` (posisi sensor di
+  `dxf/pcb_sensor_posisi_qre1113.csv`). Robot ±118 × 165 × 62. RAB Rp867.000 (QRE 15 × Rp5.000 perkiraan impor;
+  RS Indonesia ±Rp11.600/pcs → lewat batas). Pelajaran: bandingkan render dengan foto referensi berdampingan
+  sebelum dikirim (versi pertama v15 masih berbentuk T, beda proporsi sayap).
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,

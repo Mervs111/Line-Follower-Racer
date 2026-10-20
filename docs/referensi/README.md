@@ -51,3 +51,16 @@ Catatan analisis:
   **bukan** pencarian rute otomatis. Path planning kita (rute terpendek dihitung robot) berbeda.
 - Produk ini **sudah memakai block coding (Blockly)** → block coding saja bukan pembeda; pembeda kita:
   harga, path planning otomatis, fokus anak sekolah, web tanpa instalasi aplikasi.
+
+## 4. `ref-jsumo-xline.png` — JSumo XLINE 16 Line Sensor Board (acuan bentuk PCB sensor, 20/10/2026)
+
+![ref 4](ref-jsumo-xline.png)
+
+Dipilih kelompok 20/10/2026 sebagai acuan **bentuk PCB sensor** (model 3D v15). Foto memperlihatkan sisi sensor.
+- Pita sempit bentuk sayap camar: bagian tengah lurus + 2 sayap miring ke belakang, nomor sensor 0–15.
+- Badan tengah membawa IC (pada kita: modul mux CD74HC4067) + header, tab kecil di belakang (XLINE: sensor ke-16).
+- 2 lubang baut di tiap ujung sayap.
+- Data penjual: 16 sensor, 138,75 × 36,75 × 6 mm, 5 V, ±240 mA untuk 16 sensor.
+
+Yang dipakai di v15: bentuk dan susunan (12 QRE1113GR: 6 di tengah, 3 per sayap 30°, jarak 9,5 mm), warna hitam
+(bukan putih), tanpa sensor ke-16.
