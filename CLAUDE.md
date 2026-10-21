@@ -100,6 +100,9 @@ Arsitektur 3 lapis:
   `dxf/pcb_sensor_posisi_qre1113.csv`). Robot ±118 × 165 × 62. RAB Rp867.000 (QRE 15 × Rp5.000 perkiraan impor;
   RS Indonesia ±Rp11.600/pcs → lewat batas). Pelajaran: bandingkan render dengan foto referensi berdampingan
   sebelum dikirim (versi pertama v15 masih berbentuk T, beda proporsi sayap).
+- 21/10/2026: mux tetap **modul breakout CD74HC4067** (pilihan user, dari toko kakarobot di Tokopedia), bukan IC
+  SOIC-24 74HC4067D (lebih hemat tempat tapi Rp35.000 dan butuh jalur < 0,8 mm; tempat cetak PCB belum diketahui).
+  Simbol KiCad untuk IC itu = CD74HC4067M + SOIC-24W (bukan SSOP). Ukur modul yang datang sebelum mengunci footprint.
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,
