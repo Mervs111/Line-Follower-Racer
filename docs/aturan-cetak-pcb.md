@@ -19,7 +19,14 @@ perubahan dari mereka: **tebal jalur minimal 0,3 mm, jarak ke ground minimal 0,5
 
 Tempat cetak tidak memberi garansi kalau desain di bawah batas ini (short / jalur putus).
 
-## Isian KiCad (Board Setup), sudah diberi sedikit cadangan
+## Cara cepat: impor template
+
+Semua isian di bawah sudah disimpan di `hardware/aturan-cetak-template/` (`aturan-cetak.kicad_pcb`, `.kicad_pro`,
+`.kicad_dru`). Di PCB Editor: **File → Board Setup → Import Settings from Another Board…** → pilih
+`aturan-cetak.kicad_pcb` → centang semua → Import → OK. Template ini dibuat tanpa KiCad (tidak bisa dibuka di
+lingkungan pembuatnya); kalau impor gagal atau ada isian yang tidak ikut, isi manual sesuai tabel di bawah.
+
+## Isian KiCad (Board Setup)
 
 **Design Rules → Constraints**
 
@@ -27,27 +34,37 @@ Tempat cetak tidak memberi garansi kalau desain di bawah batas ini (short / jalu
 |---|---|
 | Minimum clearance | 0,3 mm |
 | Minimum track width | 0,3 mm |
+| Minimum connection width | 0,3 mm |
+| Minimum annular width | 0,2 mm |
 | Minimum via diameter | 1,0 mm |
 | Minimum through hole | 0,6 mm |
-| Minimum annular width | 0,2 mm |
+| Copper to hole clearance | 0,25 mm |
+| Copper to edge clearance | 0,5 mm |
+| Hole to hole clearance | 0,5 mm |
+| Minimum text height / thickness | 0,8 / 0,15 mm (footprint pustaka KiCad memakai 0,15) |
 
-Batas di atas = batas tempat cetak. Ukuran via yang dipakai sehari-hari diatur lebih besar di net class (1,3 / 0,6).
+Batas di atas = batas tempat cetak (dengan sedikit cadangan). Ukuran via sehari-hari diatur di net class (1,3 / 0,6).
+
+**Design Rules → Pre-defined Sizes**: track 0,3 / 0,5 / 1,2 mm; via 1,3 / 0,6 mm.
 
 **Design Rules → Net Classes**
 
-| Kelas | Lebar jalur | Clearance | Via | Isi |
+| Kelas | Lebar jalur | Clearance | Via | Pola net |
 |---|---|---|---|---|
-| Default | 0,3 mm | 0,3 mm | 1,3 / 0,6 | sinyal (sensor S1–S12, mux S0–S3, I2C, tombol, encoder) |
-| Daya kecil | 0,5 mm | 0,3 mm | 1,3 / 0,6 | +3V3, +5V (LED 12 QRE ±190 mA) |
-| Daya besar | 1,2 mm | 0,3 mm | 1,3 / 0,6 | VBAT, keluaran motor TB6612, GND utama (puncak 2–3 A) |
+| Default | 0,3 mm | 0,3 mm | 1,3 / 0,6 | sinyal (S1–S12, MUX_S0–S3, MUX_SIG, I2C, tombol, encoder) |
+| Daya | 0,5 mm | 0,3 mm | 1,3 / 0,6 | `+5V`, `+3V3`, `GND` (LED 12 QRE ±190 mA) |
+| Daya besar | 1,2 mm | 0,3 mm | 1,3 / 0,6 | `VBAT`, `/VBAT`; tambahkan sendiri net keluaran motor TB6612 di PCB utama (puncak 2–3 A) |
 
-Pola net class untuk net dari label lokal diawali `/` (misalnya `/VBAT`).
+Net dari simbol daya (`+5V`, `GND`) tidak berawalan `/`; net dari label lokal berawalan `/` (misalnya `/S1`).
 
-**Zona ground (pour)**: clearance 0,5 mm, minimum width 0,3 mm, thermal relief gap 0,5 mm, spoke width 0,3 mm.
+**Custom Rules** (`.kicad_dru`): jarak tembaga ke ground pour minimal 0,5 mm.
 
-**Text & Graphics**: garis silkscreen 0,2 mm, tinggi teks min 1,0 mm, tebal teks 0,2 mm.
+**Zona ground (pour)**, isi di properti tiap zone: clearance 0,5 mm, minimum width 0,3 mm, thermal relief gap
+0,5 mm, spoke width 0,3 mm, Remove islands.
 
-**Board Stackup → Solder Mask/Paste**: solder mask expansion 0,1 mm.
+**Text & Graphics → Defaults**: garis silkscreen 0,2 mm, teks tinggi 1,0 mm, tebal 0,2 mm.
+
+**Board Stackup**: 2 lapis tembaga, tebal 1,6 mm; **Solder Mask/Paste**: solder mask expansion 0,1 mm.
 
 ## Dampak ke desain
 

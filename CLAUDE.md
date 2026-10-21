@@ -60,7 +60,8 @@ Arsitektur 3 lapis:
   TCRT5000 prototipe dihapus).
 - 13/10/2026: aturan cetak lama (jalur min 0,8 mm, asumsi) **digantikan 21/10/2026**: dari tempat cetak user, jalur
   min **0,3 mm**, jarak beda net min 0,254 mm, jarak ke ground pour min **0,5 mm**, via lubang 0,6 / pad 1,0 (2 layer
-  1,27), slot 1 / 1,5, silkscreen 0,2 mm, mask expansion 0,1 mm. Isian KiCad di `docs/aturan-cetak-pcb.md`. SOIC aman,
+  1,27), slot 1 / 1,5, silkscreen 0,2 mm, mask expansion 0,1 mm. Isian KiCad di `docs/aturan-cetak-pcb.md`;
+  template impor (Board Setup → Import Settings from Another Board) di `hardware/aturan-cetak-template/`. SOIC aman,
   SSOP 0,65 mm tidak. Konstanta `FAB` di `gen_pcb.py` masih aturan lama.
   Tab logam saklar SW1 dikecualikan lewat `.kicad_dru` (`intersectsCourtyard`; `memberOfFootprint` tidak jalan
   di KiCad 7). FreeRouting bisa mentok: cari leher botol (celah antar baris kaki) daripada menambah passes.

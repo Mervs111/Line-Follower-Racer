@@ -1,0 +1,6 @@
+(version 1)
+
+# Aturan tempat cetak (21/10/2026): jarak tembaga ke ground pour minimal 0,5 mm
+(rule "jarak_ke_pour"
+  (condition "A.Type == 'Zone'")
+  (constraint clearance (min 0.5mm)))
