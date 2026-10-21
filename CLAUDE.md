@@ -58,8 +58,10 @@ Arsitektur 3 lapis:
   + dudukan 3D print 2 lengan (H3/H4 PCB utama ↔ H1/H2 PCB sensor), konsep dari referensi Hackster user
   (QTR-8RC + kabel pita). Robot ±179 × 111 mm (user terima). RAB naik ke Rp896.000 (sisa Rp4.000; modul
   TCRT5000 prototipe dihapus).
-- 13/10/2026: **aturan cetak PCB di tempat user: jalur min 0,8 mm**; jarak 0,5 mm & via 1,6/0,8 = asumsi aman
-  (user belum tahu, 2 layer PTH bisa). Konstanta `FAB` di `gen_pcb.py`; IC SOIC tidak bisa (kaki 1,27 mm).
+- 13/10/2026: aturan cetak lama (jalur min 0,8 mm, asumsi) **digantikan 21/10/2026**: dari tempat cetak user, jalur
+  min **0,3 mm**, jarak beda net min 0,254 mm, jarak ke ground pour min **0,5 mm**, via lubang 0,6 / pad 1,0 (2 layer
+  1,27), slot 1 / 1,5, silkscreen 0,2 mm, mask expansion 0,1 mm. Isian KiCad di `docs/aturan-cetak-pcb.md`. SOIC aman,
+  SSOP 0,65 mm tidak. Konstanta `FAB` di `gen_pcb.py` masih aturan lama.
   Tab logam saklar SW1 dikecualikan lewat `.kicad_dru` (`intersectsCourtyard`; `memberOfFootprint` tidak jalan
   di KiCad 7). FreeRouting bisa mentok: cari leher botol (celah antar baris kaki) daripada menambah passes.
 - 15/10/2026: **user menggambar skematik sendiri di KiCad** (wiring diagram panduan per blok:
@@ -103,8 +105,8 @@ Arsitektur 3 lapis:
 - 21/10/2026: mux jadi **IC CD74HC4067 SOIC-24 lebar** disolder langsung (keputusan user: hemat tempat), simbol KiCad
   CD74HC4067M + SOIC-24W_7.5x15.4mm_P1.27mm (bukan SSOP), VCC +3V3, E̅ ke GND, I0–I11 = S1–S12, I12–I15 ke GND,
   C 100 nF. Listing kakarobot: foto IC tapi deskripsi "Breakout Module" → user diminta tanya penjual; cadangan IC
-  74HC4067D (SO-24) Rp35.000 di marconijawa. Butuh jalur ±0,4 mm di sekitar IC; tempat cetak PCB belum dikonfirmasi
-  (aturan lama 0,8 mm tidak cukup). Model v15 (link sama) diperbarui: badan tengah 34 mm, skid tengah pindah ke tab.
+  74HC4067D (SO-24) Rp35.000 di marconijawa. Butuh jalur ±0,4 mm di sekitar IC; tempat cetak PCB sanggup 0,3 mm
+  (aturan 21/10: jalur 0,3 mm, jadi aman). Model v15 (link sama) diperbarui: badan tengah 34 mm, skid tengah pindah ke tab.
   RAB Rp887.000 (sisa Rp13.000).
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi

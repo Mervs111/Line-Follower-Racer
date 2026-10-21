@@ -183,7 +183,7 @@ Revisi 20/10/2026: sensor jadi 12 pasang LED merah + fototransistor SMD 1206, MC
 sensor jadi 12 QRE1113GR, PCB sensor bentuk sayap gaya JSumo XLINE (+Rp7.500). Harga QRE1113GR masih perkiraan
 (impor, belum termasuk ongkir); kalau dibeli di RS Components Indonesia (± Rp11.600/pcs) total RAB lewat batas,
 jadi cek ulang sebelum pitching RAB. Revisi 21/10/2026: multiplexer berupa IC CD74HC4067 SOIC-24 yang disolder
-langsung di PCB sensor, bukan modul (lebih hemat tempat, +Rp20.000); jalur PCB di sekitar IC harus ± 0,4 mm.
+langsung di PCB sensor, bukan modul (lebih hemat tempat, +Rp20.000); tempat cetak sanggup jalur 0,3 mm.
 
 ### Alasan pemilihan komponen utama
 
