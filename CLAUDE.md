@@ -108,6 +108,8 @@ Arsitektur 3 lapis:
   74HC4067D (SO-24) Rp35.000 di marconijawa. Butuh jalur ±0,4 mm di sekitar IC; tempat cetak PCB sanggup 0,3 mm
   (aturan 21/10: jalur 0,3 mm, jadi aman). Model v15 (link sama) diperbarui: badan tengah 34 mm, skid tengah pindah ke tab.
   RAB Rp887.000 (sisa Rp13.000).
+- Diagram blok (21/10/2026, sesuai rancangan terbaru): https://claude.ai/artifact/VgPaH3FbRFSDaHB658YTcT, gambar
+  `docs/diagram-blok.png`. Arsitektur sistem 09/10 di bawah sudah usang (5 ITR20001, MOSFET, pin map lama).
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,
