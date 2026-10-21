@@ -1,11 +1,11 @@
 # Model 3D Robot Line Tracer Micro v15 (20/10/2026): PCB sensor gaya JSumo XLINE (keputusan user 20/10):
 # - PCB sensor berupa pita 13 mm berbentuk sayap camar seperti XLINE: 6 sensor di bagian tengah yang lurus + 3 di tiap
-#   sayap (miring 30 derajat ke belakang), jarak 9 mm; badan tengah membawa modul mux + J1; lebar +-119 mm.
+#   sayap (miring 30 derajat ke belakang), jarak 9 mm; badan tengah kecil membawa IC mux SOIC-24 + J1; lebar +-118 mm.
 #   Warna hitam (sama dengan PCB utama).
 # - Sensor: 12x QRE1113GR (SMD, LED IR + fototransistor dalam satu kemasan) di sisi bawah, muka sensor +-3 mm dari
 #   lantai; menggantikan pasangan LED merah + fototransistor 1206 (v14). Tanpa masker (QRE sudah punya sekat).
 # - PCB utama, roda O34, dudukan baterai, dan sayap belakang sama dengan v14.
-# - Penahan depan: skid nilon di bawah modul mux + skid kecil di ujung sayap (1 mm di atas lantai).
+# - Penahan depan: skid nilon di tab (di bawah hidung PCB utama) + skid kecil di ujung sayap (1 mm di atas lantai).
 # Sumbu: X kanan, Y maju, Z atas; nol = lantai di bawah tengah poros roda.
 import json, math, os, sys
 import cadquery as cq
@@ -107,14 +107,14 @@ def silk_border(pts, z, inset=1.0, lw=0.35):
 # ============================== PCB SENSOR (gaya XLINE, 12 QRE1113GR) ==============================
 # koordinat lokal (u, v): u = X, v = jarak ke belakang dari tepi depan (sama dengan sumbu Y KiCad)
 # pita sensor selebar 13 mm seperti JSumo XLINE: bagian tengah lurus + 2 sayap miring 30 derajat ke belakang, sensor
-# berjarak 9 mm sepanjang pita (sensor 4 dan 9 tepat di tekukan); badan tengah kecil membawa modul mux + J1;
+# berjarak 9 mm sepanjang pita (sensor 4 dan 9 tepat di tekukan); badan tengah kecil membawa IC mux + J1;
 # tab selebar 27 mm masuk ke bawah hidung PCB utama, dibaut 2 spacer nilon 4 mm (kepala baut di bawah OLED)
 PITCH, ROW_V, WANG = 9.0, 6.0, 30.0
 BEND_U = 2.5 * PITCH              # tekukan tepat di sensor ke-3 dari tengah
 FR, BK = 6.0, 7.0                 # tepi depan / belakang pita dari garis sensor
 S_TIP = 3 * PITCH + 12.0          # ujung sayap, diukur dari tekukan sepanjang sayap
-BODY, TAB = 22.5, 13.5            # setengah lebar badan tengah dan tab
-BODY_V = 29.5                     # tepi belakang badan tengah
+BODY, TAB = 17.0, 13.5            # setengah lebar badan tengah (IC mux SOIC-24 + C 100 nF) dan tab
+BODY_V = 27.0                     # tepi belakang badan tengah
 CA, SA = math.cos(math.radians(WANG)), math.sin(math.radians(WANG))
 
 
@@ -138,15 +138,16 @@ SENS.sort()
 SENS_UV = [(u, v) for u, v, _ in SENS]
 
 s_front = (FR * CA - ROW_V) / SA                                    # tepi depan tengah bertemu tepi depan sayap
-s_body = (BODY - BEND_U + BK * SA) / CA                             # tepi belakang sayap bertemu sisi badan
+s_back = BK * (1 - CA) / SA                                            # tepi belakang sayap bertemu tepi belakang bagian tengah
 PLATE_R = [(wing_uv(s_front, FR)[0], 0.0), wing_uv(S_TIP, FR), wing_uv(S_TIP, -BK),
-           (BODY, wing_uv(s_body, -BK)[1]), (BODY, BODY_V), (TAB, BODY_V), (TAB, 54.0), (10.0, 57.5)]
+           (wing_uv(s_back, -BK)[0], ROW_V + BK), (BODY, ROW_V + BK), (BODY, BODY_V), (TAB, BODY_V), (TAB, 54.0),
+           (10.0, 57.5)]
 PLATE_UV = PLATE_R + [(-u, v) for u, v in reversed(PLATE_R)]
 PLATE_PTS = [(u, F - v) for u, v in PLATE_UV]
 SB_HOLES_UV = [(-9, F - 78), (9, F - 78)]                           # spacer ke PCB utama (di tab, di bawah OLED)
 TIP_SKID_UV = [wing_uv(S_TIP - 4.5, 2.5, s) for s in (-1, 1)]       # skid nilon M2 anti-jungkit di ujung sayap
 TIP_SPARE_UV = [wing_uv(S_TIP - 4.5, -3.5, s) for s in (-1, 1)]     # lubang M2 cadangan (bumper / dudukan)
-CASTER_UV = (0, 18.5)                                               # skid nilon penahan depan, di bawah modul mux
+CASTER_UV = (0, 44.0)                                               # skid nilon penahan depan, di tab (di bawah hidung)
 
 sb = cq.Workplane("XY").polyline(PLATE_PTS).close().extrude(T).translate((0, 0, SB_Z))
 sb = try_fillet(sb, "|Z", 1.0)
@@ -216,14 +217,25 @@ for hu, hv in TIP_SKID_UV + TIP_SPARE_UV:
     gold = U(gold, cyl_z(x, y, SZ_TOP, 0.05, 2.0).cut(cyl_z(x, y, SZ_TOP - 1, 2, 1.1)))
 add("Pad lubang sensor", gold, "gold", "sensor")
 
-# modul mux CD74HC4067 (socket) di badan tengah, sisi atas, di depan hidung PCB utama (seperti IC di XLINE)
-mx0, mx1 = -20.3, 20.3
-my0, my1 = F - 27.8, F - 10.0
-add("Mux socket", box(-20.32, 20.32, my1 - 2.54, my1, SZ_TOP, SZ_TOP + SOCK)
-    .union(box(-10.16, 10.16, my0, my0 + 2.54, SZ_TOP, SZ_TOP + SOCK)), "black_plastic", "sensor")
-add("Modul mux PCB", box(mx0, mx1, my0, my1, SZ_TOP + SOCK, SZ_TOP + SOCK + T), "pcb_blue", "sensor")
-add("Modul mux chip", box(-7.5, 7.5, my0 + 6.0, my0 + 11.5, SZ_TOP + SOCK + T, SZ_TOP + SOCK + T + 1.4), "black_plastic",
-    "sensor")
+# IC mux CD74HC4067 SOIC-24 lebar (badan 15,4 x 7,5, kaki 1,27 mm) disolder langsung di badan tengah, sisi atas,
+# sumbu panjang melintang; C 100 nF 0805 di sebelah kirinya (dekat pin 24 VCC)
+ICV = 20.5                                         # tengah IC (jarak dari tepi depan PCB sensor)
+icx, icy = uv(0, ICV)
+add("IC mux CD74HC4067 SOIC-24", try_fillet(box(-7.7, 7.7, icy - 3.75, icy + 3.75, SZ_TOP + 0.15, SZ_TOP + 2.45), "|Z", 0.2),
+    "black_plastic", "sensor")
+legs = None
+for k in range(12):
+    x = -6.985 + k * 1.27
+    for sy in (-1, 1):
+        y0, y1 = sorted((icy + sy * 3.75, icy + sy * 5.15))
+        legs = U(legs, box(x - 0.22, x + 0.22, y0, y1, SZ_TOP, SZ_TOP + 0.25))
+        y0, y1 = sorted((icy + sy * 3.75, icy + sy * 4.15))
+        legs = U(legs, box(x - 0.22, x + 0.22, y0, y1, SZ_TOP, SZ_TOP + 1.1))
+add("IC mux kaki", legs, "steel", "sensor")
+mark = cyl_z(-6.2, icy - 2.3, SZ_TOP + 2.45, 0.03, 0.5)
+mark = U(mark, text("HC4067", 1.6, 0.6, icy + 0.3, SZ_TOP + 2.45))
+add("IC mux tanda", mark, "silk", "sensor")
+add("C 100 nF mux", box(-12.0, -10.75, icy - 1.0, icy + 1.0, SZ_TOP, SZ_TOP + 0.6), "cap_smd", "sensor")
 j1y0, j1y1 = F - 38.1, F - 29.2                    # J1 di pangkal tab, tepat di depan hidung PCB utama
 
 
@@ -236,16 +248,20 @@ def idc(y0, y1, z0, key_front):
 add("Box header IDC J1", idc(j1y0, j1y1, SZ_TOP, False), "black_plastic", "sensor")
 
 
-def skid(x, y, z0, r):
-    """skid nilon: kepala baut di atas PCB sensor, kubah di bawah (z0 = titik terendah)"""
-    add("Baut nilon kepala", cq.Workplane("XY").sphere(r + 0.4).translate((x, y, SZ_TOP)).intersect(
-        box(x - r - 1, x + r + 1, y - r - 1, y + r + 1, SZ_TOP, SZ_TOP + 0.75 * r)), "nylon", "sensor")
+def skid(x, y, z0, r, nut_top=False):
+    """skid nilon: kubah di bawah (z0 = titik terendah); di atas PCB sensor kepala baut, atau mur kalau tempatnya di
+    bawah PCB utama (baut skid dipasang dari bawah sebelum PCB sensor dibaut)"""
+    if nut_top:
+        add("Mur nilon skid", hexnut(x, y, SZ_TOP, 2.4), "nylon", "sensor")
+    else:
+        add("Baut nilon kepala", cq.Workplane("XY").sphere(r + 0.4).translate((x, y, SZ_TOP)).intersect(
+            box(x - r - 1, x + r + 1, y - r - 1, y + r + 1, SZ_TOP, SZ_TOP + 0.75 * r)), "nylon", "sensor")
     dome = cq.Workplane("XY").sphere(r + 1.0).translate((x, y, z0 + r + 1.0)).intersect(
         box(x - r - 2, x + r + 2, y - r - 2, y + r + 2, z0, z0 + 2.0))
     add("Skid nilon", dome.union(cyl_z(x, y, z0 + 1.5, SB_Z - z0 - 1.5, r)), "nylon", "sensor")
 
 
-skid(*uv(*CASTER_UV), 0.0, 2.5)                    # penahan depan menyentuh lantai
+skid(*uv(*CASTER_UV), 0.0, 2.5, nut_top=True)      # penahan depan menyentuh lantai
 for p in TIP_SKID_UV:                              # ujung sayap 1 mm di atas lantai (anti-jungkit)
     skid(*uv(*p), 1.0, 1.8)
 
@@ -566,7 +582,7 @@ MATS = {
     "print": ("#202227", 0.72, 0.05), "cap_black": ("#202124", 0.5, 0.0), "cell": ("#3a3d45", 0.4, 0.2),
     "resistor": ("#cdb88e", 0.6, 0.0), "resistor_smd": ("#26262a", 0.6, 0.0), "elko": ("#1f2340", 0.45, 0.1),
     "led_red": ("#ff3b3b", 0.35, 0.0), "ribbon": ("#9aa0a8", 0.7, 0.0), "led_smd": ("#e8e2d0", 0.4, 0.0),
-    "pt_clear": ("#cfd8de", 0.15, 0.2),
+    "pt_clear": ("#cfd8de", 0.15, 0.2), "cap_smd": ("#b98a5a", 0.6, 0.0),
 }
 meshes = []
 for name, shape, mat, group in parts:
@@ -617,7 +633,8 @@ if os.environ.get("CHECK"):
           ("OLED tampilan", "OLED kaca"), ("Kabel pita", "Box header"), ("Tutup", "Tombol"), ("Elko C1 tutup", "Elko"),
           ("Ban merah", "Velg"), ("Dioda 1N5819 cincin", "Dioda"), ("Skid", "PCB sensor"), ("Silkscreen", ""),
           ("Pad lubang", "Dudukan"), ("OLED kaca", "OLED flex"),
-          ("QRE1113GR lensa", "QRE1113GR x12"), ("QRE1113GR kaki", "QRE1113GR x12")]
+          ("QRE1113GR lensa", "QRE1113GR x12"), ("QRE1113GR kaki", "QRE1113GR x12"), ("IC mux", "IC mux"),
+          ("Mur nilon skid", "Skid nilon"), ("Mur nilon skid", "Pad")]
 
     def allowed(a, b):
         return any((p in a and q in b) or (p in b and q in a) for p, q in OK)

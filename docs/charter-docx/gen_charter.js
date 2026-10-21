@@ -1,5 +1,5 @@
 // Membuat Project Charter (.docx) dengan format sama seperti versi Google Docs 09/10/2026.
-// Isi diperbarui sesuai keputusan 20/10/2026 (12 sensor QRE1113GR, PCB sensor gaya XLINE, tanpa MCP23017, RAB Rp867.000).
+// Isi diperbarui sesuai keputusan 20/10/2026 (12 sensor QRE1113GR, PCB sensor gaya XLINE, tanpa MCP23017, RAB Rp887.000).
 const fs = require("fs");
 const path = require("path");
 const {
@@ -10,7 +10,7 @@ const {
 
 const OUT = process.argv[2];
 const KOP = path.join(__dirname, "kop.png");
-const TANGGAL = "20 Oktober 2026";
+const TANGGAL = "21 Oktober 2026";
 
 // Ukuran halaman A4 dan margin meniru PDF asli (teks mulai x ≈ 65 pt, tabel lebar ≈ 503 pt)
 const PAGE_W = 11906;
@@ -248,7 +248,7 @@ const electrical = [
   ["ESP32 DevKit WiFi Bluetooth CH340 Type-C", 76000, 1, "pcs"],
   ["OLED 0.96\" 128×64 I2C", 33000, 1, "pcs"],
   ["Sensor reflektif QRE1113GR SMD, impor (12 + 3 cadangan)", 5000, 15, "pcs"],
-  ["Modul multiplexer analog CD74HC4067 16 kanal", 15000, 1, "pcs"],
+  ["IC multiplexer analog CD74HC4067 SOIC-24, 16 kanal", 35000, 1, "pcs"],
   ["Modul driver motor TB6612FNG", 25000, 1, "pcs"],
   ["Motor N20 6V ± 500 RPM + encoder", 55000, 2, "pcs"],
   ["Push button", 1000, 4, "pcs"],
@@ -297,7 +297,7 @@ const gE = groupRows("Electrical", electrical);
 const gM = groupRows("Mechanical", mechanical);
 const gL = groupRows("Lain-Lain", lain);
 const TOTAL = gE.sub + gM.sub + gL.sub;
-if (TOTAL !== 867000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
+if (TOTAL !== 887000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
 const budget = table(W8, [
   sectionHead("8. Budget Summary", W8),
   italicNote("Summary of what are required items to be used", W8),

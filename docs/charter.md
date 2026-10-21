@@ -138,7 +138,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | pcs | Rp76.000 |
 | OLED 0.96" 128×64 I2C | Rp33.000 | 1 | pcs | Rp33.000 |
 | Sensor reflektif QRE1113GR SMD, impor (12 + 3 cadangan) | Rp5.000 | 15 | pcs | Rp75.000 |
-| Modul multiplexer analog CD74HC4067 16 kanal (dipakai 12) | Rp15.000 | 1 | pcs | Rp15.000 |
+| IC multiplexer analog CD74HC4067 SOIC-24, 16 kanal (dipakai 12) | Rp35.000 | 1 | pcs | Rp35.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
 | Push button | Rp1.000 | 4 | pcs | Rp4.000 |
@@ -155,7 +155,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Komponen pendukung (header & socket female, kapasitor, dioda 1N5819) | Rp25.000 | 1 | paket | Rp25.000 |
 | Kabel pita 12 pin + 2 box header IDC 2×6 + 2 konektor IDC | Rp10.000 | 1 | set | Rp10.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp727.000** |
+| **TOTAL** | | | | **Rp747.000** |
 
 ### Mechanical
 
@@ -175,14 +175,15 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
 | **TOTAL** | | | | **Rp85.000** |
 
-**TOTAL BUDGET: Rp867.000** (Electrical Rp727.000 + Mechanical Rp55.000 + Lain-lain Rp85.000),
-sisa Rp33.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
+**TOTAL BUDGET: Rp887.000** (Electrical Rp747.000 + Mechanical Rp55.000 + Lain-lain Rp85.000),
+sisa Rp13.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
 multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000, LED IR selalu nyala tanpa MOSFET (−Rp16.500).
 Revisi 20/10/2026: sensor jadi 12 pasang LED merah + fototransistor SMD 1206, MCP23017 + LED indikator dihapus
 (bacaan sensor tampil di OLED), OLED 0,96", skid nilon pengganti ball caster (−Rp20.000). Revisi kedua 20/10/2026:
 sensor jadi 12 QRE1113GR, PCB sensor bentuk sayap gaya JSumo XLINE (+Rp7.500). Harga QRE1113GR masih perkiraan
 (impor, belum termasuk ongkir); kalau dibeli di RS Components Indonesia (± Rp11.600/pcs) total RAB lewat batas,
-jadi cek ulang sebelum pitching RAB.
+jadi cek ulang sebelum pitching RAB. Revisi 21/10/2026: multiplexer berupa IC CD74HC4067 SOIC-24 yang disolder
+langsung di PCB sensor, bukan modul (lebih hemat tempat, +Rp20.000); jalur PCB di sekitar IC harus ± 0,4 mm.
 
 ### Alasan pemilihan komponen utama
 

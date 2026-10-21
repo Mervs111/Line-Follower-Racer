@@ -14,13 +14,14 @@ dengan v14 (PCB utama 100 × 121, ESP32 di atas, roda Ø34, dudukan baterai, say
 
 | | v15 |
 |---|---|
-| Bentuk | pita 13 mm: bagian tengah lurus + 2 sayap miring 30° ke belakang, badan tengah kecil (modul mux + J1), tab 27 mm masuk ke bawah hidung PCB utama |
+| Bentuk | pita 13 mm: bagian tengah lurus + 2 sayap miring 30° ke belakang, badan tengah 34 mm (IC mux + J1), tab 27 mm masuk ke bawah hidung PCB utama |
 | Sensor | 12 QRE1113GR di sisi bawah, jarak 9 mm sepanjang pita; sensor 4 dan 9 tepat di tekukan (diputar 15°); 6 di bagian tengah, 3 di tiap sayap; lebar baca ±92 mm |
 | Tinggi | sisi bawah PCB Z 4,8 → muka sensor ±3 mm dari lantai (jarak baca QRE1113 yang dipakai Pololu/SparkFun) |
 | Resistor | R LED 220 Ω + R pull-up 10k, 0805, di samping luar tiap sensor (sisi bawah), seperti XLINE |
 | Nomor | 1–12 dari kiri ke kanan, dicetak di kedua sisi |
 | Pemasangan | 2 baut M3 + spacer nilon 4 mm di X ±9, Y 78 (kepala baut di bawah OLED: cabut OLED dulu) |
-| Penahan | skid nilon M3 di bawah modul mux (menyentuh lantai) + skid M2 di ujung sayap (1 mm di atas lantai); lubang M2 kedua di tiap ujung sayap cadangan |
+| Mux | IC CD74HC4067 SOIC-24 lebar (simbol KiCad CD74HC4067M, footprint SOIC-24W_7.5x15.4mm_P1.27mm) disolder langsung di badan tengah, sisi atas, + C 100 nF 0805 di sebelahnya (21/10, pengganti modul di socket); jalur di sekitar IC ±0,4 mm |
+| Penahan | skid nilon M3 di tab tepat di belakang J1 (menyentuh lantai; baut dari bawah, mur di atas, pasang sebelum PCB sensor dibaut) + skid M2 di ujung sayap (1 mm di atas lantai); lubang M2 kedua di tiap ujung sayap cadangan |
 | Ukuran robot | ±118 × 165 × 62 mm |
 
 Posisi sensor untuk KiCad (titik 0,0 = tengah tepi depan PCB sensor, Y ke belakang; sudut dilihat dari atas,

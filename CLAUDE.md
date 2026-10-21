@@ -100,10 +100,12 @@ Arsitektur 3 lapis:
   `dxf/pcb_sensor_posisi_qre1113.csv`). Robot ±118 × 165 × 62. RAB Rp867.000 (QRE 15 × Rp5.000 perkiraan impor;
   RS Indonesia ±Rp11.600/pcs → lewat batas). Pelajaran: bandingkan render dengan foto referensi berdampingan
   sebelum dikirim (versi pertama v15 masih berbentuk T, beda proporsi sayap).
-- 21/10/2026: mux **modul breakout vs IC SMD belum final**. Listing kakarobot "Module Multiplexer CD74HC4067" yang
-  dipilih user ternyata fotonya IC telanjang (proporsi seperti SOIC-24 lebar, kaki 1,27 mm), bukan modul. IC SMD lebih
-  hemat tempat (user ingin hemat tempat) tapi butuh jalur < 0,8 mm; tempat cetak PCB belum diketahui. Simbol KiCad
-  untuk SOIC = CD74HC4067M + SOIC-24W (bukan SSOP). Model v15 masih memakai modul di socket.
+- 21/10/2026: mux jadi **IC CD74HC4067 SOIC-24 lebar** disolder langsung (keputusan user: hemat tempat), simbol KiCad
+  CD74HC4067M + SOIC-24W_7.5x15.4mm_P1.27mm (bukan SSOP), VCC +3V3, E̅ ke GND, I0–I11 = S1–S12, I12–I15 ke GND,
+  C 100 nF. Listing kakarobot: foto IC tapi deskripsi "Breakout Module" → user diminta tanya penjual; cadangan IC
+  74HC4067D (SO-24) Rp35.000 di marconijawa. Butuh jalur ±0,4 mm di sekitar IC; tempat cetak PCB belum dikonfirmasi
+  (aturan lama 0,8 mm tidak cukup). Model v15 (link sama) diperbarui: badan tengah 34 mm, skid tengah pindah ke tab.
+  RAB Rp887.000 (sisa Rp13.000).
 - Visual terbaru: arsitektur sistem (Claude Design, 16:9) https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa,
   flowchart 3 slide https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
 - Bentuk robot: rendah satu bidang (gaya Ichiduino). PCB sensor panah + PCB utama sejajar ± 6 mm dari lantai,
