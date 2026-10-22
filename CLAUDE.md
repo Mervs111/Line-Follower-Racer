@@ -109,6 +109,10 @@ Arsitektur 3 lapis:
   74HC4067D (SO-24) Rp35.000 di marconijawa. Butuh jalur ±0,4 mm di sekitar IC; tempat cetak PCB sanggup 0,3 mm
   (aturan 21/10: jalur 0,3 mm, jadi aman). Model v15 (link sama) diperbarui: badan tengah 34 mm, skid tengah pindah ke tab.
   RAB Rp887.000 (sisa Rp13.000).
+- 22/10/2026: **MCP KiCad** `hardware/tools/kicad-mcp/` (permintaan user: Claude live edit di KiCad): IPC API
+  KiCad 9/10 lewat kicad-python, jalan di laptop user dengan Claude Code lokal (sesi cloud tidak bisa menjangkau
+  KiCad). Dites di KiCad 9.0.9 & 10.0.7 (Docker + Xvfb). KiCad 9 belum punya FlipItems & GetItemsById (ada cadangan:
+  footprint dipilih lalu user tekan F; cari item manual). KiCad 8 tidak didukung.
 - Diagram blok (21/10/2026, sesuai rancangan terbaru): https://claude.ai/artifact/VgPaH3FbRFSDaHB658YTcT, 2 artboard:
   perangkat keras (`docs/diagram-blok.png`, loop ditutup lewat blok Lintasan) dan kendali loop tertutup
   (`docs/diagram-blok-kendali.png`: r → Σ → PID → driver → motor → robot → sensor → pengolahan → y, loop dalam encoder). Arsitektur sistem 09/10 di bawah sudah usang (5 ITR20001, MOSFET, pin map lama).

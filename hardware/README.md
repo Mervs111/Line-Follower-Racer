@@ -149,3 +149,5 @@ berjarak 0,2 mm satu sama lain.
   footprint, routing FreeRouting, pour GND, DRC. Butuh Python KiCad 7 (`pcbnew`), `kicad-cli`, Java 21+,
   dan `freerouting.jar` (variabel `FREEROUTING_JAR`). **Menjalankan ulang menimpa `.kicad_pcb`.**
 - `verify_nets.py` + `expected_nets.json`: cek netlist terhadap `docs/skematik-v1.md`.
+- `kicad-mcp/`: server MCP supaya Claude Code (di laptop sendiri) bisa mengedit PCB yang sedang terbuka di
+  KiCad 9/10 secara live (pindah footprint, outline, DRC, render). Cara pasang di `kicad-mcp/README.md`.
