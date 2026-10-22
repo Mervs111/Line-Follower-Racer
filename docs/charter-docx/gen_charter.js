@@ -1,5 +1,5 @@
 // Membuat Project Charter (.docx) dengan format sama seperti versi Google Docs 09/10/2026.
-// Isi diperbarui sesuai keputusan 20/10/2026 (12 sensor QRE1113GR, PCB sensor gaya XLINE, tanpa MCP23017, RAB Rp887.000).
+// Isi diperbarui sesuai keputusan 22/10/2026 (12 QRE1113GR toko lokal, PCB sensor bentuk jangkar, JST XH 8 pin, RAB Rp902.000).
 const fs = require("fs");
 const path = require("path");
 const {
@@ -140,7 +140,7 @@ const objectives = table(W2, [
 const lingkup = [
   "Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)",
   "Robot line tracer edukasi berbasis ESP32, dirancang dari nol",
-  "Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk sayap) + multiplexer, " +
+  "Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk jangkar) + multiplexer, " +
     "motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)",
   "Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan",
   "Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan",
@@ -247,7 +247,7 @@ const W8 = [4100, 1700, 800, 1160, TABLE_W - 4100 - 1700 - 800 - 1160];
 const electrical = [
   ["ESP32 DevKit WiFi Bluetooth CH340 Type-C", 76000, 1, "pcs"],
   ["OLED 0.96\" 128×64 I2C", 33000, 1, "pcs"],
-  ["Sensor reflektif QRE1113GR SMD, impor (12 + 3 cadangan)", 5000, 15, "pcs"],
+  ["Sensor reflektif QRE1113GR SMD, toko lokal (tanpa cadangan)", 15000, 12, "pcs"],
   ["IC multiplexer analog CD74HC4067 SOIC-24, 16 kanal", 35000, 1, "pcs"],
   ["Modul driver motor TB6612FNG", 25000, 1, "pcs"],
   ["Motor N20 6V ± 500 RPM + encoder", 55000, 2, "pcs"],
@@ -262,7 +262,7 @@ const electrical = [
   ["Modul buck converter 5 V (MP1584)", 10000, 1, "pcs"],
   ["Saklar on/off", 3000, 1, "pcs"],
   ["Konektor JST PH2.0 6 pin + header (motor encoder)", 5000, 2, "set"],
-  ["Kabel pita 12 pin + 2 box header IDC 2×6 + 2 konektor IDC", 10000, 1, "set"],
+  ["Konektor JST XH 2,5 mm 8 pin (2 header + 2 housing + terminal) + kabel", 5000, 1, "set"],
   ["Fabrikasi PCB (papan utama + papan sensor) + ongkir", 200000, 1, "paket"],
   ["Komponen pendukung minsys (header & socket female, kapasitor, dioda 1N5819)", 25000, 1, "paket"],
 ];
@@ -272,10 +272,7 @@ const mechanical = [
   ["Skid nilon (pengganti ball caster; baut M2/M3, spacer, mur nilon)", 5000, 1, "paket"],
   ["Baut, mur, spacer", 15000, 1, "paket"],
 ];
-const lain = [
-  ["Timah solder + flux", 25000, 1, "paket"],
-  ["Breadboard + kabel jumper", 60000, 1, "paket"],
-];
+// Breadboard + jumper dan timah + flux dipinjam dari lab (keluar dari RAB 22/10/2026).
 const S = { size: 10, align: C };
 const VC = { vAlign: VerticalAlign.CENTER };
 function groupRows(title, items) {
@@ -295,13 +292,12 @@ function groupRows(title, items) {
 }
 const gE = groupRows("Electrical", electrical);
 const gM = groupRows("Mechanical", mechanical);
-const gL = groupRows("Lain-Lain", lain);
-const TOTAL = gE.sub + gM.sub + gL.sub;
-if (TOTAL !== 887000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
+const TOTAL = gE.sub + gM.sub;
+if (TOTAL !== 902000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
 const budget = table(W8, [
   sectionHead("8. Budget Summary", W8),
   italicNote("Summary of what are required items to be used", W8),
-  ...gE.rows, ...gM.rows, ...gL.rows,
+  ...gE.rows, ...gM.rows,
   row([cell(para("TOTAL BUDGET", { bold: true, align: C }), sum(W8.slice(0, 4)), { span: 4 }),
     cell(para(rp(TOTAL), { bold: true, align: C }), W8[4])]),
 ]);

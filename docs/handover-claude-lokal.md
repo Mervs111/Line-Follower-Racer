@@ -48,25 +48,19 @@ Isi PCB sensor user (sesuai keputusan 20–21/10 di `CLAUDE.md`):
 Langkah berikutnya yang paling mungkin diminta: **menaruh 12 sensor + resistornya di sepanjang tepi depan
 outline**, simetris kiri-kanan, lalu U13, J1, C, routing.
 
-## 3. Pekerjaan tertunda / belum dijawab user
+## 3. Pekerjaan tertunda / belum dijawab user (status 22/10 malam)
 
-1. **Jarak antar sensor.** User tanya apakah 5 mm aman. Saranku: tetap ±9 mm (7–8 mm masih oke); 5 mm
-   pusat-ke-pusat terlalu rapat untuk QRE (badan 2,9 × 3,6 mm + resistor) dan posisi garis jadi kurang
-   tersebar. Keputusan menunggu **lebar garis lintasan** (belum dijawab user). Jangan putuskan sendiri.
-2. **Posisi sensor**: `mechanical/v15/dxf/pcb_sensor_posisi_qre1113.csv` dibuat untuk model v15 (sayap 30°),
-   **tidak cocok** dengan outline user sekarang (tepi depan hampir datar, ±5,2°). Hitung ulang mengikuti outline
-   user. Model 3D v15 juga belum disamakan dengan outline ini.
-3. **QRE1113GR ternyata ada di toko lokal** (koreksi user). `docs/charter.md` risiko R8 dan baris RAB masih
-   menulis "impor". Minta nama toko + harga ke user, lalu perbarui `docs/charter.md`, buat ulang docx
-   (`docs/charter-docx/gen_charter.js`, lihat `CLAUDE.md`), dan RAB.
-4. **Wiring diagram blok 4** (`docs/wiring-diagram.html`) masih kabel pita IDC 12 pin; ganti ke JST XH 8 pin
-   dengan urutan di atas. Artifact-nya (link di `CLAUDE.md`) dulu dipublikasikan dari sesi cloud; kalau di laptop
-   tidak ada tool Artifact, cukup perbarui file HTML di repo.
-5. **FPC1**: user membandingkan J1 dengan "FPC1" (sumbernya belum jelas: referensi atau PCB utama). Tanyakan.
-6. Belum ikut keputusan terbaru: `docs/skematik-v1.md`, `docs/minsys-v1.md`, `gen_rab_pemeliharaan.py`,
-   `hardware/` (generator), `firmware/Pins.h` (masih peta ESP32-S3), bagian "Hardware"/"Pin map" di `CLAUDE.md`
-   (usang, lihat bagian "Keputusan terbaru").
-7. Firmware M0–M7 belum mulai. Logbook utama terakhir 02/10: isi hanya dari kegiatan yang user ceritakan.
+1. ~~Jarak antar sensor~~: selesai, rev B jarak 8 mm (garis lomba 2 cm).
+2. **Posisi sensor**: koordinat rev B ada di `hardware/sensor-garis/REVISI.md`. Model 3D v15 masih sayap 30°
+   → sedang disamakan dengan rev B (model v16).
+3. ~~QRE lokal~~: Rp15.000/pcs, 12 tanpa cadangan; `charter.md` + `gen_charter.js` sudah diperbarui (RAB Rp902.000,
+   lewat Rp2.000). **Docx belum dibuat ulang: Node.js belum terpasang di laptop.** Nama toko + link menyusul dari user.
+4. ~~Wiring diagram blok 4~~: selesai (JST XH 8 pin, mux I2–I13), artifact versi 7.
+5. ~~FPC1~~: diabaikan (keputusan user).
+6. **PCB utama baru**: user menggambar skematik sendiri, Claude bantu layout (outline, penempatan, routing via MCP).
+7. Belum ikut keputusan terbaru: `docs/skematik-v1.md`, `docs/minsys-v1.md`, `gen_rab_pemeliharaan.py`,
+   `hardware/tools/` (generator), `firmware/Pins.h` + `platformio.ini` (masih ESP32-S3; ditunda, keputusan user).
+8. Firmware M0–M7 belum mulai. Logbook utama terakhir 02/10: isi hanya dari kegiatan yang user ceritakan.
 
 ## 4. Memakai MCP KiCad
 

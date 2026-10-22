@@ -64,8 +64,10 @@ memakai pin map yang sama.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen
-- RAB terakhir **Rp887.000** (sisa Rp13.000 dari batas Rp900.000; lintasan uji di luar RAB). QRE1113GR ternyata ada
-  di toko lokal (koreksi user 22/10): charter risiko R8 + baris RAB masih tertulis "impor", tunggu nama toko + harga.
+- RAB terakhir **Rp902.000** (22/10/2026), **lewat Rp2.000 dari batas Rp900.000** → perlu dipangkas sebelum pitching.
+  QRE1113GR ternyata ada di toko lokal **Rp15.000/pcs** → dibeli 12 tanpa cadangan (keputusan user); breadboard +
+  timah dipinjam lab (keluar RAB); kabel pita → JST XH 8 pin (Rp5.000, perkiraan). Nama toko + link QRE menyusul
+  dari user. Lintasan uji di luar RAB.
 - Charter: `docs/charter.md`; docx dibuat ulang dengan `docs/charter-docx/gen_charter.js` (`npm i docx`, lalu
   `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `charter.md`).
 - Perhitungan motor kelompok (`docs/perhitungan-motor.md`): masih draf, belum sinkron dengan charter (≥ 0,5 m/s)
@@ -75,7 +77,7 @@ memakai pin map yang sama.
 
 ### Visual (artifact claude.ai)
 - Wiring diagram per blok: https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY (sumber `docs/wiring-diagram.html`;
-  blok 4 masih kabel pita IDC 12 pin → ganti ke JST XH 8 pin)
+  22/10: kabel JST XH 8 pin, mux I2–I13)
 - Diagram blok (21/10): https://claude.ai/artifact/VgPaH3FbRFSDaHB658YTcT (`docs/diagram-blok.png`,
   `docs/diagram-blok-kendali.png`, sumber `docs/diagram-blok-src/`)
 - Arsitektur sistem: https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa; flowchart 3 slide:

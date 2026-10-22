@@ -1,7 +1,7 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
 Semester Gasal 2026/2027 · Revisi 3.4 (arahan dosen 05/10/2026: reverse engineering, path planning,
-budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU) · diperbarui 20/10/2026: sensor QRE1113GR, PCB sensor gaya XLINE
+budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU) · diperbarui 22/10/2026: 12 QRE1113GR (toko lokal), PCB sensor bentuk jangkar
 
 ## 1. Project Identity
 
@@ -54,7 +54,7 @@ block coding berbasis web tanpa instalasi aplikasi.
 
 - Reverse engineering kit Ichiduino Pro (analisis fungsi, arsitektur, dan spesifikasi)
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
-- Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk sayap) + multiplexer, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
+- Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk jangkar) + multiplexer, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
 - Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan
 - Platform block coding berbasis web (Blockly)
@@ -125,7 +125,7 @@ sehingga posisi garis dan persimpangan tidak terbaca akurat.
 | R5 | PCB salah desain atau terlambat datang | Jadwal G3–G4 mundur | Prototipe breadboard dulu, pesan PCB paling lambat minggu 10 |
 | R6 | Biaya melebihi Rp 900.000 | Sasaran biaya gagal | RAB dipantau tiap pembelian |
 | R7 | Baterai Li-ion overcharge / overdischarge / korsleting | Bahaya keselamatan | BMS 2S, cutoff firmware, ruang baterai tertutup |
-| R8 | QRE1113GR tidak ada di marketplace lokal (harus impor) dan terlambat datang atau palsu | Prototipe sensor mundur | Pesan dari penjual berulasan baik paling lambat minggu 8 bersama PCB; cadangan beli di RS Components Indonesia (± Rp11.600/pcs, pak isi 5) |
+| R8 | QRE1113GR mahal (Rp15.000/pcs di toko lokal) sehingga dibeli 12 tanpa cadangan; sensor rusak saat disolder atau barang palsu | Satu titik sensor mati, posisi garis kurang presisi | Cek tanda pin 1 dan uji tiap sensor di breadboard (LED IR dilihat lewat kamera HP) sebelum disolder; kalau ada yang rusak, beli satuan di toko yang sama |
 
 ## 8. Budget Summary
 
@@ -137,7 +137,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 |---|---|---|---|---|
 | ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | pcs | Rp76.000 |
 | OLED 0.96" 128×64 I2C | Rp33.000 | 1 | pcs | Rp33.000 |
-| Sensor reflektif QRE1113GR SMD, impor (12 + 3 cadangan) | Rp5.000 | 15 | pcs | Rp75.000 |
+| Sensor reflektif QRE1113GR SMD, toko lokal (tanpa cadangan) | Rp15.000 | 12 | pcs | Rp180.000 |
 | IC multiplexer analog CD74HC4067 SOIC-24, 16 kanal (dipakai 12) | Rp35.000 | 1 | pcs | Rp35.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
@@ -153,9 +153,9 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Saklar on/off | Rp3.000 | 1 | pcs | Rp3.000 |
 | Konektor JST PH2.0 6 pin + header (motor encoder) | Rp5.000 | 2 | set | Rp10.000 |
 | Komponen pendukung (header & socket female, kapasitor, dioda 1N5819) | Rp25.000 | 1 | paket | Rp25.000 |
-| Kabel pita 12 pin + 2 box header IDC 2×6 + 2 konektor IDC | Rp10.000 | 1 | set | Rp10.000 |
+| Konektor JST XH 2,5 mm 8 pin (2 header + 2 housing + terminal) + kabel, perkiraan | Rp5.000 | 1 | set | Rp5.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp747.000** |
+| **TOTAL** | | | | **Rp847.000** |
 
 ### Mechanical
 
@@ -167,37 +167,35 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Baut, mur, spacer | Rp15.000 | 1 | paket | Rp15.000 |
 | **TOTAL** | | | | **Rp55.000** |
 
-### Lain-lain
-
-| Item | Price per unit | Qty | Unit | Total Price |
-|---|---|---|---|---|
-| Breadboard + kabel jumper | Rp60.000 | 1 | paket | Rp60.000 |
-| Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
-| **TOTAL** | | | | **Rp85.000** |
-
-**TOTAL BUDGET: Rp887.000** (Electrical Rp747.000 + Mechanical Rp55.000 + Lain-lain Rp85.000),
-sisa Rp13.000 dari batas Rp900.000. Lintasan uji disediakan di luar RAB. Revisi 13/10/2026: 16 sensor +
+**TOTAL BUDGET: Rp902.000** (Electrical Rp847.000 + Mechanical Rp55.000), **lewat Rp2.000 dari batas Rp900.000**
+(perlu dipangkas sebelum pitching RAB). Lintasan uji disediakan di luar RAB; breadboard + kabel jumper dan timah
+solder + flux dipinjam dari lab (tidak masuk RAB sejak 22/10/2026). Revisi 13/10/2026: 16 sensor +
 multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000, LED IR selalu nyala tanpa MOSFET (−Rp16.500).
 Revisi 20/10/2026: sensor jadi 12 pasang LED merah + fototransistor SMD 1206, MCP23017 + LED indikator dihapus
 (bacaan sensor tampil di OLED), OLED 0,96", skid nilon pengganti ball caster (−Rp20.000). Revisi kedua 20/10/2026:
-sensor jadi 12 QRE1113GR, PCB sensor bentuk sayap gaya JSumo XLINE (+Rp7.500). Harga QRE1113GR masih perkiraan
-(impor, belum termasuk ongkir); kalau dibeli di RS Components Indonesia (± Rp11.600/pcs) total RAB lewat batas,
-jadi cek ulang sebelum pitching RAB. Revisi 21/10/2026: multiplexer berupa IC CD74HC4067 SOIC-24 yang disolder
-langsung di PCB sensor, bukan modul (lebih hemat tempat, +Rp20.000); tempat cetak sanggup jalur 0,3 mm.
+sensor jadi 12 QRE1113GR, PCB sensor bentuk sayap gaya JSumo XLINE (+Rp7.500). Revisi 21/10/2026: multiplexer
+berupa IC CD74HC4067 SOIC-24 yang disolder langsung di PCB sensor, bukan modul (lebih hemat tempat, +Rp20.000);
+tempat cetak sanggup jalur 0,3 mm. Revisi 22/10/2026: PCB sensor bentuk jangkar (rev B); QRE1113GR ternyata ada di
+toko lokal dengan harga Rp15.000/pcs (sebelumnya perkiraan impor Rp5.000), jadi dibeli 12 tanpa cadangan
+(+Rp105.000); kabel pita IDC diganti konektor JST XH 8 pin (−Rp5.000, perkiraan); breadboard dan timah dipinjam
+dari lab (−Rp85.000).
 
 ### Alasan pemilihan komponen utama
 
 - **ESP32 DevKit** (Rp76.000): prosesor 240 MHz dual-core dengan WiFi/Bluetooth, jauh lebih murah dari
   ESP32-S3 (> Rp130.000). 12 sensor garis dibaca bergantian lewat multiplexer CD74HC4067 ke satu kanal
   ADC1 (GPIO36), tegangan baterai ke kanal ADC1 lain (GPIO39).
-- **12 sensor garis QRE1113GR pada PCB bentuk sayap (gaya JSumo XLINE, jarak antar sensor 9 mm, lebar baca
-  ± 92 mm)**: 6 sensor di bagian tengah yang lurus dan 3 di tiap sayap yang miring 30° ke belakang, sehingga
-  belokan tajam terlihat lebih awal dan garis tetap terbaca di persimpangan. QRE1113GR berisi LED IR dan
+- **12 sensor garis QRE1113GR pada PCB bentuk jangkar (jarak antar sensor 8 mm di busur, lebar baca
+  ± 83 mm)**: 6 sensor tengah hampir lurus (posisi presisi dan deteksi persimpangan), lalu lengan melengkung
+  ke belakang sampai sensor terluar mundur ± 11,6 mm, sehingga belokan tajam terlihat lebih awal. Jarak 8 mm
+  dipilih untuk garis lomba 2 cm (IARC XII): kedua tepi garis bergantian melewati sensor, bacaan posisi halus.
+  QRE1113GR berisi LED IR dan
   fototransistor dalam satu kemasan SMD kecil (2,9 × 3,6 mm) yang sudah bersekat, jadi PCB sensor tipis dan
   rendah (muka sensor ± 3 mm dari lantai) seperti kit pembanding, dan tidak perlu menata pasangan LED +
   fototransistor sendiri. Multiplexer membuat 12 sensor cukup memakai 5 pin ESP32 (1 ADC + 4 pemilih kanal). Bacaan 12 sensor
   ditampilkan sebagai bar di OLED, menggantikan LED indikator + MCP23017 (lebih murah dan PCB sensor lebih
-  sederhana). Tab PCB sensor dibaut ke bawah PCB utama dengan 2 spacer nilon dan disambung kabel pita pendek.
+  sederhana). Tangkai PCB sensor dibaut ke bawah PCB utama dengan 2 spacer nilon dan disambung kabel JST XH
+  8 pin pendek.
 - **Motor N20 6V 500 RPM + encoder, roda Ø34 mm**: kecepatan maksimum teoritis ± 0,89 m/s, cukup untuk
   sasaran ≥ 0,5 m/s dengan cadangan; roda kecil membuat robot rendah dan ringkas. Torsi desain
   (massa 0,3 kg, akselerasi 1,8 m/s², safety factor 2) ± 9 N·mm ≈ 0,09 kg·cm per roda. Encoder dibutuhkan
