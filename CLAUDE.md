@@ -73,7 +73,9 @@ memakai pin map yang sama.
   timah dipinjam lab (keluar RAB); kabel pita → JST XH 8 pin (Rp5.000, perkiraan). Nama toko + link QRE menyusul
   dari user. Lintasan uji di luar RAB.
 - Charter: `docs/charter.md`; docx dibuat ulang dengan `docs/charter-docx/gen_charter.js` (`npm i docx`, lalu
-  `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `charter.md`).
+  `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `charter.md`). Node.js 24 LTS sudah
+  terpasang di laptop (22/10); di shell lama tambahkan `C:Program Files
+odejs` ke PATH.
 - Perhitungan motor kelompok (`docs/perhitungan-motor.md`): masih draf, belum sinkron dengan charter (≥ 0,5 m/s)
   dan roda Ø34.
 - Belum ikut rancangan terkini: `docs/skematik-v1.md`, `docs/minsys-v1.md`, `docs/gen_rab_pemeliharaan.py`,
