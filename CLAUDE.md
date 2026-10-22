@@ -229,6 +229,8 @@ build_flags = -DARDUINO_USB_MODE=1 -DARDUINO_USB_CDC_ON_BOOT=1
 - Daftar blok: `inisialisasi robot`, `kalibrasi sensor`, `muat kalibrasi`, `posisi garis`, `garis terdeteksi?`, `ada persimpangan?`, `warna garis [hitam/putih]`, `ikuti garis kecepatan () Kp () Kd ()`, `motor kiri () kanan ()`, `stop`, `tegangan baterai`, `bunyi () ms`, `LED R G B`, `tombol [A/B] ditekan?`
 
 ## Workflow dengan Claude Code
+- 22/10/2026 kerja pindah ke Claude Code di laptop user (bisa live edit KiCad lewat MCP): status, pekerjaan
+  tertunda, dan cara setup ada di `docs/handover-claude-lokal.md`. Baca itu dulu di sesi pertama.
 - Tiap selesai milestone: `pio run` harus sukses tanpa warning baru.
 - Flash dan tes di hardware dilakukan Merv. Tunggu hasil tesnya sebelum lanjut ke milestone berikutnya.
 - Kalau ada keputusan desain yang belum jelas, tanya dulu, jangan diasumsikan.

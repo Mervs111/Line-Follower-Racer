@@ -52,8 +52,8 @@ tetap bisa di-Ctrl+Z.
 
 ## Contoh perintah ke Claude
 
-- "Pasang grid origin di puncak depan outline PCB sensor, lalu taruh sensor 1–12 sesuai
-  `mechanical/v15/dxf/pcb_sensor_posisi_qre1113.csv` relatif ke grid origin."
+- "Pasang grid origin di puncak depan outline PCB sensor, lalu taruh 12 sensor di sepanjang tepi depan,
+  jarak 9 mm, simetris kiri-kanan."
 - "Resistor tiap sensor taruh 4 mm di belakang sensornya, rotasi sama."
 - "Gambar outline simetris dari `hardware/outline/README.md` di Edge.Cuts."
 - "Render tampak bawah, perbesar daerah sensor 1–4", "jalankan DRC", "yang kupilih geser 0,5 mm ke kiri".
