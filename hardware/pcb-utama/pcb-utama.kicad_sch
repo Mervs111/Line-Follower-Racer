@@ -1,0 +1,19 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "a1018d4e-8f57-4747-9e8b-c6f7a8e9bd7b")
+	(paper "A3")
+	(title_block
+		(title "LTM - PCB utama")
+		(company "P01 Kel.5 PjBL DTEO FV ITS")
+		(comment 1 "Panduan per blok: docs/wiring-diagram.html")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

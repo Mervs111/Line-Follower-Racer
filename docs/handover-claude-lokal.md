@@ -51,13 +51,14 @@ outline**, simetris kiri-kanan, lalu U13, J1, C, routing.
 ## 3. Pekerjaan tertunda / belum dijawab user (status 22/10 malam)
 
 1. ~~Jarak antar sensor~~: selesai, rev B jarak 8 mm (garis lomba 2 cm).
-2. **Posisi sensor**: koordinat rev B ada di `hardware/sensor-garis/REVISI.md`. Model 3D v15 masih sayap 30°
-   → sedang disamakan dengan rev B (model v16).
+2. ~~Model 3D rev B~~: selesai, v16 https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3 (koordinat sensor untuk
+   firmware di `hardware/sensor-garis/REVISI.md`). Belum dikonfirmasi user: skid nilon di H1/H2, posisi J5.
 3. ~~QRE lokal~~: Rp15.000/pcs, 12 tanpa cadangan; `charter.md` + `gen_charter.js` sudah diperbarui (RAB Rp902.000,
    lewat Rp2.000). **Docx belum dibuat ulang: Node.js belum terpasang di laptop.** Nama toko + link menyusul dari user.
 4. ~~Wiring diagram blok 4~~: selesai (JST XH 8 pin, mux I2–I13), artifact versi 7.
 5. ~~FPC1~~: diabaikan (keputusan user).
-6. **PCB utama baru**: user menggambar skematik sendiri, Claude bantu layout (outline, penempatan, routing via MCP).
+6. **PCB utama baru**: proyek awal `hardware/pcb-utama/` sudah ada (outline, lubang, gambar bantu, skematik kosong).
+   Berikutnya: user menggambar skematik, lalu Claude bantu layout (penempatan, routing via MCP).
 7. Belum ikut keputusan terbaru: `docs/skematik-v1.md`, `docs/minsys-v1.md`, `gen_rab_pemeliharaan.py`,
    `hardware/tools/` (generator), `firmware/Pins.h` + `platformio.ini` (masih ESP32-S3; ditunda, keputusan user).
 8. Firmware M0–M7 belum mulai. Logbook utama terakhir 02/10: isi hanya dari kegiatan yang user ceritakan.

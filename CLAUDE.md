@@ -47,18 +47,22 @@ memakai pin map yang sama.
   sekarang salinannya di `LineFollowerRacer/` dalam repo, di-gitignore). **Rev B (disetujui)**: bentuk jangkar, lebar
   95 mm, 12 QRE jarak 8 mm di busur (tengah ±4,25, segmen 5/5/12/25/40°), DRC 0. Koordinat sensor untuk firmware
   dan riwayat revisi di `hardware/sensor-garis/REVISI.md`.
-- **PCB utama**: `hardware/ltm-main/` masih v2 hasil generator (13/10: 94×84, kabel pita IDC, pin map 13/10).
-  Mekanik v13+ memakai PCB utama 100 × 121 dengan ESP32 di socket di atas (jangan di bawah, keputusan user 18/10).
-  PCB utama baru belum dibuat; user merancang PCB sendiri.
+- **PCB utama baru**: `hardware/pcb-utama/` (KiCad 10, dibuat 22/10 oleh `hardware/tools/gen_pcb_utama_awal.py`;
+  nama folder boleh diganti user). Isi awal: outline 100 × 121 dari model v16, lubang, gambar bantu penempatan
+  (User.Drawings), outline PCB sensor (User.Comments), skematik kosong. **User menggambar skematik, Claude bantu
+  layout** (MCP). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
+  di tepi kanan hidung, urutan = J1. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
+  `hardware/pcb-utama/README.md`. `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
   via 0,6/1,0 (2 layer 1,27), slot 1/1,5, silkscreen 0,2, mask expansion 0,1. SOIC aman, SSOP 0,65 tidak. Isian
   KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. Konstanta `FAB` di
   `gen_pcb.py` masih aturan lama (0,8 mm).
 
 ### Mekanik
-- **v15** (`mechanical/`): model https://claude.ai/artifact/AKgsuWNwB9LYzNtRYeSRqo, ±118 × 165 × 62 mm. Bentuk rendah
-  gaya Ichiduino: PCB sensor + PCB utama sejajar dekat lantai, semua komponen + baterai di atas. Model v15 masih
-  memakai PCB sensor gaya XLINE (sayap 30°), **belum disamakan dengan rev B** (jangkar).
+- **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.
+  Bentuk rendah gaya Ichiduino: PCB sensor + PCB utama sejajar dekat lantai, semua komponen + baterai di atas.
+  PCB sensor rev B dibaca langsung dari `.kicad_pcb` (`cadquery/ltm_v16.py`), kabel JST XH 8 pin, usulan skid nilon
+  di baut H1/H2 (belum dikonfirmasi user). v15 (XLINE) https://claude.ai/artifact/AKgsuWNwB9LYzNtRYeSRqo.
 - Body 3D print = opsi B: PCB jadi sasis, 3D print untuk cover, bumper, dudukan motor & baterai, sayap belakang.
   Belum di RAB (tunggu info printer lab). Target dosen: desain mekanik selesai minggu ke-8.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
@@ -158,8 +162,8 @@ Line-Follower-Racer/
 ├── CLAUDE.md
 ├── firmware/        proyek PlatformIO (lib/LineFollower/src/{LineFollower.h,.cpp, Pins.h}, src/main.cpp)
 ├── mindplus-ext/    extension Mind+ (belum dimulai)
-├── hardware/        KiCad: sensor-garis/ (PCB sensor terbaru), ltm-main/ (PCB utama v2), tools/ (generator + kicad-mcp)
-├── mechanical/      model 3D v15 (CadQuery, STEP, DXF, STL, render)
+├── hardware/        KiCad: sensor-garis/ (PCB sensor), pcb-utama/ (PCB utama baru), ltm-main/ (v2 lama), tools/
+├── mechanical/      model 3D v16 (CadQuery, STEP, DXF, STL, render)
 ├── docs/            charter, skematik, wiring diagram, logbook, referensi
 └── arsip/           file yang sudah digantikan (lihat arsip/README.md)
 ```

@@ -9,7 +9,8 @@ hardware/
 ├── ltm-lib/
 │   ├── ltm.kicad_sym        symbol: ESP32_DevKit_30, TB6612_Module, MP1584_Module, ITR20001
 │   └── ltm.pretty/          footprint SEMENTARA (lihat checklist)
-├── ltm-main/                proyek PCB utama  (buka ltm-main.kicad_pro)
+├── pcb-utama/               **PCB utama baru** (KiCad 10, 22/10): outline + gambar bantu, skematik digambar user
+├── ltm-main/                PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai lagi
 ├── sensor-garis/            **PCB sensor terbaru buatan user** (KiCad 10, 12 QRE1113GR + CD74HC4067);
 │                            riwayat revisi di sensor-garis/REVISI.md
 ├── outline/                 outline simetris PCB sensor (DXF) dari layout user
