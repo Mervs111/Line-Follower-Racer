@@ -49,8 +49,8 @@ memakai pin map yang sama.
   dan riwayat revisi di `hardware/sensor-garis/REVISI.md`.
 - **PCB utama baru**: `hardware/pcb-utama/` (KiCad 10, dibuat 22/10 oleh `hardware/tools/gen_pcb_utama_awal.py`;
   nama folder boleh diganti user). Isi awal: outline 100 × 121 dari model v16, lubang, gambar bantu penempatan
-  (User.Drawings), outline PCB sensor (User.Comments), skematik kosong. **User menggambar skematik, Claude bantu
-  layout** (MCP). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
+  (User.Drawings), outline PCB sensor (User.Comments). **Skematik sudah dibuat Claude 22/10** (atas permintaan user,
+  `hardware/tools/gen_sch_utama.py` + `kisym.py`; ERC 0, netlist dicek terhadap tabel pin), berikutnya layout (MCP). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
   di tepi kanan hidung, urutan = J1. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
   `hardware/pcb-utama/README.md`. `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,

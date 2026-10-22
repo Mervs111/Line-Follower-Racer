@@ -14,8 +14,11 @@ Entri terbaru di atas.
 - Wiring diagram blok 4 dan 6 disamakan (JST XH 8 pin, mux I2–I13), artifact versi 7.
 - Model 3D **v16**: PCB sensor rev B dibaca langsung dari KiCad, kabel JST XH, usulan skid nilon di H1/H2, J5 di tepi
   kanan hidung. https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3
-- Proyek awal **PCB utama** `hardware/pcb-utama/` (outline, lubang, gambar bantu penempatan, skematik kosong) +
-  langkah menggambar skematik di `hardware/pcb-utama/README.md`.
+- Proyek awal **PCB utama** `hardware/pcb-utama/` (outline, lubang, gambar bantu penempatan) + langkah menggambar
+  skematik di `hardware/pcb-utama/README.md`.
+- **Skematik PCB utama** dibuat Claude (permintaan user) lewat `hardware/tools/gen_sch_utama.py`: 5 blok (daya,
+  driver motor, layar/tombol/buzzer, ESP32, kabel J5), 21 komponen, ERC 0, netlist 39 net cocok dengan tabel pin
+  CLAUDE.md. PDF `hardware/pcb-utama/pcb-utama-skematik.pdf`.
 
 ## 21/10/2026
 - Aturan cetak PCB dari tempat cetak user (jalur 0,3 mm) + template setting KiCad.

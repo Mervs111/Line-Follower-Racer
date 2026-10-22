@@ -10,7 +10,7 @@ menggambar).
 | File | Isi |
 |---|---|
 | `pcb-utama.kicad_pro` | salinan setting PCB sensor (aturan cetak 21/10, net class), nama diganti |
-| `pcb-utama.kicad_sch` | skematik kosong A3 dengan title block, siap digambar |
+| `pcb-utama.kicad_sch` | **skematik lengkap** (22/10, dibuat `hardware/tools/gen_sch_utama.py`): 21 komponen, ERC 0, netlist dicek terhadap tabel pin CLAUDE.md. PDF: `pcb-utama-skematik.pdf` |
 | `pcb-utama.kicad_pcb` | outline Edge.Cuts + lubang + gambar bantu (lihat di bawah); belum ada footprint |
 | `sym-lib-table`, `fp-lib-table` | library `ltm` di `../ltm-lib` (ESP32 DevKit, modul TB6612, MP1584). Footprint ini sementara: cocokkan ukurannya dengan modul yang dibeli |
 
@@ -56,6 +56,12 @@ https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY (blok 1–4, sumber `docs/wiri
 Aturan cetak: `docs/aturan-cetak-pcb.md` (jalur min 0,3 mm, ke ground pour 0,5 mm).
 
 ## Langkah menggambar skematik (KiCad 10)
+
+**Status 22/10: skematik sudah dibuat Claude** dengan `py hardware/tools/gen_sch_utama.py` (atas permintaan user),
+mengikuti langkah di bawah. Langkah ini tetap berguna untuk memahami dan mengecek isinya. Kalau skematik diubah
+manual di KiCad, **jangan jalankan generator lagi** (`--paksa` menimpa semua perubahan); ubah generatornya saja kalau
+mau tetap dari skrip. Peringatan "symbol doesn't match library" tidak muncul karena library `ltm` (format KiCad 7)
+dinaikkan formatnya di memori sebelum disalin.
 
 Sumber sambungan: wiring diagram blok 1–4 dan `docs/skematik-v1.md` bagian 3 (nomor komponen sama). Satu lembar A3
 cukup; sambung antarblok dengan **label** (nama sama = tersambung), bukan kabel panjang. Lubang M3 sudah ada di PCB

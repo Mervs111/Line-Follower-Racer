@@ -57,8 +57,8 @@ outline**, simetris kiri-kanan, lalu U13, J1, C, routing.
    lewat Rp2.000). Docx sudah dibuat ulang (22/10). Nama toko + link menyusul dari user.
 4. ~~Wiring diagram blok 4~~: selesai (JST XH 8 pin, mux I2–I13), artifact versi 7.
 5. ~~FPC1~~: diabaikan (keputusan user).
-6. **PCB utama baru**: proyek awal `hardware/pcb-utama/` sudah ada (outline, lubang, gambar bantu, skematik kosong).
-   Berikutnya: user menggambar skematik, lalu Claude bantu layout (penempatan, routing via MCP).
+6. **PCB utama baru**: `hardware/pcb-utama/` berisi outline, lubang, gambar bantu, dan **skematik lengkap** (dibuat
+   Claude 22/10, ERC 0). Berikutnya: user cek skematik, Update PCB from Schematic (F8), lalu layout via MCP.
 7. Belum ikut keputusan terbaru: `docs/skematik-v1.md`, `docs/minsys-v1.md`, `gen_rab_pemeliharaan.py`,
    `hardware/tools/` (generator), `firmware/Pins.h` + `platformio.ini` (masih ESP32-S3; ditunda, keputusan user).
 8. Firmware M0–M7 belum mulai. Logbook utama terakhir 02/10: isi hanya dari kegiatan yang user ceritakan.
