@@ -24,8 +24,10 @@ outline PCB sensor rev B terlihat di lapisan **User.Comments** sebagai acuan.
 
 ## Bentuk dan lubang (dari model 3D v16)
 
-- Outline: bentuk PCB utama v13–v16 (100 × 121 mm, hidung ke depan), sudut dibulatkan 2,5 mm. Sumber satu-satunya:
-  `MAIN_R` di `mechanical/cadquery/ltm_v16.py`.
+- Outline: bentuk **"mobil F1"** (dipilih user 22/10, 100 × 127 mm): sidepod lebar di samping (x ±50, y 23,5–54),
+  pinggang menyempit di antara roda (x ±37), lalu hidung panjang (x ±27) ke PCB sensor. Tiap sudut punya jari-jari
+  sendiri (3–10 mm). Sumber satu-satunya: `MAIN_R` di `mechanical/cadquery/ltm_v16.py` (titik x, y, jari-jari
+  setengah kanan; kiri dicerminkan). Perbandingan 3 opsi: https://claude.ai/artifact/PYASQTHgLPKjVaxw33yyMZ
 - 4 lubang M3 tiang dudukan motor + baterai di robot (±33; ±20).
 - 2 lubang M3 PCB sensor H1/H2 di robot (±4,75; 85,55).
 - 2 celah piringan encoder motor (X 10,2–13,9 kiri dan kanan, Y −6,6..6,6).
@@ -46,8 +48,13 @@ Posisi dari model 3D v16; boleh digeser kalau perlu, tapi cek tabrakan dengan du
 | Charger 2S, BMS | x −29..−4 (BMS di sisi bawah) | |
 | SW1 | tepi kiri, y 26–34,6 | |
 | Tombol A / B | x −22 / 22, y 63–69 | |
-| Buzzer | (38; 51,5), Ø12 | |
-| **J5** JST XH 8 pin | tengah (18,37; 80,20), diputar 126,4° sejajar tepi kanan hidung | **urutan pin = J1 PCB sensor**, pin 1 di ujung belakang (23,56; 73,15) |
+| Buzzer | (38; 51,5), Ø12 | sidepod kanan |
+| C1 elko 100 µF | (−37; 40), Ø6,3 | sidepod kiri |
+| **J5** JST XH 8 pin | tengah (−37,24; 55,12), diputar 205,6° sejajar tepi miring sidepod kiri | **urutan pin = J1 PCB sensor**, pin 1 di ujung dekat hidung (−29,34; 58,89) |
+
+Sidepod kanan sudah penuh (TB6612, buzzer, S8050), hidung terpakai OLED, tombol, dan baut H1/H2, jadi J5 di sidepod
+kiri. Kabel dibundel menyusuri tepi kiri hidung (di kiri tombol A) lalu masuk ke J1 dari depan; pin 1 J5 dekat hidung
+dan pin 1 J1 di kanan, jadi kabel tidak bersilangan.
 
 Urutan pin J5 (wajib sama dengan J1 PCB sensor): 1 +5V, 2 +3V3, 3 GND, 4 MUX_S3, 5 MUX_S2, 6 MUX_S1, 7 MUX_S0,
 8 MUX_SIG. Pin ESP32 ada di tabel `CLAUDE.md`; sambungan per blok di wiring diagram

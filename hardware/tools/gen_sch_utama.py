@@ -134,7 +134,7 @@ BLOCKS = [
     (281.94, 119.38, 406.4, 200.66, "5. KABEL KE PCB SENSOR  (wiring diagram blok 4)", [
         (335.28, 147.32, "J5 = JST XH 8 pin, urutan pin SAMA\ndengan J1 PCB sensor (kabel lurus,\npin n ke pin n)"),
         (335.28, 162.56, "Ikuti NOMOR pin: pin 4-7 terbalik\ndari urutan nama (S3 dulu)"),
-        (287.02, 185.42, "Di PCB: J5 sejajar tepi kanan hidung, pin 1 di ujung belakang"),
+        (287.02, 185.42, "Di PCB: J5 sejajar tepi miring sidepod kiri, pin 1 di ujung dekat hidung"),
     ]),
 ]
 

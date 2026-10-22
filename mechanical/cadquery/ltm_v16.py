@@ -4,8 +4,9 @@
 #   hardware/sensor-garis/sensor-garis.kicad_pcb, jadi model selalu ikut file PCB terbaru.
 # - Tepi depan PCB sensor tetap di Y 131 (jarak sensor ke poros roda sama dengan v15).
 # - Penahan depan (usulan): skid nilon di kedua baut H1/H2 (rev B tidak punya lubang skid terpisah).
-# - Kabel pita IDC diganti kabel JST XH 8 pin: J5 di PCB utama dipindah ke tepi kanan hidung (tengah hidung dipakai
-#   baut H1/H2), pin 1 di ujung belakang. PCB utama selain itu sama dengan v15 (PCB utama baru menyusul, dirancang user).
+# - PCB utama bentuk "mobil F1" (pilihan user 22/10): sidepod lebar, pinggang lengkung di antara roda, hidung panjang.
+# - Kabel pita IDC diganti kabel JST XH 8 pin: J5 di tepi miring sidepod kiri, pin 1 di ujung dekat hidung; kabel
+#   dibundel menyusuri tepi kiri hidung (kiri tombol A) ke J1 PCB sensor. Elko C1 pindah ke sidepod kiri.
 # Sumbu: X kanan, Y maju, Z atas; nol = lantai di bawah tengah poros roda.
 import json, math, os, re, sys
 import cadquery as cq
@@ -255,6 +256,7 @@ def jst_xh(x, y, ang, z0):
 j1x, j1y, j1ang = FPD["J1"][3:6]
 J1C = local(j1x, j1y, j1ang, 8.75, 0.0)                 # tengah rumah (pin 1 di titik asal footprint)
 j1_body, j1_plug = jst_xh(*J1C, j1ang, SZ_TOP)
+print("J1 sensor", [round(v, 2) for v in (j1x, j1y, j1ang)], "tengah", [round(v, 2) for v in J1C])
 add("Header JST XH J1", j1_body, "jst", "sensor")
 add("Steker JST XH J1", j1_plug, "jst_plug", "sensor")
 
@@ -273,13 +275,45 @@ for x, y in SB_HOLES:
     add("Mur M3", hexnut(x, y, TOP, 2.4), "chrome")
 
 # ============================== PCB UTAMA ==============================
-# bagian belakang selebar celah antar roda (74), "bahu" 100 di depan roda, hidung menutupi tengah PCB sensor
-# (sisi atas PCB sensor di situ cuma resistor/LED setinggi < 1 mm; celah antar papan 4 mm)
-MAIN_R = [(32, -30), (37, -25), (37, 22), (48, 24), (50, 26), (50, 44), (42, 56), (30, 72), (16, 91)]
-MAIN_PTS = [(x, y) for x, y in MAIN_R] + [(-x, y) for x, y in reversed(MAIN_R)]
+# bentuk "mobil F1" (pilihan user 22/10): pinggang selebar celah antar roda (74), sidepod 100 di depan roda, lengkung
+# menyempit ke hidung 54 yang menutupi tengah PCB sensor (sisi atas PCB sensor di situ cuma komponen < 1 mm; celah
+# antar papan 4 mm). MAIN_R = setengah kanan (x, y, jari-jari sudut) dari belakang ke depan; dibaca juga oleh
+# hardware/tools/gen_pcb_utama_awal.py untuk Edge.Cuts KiCad.
+MAIN_R = [(37, -34, 10), (37, 20, 3), (50, 23.5, 3), (50, 54, 6), (27, 65, 8), (27, 84, 8), (12, 93, 5)]
+
+
+def fillet_outline(right):
+    """poligon simetris dengan jari-jari sudut per titik -> (wire CadQuery, polyline rapat untuk offset/silk)"""
+    pts = [(0.0, right[0][1], 0)] + list(right) + [(0.0, right[-1][1], 0)]
+    pts = pts[1:-1] + [(-x, y, r) for x, y, r in reversed(right)]
+    n, segs, dense = len(pts), [], []
+    for i in range(n):
+        (ax, ay, _), (bx, by, r), (cx, cy, _) = pts[i - 1], pts[i], pts[(i + 1) % n]
+        u = ((ax - bx) / math.dist((ax, ay), (bx, by)), (ay - by) / math.dist((ax, ay), (bx, by)))
+        v = ((cx - bx) / math.dist((cx, cy), (bx, by)), (cy - by) / math.dist((cx, cy), (bx, by)))
+        th = math.acos(max(-1.0, min(1.0, u[0] * v[0] + u[1] * v[1])))
+        t = r / math.tan(th / 2)
+        bis = (u[0] + v[0], u[1] + v[1])
+        lb = math.hypot(*bis)
+        c = (bx + bis[0] / lb * r / math.sin(th / 2), by + bis[1] / lb * r / math.sin(th / 2))
+        p1, p2 = (bx + u[0] * t, by + u[1] * t), (bx + v[0] * t, by + v[1] * t)
+        mid = (c[0] - bis[0] / lb * r, c[1] - bis[1] / lb * r)
+        segs.append((p1, mid, p2))
+        a1, a2 = math.atan2(p1[1] - c[1], p1[0] - c[0]), math.atan2(p2[1] - c[1], p2[0] - c[0])
+        da = (a2 - a1 + math.pi) % (2 * math.pi) - math.pi
+        dense += [(c[0] + r * math.cos(a1 + da * k / 8), c[1] + r * math.sin(a1 + da * k / 8)) for k in range(9)]
+    edges = []
+    for i, (p1, mid, p2) in enumerate(segs):
+        edges.append(cq.Edge.makeThreePointArc(cq.Vector(*p1, 0), cq.Vector(*mid, 0), cq.Vector(*p2, 0)))
+        q = segs[(i + 1) % n][0]
+        edges.append(cq.Edge.makeLine(cq.Vector(*p2, 0), cq.Vector(*q, 0)))
+    return cq.Wire.assembleEdges(edges), dense
+
+
+MAIN_WIRE, MAIN_PTS = fillet_outline(MAIN_R)
 HOLES_MAIN = list(SB_HOLES) + [(sx * 33, sy * 20) for sx in (-1, 1) for sy in (-1, 1)]
-main = cq.Workplane("XY").polyline(MAIN_PTS).close().extrude(T).translate((0, 0, PCB_Z))
-main = try_fillet(main, "|Z", 2.5)
+main = cq.Workplane("XY").add(cq.Solid.extrudeLinear(cq.Face.makeFromWires(MAIN_WIRE), cq.Vector(0, 0, T))) \
+    .translate((0, 0, PCB_Z))
 for hx, hy in HOLES_MAIN:
     main = main.cut(cyl_z(hx, hy, PCB_Z - 1, T + 2, 1.6))
 for s in (-1, 1):                                    # celah untuk piringan encoder N20 (lebih besar dari badan motor)
@@ -302,9 +336,9 @@ for x in (-22, 22):
         pass
 add("Silkscreen utama", silk, "silk")
 
-# ---------- J5 JST XH 8 pin (kabel ke J1 PCB sensor), sejajar tepi kanan hidung ----------
-# tengah hidung dipakai baut H1/H2 PCB sensor dan bagian belakangnya tertutup OLED, jadi J5 diletakkan miring
-_e0, _e1 = (30.0, 72.0), (16.0, 91.0)                 # tepi kanan hidung PCB utama
+# ---------- J5 JST XH 8 pin (kabel ke J1 PCB sensor), sejajar tepi miring sidepod kiri ----------
+# hidung dipakai baut H1/H2 PCB sensor + OLED + tombol, sidepod kanan dipakai buzzer/S8050, jadi J5 di sidepod kiri
+_e0, _e1 = (-27.0, 65.0), (-50.0, 54.0)               # tepi miring sidepod kiri (dari hidung ke bahu)
 _d = ((_e1[0] - _e0[0]) / math.dist(_e0, _e1), (_e1[1] - _e0[1]) / math.dist(_e0, _e1))
 J5ANG = math.degrees(math.atan2(_d[1], _d[0]))
 J5C = (_e0[0] + 13.5 * _d[0] - 4.5 * _d[1], _e0[1] + 13.5 * _d[1] + 4.5 * _d[0])
@@ -364,8 +398,8 @@ bz = cyl_z(38, 51.5, TOP, 9.5, 6).cut(cyl_z(38, 51.5, TOP + 8.5, 2, 1.2))
 add("Buzzer", try_fillet(bz, ">Z", 0.6), "black_plastic")
 add("Saklar", box(-50.0, -45.6, 26.0, 34.6, TOP, TOP + 4.4), "shield")      # tepi kiri bahu, di depan roda
 add("Saklar tuas", box(-54.0, -50.0, 29.3, 31.3, TOP + 1.4, TOP + 3.0), "black_plastic")
-add("Elko C1 100uF", cyl_z(-38, 50.0, TOP + 0.3, 10.7, 3.15), "elko")
-add("Elko C1 tutup", cyl_z(-38, 50.0, TOP + 11.0, 0.15, 2.85), "shield")
+add("Elko C1 100uF", cyl_z(-37, 40.0, TOP + 0.3, 10.7, 3.15), "elko")
+add("Elko C1 tutup", cyl_z(-37, 40.0, TOP + 11.0, 0.15, 2.85), "shield")
 to92 = cyl_z(28.5, 54.0, TOP + 3.0, 4.5, 2.3).intersect(box(26.1, 30.9, 52.9, 56.4, TOP + 2.9, TOP + 7.6))
 add("Transistor S8050", to92, "black_plastic")
 res = None
@@ -393,18 +427,41 @@ add("JST XH baterai", box(27.5, 33.4, -29.8, -24.4, TOP, TOP + 7.0), "jst")
 add("BMS 2S", box(-35, -5, -28, -17, PCB_Z - 2.4, PCB_Z), "pcb_green")
 
 # ---------- kabel JST XH 8 jalur: J5 (PCB utama) -> J1 (PCB sensor), pin n ke pin n ----------
-# pin 1 J5 di ujung belakang (dekat tombol B) supaya 8 kabel tidak bersilangan menuju J1 (pin 1 di kanan)
+# pin 1 J5 di ujung dekat hidung supaya 8 kabel tidak bersilangan menuju J1 (pin 1 di kanan). Kabel diikat jadi satu
+# bundel yang menyusuri tepi kiri hidung (di sebelah kiri tombol A, tidak menutupi tombol/OLED), lalu masuk J1 dari depan.
 WIRE_R = 0.65                                            # kabel AWG 26 berisolasi
 WIRE_MAT = ["wire_red", "wire_yel", "wire_blk"] + ["wire_blu"] * 5     # +5V, +3V3, GND, MUX_S3..S0, MUX_SIG
+CABLE_WAY = [(-34.0, 68.0, TOP + 3.0), (-21.0, 89.0, TOP + 6.0)]     # titik lintasan bundel kabel (kiri tombol A)
 
 
-def wire(p0, p3, rise, n=16):
-    """kabel bulat dari ujung steker ke ujung steker, keluar tegak lalu melengkung"""
-    p1 = (p0[0], p0[1], p0[2] + rise)
-    p2 = (p3[0], p3[1], p3[2] + rise)
-    pts = [cq.Vector(*[(1 - t) ** 3 * p0[i] + 3 * (1 - t) ** 2 * t * p1[i] + 3 * (1 - t) * t ** 2 * p2[i]
-                       + t ** 3 * p3[i] for i in range(3)]) for t in [k / n for k in range(n + 1)]]
-    path = cq.Wire.assembleEdges([cq.Edge.makeSpline(pts)])
+def wire(p0, p3, way, off, bend=3.0):
+    """kabel bulat: tegak dari steker, lewat titik lintasan (digeser off ke kanan arah jalan), tegak masuk steker;
+    segmen lurus dengan tikungan membulat (seperti kabel yang ditekuk tangan)"""
+    pts = [p0, (p0[0], p0[1], p0[2] + 4.0)]
+    for i, w in enumerate(way):
+        a = way[i - 1] if i else p0
+        b = way[i + 1] if i + 1 < len(way) else p3
+        h = (b[0] - a[0], b[1] - a[1])
+        n = math.hypot(*h)
+        pts.append((w[0] + off * h[1] / n, w[1] - off * h[0] / n, w[2]))
+    pts += [(p3[0], p3[1], p3[2] + 4.0), p3]
+    V = [cq.Vector(*p) for p in pts]
+    edges, start = [], V[0]
+    for i in range(1, len(V) - 1):
+        A, B, C = V[i - 1], V[i], V[i + 1]
+        u, v = (A - B).normalized(), (C - B).normalized()
+        th = math.acos(max(-1.0, min(1.0, u.dot(v))))
+        if th > math.radians(175):                       # hampir lurus: tanpa tikungan
+            continue
+        t = min(bend / math.tan(th / 2), 0.45 * (A - B).Length, 0.45 * (C - B).Length)
+        r = t * math.tan(th / 2)
+        bis = (u + v).normalized()
+        cen = B + bis * (r / math.sin(th / 2))
+        p1, p2 = B + u * t, B + v * t
+        edges += [cq.Edge.makeLine(start, p1), cq.Edge.makeThreePointArc(p1, cen - bis * r, p2)]
+        start = p2
+    edges.append(cq.Edge.makeLine(start, V[-1]))
+    path = cq.Wire.assembleEdges(edges)
     return cq.Workplane(cq.Plane(origin=p0, xDir=(1, 0, 0), normal=(0, 0, 1))).circle(WIRE_R).sweep(cq.Workplane().add(path))
 
 
@@ -412,7 +469,7 @@ _d5 = (math.cos(math.radians(J5ANG)), math.sin(math.radians(J5ANG)))
 for k in range(8):
     q5 = (J5C[0] - (8.75 - 2.5 * k) * _d5[0], J5C[1] - (8.75 - 2.5 * k) * _d5[1], TOP + XH_H + 4.0)
     q1 = (*local(j1x, j1y, j1ang, 2.5 * k, 0.0), SZ_TOP + XH_H + 4.0)
-    add(f"Kabel JST XH pin {k + 1}", wire(q5, q1, 7.0 + 0.4 * k), WIRE_MAT[k])
+    add(f"Kabel JST XH pin {k + 1}", wire(q5, q1, CABLE_WAY, (3.5 - k) * 1.4), WIRE_MAT[k])
 
 # ============================== PENGGERAK ==============================
 for s in (-1, 1):

@@ -19,6 +19,10 @@ Entri terbaru di atas.
 - **Skematik PCB utama** dibuat Claude (permintaan user) lewat `hardware/tools/gen_sch_utama.py`: 5 blok (daya,
   driver motor, layar/tombol/buzzer, ESP32, kabel J5), 21 komponen, ERC 0, netlist 39 net cocok dengan tabel pin
   CLAUDE.md. PDF `hardware/pcb-utama/pcb-utama-skematik.pdf`.
+- **Outline PCB utama baru "mobil F1"** (user memilih dari 3 opsi: perisai bulat, controller, mobil F1): sidepod
+  lebar, pinggang lengkung, hidung panjang, 100 × 127 mm. J5 pindah ke sidepod kiri, C1 elko ke (−37; 40), kabel
+  sensor menyusuri tepi kiri hidung. Model v16 (0 tabrakan), render, artifact v16, dan `pcb-utama.kicad_pcb`
+  (DRC 0) diperbarui.
 
 ## 21/10/2026
 - Aturan cetak PCB dari tempat cetak user (jalur 0,3 mm) + template setting KiCad.

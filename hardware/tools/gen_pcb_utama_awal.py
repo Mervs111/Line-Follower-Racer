@@ -2,17 +2,18 @@
 
 Isi yang dibuat:
 - pcb-utama.kicad_pro: salinan setting proyek PCB sensor user (aturan cetak, net class), nama diganti.
-- pcb-utama.kicad_sch: skematik kosong (A3), digambar sendiri oleh user.
-- pcb-utama.kicad_pcb: setup papan dari PCB sensor + outline Edge.Cuts (bentuk PCB utama model 3D v16,
-  sudut dibulatkan 2,5 mm, 2 celah piringan encoder, 6 lubang M3) + gambar bantu penempatan di User.Drawings dan
+- pcb-utama.kicad_sch: skematik kosong (A3), HANYA kalau belum ada / belum berisi simbol (skematik lengkap dibuat
+  gen_sch_utama.py, tidak pernah ditimpa skrip ini).
+- pcb-utama.kicad_pcb: setup papan dari PCB sensor + outline Edge.Cuts (bentuk "mobil F1" dari MAIN_R model 3D v16,
+  jari-jari sudut per titik, 2 celah piringan encoder, 6 lubang M3) + gambar bantu penempatan di User.Drawings dan
   outline PCB sensor rev B di User.Comments.
 - sym-lib-table / fp-lib-table: library ltm (ESP32 DevKit, modul TB6612, MP1584).
 
 Koordinat SAMA dengan proyek PCB sensor: X KiCad = 200 + x robot, Y KiCad = Y0 - y robot (Y0 = tepi depan PCB sensor
 + 131), jadi lubang H1/H2 di kedua papan bernomor sama. Robot: x kanan, y maju, 0 = tengah poros roda.
 
-Jalankan dari folder repo: py hardware/tools/gen_pcb_utama_awal.py   (tidak menimpa file .kicad_pcb/.kicad_sch
-yang sudah ada kecuali diberi --paksa).
+Jalankan dari folder repo: py hardware/tools/gen_pcb_utama_awal.py   (tidak menimpa .kicad_pcb yang sudah ada kecuali
+diberi --paksa; jangan pakai --paksa kalau PCB sudah berisi footprint/jalur buatan user).
 """
 import math
 import os
@@ -29,7 +30,6 @@ FORCE = "--paksa" in sys.argv
 
 KX0 = 200.0
 F_SENSOR = 131.0                     # tepi depan PCB sensor di koordinat robot (F di ltm_v16.py)
-FILLET = 2.5
 
 pcb_src = open(SENSOR + ".kicad_pcb", encoding="utf8").read()
 edges_src = re.findall(r'\n\t\((gr_line|gr_arc)\s+\(start ([\d.\-]+) ([\d.\-]+)\)\s*(?:\(mid ([\d.\-]+) ([\d.\-]+)\)\s*)?'
@@ -47,7 +47,7 @@ def k(x, y):
 # outline PCB utama dari model 3D (satu sumber: MAIN_R di ltm_v16.py)
 model_src = open(MODEL, encoding="utf8").read()
 MAIN_R = eval(re.search(r"^MAIN_R = (\[.*?\])", model_src, re.M).group(1))
-MAIN_PTS = list(MAIN_R) + [(-x, y) for x, y in reversed(MAIN_R)]
+MAIN_PTS = list(MAIN_R) + [(-x, y, r) for x, y, r in reversed(MAIN_R)]     # (x, y, jari-jari sudut)
 HOLES = [(sx * 33.0, sy * 20.0) for sx in (-1, 1) for sy in (-1, 1)]       # tiang dudukan motor + baterai
 SB_HOLES = [(float(a), float(b)) for a, b in re.findall(
     r'\(footprint "MountingHole[^"]*".*?\(at ([\d.\-]+) ([\d.\-]+)', pcb_src, re.S)]   # sudah koordinat KiCad
@@ -109,12 +109,13 @@ def unit(v):
     return (v[0] / n, v[1] / n)
 
 
-def filleted_outline(pts, r):
-    """polygon robot dengan semua sudut dibulatkan r (sama dengan fillet |Z di model), hasil gr_line + gr_arc"""
+def filleted_outline(pts):
+    """polygon robot (x, y, r) dengan tiap sudut dibulatkan r-nya (sama dengan model 3D), hasil gr_line + gr_arc"""
     n = len(pts)
     corners = []
     for i in range(n):
-        p0, p1, p2 = pts[i - 1], pts[i], pts[(i + 1) % n]
+        p0, p1, p2 = pts[i - 1][:2], pts[i][:2], pts[(i + 1) % n][:2]
+        r = pts[i][2]
         u1, u2 = unit((p0[0] - p1[0], p0[1] - p1[1])), unit((p2[0] - p1[0], p2[1] - p1[1]))
         th = math.acos(max(-1.0, min(1.0, u1[0] * u2[0] + u1[1] * u2[1])))
         d = r / math.tan(th / 2)
@@ -140,9 +141,8 @@ def main():
     os.makedirs(OUTDIR, exist_ok=True)
     pcb_path = os.path.join(OUTDIR, NAME + ".kicad_pcb")
     sch_path = os.path.join(OUTDIR, NAME + ".kicad_sch")
-    for p in (pcb_path, sch_path):
-        if os.path.exists(p) and not FORCE:
-            sys.exit(f"{p} sudah ada (mungkin sudah diedit user); pakai --paksa untuk menimpa")
+    if os.path.exists(pcb_path) and not FORCE:
+        sys.exit(f"{pcb_path} sudah ada (mungkin sudah diedit user); pakai --paksa untuk menimpa")
 
     # proyek: setting PCB sensor user, nama diganti
     pro = open(SENSOR + ".kicad_pro", encoding="utf8").read().replace("sensor-garis", NAME)
@@ -157,10 +157,11 @@ def main():
            f'\t\t(company "P01 Kel.5 PjBL DTEO FV ITS")\n\t\t(comment 1 "Panduan per blok: docs/wiring-diagram.html")\n'
            f'\t)\n\t(lib_symbols)\n\t(sheet_instances\n\t\t(path "/"\n\t\t\t(page "1")\n\t\t)\n\t)\n'
            f'\t(embedded_fonts no)\n)\n')
-    open(sch_path, "w", encoding="utf8", newline="\n").write(sch)
+    if not os.path.exists(sch_path) or "(lib_id" not in open(sch_path, encoding="utf8").read():
+        open(sch_path, "w", encoding="utf8", newline="\n").write(sch)
 
     head = pcb_src[:pcb_src.index("\n\t(footprint")].replace('(paper "A4")', '(paper "A3")')
-    body = filleted_outline(MAIN_PTS, FILLET)
+    body = filleted_outline(MAIN_PTS)
     for x, y in HOLES:
         body += circle(k(x, y), 1.6)
     for c in SB_HOLES:
@@ -191,8 +192,10 @@ def main():
         size = 1.0 if (x1 - x0) > 12 else 0.8
         body += text(label, k(*(pos[0] if pos else ((x0 + x1) / 2, (y0 + y1) / 2))), size=size)
     body += circle(k(38.0, 51.5), 6.0, "Dwgs.User", 0.12) + text("buzzer", k(38.0, 51.5), size=0.8)
-    # J5 JST XH 8 pin sejajar tepi kanan hidung (sama dengan model v16), pin 1 di ujung belakang
-    e0, e1 = (30.0, 72.0), (16.0, 91.0)
+    body += circle(k(-37.0, 40.0), 3.15, "Dwgs.User", 0.12) + text("C1", k(-37.0, 40.0), size=0.8)
+    # J5 JST XH 8 pin sejajar tepi miring sidepod kiri (sama dengan model v16), pin 1 di ujung dekat hidung;
+    # kabel dibundel menyusuri tepi kiri hidung (kiri tombol A) ke J1 PCB sensor
+    e0, e1 = (-27.0, 65.0), (-50.0, 54.0)
     d = unit((e1[0] - e0[0], e1[1] - e0[1]))
     ang = math.degrees(math.atan2(d[1], d[0]))
     c = (e0[0] + 13.5 * d[0] - 4.5 * d[1], e0[1] + 13.5 * d[1] + 4.5 * d[0])
@@ -200,8 +203,8 @@ def main():
     kang = -ang                                          # sumbu Y KiCad terbalik: sudut ikut terbalik
     kang = kang + 180 if kang <= -90 else (kang - 180 if kang > 90 else kang)
     body += text("J5 JST XH 8 (urutan = J1 sensor)", k(*c), size=0.8, ang=kang)
-    p1 = (c[0] - 8.75 * d[0], c[1] - 8.75 * d[1])          # pin 1 di ujung belakang (kabel tidak bersilangan)
-    body += circle(k(*p1), 0.8, "Dwgs.User", 0.12) + text("pin 1", k(p1[0] + 3.2, p1[1] - 1.5), size=0.8)
+    p1 = (c[0] - 8.75 * d[0], c[1] - 8.75 * d[1])          # pin 1 di ujung dekat hidung (kabel tidak bersilangan)
+    body += circle(k(*p1), 0.8, "Dwgs.User", 0.12) + text("pin 1", k(p1[0] + 1.5, p1[1] + 2.5), size=0.8)
     # outline PCB sensor rev B (koordinat sama), lapisan User.Comments
     for t, x0, y0, xm, ym, x1, y1 in edges_src:
         if t == "gr_arc" and xm:

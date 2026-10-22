@@ -48,10 +48,11 @@ memakai pin map yang sama.
   95 mm, 12 QRE jarak 8 mm di busur (tengah ±4,25, segmen 5/5/12/25/40°), DRC 0. Koordinat sensor untuk firmware
   dan riwayat revisi di `hardware/sensor-garis/REVISI.md`.
 - **PCB utama baru**: `hardware/pcb-utama/` (KiCad 10, dibuat 22/10 oleh `hardware/tools/gen_pcb_utama_awal.py`;
-  nama folder boleh diganti user). Isi awal: outline 100 × 121 dari model v16, lubang, gambar bantu penempatan
+  nama folder boleh diganti user). Isi awal: outline **"mobil F1"** 100 × 127 (pilihan user 22/10, `MAIN_R` di
+  `ltm_v16.py`; perbandingan opsi https://claude.ai/artifact/PYASQTHgLPKjVaxw33yyMZ), lubang, gambar bantu penempatan
   (User.Drawings), outline PCB sensor (User.Comments). **Skematik sudah dibuat Claude 22/10** (atas permintaan user,
   `hardware/tools/gen_sch_utama.py` + `kisym.py`; ERC 0, netlist dicek terhadap tabel pin), berikutnya layout (MCP). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
-  di tepi kanan hidung, urutan = J1. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
+  di tepi miring sidepod kiri (pin 1 dekat hidung), urutan = J1; C1 elko di sidepod kiri. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
   `hardware/pcb-utama/README.md`. `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
   via 0,6/1,0 (2 layer 1,27), slot 1/1,5, silkscreen 0,2, mask expansion 0,1. SOIC aman, SSOP 0,65 tidak. Isian
@@ -61,7 +62,8 @@ memakai pin map yang sama.
 ### Mekanik
 - **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.
   Bentuk rendah gaya Ichiduino: PCB sensor + PCB utama sejajar dekat lantai, semua komponen + baterai di atas.
-  PCB sensor rev B dibaca langsung dari `.kicad_pcb` (`cadquery/ltm_v16.py`), kabel JST XH 8 pin, usulan skid nilon
+  PCB sensor rev B dibaca langsung dari `.kicad_pcb` (`cadquery/ltm_v16.py`), PCB utama bentuk mobil F1, kabel JST
+  XH 8 pin menyusuri tepi kiri hidung, usulan skid nilon
   di baut H1/H2 (belum dikonfirmasi user). v15 (XLINE) https://claude.ai/artifact/AKgsuWNwB9LYzNtRYeSRqo.
 - Body 3D print = opsi B: PCB jadi sasis, 3D print untuk cover, bumper, dudukan motor & baterai, sayap belakang.
   Belum di RAB (tunggu info printer lab). Target dosen: desain mekanik selesai minggu ke-8.
