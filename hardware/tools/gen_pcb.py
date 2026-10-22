@@ -5,7 +5,7 @@ Alur: skematik -> netlist (kicad-cli) -> outline dari model mekanik v11 -> footp
       -> DSN -> FreeRouting (autorouter) -> SES -> jalur & via -> pour GND -> DRC -> .kicad_pcb
 
 Koordinat penempatan di script ini = koordinat model mekanik (mm; X kanan, Y maju, nol = tengah poros
-roda): PCB utama v2 = mechanical/cadquery/ltm_v12.py, PCB sensor = ltm_v11.py. Di KiCad: x = X + OX, y = OY - Y.
+roda): PCB utama v2 = arsip/mechanical/cadquery/ltm_v12.py, PCB sensor = ltm_v11.py (folder yang sama). Di KiCad: x = X + OX, y = OY - Y.
 
 Jalankan dengan Python yang punya modul pcbnew (Python bawaan KiCad), butuh kicad-cli, java 21+ dan
 FreeRouting (FREEROUTING_JAR):
@@ -532,7 +532,7 @@ def import_ses(brd, ses_path):
 
 
 # ================================================================== PCB UTAMA
-# outline = MAIN_PTS di mechanical/cadquery/ltm_v12.py (fillet 2,5)
+# outline = MAIN_PTS di arsip/mechanical/cadquery/ltm_v12.py (fillet 2,5)
 MAIN_PTS = [(-36, 8), (36, 8), (36, 18), (47, 22), (47, 62), (28, 86), (13, 92), (-13, 92), (-28, 86),
             (-47, 62), (-47, 22), (-36, 18)]
 HOLES_MAIN = {"H1": (-32, 16), "H2": (32, 16),          # standoff ke dudukan baterai (sama dengan model)

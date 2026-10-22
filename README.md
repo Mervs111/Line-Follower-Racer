@@ -1,4 +1,4 @@
-# Line Follower ESP32-S3 + Block Programming
+# Line Follower ESP32 + Block Programming
 
 Proyek PjBL Semester 5: robot line follower yang murah tapi performanya bagus,
 dan bisa diprogram pakai blok (user extension Mind+).
@@ -14,21 +14,24 @@ dan bisa diprogram pakai blok (user extension Mind+).
 
 | Bagian | Pilihan |
 |---|---|
-| MCU | ESP32-S3-WROOM-1-N4 (flash 4MB, tanpa PSRAM) |
-| Sensor | 8× ITR20001/QRE1113, emitter IR di-switch lewat MOSFET |
-| Driver motor | TB6612FNG + motor N20 6V |
-| Power | LiPo 2S → buck MP1584 5V → LDO ME6211 3,3V |
-| UI | 2 tombol, buzzer, 1× WS2812, header I2C |
+| MCU | ESP32 DevKit 30 pin (ESP32 biasa) |
+| Sensor | 12× QRE1113GR + mux CD74HC4067 di PCB sensor bentuk jangkar (`hardware/sensor-garis/`) |
+| Driver motor | TB6612FNG + motor N20 6V 500 RPM dengan encoder, roda Ø34 |
+| Power | 2S 18650 + BMS → buck MP1584 5V |
+| UI | OLED 0,96" I2C, 2 tombol, buzzer |
 
-Pin map lengkap ada di [`CLAUDE.md`](CLAUDE.md) dan
-[`firmware/lib/LineFollower/src/Pins.h`](firmware/lib/LineFollower/src/Pins.h).
+Rancangan terkini dan pin map ada di [`CLAUDE.md`](CLAUDE.md). `firmware/lib/LineFollower/src/Pins.h` masih peta
+lama (ESP32-S3) dan akan diperbarui sebelum milestone firmware pertama.
 
 ## Struktur repo
 
 ```
 ├── firmware/        proyek PlatformIO (library LineFollower + test harness)
 ├── mindplus-ext/    extension Mind+
-└── docs/            panduan pemakaian
+├── hardware/        proyek KiCad (PCB sensor, PCB utama) + tools
+├── mechanical/      model 3D (CadQuery, STEP, DXF, STL)
+├── docs/            charter, skematik, wiring diagram, logbook, panduan
+└── arsip/           file yang sudah digantikan rancangan terbaru
 ```
 
 ## Build

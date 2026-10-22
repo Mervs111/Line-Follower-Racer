@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "ltm")(type "KiCad")(uri "${KIPRJMOD}/../../../hardware/ltm-lib/ltm.kicad_sym")(options "")(descr "Simbol LTM"))
+)

@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name "ltm")(type "KiCad")(uri "${KIPRJMOD}/../ltm-lib/ltm.pretty")(options "")(descr "Footprint LTM"))
-)

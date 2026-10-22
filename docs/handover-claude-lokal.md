@@ -25,7 +25,7 @@ Asumsi: Windows. Perintah macOS/Linux ada di `hardware/tools/kicad-mcp/README.md
 ## 2. Status pekerjaan saat pindah
 
 User sedang **menggambar PCB sensor sendiri di KiCad** (skematik dan layout buatan user, BUKAN
-`hardware/ltm-sensor/`, yang masih hasil generator lama dengan 16 ITR20001 + MCP23017). File proyek KiCad user
+`arsip/hardware/ltm-sensor/`, yang masih hasil generator lama dengan 16 ITR20001 + MCP23017). File proyek KiCad user
 **belum ada di repo**: tanya lokasinya, usulkan dimasukkan ke repo (nama folder biar user yang pilih) supaya
 tersimpan di git.
 

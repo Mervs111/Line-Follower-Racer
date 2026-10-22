@@ -8,3 +8,6 @@
 *.lck
 *.kicad_prl
 fp-info-cache
+
+# Salinan folder KiCad lama di laptop user (isinya sudah ada di hardware/ dan arsip/)
+LineFollowerRacer/

@@ -10,14 +10,18 @@ hardware/
 │   ├── ltm.kicad_sym        symbol: ESP32_DevKit_30, TB6612_Module, MP1584_Module, ITR20001
 │   └── ltm.pretty/          footprint SEMENTARA (lihat checklist)
 ├── ltm-main/                proyek PCB utama  (buka ltm-main.kicad_pro)
-├── ltm-sensor/              proyek PCB sensor jangkar (buka ltm-sensor.kicad_pro)
 ├── sensor-garis/            **PCB sensor terbaru buatan user** (KiCad 10, 12 QRE1113GR + CD74HC4067);
-│                            riwayat revisi di sensor-garis/REVISI.md (ltm-sensor/ di atas sudah usang)
+│                            riwayat revisi di sensor-garis/REVISI.md
+├── outline/                 outline simetris PCB sensor (DXF) dari layout user
+├── aturan-cetak-template/   setting KiCad sesuai aturan cetak 21/10 (impor lewat Board Setup)
 ├── render/                  gambar PCB (atas/bawah + rakitan) untuk laporan/PPT
 ├── ltm-main.pdf             cetakan skematik PCB utama
-├── ltm-sensor.pdf           cetakan skematik PCB sensor
-└── tools/                   generator (JANGAN dijalankan ulang tanpa alasan: menimpa file)
+└── tools/                   generator (JANGAN dijalankan ulang tanpa alasan: menimpa file) + kicad-mcp/
 ```
+
+**22/10/2026:** PCB sensor v2 hasil generator (16 ITR20001 + MCP23017, `ltm-sensor/`) sudah usang dan dipindah ke
+`arsip/hardware/`. Bagian "PCB sensor v2" di bawah hanya untuk riwayat; generator (`tools/`) masih menulis ke
+`hardware/ltm-sensor/` kalau dijalankan ulang.
 
 Library `ltm` sudah terdaftar di tiap proyek (`sym-lib-table`, `fp-lib-table`), tidak perlu ditambah manual.
 Symbol dan footprint standar (R, C, konektor, power) memakai library bawaan KiCad.
@@ -104,7 +108,7 @@ terlihat setelah robot dirakit. Nama blok yang ada di bawah modul terbaca saat m
 
 ### Disamakan dengan model mekanik
 
-Kedua PCB = model `mechanical/cadquery/ltm_v12.py` (13/10/2026). Lubang bahu H3/H4 di (±37,5; 69) dan lubang
+Kedua PCB = model `arsip/mechanical/cadquery/ltm_v12.py` (13/10/2026). Lubang bahu H3/H4 di (±37,5; 69) dan lubang
 H1/H2 PCB sensor di (±52; 92,5) dipakai lengan dudukan; konektor motor di X ±(17–27) mm. Di sisi bawah PCB
 utama ada tanda tempat **ball caster** (0; 62), area itu sengaja bebas kaki solder, dan tanda tempat **BMS**.
 Di model v12 tepi depan dudukan baterai dimundurkan ke Y 29,5 (ESP32 mulai Y 30,2).
