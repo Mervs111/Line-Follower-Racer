@@ -11,6 +11,8 @@ hardware/
 │   └── ltm.pretty/          footprint SEMENTARA (lihat checklist)
 ├── ltm-main/                proyek PCB utama  (buka ltm-main.kicad_pro)
 ├── ltm-sensor/              proyek PCB sensor jangkar (buka ltm-sensor.kicad_pro)
+├── sensor-garis/            **PCB sensor terbaru buatan user** (KiCad 10, 12 QRE1113GR + CD74HC4067);
+│                            riwayat revisi di sensor-garis/REVISI.md (ltm-sensor/ di atas sudah usang)
 ├── render/                  gambar PCB (atas/bawah + rakitan) untuk laporan/PPT
 ├── ltm-main.pdf             cetakan skematik PCB utama
 ├── ltm-sensor.pdf           cetakan skematik PCB sensor

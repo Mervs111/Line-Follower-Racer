@@ -113,6 +113,12 @@ Arsitektur 3 lapis:
   KiCad 9/10 lewat kicad-python, jalan di laptop user dengan Claude Code lokal (sesi cloud tidak bisa menjangkau
   KiCad). Dites di KiCad 9.0.9 & 10.0.7 (Docker + Xvfb). KiCad 9 belum punya FlipItems & GetItemsById (ada cadangan:
   footprint dipilih lalu user tekan F; cari item manual). KiCad 8 tidak didukung.
+- 22/10/2026: **PCB sensor user masuk repo** di `hardware/sensor-garis/` (KiCad 10; aslinya di
+  `C:\ITS\LineFollowerRacer\PCB_LFM_FIX\sensor-garis\` laptop user). Rev A (bentuk ujung panah, 12 QRE jarak 9 mm,
+  celah tengah 19,5 mm, sinyal di B, daya di F, pour GND 2 sisi, DRC 0) disalin ke `revisi/rev-a/`; riwayat di
+  `REVISI.md`. Mux: S1–S12 = I2–I13, I0/I1/I14/I15 kosong. Target lomba **IARC XII Smart Robotics** (9–10/01/2027):
+  arena grid, **garis hitam 2 cm**, misi dorong kubus 4 cm; spesifikasi kit panitia (Nano, TCRT5000 5 ch) tidak wajib.
+  User ingin robot **serbaguna** (grid + lintasan banyak tikungan) dan bentuk **jangkar** → rev B sedang dirancang.
 - Diagram blok (21/10/2026, sesuai rancangan terbaru): https://claude.ai/artifact/VgPaH3FbRFSDaHB658YTcT, 2 artboard:
   perangkat keras (`docs/diagram-blok.png`, loop ditutup lewat blok Lintasan) dan kendali loop tertutup
   (`docs/diagram-blok-kendali.png`: r → Σ → PID → driver → motor → robot → sensor → pengolahan → y, loop dalam encoder). Arsitektur sistem 09/10 di bawah sudah usang (5 ITR20001, MOSFET, pin map lama).

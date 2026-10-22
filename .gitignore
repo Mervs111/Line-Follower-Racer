@@ -2,3 +2,9 @@
 .vscode/
 *.bak
 .DS_Store
+
+# KiCad (file lokal/sementara)
+*-backups/
+*.lck
+*.kicad_prl
+fp-info-cache
