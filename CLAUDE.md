@@ -118,7 +118,10 @@ Arsitektur 3 lapis:
   celah tengah 19,5 mm, sinyal di B, daya di F, pour GND 2 sisi, DRC 0) disalin ke `revisi/rev-a/`; riwayat di
   `REVISI.md`. Mux: S1–S12 = I2–I13, I0/I1/I14/I15 kosong. Target lomba **IARC XII Smart Robotics** (9–10/01/2027):
   arena grid, **garis hitam 2 cm**, misi dorong kubus 4 cm; spesifikasi kit panitia (Nano, TCRT5000 5 ch) tidak wajib.
-  User ingin robot **serbaguna** (grid + lintasan banyak tikungan) dan bentuk **jangkar** → rev B sedang dirancang.
+  User ingin robot **serbaguna** (grid + lintasan banyak tikungan) dan bentuk **jangkar** → **rev B (disetujui user)**:
+  12 QRE jarak 8 mm di busur (tengah ±4,25, segmen 5/5/12/25/40°), pita + kait + tangkai, lebar 95 mm, DRC 0;
+  koordinat sensor untuk firmware di `hardware/sensor-garis/REVISI.md`. Urutan pin J1 (benar, dari skematik):
+  1 +5V, 2 +3V3, 3 GND, 4 MUX_S3, 5 MUX_S2, 6 MUX_S1, 7 MUX_S0, 8 MUX_SIG.
 - Diagram blok (21/10/2026, sesuai rancangan terbaru): https://claude.ai/artifact/VgPaH3FbRFSDaHB658YTcT, 2 artboard:
   perangkat keras (`docs/diagram-blok.png`, loop ditutup lewat blok Lintasan) dan kendali loop tertutup
   (`docs/diagram-blok-kendali.png`: r → Σ → PID → driver → motor → robot → sensor → pengolahan → y, loop dalam encoder). Arsitektur sistem 09/10 di bawah sudah usang (5 ITR20001, MOSFET, pin map lama).
