@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["mcp>=1.10", "kicad-python>=0.8", "pymupdf>=1.24"]
+# dependencies = ["mcp>=1.10", "kicad-python>=0.8", "pymupdf>=1.24,<2"]
 # ///
 """Server MCP untuk mengedit PCB yang sedang terbuka di KiCad 9/10 secara live.
 
