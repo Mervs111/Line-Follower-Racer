@@ -187,6 +187,8 @@ Line-Follower-Racer/
 - Visual: buka `docs/referensi/`, cocokkan siluet, render dan bandingkan berdampingan dengan foto referensi sebelum
   dikirim. User berkali-kali kecewa karena gambar tidak mirip referensi.
 - Commit per pekerjaan selesai, pesan commit Bahasa Indonesia, push ke `main`.
+- **Tiap selesai mengerjakan sesuatu: tambahkan entri di `docs/log-kerja.md` (log per hari), commit, push** (permintaan
+  user 22/10).
 
 ## Pedoman PjBL
 - Ringkasan pedoman resmi (gerbang G1–G5, 7 butir tugas, kriteria penerimaan, penilaian):

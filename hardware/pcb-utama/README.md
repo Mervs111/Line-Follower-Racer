@@ -54,3 +54,82 @@ Urutan pin J5 (wajib sama dengan J1 PCB sensor): 1 +5V, 2 +3V3, 3 GND, 4 MUX_S3,
 https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY (blok 1–4, sumber `docs/wiring-diagram.html`).
 
 Aturan cetak: `docs/aturan-cetak-pcb.md` (jalur min 0,3 mm, ke ground pour 0,5 mm).
+
+## Langkah menggambar skematik (KiCad 10)
+
+Sumber sambungan: wiring diagram blok 1–4 dan `docs/skematik-v1.md` bagian 3 (nomor komponen sama). Satu lembar A3
+cukup; sambung antarblok dengan **label** (nama sama = tersambung), bukan kabel panjang. Lubang M3 sudah ada di PCB
+sebagai lingkaran Edge.Cuts, jadi tidak perlu simbol MountingHole. BMS dan charger ada di luar PCB (tanpa simbol).
+
+### 0. Persiapan
+1. Buka `pcb-utama.kicad_pro` (bukan file `.kicad_sch` langsung), lalu buka skematiknya.
+2. Cek modul yang dibeli, karena footprint `ltm` masih sementara:
+   - ESP32 DevKit 30 pin: ukur jarak antar baris pin. 25,4 mm → `ltm:ESP32_DevKit_30P_W25.4` (bawaan),
+     22,86 mm → `ltm:ESP32_DevKit_30P_W22.86`.
+   - Modul TB6612: urutan pin beda-beda tiap penjual, cocokkan dengan simbol `ltm:TB6612_Module`.
+   - Modul MP1584: cek letak lubang IN+/IN−/OUT+/OUT−.
+3. Bagi lembar jadi 4 area: Daya, ESP32 + driver motor, Layar/tombol/buzzer, Kabel sensor.
+
+### 1. Daya (wiring blok 1)
+| Ref | Simbol | Footprint | Sambungan |
+|---|---|---|---|
+| J1 | `Connector_Generic:Conn_01x02` | `Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical` | 1 BAT+, 2 GND (dari P+/P− BMS) |
+| SW1 | `Switch:SW_SPDT` | `Button_Switch_THT:SW_Slide_SPDT_Angled_CK_OS102011MA1Q` (cek saklar yang dibeli) | kaki tengah VBAT, satu kaki samping BAT+, kaki lain **X** |
+| U3 | `ltm:MP1584_Module` | bawaan simbol | IN+ VBAT, IN− GND, OUT+ `+5V_BUCK`, OUT− GND |
+| D1 | `Diode:1N5819` | `Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal` | anoda `+5V_BUCK`, katoda +5V |
+| C1 | `Device:C_Polarized` 100 µF/16 V | `Capacitor_THT:CP_Radial_D6.3mm_P2.50mm` | + VBAT, − GND (nanti di dekat VM TB6612) |
+| R1, R2 | `Device:R` 100k, 33k | `Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal` | VBAT – R1 – `VBAT_SENSE` – R2 – GND |
+
++5V, +3V3, GND pakai simbol daya (`power:+5V`, `power:+3V3`, `power:GND`). VBAT, `+5V_BUCK`, `VBAT_SENSE` pakai
+label. Pasang `power:PWR_FLAG` di VBAT, GND, dan +5V (dayanya datang dari konektor/dioda, bukan dari pin keluaran
+daya). +3V3 tidak perlu karena pin 3V3 ESP32 sudah keluaran daya.
+
+### 2. ESP32 (U1, `ltm:ESP32_DevKit_30`)
+VIN → +5V, GND (2 pin) → GND, 3V3 → +3V3. Beri label di ujung tiap pin:
+
+| GPIO | Label | | GPIO | Label | | GPIO | Label |
+|---|---|---|---|---|---|---|---|
+| 36 | MUX_SIG | | 25 | MUX_S1 | | 19 | ENC_R_B |
+| 39 | VBAT_SENSE | | 26 | MUX_S0 | | 18 | PWMA |
+| 34 | BTN_A | | 13 | ENC_L_A | | 5 | AIN1 |
+| 35 | BTN_B | | 14 | ENC_L_B | | 17 | AIN2 |
+| 32 | MUX_S3 | | 12 | BUZ | | 16 | PWMB |
+| 33 | MUX_S2 | | 23 | ENC_R_A | | 4 | BIN1 |
+| 22 | SCL | | 21 | SDA | | 15 | BIN2 |
+| 2 | STBY | | | | | | |
+
+Pin tidak dipakai (EN, GPIO27, TX0, RX0) → **X** (no-connect).
+
+### 3. Driver motor + motor (wiring blok 2)
+| Ref | Simbol | Footprint | Sambungan |
+|---|---|---|---|
+| U2 | `ltm:TB6612_Module` | bawaan simbol | PWMA, AIN1, AIN2, PWMB, BIN1, BIN2, STBY ke label yang sama; VM VBAT; VCC +3V3; 3 GND → GND; AO1/AO2 → `ML_P`/`ML_N`; BO1/BO2 → `MR_P`/`MR_N` |
+| J2 (kiri) | `Connector_Generic:Conn_01x06` | `Connector_JST:JST_PH_B6B-PH-K_1x06_P2.00mm_Vertical` | 1 ML_P, 2 +3V3, 3 ENC_L_A, 4 ENC_L_B, 5 GND, 6 ML_N |
+| J3 (kanan) | sama | sama | 1 MR_P, 2 +3V3, 3 ENC_R_A, 4 ENC_R_B, 5 GND, 6 MR_N |
+
+Encoder tanpa resistor (firmware pakai `INPUT_PULLUP`). Cocokkan urutan kabel dengan motor N20 yang dibeli.
+
+### 4. Layar, tombol, buzzer (wiring blok 3)
+| Ref | Simbol | Footprint | Sambungan |
+|---|---|---|---|
+| J4 (OLED) | `Connector_Generic:Conn_01x04` | `Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical` | 1 GND, 2 +3V3, 3 SCL, 4 SDA (**cek urutan di modul OLED**, ada yang VCC dulu) |
+| SW2, SW3 | `Switch:SW_Push` | `Button_Switch_THT:SW_PUSH_6mm` | BTN_A / BTN_B ke GND |
+| R5, R6 | `Device:R` 10k | resistor THT di atas | BTN_A / BTN_B ke +3V3 (wajib: GPIO34/35 tanpa pull-up) |
+| Q1 | `Transistor_BJT:S8050` | `Package_TO_SOT_THT:TO-92_Inline` (cek urutan E-B-C) | E GND, C ke kaki − buzzer |
+| R3, R4 | `Device:R` 1k, 10k | resistor THT | BUZ – R3 – basis Q1; basis – R4 – GND |
+| BZ1 | `Device:Buzzer` | `Buzzer_Beeper:Buzzer_12x9.5RM7.6` | + ke +5V, − ke kolektor Q1 |
+
+### 5. Kabel sensor J5 (wiring blok 4)
+| Ref | Simbol | Footprint | Sambungan |
+|---|---|---|---|
+| J5 | `Connector_Generic:Conn_01x08` | `Connector_JST:JST_XH_B8B-XH-A_1x08_P2.50mm_Vertical` | 1 +5V, 2 +3V3, 3 GND, 4 MUX_S3, 5 MUX_S2, 6 MUX_S1, 7 MUX_S0, 8 MUX_SIG |
+
+Ikuti **nomor pin**, bukan urutan nama (pin 4–7 terbalik). Harus sama persis dengan J1 PCB sensor.
+
+### 6. Cek sebelum layout
+1. Tools → Annotate: pertahankan nomor di tabel (U1 ESP32, U2 TB6612, U3 MP1584, ...).
+2. Tools → Assign Footprints: semua komponen punya footprint.
+3. Inspect → ERC: target 0 error. Yang sering muncul: "input power pin not driven" → PWR_FLAG; "pin not connected"
+   → X; label yang hanya muncul sekali (salah ketik nama).
+4. Simpan, lalu kabari Claude: netlist dicek terhadap tabel pin di atas, lalu Update PCB from Schematic (F8) dan
+   penempatan sesuai gambar bantu.
