@@ -37,7 +37,7 @@ Isi PCB sensor user (sesuai keputusan 20–21/10 di `CLAUDE.md`):
   COM → `MUX_SIG`, select → `MUX_S0`…`MUX_S3` (jangan dinamai `S0`–`S3`, bentrok dengan label sensor), E̅ → GND,
   VCC +3V3 + C 100 nF.
 - **J1 = JST XH 8 pin** (pitch 2,50 mm, footprint vertikal B8B-XH-A; origin footprint = pin 1). Urutan pin yang
-  dipakai user: 1 +5V, 2 MUX_S3, 3 MUX_S2, 4 +3V3, 5 GND, 6 MUX_S1, 7 MUX_S0, 8 MUX_SIG. **Konektor pasangannya
+  di skematik user (dikoreksi 22/10): 1 +5V, 2 +3V3, 3 GND, 4 MUX_S3, 5 MUX_S2, 6 MUX_S1, 7 MUX_S0, 8 MUX_SIG. **Konektor pasangannya
   di PCB utama (J5) wajib urutan yang sama.**
 - **Outline simetris** (dibuat 21/10 dari layout user): `hardware/outline/README.md` + DXF. Titik (0,0) = puncak
   tepi depan, Y ke bawah. Sayap ±60 mm (tepi depan naik 5,5 mm), badan ±15 sampai Y 34,5, tab ±9 sampai Y 46,

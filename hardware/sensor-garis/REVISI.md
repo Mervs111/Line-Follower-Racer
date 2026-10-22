@@ -15,8 +15,8 @@ Buka `sensor-garis.kicad_pro`. File di folder ini selalu revisi **terbaru**; tia
   sisi bawah, 2,85 mm dari tengah sensor.
 - **Mux**: U13 CD74HC4067M (SOIC-24W) di sisi atas, garis tengah; I2..I13 = S1..S12 (sesuai skematik user),
   I0, I1, I14, I15 tidak tersambung. C1 100 nF di samping pin VCC.
-- **J1**: JST XH 8 pin vertikal. Urutan pin: 1 +5V, 2 MUX_S3, 3 MUX_S2, 4 +3V3, 5 GND, 6 MUX_S1, 7 MUX_S0,
-  8 MUX_SIG.
+- **J1**: JST XH 8 pin vertikal. Urutan pin (dari skematik): 1 +5V, 2 +3V3, 3 GND, 4 MUX_S3, 5 MUX_S2,
+  6 MUX_S1, 7 MUX_S0, 8 MUX_SIG.
 - **Routing**: sinyal S1–S12 di B.Cu (0,3 mm), rel daya +3V3/+5V di F.Cu (0,5 mm), pour GND di kedua sisi
   (jarak 0,5 mm). DRC: 0 error, 0 unconnected.
 
