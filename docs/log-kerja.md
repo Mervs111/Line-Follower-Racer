@@ -4,6 +4,10 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 23/10/2026
+- README ditulis ulang untuk anggota kelompok: status tiap bagian, link artifact, dan daftar pekerjaan
+  berikutnya (keputusan kelompok, PCB utama sampai siap pesan, pembelian, firmware, dokumen PjBL).
+
 ## 22/10/2026
 - MCP KiCad (`hardware/tools/kicad-mcp/`): Claude bisa mengedit PCB live di KiCad 9/10; handover ke Claude Code di laptop.
 - PCB sensor buatan user masuk repo (rev A), urutan pin J1 dikoreksi sesuai skematik, lalu **rev B** disetujui:
