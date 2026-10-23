@@ -23,6 +23,10 @@ Entri terbaru di atas.
   lebar, pinggang lengkung, hidung panjang, 100 × 127 mm. J5 pindah ke sidepod kiri, C1 elko ke (−37; 40), kabel
   sensor menyusuri tepi kiri hidung. Model v16 (0 tabrakan), render, artifact v16, dan `pcb-utama.kicad_pcb`
   (DRC 0) diperbarui.
+- MCP KiCad disambungkan ulang (path lama di `C:\Users\revis\Documents` → repo `C:\ITS\Line-Follower-Racer`).
+- **Layout PCB utama**: 21 footprint ditempatkan sesuai model v16, routing pertama dengan FreeRouting (skrip di
+  `hardware/tools/autoroute/`), GND pour F.Cu + B.Cu. DRC 0 unconnected; tersisa 11 error dari footprint pustaka
+  Q1 (TO-92 rapat → ganti `TO-92_Inline_Wide`) dan SW1 (pad pemasang 0,25 mm), menunggu user.
 
 ## 21/10/2026
 - Aturan cetak PCB dari tempat cetak user (jalur 0,3 mm) + template setting KiCad.

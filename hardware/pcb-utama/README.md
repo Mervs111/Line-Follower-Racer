@@ -1,7 +1,7 @@
 # PCB utama (baru, KiCad 10)
 
-Proyek awal PCB utama pengganti `ltm-main/` (v2, 13/10). **Skematik digambar user**, Claude bantu layout
-(penempatan, routing, DRC) lewat MCP KiCad. Dibuat 22/10/2026 oleh `hardware/tools/gen_pcb_utama_awal.py`
+Proyek PCB utama pengganti `ltm-main/` (v2, 13/10). Skematik dibuat Claude atas permintaan user, layout
+(penempatan, routing, DRC) oleh Claude lewat MCP KiCad + FreeRouting. Dibuat 22/10/2026 oleh `hardware/tools/gen_pcb_utama_awal.py`
 (sekali jalan; `--paksa` menimpa .kicad_pcb dan .kicad_sch, jadi **jangan dijalankan lagi** sesudah user mulai
 menggambar).
 
@@ -11,10 +11,26 @@ menggambar).
 |---|---|
 | `pcb-utama.kicad_pro` | salinan setting PCB sensor (aturan cetak 21/10, net class), nama diganti |
 | `pcb-utama.kicad_sch` | **skematik lengkap** (22/10, dibuat `hardware/tools/gen_sch_utama.py`): 21 komponen, ERC 0, netlist dicek terhadap tabel pin CLAUDE.md. PDF: `pcb-utama-skematik.pdf` |
-| `pcb-utama.kicad_pcb` | outline Edge.Cuts + lubang + gambar bantu (lihat di bawah); belum ada footprint |
+| `pcb-utama.kicad_pcb` | outline + lubang + gambar bantu, **21 footprint ditempatkan dan dirouting** (22/10, lihat "Layout") |
 | `sym-lib-table`, `fp-lib-table` | library `ltm` di `../ltm-lib` (ESP32 DevKit, modul TB6612, MP1584). Footprint ini sementara: cocokkan ukurannya dengan modul yang dibeli |
 
 Cek awal: `kicad-cli pcb drc` 0 error, `kicad-cli sch erc` 0 error.
+
+## Layout (22/10/2026, routing pertama)
+
+- Penempatan mengikuti model 3D v16. ESP32 (U1) di (196,5; 141,9), diputar −90° (pin 1 di depan-kanan), digeser
+  3,5 mm ke kiri dari tengah karena footprint DevKit lebih panjang di sisi antena (kalau tidak, menabrak TB6612).
+  TB6612 (U2) diputar −90°: baris daya (VM, motor) menghadap belakang ke J2/J3, baris logika ke depan.
+- Routing: FreeRouting 2.1.0 lewat `hardware/tools/autoroute/` (README di sana), 339 segmen + 15 via. Lebar: VBAT/BAT+
+  1,0 mm; motor, +5V, +5V_BUCK 0,8 mm; +3V3/GND 0,5 mm; sinyal 0,3 mm. GND pour F.Cu + B.Cu, jarak 0,5 mm.
+- DRC: **0 unconnected**; 11 error tersisa semuanya dari footprint pustaka, belum diperbaiki:
+  - **Q1 `TO-92_Inline`** (pitch 1,27): clearance 0,22 dan annular 0,15 di bawah aturan cetak. Rencana: ganti
+    footprint di skematik ke `Package_TO_SOT_THT:TO-92_Inline_Wide` (lewat Eeschema, lalu F8; generator skematik
+    memakai UUID acak, jadi jangan dibuat ulang), lalu rapikan jalur Q1 ↔ R3/R4/BZ1.
+  - **SW1** (OS102011MA1Q): pad pemasang tanpa net berjarak 0,25 mm dari pad 1/3 (batas cetak 0,254). Menunggu
+    keputusan user: kecualikan di DRC atau ganti saklar.
+- Hasil autorouter belum dirapikan (BAT+ melintang miring di B.Cu dari J1 ke SW1, beberapa jalur berbelok-belok).
+  Warning silkscreen (referensi bertumpuk) juga belum dibereskan.
 
 ## Koordinat (sama dengan proyek PCB sensor)
 
@@ -128,7 +144,7 @@ Encoder tanpa resistor (firmware pakai `INPUT_PULLUP`). Cocokkan urutan kabel de
 | J4 (OLED) | `Connector_Generic:Conn_01x04` | `Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical` | 1 GND, 2 +3V3, 3 SCL, 4 SDA (**cek urutan di modul OLED**, ada yang VCC dulu) |
 | SW2, SW3 | `Switch:SW_Push` | `Button_Switch_THT:SW_PUSH_6mm` | BTN_A / BTN_B ke GND |
 | R5, R6 | `Device:R` 10k | resistor THT di atas | BTN_A / BTN_B ke +3V3 (wajib: GPIO34/35 tanpa pull-up) |
-| Q1 | `Transistor_BJT:S8050` | `Package_TO_SOT_THT:TO-92_Inline` (cek urutan E-B-C) | E GND, C ke kaki − buzzer |
+| Q1 | `Transistor_BJT:S8050` | `Package_TO_SOT_THT:TO-92_Inline` → akan diganti `TO-92_Inline_Wide` (cek urutan E-B-C) | E GND, C ke kaki − buzzer |
 | R3, R4 | `Device:R` 1k, 10k | resistor THT | BUZ – R3 – basis Q1; basis – R4 – GND |
 | BZ1 | `Device:Buzzer` | `Buzzer_Beeper:Buzzer_12x9.5RM7.6` | + ke +5V, − ke kolektor Q1 |
 

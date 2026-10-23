@@ -51,7 +51,10 @@ memakai pin map yang sama.
   nama folder boleh diganti user). Isi awal: outline **"mobil F1"** 100 × 127 (pilihan user 22/10, `MAIN_R` di
   `ltm_v16.py`; perbandingan opsi https://claude.ai/artifact/PYASQTHgLPKjVaxw33yyMZ), lubang, gambar bantu penempatan
   (User.Drawings), outline PCB sensor (User.Comments). **Skematik sudah dibuat Claude 22/10** (atas permintaan user,
-  `hardware/tools/gen_sch_utama.py` + `kisym.py`; ERC 0, netlist dicek terhadap tabel pin), berikutnya layout (MCP). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
+  `hardware/tools/gen_sch_utama.py` + `kisym.py`; ERC 0, netlist dicek terhadap tabel pin). **Layout 22/10**:
+  21 footprint ditempatkan sesuai model v16, routing pertama FreeRouting (`hardware/tools/autoroute/`) + GND pour 2 sisi,
+  0 unconnected; tertunda: Q1 → `TO-92_Inline_Wide` (ganti di Eeschema + F8, jangan buat ulang skematik karena UUID
+  acak), keputusan SW1 (pad pemasang 0,25 mm), merapikan jalur. Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
   di tepi miring sidepod kiri (pin 1 dekat hidung), urutan = J1; C1 elko di sidepod kiri. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
   `hardware/pcb-utama/README.md`. `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
