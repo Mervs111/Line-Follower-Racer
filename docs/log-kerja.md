@@ -11,6 +11,8 @@ Entri terbaru di atas.
   https://claude.ai/artifact/7JpKSCkUepxGQdxK5ZhVpv. Ukuran robot 165,0 × 115,6 × 62,1 mm, PCB utama 100 × 127,
   PCB sensor 94,4 × 51,0 (masuk 13 mm di bawah hidung). Temuan: kaki THT J1 PCB sensor menonjol 1,7 mm ke bawah
   (titik terendah 3,1 mm dari lantai, di bawah muka QRE 3,3 mm), jadi perlu dipotong serata mungkin.
+- STEP rakitan kedua PCB (`mechanical/rakitan-pcb/LFM_rakitan_pcb.step`, `gen_rakitan_step.py`): digabung oleh
+  KiCad sendiri, sumbu = STEP v16 (nol di lantai), jadi bisa dibuka bersama bagian mekanik di Fusion 360/FreeCAD.
 - Data viewer v16 (`mechanical/viewer/model.json`) disimpan di repo supaya `viewer/v16.html` dan skrip rakitan bisa
   dijalankan di laptop (CadQuery tidak terpasang).
 

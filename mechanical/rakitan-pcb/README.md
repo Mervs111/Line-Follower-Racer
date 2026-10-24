@@ -13,6 +13,8 @@ ukuran robot dengan PCB yang sebenarnya.
 | `LFM_rakitan.glb` | rakitan lengkap (mm, terkuantisasi). Bisa dibuka di Blender atau penampil glTF lain |
 | `LFM_rakitan_web.json` | GLB yang sama dengan kompresi meshopt, di-base64 (artifact claude.ai tidak menyajikan file .glb). Dibaca `index.html` |
 | `index.html` | viewer: tampak Iso/Atas/Samping/Depan/Bawah, garis ukuran per tampak, tombol Ukur (klik dua titik), tabel ukuran |
+| `LFM_rakitan_pcb.step` | STEP kedua PCB + komponen (3,6 MB) untuk Fusion 360 / FreeCAD / SolidWorks. Dibuat `gen_rakitan_step.py` |
+| `LFM_rakitan_pcb_tembaga.step` | sama, + jalur, pour, pad, silkscreen, mask (21 MB, tidak masuk git): `py gen_rakitan_step.py --tembaga` |
 
 ## Cara kerja skrip
 
@@ -25,6 +27,18 @@ ukuran robot dengan PCB yang sebenarnya.
 4. Bagian v16 yang sudah ada di file KiCad (papan, sensor, konektor, tombol, resistor, dll.) dibuang. Data v16 dibaca
    dari `mechanical/viewer/model.json`. ESP32 digeser 3,5 mm ke kiri mengikuti U1 di layout.
 5. Semua digabung per material, ukuran utama ditulis di `extras` node akar GLB, lalu dikompres dengan gltfpack.
+
+## STEP (`gen_rakitan_step.py`, sekitar 15 detik)
+
+Sumbu sama dengan `mechanical/v16/step/LTM_v16_rakitan.step`: X kanan, Y maju, Z atas, **nol = lantai di bawah tengah
+poros roda**, jadi bisa ditumpuk langsung dengan STEP v16 (sembunyikan PCB sederhana v16) atau dengan bagian cetak 3D.
+Isinya dua sub-rakitan, `PCB_SENSOR` (alas di Z 4,8) dan `PCB_UTAMA` (alas di Z 10,4). Modul ESP32, TB6612, dan MP1584
+tidak ada karena footprint `ltm` tidak punya model 3D.
+
+Caranya tanpa CadQuery: tiap board diekspor `kicad-cli pcb export step` (PCB utama lewat salinan yang diberi model
+pustaka), lalu kedua STEP dipasang sebagai model 3D dua footprint bantu di board kosong dan board itu diekspor lagi.
+`--cek` membuka ulang hasilnya lewat KiCad dan mencetak kotak pembatasnya (24/10: X −52,2…50,0, Y −34,0…131,0,
+Z 3,08…21,62, sama dengan rakitan GLB).
 
 ## Ukuran (dari file KiCad 24/10)
 
