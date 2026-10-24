@@ -1,5 +1,12 @@
 # Mekanik — Robot Line Tracer Micro
 
+## Rakitan PCB LFM (24/10/2026): v16 dengan PCB asli dari KiCad
+
+PCB sensor rev B dan PCB utama hasil layout diekspor langsung dari KiCad lalu digabung dengan bagian mekanik v16.
+Viewer dengan garis ukuran dan alat ukur: https://claude.ai/artifact/7JpKSCkUepxGQdxK5ZhVpv. Penjelasan, ukuran, dan
+cara membuat ulang di `rakitan-pcb/README.md`. `viewer/model.json` = data viewer v16 (dibaca `viewer/v16.html` dan
+skrip rakitan).
+
 ## v16 (22/10/2026): v15 + PCB sensor rev B (jangkar) dari KiCad
 
 Model v15 disamakan dengan **PCB sensor rev B** buatan user (`hardware/sensor-garis/`). Bentuk papan, lubang, dan

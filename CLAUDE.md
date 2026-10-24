@@ -68,6 +68,9 @@ memakai pin map yang sama.
   PCB sensor rev B dibaca langsung dari `.kicad_pcb` (`cadquery/ltm_v16.py`), PCB utama bentuk mobil F1, kabel JST
   XH 8 pin menyusuri tepi kiri hidung, usulan skid nilon
   di baut H1/H2 (belum dikonfirmasi user). v15 (XLINE) https://claude.ai/artifact/AKgsuWNwB9LYzNtRYeSRqo.
+- **Rakitan PCB LFM** (`mechanical/rakitan-pcb/`, 24/10): kedua PCB asli diekspor `kicad-cli` (GLB) + mekanik v16,
+  viewer dengan garis ukuran + alat ukur https://claude.ai/artifact/7JpKSCkUepxGQdxK5ZhVpv. Jalankan ulang
+  `gen_rakitan.py` tiap PCB berubah. Footprint `pcb-utama` belum punya model 3D (skrip menambahkannya di salinan).
 - Body 3D print = opsi B: PCB jadi sasis, 3D print untuk cover, bumper, dudukan motor & baterai, sayap belakang.
   Belum di RAB (tunggu info printer lab). Target dosen: desain mekanik selesai minggu ke-8.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
