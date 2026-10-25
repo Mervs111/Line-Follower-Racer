@@ -115,6 +115,8 @@ odejs` ke PATH.
 - 21/10: mux jadi IC SOIC-24W; aturan cetak baru (0,3 mm).
 - 22/10: PCB sensor user masuk repo (rev A), lalu **rev B jangkar** disetujui; MCP KiCad; kerja pindah ke laptop.
   File usang dipindah ke `arsip/`.
+- 25/10: gambar arsitektur sistem: kotak **Database / Log Pengujian** dan jalur **Wi-Fi/HTTP** ESP32 ↔ platform
+  Blockly dipertahankan (keputusan user); upload program juga bisa lewat USB-C.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

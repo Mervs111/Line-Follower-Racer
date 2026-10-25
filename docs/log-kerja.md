@@ -4,6 +4,11 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 25/10/2026
+- Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck
+  MP1584, tambahan tombol, buzzer, sensor tegangan baterai, charger USB-C, saklar, upload USB-C. Database / Log
+  Pengujian dan Wi-Fi/HTTP ke platform Blockly tetap (keputusan user).
+
 ## 24/10/2026
 - **Rakitan PCB LFM** (`mechanical/rakitan-pcb/`): PCB sensor rev B + PCB utama hasil layout diekspor dari KiCad
   (`kicad-cli pcb export glb`, tembaga/pour/silkscreen/komponen) dan digabung di posisi pasangnya dengan bagian mekanik
