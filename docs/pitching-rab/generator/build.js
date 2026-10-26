@@ -293,6 +293,22 @@ bullets(s, [
 ], { x: 7.19, y: 3.95, w: 4.6, h: 1.8, gap: 4, objectName: "Mekanik poin" });
 s.addNotes("Model 3D versi 16 dari CAD: ukuran sekitar 11,6 x 16,5 x 6,2 cm, setara kit pembanding. PCB menjadi sasis. Body 3D print belum dianggarkan karena menunggu info printer lab.");
 
+// ---------------------------------------------------------------- 10b. Simulasi
+s = pres.addSlide({ masterName: "ISI_B", sectionTitle: "Rancangan" });
+s.addText("SIMULASI", { placeholder: "title" });
+framed(s, "sim-2d.png", 1.29, 2.3, 3.85, 3.85, "Gambar simulasi", "Lintasan robot hasil simulasi di arena grid 4 kali 4: dari S belok di indeks 1 sampai 5 lalu berhenti di T");
+bullets(s, [
+  "Model robot ukuran asli dibangun otomatis di CoppeliaSim dari skrip Python: roda Ø34 jarak 91 mm, N20 500 RPM, 12 sensor di posisi PCB rev B.",
+  "Arena grid 30 cm, garis hitam 2 cm. Logika sama dengan firmware: PID + path planning per indeks, belok diukur encoder.",
+], { x: 5.55, y: 2.3, w: 6.5, h: 1.7, gap: 8, objectName: "Simulasi poin" });
+s.addText("Hasil uji logika kendali (simulasi 2D, gambar kiri):", { x: 5.55, y: 4.05, w: 6.5, h: 0.32, fontSize: 14, bold: true, color: SOFT, margin: 0, isTextBox: true, objectName: "Hasil simulasi judul" });
+[
+  ["8,2 s · 9 mm", "rute contoh S → T, berhenti 9 mm dari T"],
+  ["25 / 25 lulus", "kecepatan 0,3–0,7 m/s, 5 variasi derau sensor"],
+  ["Rute otomatis", "rute terpendek, juga saat simpul terhalang kubus"],
+].forEach(([h, b], i) => card(s, 5.55 + i * 2.2, 4.45, 2.05, 1.55, h, b, `Hasil simulasi ${i + 1}`));
+s.addNotes("Simulasi sesuai arahan dosen. Model robot ukuran asli dibangun otomatis di CoppeliaSim dari skrip Python: roda 34 mm berjarak 91 mm, motor N20 500 RPM, dan 12 sensor di posisi PCB sensor rev B. Arena grid 30 cm dengan garis hitam 2 cm seperti lomba. Logikanya sama dengan yang akan masuk firmware: PID ikut garis dan path planning per indeks, belok diukur encoder lalu dikunci ke garis oleh sensor. Sebelum dijalankan di CoppeliaSim, logika yang sama diuji dulu di simulasi 2D (gambar kiri): rute contoh dari S ke T selesai 8,2 detik dan berhenti 9 mm dari titik tujuan; kecepatan 0,3 sampai 0,7 meter per detik lulus semua; rute terpendek otomatis juga lulus saat ada simpul terhalang.");
+
 // ---------------------------------------------------------------- 11. RAB ringkas
 pres.addSection({ title: "Anggaran" });
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Anggaran" });

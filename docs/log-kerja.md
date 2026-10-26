@@ -35,6 +35,9 @@ Entri terbaru di atas.
   `build_scene.py` (arena, robot dinamis ukuran asli, 12 vision sensor, mesh rakitan PCB, 2 kamera) dan
   `run_sim.py` (stepping, video + log, mode kinematik cadangan); dicek terhadap tiruan API, belum di CoppeliaSim
   asli (dijalankan Claude lokal, prompt di `docs/handover-claude-lokal.md` bagian 6).
+- Deck: slide baru **11 Simulasi** (sesudah Mekanik; deck jadi 16 slide + 3 lampiran): gambar lintasan uji 2D
+  (`simulasi/hasil/uji2d_slide.png`), model CoppeliaSim, hasil uji logika diberi label "simulasi 2D". Gambar dan
+  angka diganti tangkapan CoppeliaSim setelah dijalankan di laptop. Naskah dinomori ulang (11–15).
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck

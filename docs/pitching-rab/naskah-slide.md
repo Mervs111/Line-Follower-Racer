@@ -1,6 +1,6 @@
 # Naskah slide Pitching RAB (27/10/2026)
 
-Pitching RAB untuk minta dana ke dosen/departemen, 10–15 menit, 14 slide utama + 2 lampiran (±50 detik per
+Pitching RAB untuk minta dana ke dosen/departemen, 10–15 menit, 15 slide utama + 2 lampiran (±50 detik per
 slide). Semua angka diambil dari `docs/charter.md` (rev 3.4, 22/10/2026) dan file desain di repo per 26/10/2026.
 Isi ini dipindah ke template kelompok setelah templatenya ada.
 
@@ -128,7 +128,18 @@ Gambar: `mechanical/render/ltm-v16-iso.png`, `ltm-v16-samping.png`, `ltm-v16-ata
 - PCB sensor dibaut di bawah hidung PCB utama, muka sensor ± 3 mm dari lantai.
 - Body 3D print (cover, bumper, dudukan motor & baterai, sayap belakang): **belum masuk RAB**, menunggu info printer lab.
 
-## 11. RAB ringkas: Rp887.000
+## 11. Simulasi (syarat pitching dari dosen)
+
+Gambar kiri: `simulasi/hasil/uji2d_slide.png` (lintasan simulasi 2D, indeks 1–5, berhenti di T). **Ganti dengan
+tangkapan layar CoppeliaSim** (dan perbarui angka) setelah `simulasi/coppeliasim/run_sim.py` dijalankan di laptop.
+
+- Model robot ukuran asli dibangun otomatis di CoppeliaSim dari skrip Python: roda Ø34 jarak 91 mm, N20 500 RPM,
+  12 sensor di posisi PCB rev B.
+- Arena grid 30 cm, garis hitam 2 cm. Logika sama dengan firmware: PID + path planning per indeks, belok diukur encoder.
+- Hasil uji logika kendali (simulasi 2D): rute contoh S → T 8,2 s, berhenti 9 mm dari T; kecepatan 0,3–0,7 m/s ×
+  5 variasi derau 25/25 lulus; rute terpendek otomatis lulus, juga saat simpul terhalang kubus.
+
+## 12. RAB ringkas: Rp887.000
 
 Grafik batang/donat per kelompok:
 
@@ -145,7 +156,7 @@ Grafik batang/donat per kelompok:
 Di luar RAB: lintasan uji, breadboard + timah (pinjam lab), software (Blockly, Arduino-ESP32, KiCad: gratis).
 Kit Ichiduino Pro tidak dianggarkan ulang.
 
-## 12. Alasan komponen utama
+## 13. Alasan komponen utama
 
 | Komponen | Harga | Alasan |
 |---|---|---|
@@ -156,7 +167,7 @@ Kit Ichiduino Pro tidak dianggarkan ulang.
 | 2× 18650 + BMS + charger | Rp115.000 | ± 3 jam pemakaian, dilindungi BMS, diisi lewat USB-C |
 | Fabrikasi PCB | Rp200.000 | 2 papan custom, menggantikan kabel-kabel breadboard (rapi, awet untuk siswa) |
 
-## 13. Riwayat RAB dan efisiensi
+## 14. Riwayat RAB dan efisiensi
 
 Grafik garis total RAB per revisi + garis batas Rp1.000.000:
 
@@ -177,7 +188,7 @@ Grafik garis total RAB per revisi + garis batas Rp1.000.000:
 dari harga QRE1113GR lokal yang ternyata 3× perkiraan awal; sisa anggaran bisa menutup kenaikan harga atau item yang
 belum di RAB (body 3D print).
 
-## 14. Jadwal, risiko, dan penutup
+## 15. Jadwal, risiko, dan penutup
 
 | Tahap | Waktu | Status |
 |---|---|---|
@@ -233,5 +244,6 @@ komponen → uji di breadboard → pesan PCB → firmware → G3.
 ## Belum lengkap (cek sebelum presentasi)
 
 - Peran tiap anggota (slide 2).
+- Slide 11 Simulasi: ganti gambar 2D dengan tangkapan CoppeliaSim + angka hasilnya (lihat `simulasi/README.md`).
 - **Tautan toko tiap harga** (sasaran 9 di charter mewajibkan; QRE1113GR belum ada nama toko dan tautan; mux dari WKH Electronic di Tokopedia, tautan menyusul).
 - Harga masih perkiraan untuk JST XH 8 pin dan fabrikasi PCB; cek ulang kalau sempat.
