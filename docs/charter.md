@@ -73,7 +73,8 @@ instalasi aplikasi.
 
 - Produksi massal dan penjualan (baru rencana bisnis)
 - Lintasan selain garis hitam di atas putih
-- Path planning pada persimpangan dengan sudut cabang selain 90° (peta lintasan berbentuk grid; garis yang berbelok dan melengkung tetap dapat diikuti)
+- Rute terpendek otomatis pada lintasan selain grid bersudut 90° (pada lintasan lain, rencana per indeks tetap disusun
+  manual lewat blok; garis yang berbelok dan melengkung tetap dapat diikuti)
 - Pemetaan lintasan secara otonom (robot menjelajah sendiri); peta ditentukan di awal sesuai arahan dosen
   26/10/2026
 - Penghindaran halangan / obstacle avoidance (bukan kebutuhan line tracer)
