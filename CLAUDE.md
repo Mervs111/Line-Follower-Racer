@@ -139,8 +139,9 @@ odejs` ke PATH.
   CoppeliaSim**. Dipilih **CoppeliaSim**, dijalankan user lewat Claude lokal (container cloud tidak bisa mengunduh
   CoppeliaSim). `simulasi/`: `lfm_control.py` (PID, persimpangan dari sensor lengan, path planning per indeks, belok
   encoder 60° lalu kunci sensor, rute terpendek) dipakai bersama uji 2D dan CoppeliaSim; arena grid 4 × 4 jarak 30 cm
-  (perkiraan). Uji 2D lulus (rute slide 8,2 s, 9 mm dari T; 0,3–0,7 m/s 25/25). Skrip CoppeliaSim baru dicek
-  terhadap tiruan API.
+  (perkiraan). Uji 2D lulus (rute slide 8,2 s, 9 mm dari T; 0,3–0,7 m/s 25/25). **CoppeliaSim Edu 4.10 di laptop
+  (26/10 malam): rute slide LULUS 8,30 s / 12,6 mm dari T, BFS dengan halangan LULUS 5,69 s / 11,2 mm**, fisika roda
+  asli (Bullet), video + screenshot di `simulasi/hasil/`.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

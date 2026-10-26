@@ -71,10 +71,29 @@ tampak atas: `hasil/uji2d_slide.mp4`.
    - `--kinematic`: cadangan kalau fisika roda bermasalah (pose dihitung dari kecepatan roda, sensor tetap
      vision sensor).
 
-Status 26/10: skrip CoppeliaSim belum pernah dijalankan di CoppeliaSim asli (container cloud tidak bisa mengunduh
-CoppeliaSim). Yang sudah dicek di cloud: logika (uji 2D) dan alur kedua skrip terhadap tiruan API `sim` (semua
-pemanggilan, mode stepping, kalibrasi, video, mode kinematik). Bagian yang mungkin perlu disesuaikan di
-CoppeliaSim asli:
+### Hasil di CoppeliaSim asli (26/10 malam, laptop user)
+
+CoppeliaSim Edu 4.10, mesin fisika Bullet 2.78 (bawaan), dt 5 ms, Python 3.14. Kedua skrip jalan tanpa perubahan
+logika; fisika roda (bukan `--kinematic`) langsung benar arah dan torsinya. Kalibrasi sensor: putih 1,000,
+hitam 0,110 (kontras cukup).
+
+| Skenario | Waktu simulasi | Selisih ke T | Hasil | Video |
+|---|---|---|---|---|
+| rute slide 8 (6 indeks: kiri, kanan, kiri, kanan, kiri, berhenti) | 8,30 s | 12,6 mm | LULUS | `hasil/coppeliasim_slide.mp4` |
+| `--scenario bfs --blocked 1,0 2,2 1,2` (rute (0,0)→(0,3)→(3,3), 1 belok kanan) | 5,69 s | 11,2 mm | LULUS | `hasil/coppeliasim_bfs.mp4` |
+
+Poros roda paling jauh 12 mm (slide) dan 9,5 mm (BFS) dari garis terdekat; simpangan terbesar sesaat sesudah belok,
+lalu dikoreksi PID. Satu run butuh ±1 menit di laptop (±75 s dengan video). Hasil sedikit berbeda antar run
+(±2 mm) karena urutan langkah fisika.
+
+Yang diubah dari versi cloud, hanya tampilan (`build_scene.py`): kamera video `LFM_cam` dipindah supaya arena dan
+robot di S maupun T utuh di gambar (dulu robot di S terpotong tepi bawah dan di T tertutup teks), kamera perekam
+disembunyikan dari jendela CoppeliaSim (garis frustum biru), dan pandangan jendela (`DefaultCamera`) diarahkan ke
+arena. Screenshot jendela saat simulasi jalan: `hasil/coppeliasim_jendela.png` (rute slide, t = 4,7 s) dan
+`hasil/coppeliasim_jendela_bfs.png` (rute terpendek + 3 kubus, t = 3,8 s). `hasil/cek_kamera.png` = frame pertama
+video (tegak, tidak tercermin).
+
+Kalau nanti ada masalah (versi CoppeliaSim lain, setelan diubah), yang perlu dicek:
 
 | Gejala | Yang dicek |
 |---|---|

@@ -90,7 +90,8 @@ Panduan lengkap: `hardware/tools/kicad-mcp/README.md`. Ringkas:
 Syarat pitching dari dosen: charter + RAB, desain rangkaian dan mekanik, **simulasi** (seperti CoppeliaSim). Sesi
 cloud membuat `simulasi/` (lihat `simulasi/README.md`): logika kendali + uji 2D sudah lulus, skrip CoppeliaSim
 (`build_scene.py`, `run_sim.py`) sudah dicek terhadap tiruan API tapi **belum pernah dijalankan di CoppeliaSim
-asli**. Itu tugas Claude lokal. Pesan pembuka yang disarankan:
+asli**. Itu tugas Claude lokal. **Selesai 26/10 malam**: kedua skenario LULUS di CoppeliaSim Edu 4.10 (hasil di
+`simulasi/README.md`). Pesan pembuka yang disarankan:
 
 > Baca simulasi/README.md. CoppeliaSim sudah terbuka dengan New scene. Pasang dependensi
 > (py -m pip install -r simulasi/requirements.txt), jalankan simulasi/coppeliasim/build_scene.py lalu

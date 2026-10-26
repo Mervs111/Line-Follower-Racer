@@ -38,6 +38,12 @@ Entri terbaru di atas.
 - Deck: slide baru **11 Simulasi** (sesudah Mekanik; deck jadi 16 slide + 3 lampiran): gambar lintasan uji 2D
   (`simulasi/hasil/uji2d_slide.png`), model CoppeliaSim, hasil uji logika diberi label "simulasi 2D". Gambar dan
   angka diganti tangkapan CoppeliaSim setelah dijalankan di laptop. Naskah dinomori ulang (11–15).
+- **Simulasi dijalankan di CoppeliaSim asli** (Edu 4.10, laptop, Claude lokal): `build_scene.py` dan `run_sim.py`
+  jalan tanpa perbaikan logika, fisika roda asli (Bullet 2.78, dt 5 ms). Rute slide 8 **LULUS** (8,30 s, 12,6 mm
+  dari T), rute terpendek `--blocked 1,0 2,2 1,2` **LULUS** (5,69 s, 11,2 mm; lewat tepi kiri lalu atas, 3 kubus
+  terlihat). Perbaikan tampilan saja: kamera video dipindah (robot di S dan T dulu terpotong), kamera perekam
+  disembunyikan dari jendela, pandangan jendela diarahkan ke arena. Video `simulasi/hasil/coppeliasim_slide.mp4`,
+  `coppeliasim_bfs.mp4`, screenshot jendela `coppeliasim_jendela.png` (+ `_bfs`), scene `coppeliasim/lfm_grid.ttt`.
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck

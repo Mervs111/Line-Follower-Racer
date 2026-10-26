@@ -113,7 +113,7 @@ def joint(sim, spherical, pos, alias, parent, quat=None):
 
 
 def vision_sensor(sim, res, ortho_size_or_angle, near, far, perspective, explicit, alias, pos, quat, parent=-1,
-                  body_size=0.003, bg=None):
+                  body_size=0.003, bg=None, hidden=False):
     opts = (1 if explicit else 0) | (2 if perspective else 0) | (64 if bg else 0)
     fl = [near, far, ortho_size_or_angle, body_size, body_size, body_size, 0, 0, 0, 0, 0]
     if bg:
@@ -122,6 +122,8 @@ def vision_sensor(sim, res, ortho_size_or_angle, near, far, perspective, explici
     sim.setObjectPosition(h, W, list(pos))
     sim.setObjectQuaternion(h, W, list(quat))
     sim.setObjectAlias(h, alias)
+    if hidden:          # kamera perekam: badan dan garis frustum tidak tampil di jendela CoppeliaSim
+        sim.setObjectInt32Param(h, sim.objintparam_visibility_layer, 0)
     if parent != -1:
         sim.setObjectParent(h, parent, True)
     return h
@@ -235,7 +237,7 @@ def build_robot(sim, arena, with_mesh=True):
         sim.setObjectInt32Param(h, sim.visionintparam_entity_to_render, arena)
     chase = vision_sensor(sim, (640, 360), math.radians(60), 0.01, 3.0, True, True, "LFM_chase",
                           (0, -0.30, 0.22), look_at_quat((0, -0.30, 0.22), (0, 0.15, 0)), body, 0.01,
-                          bg=(0.86, 0.89, 0.93))
+                          bg=(0.86, 0.89, 0.93), hidden=True)
     vis = -1
     if with_mesh:
         try:
@@ -277,9 +279,16 @@ def main():
     arena = build_arena(sim)
     body, chase, vis = build_robot(sim, arena, not args.no_mesh)
     span = (COLS - 1) * lc.GRID_STEP
-    cam_pos = (span / 2, -0.50, 0.95)
+    # arena + robot di S dan T utuh di gambar, tidak tertutup teks atas dan inset kanan bawah (run_sim.hud)
+    cam_pos = (span / 2 + 0.35, -0.55, 1.80)
     vision_sensor(sim, (1280, 720), math.radians(60), 0.01, 5.0, True, True, "LFM_cam", cam_pos,
-                  look_at_quat(cam_pos, (span / 2, span / 2 - 0.05, 0)), -1, 0.02, bg=(0.86, 0.89, 0.93))
+                  look_at_quat(cam_pos, (span / 2 + 0.35, span / 2, 0)), -1, 0.02, bg=(0.86, 0.89, 0.93),
+                  hidden=True)
+    view = find(sim, "DefaultCamera")            # pandangan jendela CoppeliaSim: seluruh arena
+    if view != -1:
+        view_pos = (span / 2, -0.61, 0.92)
+        sim.setObjectPosition(view, W, list(view_pos))
+        sim.setObjectQuaternion(view, W, look_at_quat(view_pos, (span / 2, span / 2 - 0.07, 0)))
     place_robot(sim, body, 0.02, 0.0, 0.0)
     sim.saveScene(os.path.abspath(args.out))
     print("scene tersimpan:", os.path.abspath(args.out))
