@@ -149,7 +149,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | pcs | Rp76.000 |
 | OLED 0.96" 128×64 I2C | Rp33.000 | 1 | pcs | Rp33.000 |
 | Sensor reflektif QRE1113GR SMD, toko lokal (tanpa cadangan) | Rp15.000 | 12 | pcs | Rp180.000 |
-| IC multiplexer analog CD74HC4067 SOIC-24, 16 kanal (dipakai 12) | Rp35.000 | 1 | pcs | Rp35.000 |
+| IC multiplexer analog CD74HC4067M SOP-24 (SOIC), 16 kanal (dipakai 12), WKH Electronic (tanpa cadangan) | Rp20.000 | 1 | pcs | Rp20.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
 | Push button | Rp1.000 | 4 | pcs | Rp4.000 |
@@ -166,7 +166,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Komponen pendukung (header & socket female, kapasitor, dioda 1N5819) | Rp25.000 | 1 | paket | Rp25.000 |
 | Konektor JST XH 2,5 mm 8 pin (2 header + 2 housing + terminal) + kabel, perkiraan | Rp5.000 | 1 | set | Rp5.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp847.000** |
+| **TOTAL** | | | | **Rp832.000** |
 
 ### Mechanical
 
@@ -178,7 +178,7 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Baut, mur, spacer | Rp15.000 | 1 | paket | Rp15.000 |
 | **TOTAL** | | | | **Rp55.000** |
 
-**TOTAL BUDGET: Rp902.000** (Electrical Rp847.000 + Mechanical Rp55.000), **sisa Rp98.000 dari batas Rp1.000.000**
+**TOTAL BUDGET: Rp887.000** (Electrical Rp832.000 + Mechanical Rp55.000), **sisa Rp113.000 dari batas Rp1.000.000**
 (batas anggaran dinaikkan dari Rp900.000 menjadi Rp1.000.000 pada 26/10/2026). Lintasan uji disediakan di luar RAB; breadboard + kabel jumper dan timah
 solder + flux dipinjam dari lab (tidak masuk RAB sejak 22/10/2026). Revisi 13/10/2026: 16 sensor +
 multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000, LED IR selalu nyala tanpa MOSFET (−Rp16.500).
@@ -189,7 +189,8 @@ berupa IC CD74HC4067 SOIC-24 yang disolder langsung di PCB sensor, bukan modul (
 tempat cetak sanggup jalur 0,3 mm. Revisi 22/10/2026: PCB sensor bentuk jangkar (rev B); QRE1113GR ternyata ada di
 toko lokal dengan harga Rp15.000/pcs (sebelumnya perkiraan impor Rp5.000), jadi dibeli 12 tanpa cadangan
 (+Rp105.000); kabel pita IDC diganti konektor JST XH 8 pin (−Rp5.000, perkiraan); breadboard dan timah dipinjam
-dari lab (−Rp85.000).
+dari lab (−Rp85.000). Revisi 26/10/2026: IC mux CD74HC4067M SOP-24 dari toko WKH Electronic Rp20.000 (sebelumnya
+perkiraan Rp35.000), dibeli 1 tanpa cadangan (−Rp15.000).
 
 ### Alasan pemilihan komponen utama
 

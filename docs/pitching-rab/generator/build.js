@@ -158,7 +158,7 @@ s.addText(
   "Line Follower Micro: hasil reverse engineering Ichiduino Pro yang dirancang ulang dari nol, dari elektronik, PCB, sampai firmware dan block coding.",
   { x: 1.23, y: 2.4, w: 4.7, h: 1.25, fontSize: 16, color: WHITE, margin: 0, valign: "top", isTextBox: true, objectName: "Solusi ringkas" }
 );
-s.addText([{ text: "Rp902.000", options: { bold: true, fontSize: 36, color: HI, breakLine: true } }, { text: "± 45% harga kit pembanding", options: { fontSize: 14, color: WHITE } }],
+s.addText([{ text: "Rp887.000", options: { bold: true, fontSize: 36, color: HI, breakLine: true } }, { text: "± 44% harga kit pembanding", options: { fontSize: 14, color: WHITE } }],
   { x: 1.23, y: 3.85, w: 4.6, h: 1.0, margin: 0, valign: "top", isTextBox: true, objectName: "Biaya solusi" });
 s.addText("Target uji lapangan: lomba IARC XII Smart Robotics, 9–10 Januari 2027 (arena grid, garis hitam 2 cm).",
   { x: 1.23, y: 5.05, w: 4.6, h: 0.8, fontSize: 14, color: SOFT, margin: 0, valign: "top", isTextBox: true, objectName: "Target lomba" });
@@ -168,14 +168,14 @@ s.addText("Target uji lapangan: lomba IARC XII Smart Robotics, 9–10 Januari 20
   ["Block coding web", "Diprogram lewat Blockly di browser, tanpa instalasi"],
   ["Aman", "BMS baterai, motor mati < 3,2 V/sel, berhenti ≤ 500 ms saat garis hilang"],
 ].forEach(([h, b], i) => card(s, 6.35 + (i % 2) * 2.83, 2.35 + Math.floor(i / 2) * 1.83, 2.68, 1.68, h, b, `Fitur ${i + 1}`));
-s.addNotes("Solusi kami empat fitur utama: ikut garis dengan PID, path planning dengan peta by index seperti Ichiduino (rute ditulis sebagai urutan langkah: pola sensor lalu aksi), block coding berbasis web, dan fitur keamanan. Biayanya sekitar 45 persen harga kit pembanding.");
+s.addNotes("Solusi kami empat fitur utama: ikut garis dengan PID, path planning dengan peta by index seperti Ichiduino (rute ditulis sebagai urutan langkah: pola sensor lalu aksi), block coding berbasis web, dan fitur keamanan. Biayanya sekitar 44 persen harga kit pembanding.");
 
 // ---------------------------------------------------------------- 5. Reverse engineering
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Masalah dan solusi" });
 s.addText("REVERSE ENGINEERING", { placeholder: "title" });
 const th = (t) => ({ text: t, options: { bold: true, fill: { color: C.accent1 }, color: WHITE } });
 const re = [
-  ["Harga", "± Rp1.999.999", "Rp902.000", "55% lebih murah"],
+  ["Harga", "± Rp1.999.999", "Rp887.000", "56% lebih murah"],
   ["Otak", "ATmega2560", "ESP32 240 MHz dual-core, WiFi/BT", "diganti"],
   ["Sensor garis", "12 sensor optik", "12 QRE1113GR + multiplexer", "dipertahankan"],
   ["Layar", "OLED 0,96\"", "OLED 0,96\" (bar bacaan sensor)", "dipertahankan"],
@@ -297,22 +297,22 @@ s.addNotes("Model 3D versi 16 dari CAD: ukuran sekitar 11,6 x 16,5 x 6,2 cm, set
 pres.addSection({ title: "Anggaran" });
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Anggaran" });
 s.addText("RENCANA ANGGARAN BIAYA", { placeholder: "title" });
-s.addText([{ text: "Rp902.000", options: { bold: true, fontSize: 48, color: HI, breakLine: true } }, { text: "Elektrikal Rp847.000 + Mekanik Rp55.000", options: { fontSize: 16, color: WHITE } }],
+s.addText([{ text: "Rp887.000", options: { bold: true, fontSize: 48, color: HI, breakLine: true } }, { text: "Elektrikal Rp832.000 + Mekanik Rp55.000", options: { fontSize: 16, color: WHITE } }],
   { x: 1.23, y: 2.35, w: 4.6, h: 1.35, margin: 0, valign: "top", isTextBox: true, objectName: "Total RAB" });
 bullets(s, [
   "Porsi terbesar: fabrikasi 2 PCB (Rp200.000) dan 12 sensor QRE1113GR (Rp180.000).",
   "Di luar RAB: lintasan uji, breadboard dan timah (pinjam lab), software gratis (Blockly, Arduino, KiCad).",
   "Kit Ichiduino Pro hanya pembanding, tidak dianggarkan ulang.",
 ], { x: 1.23, y: 3.95, w: 4.6, h: 2.15, gap: 8, objectName: "RAB poin" });
-s.addChart(pres.ChartType.bar, [{ name: "Biaya (ribu rupiah)", labels: ["PCB & konektor", "Sensor garis", "Penggerak", "Daya & baterai", "Otak & antarmuka", "Mekanik lain"], values: [240, 218, 170, 136, 118, 20] }], {
+s.addChart(pres.ChartType.bar, [{ name: "Biaya (ribu rupiah)", labels: ["PCB & konektor", "Sensor garis", "Penggerak", "Daya & baterai", "Otak & antarmuka", "Mekanik lain"], values: [240, 203, 170, 136, 118, 20] }], {
   x: 6.2, y: 2.2, w: 5.95, h: 3.95, barDir: "bar", barGapWidthPct: 45, chartColors: ["9CC7EE"],
   catAxisOrientation: "maxMin", catAxisLabelColor: "FFFFFF", catAxisLabelFontSize: 14, catAxisLabelFontFace: "+mn-lt", catAxisLineShow: false,
   valAxisHidden: true, valAxisMaxVal: 300, valGridLine: { style: "none" }, catGridLine: { style: "none" },
   showValue: true, dataLabelPosition: "outEnd", dataLabelFormatCode: '"Rp"0" rb"', dataLabelColor: "FFFFFF", dataLabelFontSize: 14, dataLabelFontFace: "+mn-lt",
   showLegend: false, showTitle: true, title: "Biaya per kelompok (ribu rupiah)", titleColor: "BFD3E6", titleFontSize: 14, titleFontFace: "+mn-lt",
-  objectName: "Grafik RAB per kelompok", altText: "Grafik batang biaya per kelompok: PCB dan konektor 240 ribu, sensor garis 218 ribu, penggerak 170 ribu, daya dan baterai 136 ribu, otak dan antarmuka 118 ribu, mekanik lain 20 ribu",
+  objectName: "Grafik RAB per kelompok", altText: "Grafik batang biaya per kelompok: PCB dan konektor 240 ribu, sensor garis 203 ribu, penggerak 170 ribu, daya dan baterai 136 ribu, otak dan antarmuka 118 ribu, mekanik lain 20 ribu",
 });
-s.addNotes("Total RAB 902 ribu rupiah. Terbesar untuk fabrikasi dua PCB dan 12 sensor. Rincian lengkap tiap item ada di lampiran.");
+s.addNotes("Total RAB 887 ribu rupiah. Terbesar untuk fabrikasi dua PCB dan 12 sensor. Rincian lengkap tiap item ada di lampiran.");
 
 // ---------------------------------------------------------------- 12. Alasan komponen
 s = pres.addSlide({ masterName: "ISI_B", sectionTitle: "Anggaran" });
@@ -330,8 +330,8 @@ s.addNotes("Alasan pemilihan enam komponen dengan biaya terbesar. Semua harga da
 // ---------------------------------------------------------------- 13. Riwayat RAB
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Anggaran" });
 s.addText("RIWAYAT RAB & EFISIENSI", { placeholder: "title" });
-const revLbl = ["Rev 3.2", "Rev 3.3", "Rev 3.4", "13/10", "15/10", "20/10 (1)", "20/10 (2)", "21/10", "22/10"];
-const revVal = [845, 858, 833, 896, 879.5, 859.5, 867, 887, 902];
+const revLbl = ["Rev 3.2", "Rev 3.3", "Rev 3.4", "13/10", "15/10", "20/10 (1)", "20/10 (2)", "21/10", "22/10", "26/10"];
+const revVal = [845, 858, 833, 896, 879.5, 859.5, 867, 887, 902, 887];
 s.addChart(
   [
     { type: pres.ChartType.line, data: [{ name: "Total RAB", labels: revLbl, values: revVal }], options: { chartColors: ["9CC7EE"], lineSize: 3, lineDataSymbol: "circle", lineDataSymbolSize: 9, showValue: true, dataLabelPosition: "t", dataLabelFormatCode: "General", dataLabelColor: "FFFFFF", dataLabelFontSize: 12, dataLabelFontFace: "+mn-lt" } },
@@ -344,17 +344,17 @@ s.addChart(
     catAxisLabelColor: "BFD3E6", catAxisLabelFontSize: 12, catAxisLabelFontFace: "+mn-lt",
     showLegend: true, legendPos: "b", legendColor: "FFFFFF", legendFontSize: 12, legendFontFace: "+mn-lt",
     showTitle: true, title: "Total RAB per revisi (ribu rupiah)", titleColor: "BFD3E6", titleFontSize: 14, titleFontFace: "+mn-lt",
-    objectName: "Grafik riwayat RAB", altText: "Grafik garis total RAB per revisi dari 845 sampai 902 ribu rupiah, dengan garis batas 1 juta rupiah",
+    objectName: "Grafik riwayat RAB", altText: "Grafik garis total RAB per revisi antara 833 dan 902 ribu rupiah, terakhir 887 ribu, dengan garis batas 1 juta rupiah",
   }
 );
-s.addText([{ text: "Sisa Rp98.000", options: { bold: true, fontSize: 36, color: HI, breakLine: true } }, { text: "(9,8%) di bawah batas Rp1.000.000", options: { fontSize: 16, color: WHITE } }],
+s.addText([{ text: "Sisa Rp113.000", options: { bold: true, fontSize: 36, color: HI, breakLine: true } }, { text: "(11,3%) di bawah batas Rp1.000.000", options: { fontSize: 16, color: WHITE } }],
   { x: 8.45, y: 2.3, w: 3.7, h: 1.25, margin: 0, valign: "top", isTextBox: true, objectName: "Selisih anggaran" });
 bullets(s, [
-  "Kenaikan terbesar: QRE1113GR lokal Rp15.000/pcs, 3× perkiraan awal (+Rp105.000).",
-  "Sudah dihemat: MCP23017 + LED indikator dihapus, skid nilon, alat pinjam lab (−Rp85.000).",
-  "Sisa bisa menutup kenaikan harga atau body 3D print (belum di RAB).",
+  "Kenaikan terbesar: QRE1113GR lokal Rp15.000/pcs (+Rp105.000).",
+  "Dihemat: MCP23017 + LED dihapus, skid nilon, alat pinjam lab (−Rp85.000), mux harga toko (−Rp15.000).",
+  "Sisa untuk kenaikan harga atau body 3D print (belum di RAB).",
 ], { x: 8.45, y: 3.5, w: 3.7, h: 2.3, gap: 8, objectName: "Selisih poin" });
-s.addNotes("RAB sudah sembilan kali direvisi. Kenaikan terbesar dari harga QRE1113GR lokal yang ternyata tiga kali perkiraan, sedangkan penghematan datang dari penghapusan MCP23017 dan LED indikator, skid nilon, serta alat yang dipinjam dari lab. Dengan batas anggaran Rp1.000.000, RAB 902 ribu masih menyisakan 98 ribu (9,8 persen) untuk kenaikan harga atau item yang belum masuk RAB seperti body 3D print.");
+s.addNotes("RAB sudah sepuluh kali direvisi. Kenaikan terbesar dari harga QRE1113GR lokal yang ternyata tiga kali perkiraan, sedangkan penghematan datang dari penghapusan MCP23017 dan LED indikator, skid nilon, serta alat yang dipinjam dari lab; revisi terakhir 26/10: IC multiplexer dapat harga toko 20 ribu, turun 15 ribu dari perkiraan. Dengan batas anggaran Rp1.000.000, RAB 887 ribu masih menyisakan 113 ribu (11,3 persen) untuk kenaikan harga atau item yang belum masuk RAB seperti body 3D print.");
 
 // ---------------------------------------------------------------- 14. Jadwal & risiko
 pres.addSection({ title: "Penutup" });
@@ -388,7 +388,7 @@ s.addNotes("Jadwal mengikuti gerbang PjBL. G1 sudah lulus 2 Oktober, hari ini ba
 // ---------------------------------------------------------------- 15. Penutup
 s = pres.addSlide({ masterName: "PENUTUP", sectionTitle: "Penutup" });
 s.addText("TERIMA\nKASIH", { placeholder: "title" });
-s.addText([{ text: "Mohon persetujuan dana", options: { fontSize: 18, breakLine: true } }, { text: "Rp902.000", options: { fontSize: 48, bold: true, color: HI } }],
+s.addText([{ text: "Mohon persetujuan dana", options: { fontSize: 18, breakLine: true } }, { text: "Rp887.000", options: { fontSize: 48, bold: true, color: HI } }],
   { x: 8.0, y: 1.95, w: 4.2, h: 1.35, color: WHITE, margin: 0, valign: "top", isTextBox: true, objectName: "Permohonan dana" });
 s.addText("untuk pembelian komponen dan fabrikasi 2 PCB. Sesudah dana cair:", { x: 8.0, y: 3.38, w: 4.1, h: 0.6, fontSize: 14, color: WHITE, margin: 0, valign: "top", isTextBox: true, objectName: "Permohonan keterangan" });
 s.addText(
@@ -396,7 +396,7 @@ s.addText(
   { x: 8.0, y: 4.05, w: 4.1, h: 1.7, fontSize: 16, color: WHITE, margin: 0, valign: "top", isTextBox: true, objectName: "Langkah sesudah dana" }
 );
 dots(s, 5.0, 5.55);
-s.addNotes("Penutup: kami mohon persetujuan dana 902 ribu rupiah. Rencana sesudah dana cair ada di sisi kanan. Terima kasih, kami siap menjawab pertanyaan.");
+s.addNotes("Penutup: kami mohon persetujuan dana 887 ribu rupiah. Rencana sesudah dana cair ada di sisi kanan. Terima kasih, kami siap menjawab pertanyaan.");
 
 // ---------------------------------------------------------------- Lampiran
 pres.addSection({ title: "Lampiran" });
@@ -411,7 +411,7 @@ const elek = [
   ["ESP32 DevKit WiFi Bluetooth CH340 Type-C", "Rp76.000", "1", "Rp76.000"],
   ["OLED 0,96\" 128×64 I2C", "Rp33.000", "1", "Rp33.000"],
   ["Sensor reflektif QRE1113GR SMD (toko lokal)", "Rp15.000", "12", "Rp180.000"],
-  ["IC multiplexer CD74HC4067 SOIC-24", "Rp35.000", "1", "Rp35.000"],
+  ["IC multiplexer CD74HC4067M SOP-24 (WKH Electronic)", "Rp20.000", "1", "Rp20.000"],
   ["Modul driver motor TB6612FNG", "Rp25.000", "1", "Rp25.000"],
   ["Motor N20 6V 500 RPM + encoder", "Rp55.000", "2", "Rp110.000"],
   ["Push button", "Rp1.000", "4", "Rp4.000"],
@@ -431,12 +431,12 @@ const elek = [
 ];
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Lampiran" });
 s.addText("LAMPIRAN A · RAB ELEKTRIKAL (1/2)", { placeholder: "title" });
-s.addTable(rabTable(elek.slice(0, 10), ["Subtotal halaman ini", "", "", "Rp471.000"]), tableOpt("Tabel RAB elektrikal 1"));
+s.addTable(rabTable(elek.slice(0, 10), ["Subtotal halaman ini", "", "", "Rp456.000"]), tableOpt("Tabel RAB elektrikal 1"));
 s.addNotes("Rincian RAB elektrikal bagian pertama.");
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Lampiran" });
 s.addText("LAMPIRAN B · RAB ELEKTRIKAL (2/2)", { placeholder: "title" });
-s.addTable(rabTable(elek.slice(10), ["Total elektrikal", "", "", "Rp847.000"]), tableOpt("Tabel RAB elektrikal 2"));
-s.addNotes("Rincian RAB elektrikal bagian kedua; total elektrikal 847 ribu.");
+s.addTable(rabTable(elek.slice(10), ["Total elektrikal", "", "", "Rp832.000"]), tableOpt("Tabel RAB elektrikal 2"));
+s.addNotes("Rincian RAB elektrikal bagian kedua; total elektrikal 832 ribu.");
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Lampiran" });
 s.addText("LAMPIRAN C · RAB MEKANIK & REKAP", { placeholder: "title" });
 s.addTable(rabTable([
@@ -445,13 +445,13 @@ s.addTable(rabTable([
   ["Skid nilon (baut, spacer, mur nilon)", "Rp5.000", "1 paket", "Rp5.000"],
   ["Baut, mur, spacer", "Rp15.000", "1 paket", "Rp15.000"],
 ], ["Total mekanik", "", "", "Rp55.000"]), { ...tableOpt("Tabel RAB mekanik"), h: undefined });
-[["Elektrikal", "Rp847.000"], ["Mekanik", "Rp55.000"], ["Total RAB", "Rp902.000"]].forEach(([k, v], i) => {
+[["Elektrikal", "Rp832.000"], ["Mekanik", "Rp55.000"], ["Total RAB", "Rp887.000"]].forEach(([k, v], i) => {
   const x = 1.23 + i * 3.7;
   s.addShape(pres.ShapeType.rect, { x, y: 4.55, w: 3.45, h: 1.3, fill: { color: i === 2 ? C.accent1 : C.accent5 }, objectName: `Rekap ${k} latar` });
   s.addText([{ text: k, options: { fontSize: 14, breakLine: true, paraSpaceAfter: 2 } }, { text: v, options: { fontSize: 30, bold: true, color: i === 2 ? WHITE : HI } }],
     { x: x + 0.2, y: 4.67, w: 3.05, h: 1.08, color: WHITE, margin: 0, valign: "top", isTextBox: true, objectName: `Rekap ${k}` });
 });
-s.addNotes("RAB mekanik dan rekap total 902 ribu. Lintasan uji, breadboard, dan timah di luar RAB.");
+s.addNotes("RAB mekanik dan rekap total 887 ribu. Lintasan uji, breadboard, dan timah di luar RAB.");
 
 (async () => {
   await pres.writeFile({ fileName: OUT });

@@ -12,7 +12,7 @@ blok (user extension Mind+). Target lomba: IARC XII Smart Robotics (9–10/01/20
 
 | Bagian | Status | Di mana |
 |---|---|---|
-| Charter & RAB | Charter sudah disesuaikan dengan rancangan terbaru. **RAB Rp902.000, sisa Rp98.000** dari batas Rp1.000.000 | `docs/charter.md`, `docs/Project_Charter_PJBL.docx` |
+| Charter & RAB | Charter sudah disesuaikan dengan rancangan terbaru. **RAB Rp887.000, sisa Rp113.000** dari batas Rp1.000.000 | `docs/charter.md`, `docs/Project_Charter_PJBL.docx` |
 | Diagram (blok, wiring, arsitektur, flowchart) | Selesai, sudah sesuai rancangan 22/10 | tautan di bawah, `docs/wiring-diagram.html` |
 | PCB sensor | **Rev B disetujui**: bentuk jangkar, lebar 95 mm, 12 QRE1113GR + mux CD74HC4067, DRC 0 | `hardware/sensor-garis/` (+ `REVISI.md`) |
 | Skematik PCB utama | **Selesai**: 21 komponen, ERC 0, netlist dicek terhadap pin map | `hardware/pcb-utama/pcb-utama.kicad_sch`, PDF `pcb-utama-skematik.pdf` |

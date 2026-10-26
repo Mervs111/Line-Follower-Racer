@@ -19,7 +19,8 @@ spesifikasi kit panitia (Nano, TCRT5000 5 ch) tidak wajib. Robot dibuat **serbag
   (tanpa MOSFET/IR_EN): andalkan kalibrasi + pelindung cahaya.
 - **Mux: IC CD74HC4067M SOIC-24W** (`Package_SO:SOIC-24W_7.5x15.4mm_P1.27mm`) disolder di PCB sensor: VCC +3V3 +
   C 100 nF, E̅ → GND, **S1–S12 = I2–I13**, I0/I1/I14/I15 tidak tersambung, COM → `MUX_SIG`, select → `MUX_S0`…`MUX_S3`.
-  Cadangan IC: 74HC4067D (SO-24) Rp35.000 di marconijawa.
+  **Dibeli: CD74HC4067M SOP-24 (SOIC, bukan SSOP; dikonfirmasi penjual) Rp20.000 di WKH Electronic (Tokopedia), 1 pcs
+  tanpa cadangan** (26/10). Cadangan toko: 74HC4067D (SO-24) Rp35.000 di marconijawa. Hindari akhiran DB/SM (SSOP).
 - **J1 PCB sensor = JST XH 8 pin** (B8B-XH-A): 1 +5V, 2 +3V3, 3 GND, 4 MUX_S3, 5 MUX_S2, 6 MUX_S1, 7 MUX_S0,
   8 MUX_SIG. Konektor pasangannya di PCB utama **wajib urutan sama**.
 - Motor N20 6V 500 RPM + encoder, **roda Ø34**; driver TB6612FNG (modul).
@@ -77,8 +78,8 @@ memakai pin map yang sama.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen
-- RAB terakhir **Rp902.000** (22/10/2026). **Batas anggaran naik dari Rp900.000 menjadi Rp1.000.000** (26/10/2026, info
-  user) → **sisa Rp98.000**.
+- RAB terakhir **Rp887.000** (26/10/2026; mux Rp20.000). **Batas anggaran naik dari Rp900.000 menjadi Rp1.000.000**
+  (26/10/2026, info user) → **sisa Rp113.000**.
   QRE1113GR ternyata ada di toko lokal **Rp15.000/pcs** → dibeli 12 tanpa cadangan (keputusan user); breadboard +
   timah dipinjam lab (keluar RAB); kabel pita → JST XH 8 pin (Rp5.000, perkiraan). Nama toko + link QRE menyusul
   dari user. Lintasan uji di luar RAB.
@@ -132,6 +133,8 @@ odejs` ke PATH.
 
 - 26/10: **batas RAB menjadi Rp1.000.000** (sebelumnya Rp900.000; info user, charter Word user sudah direvisi). RAB
   Rp902.000 tetap, sisa Rp98.000. Charter, deck pitching, README, pedoman ringkas ikut diperbarui.
+- 26/10: toko lokal hanya punya mux SSOP (tidak lolos aturan cetak); dapat **CD74HC4067M SOP-24 Rp20.000 di WKH
+  Electronic**, beli 1 tanpa cadangan (keputusan user). PCB tidak berubah. RAB **Rp887.000**, sisa Rp113.000.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

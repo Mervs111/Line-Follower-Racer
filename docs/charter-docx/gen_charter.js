@@ -1,5 +1,6 @@
 // Membuat Project Charter (.docx) dengan format sama seperti versi Google Docs 09/10/2026.
-// Isi diperbarui sesuai keputusan 22/10/2026 (12 QRE1113GR toko lokal, PCB sensor bentuk jangkar, JST XH 8 pin, RAB Rp902.000)
+// Isi diperbarui sesuai keputusan 22/10/2026 (12 QRE1113GR toko lokal, PCB sensor bentuk jangkar, JST XH 8 pin, RAB Rp902.000);
+// 26/10/2026: mux CD74HC4067M SOP-24 Rp20.000 dari WKH Electronic, RAB Rp887.000
 // dan 26/10/2026 (path planning dengan peta yang ditentukan di awal / pre-defined map by index).
 const fs = require("fs");
 const path = require("path");
@@ -256,7 +257,7 @@ const electrical = [
   ["ESP32 DevKit WiFi Bluetooth CH340 Type-C", 76000, 1, "pcs"],
   ["OLED 0.96\" 128×64 I2C", 33000, 1, "pcs"],
   ["Sensor reflektif QRE1113GR SMD, toko lokal (tanpa cadangan)", 15000, 12, "pcs"],
-  ["IC multiplexer analog CD74HC4067 SOIC-24, 16 kanal", 35000, 1, "pcs"],
+  ["IC multiplexer analog CD74HC4067M SOP-24 (SOIC), 16 kanal, WKH Electronic (tanpa cadangan)", 20000, 1, "pcs"],
   ["Modul driver motor TB6612FNG", 25000, 1, "pcs"],
   ["Motor N20 6V ± 500 RPM + encoder", 55000, 2, "pcs"],
   ["Push button", 1000, 4, "pcs"],
@@ -301,7 +302,7 @@ function groupRows(title, items) {
 const gE = groupRows("Electrical", electrical);
 const gM = groupRows("Mechanical", mechanical);
 const TOTAL = gE.sub + gM.sub;
-if (TOTAL !== 902000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
+if (TOTAL !== 887000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
 const budget = table(W8, [
   sectionHead("8. Budget Summary", W8),
   italicNote("Summary of what are required items to be used", W8),

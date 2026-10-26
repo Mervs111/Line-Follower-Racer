@@ -23,6 +23,10 @@ Entri terbaru di atas.
 - **Batas RAB naik jadi Rp1.000.000** (info user; charter Word user sudah direvisi): RAB Rp902.000 sekarang sisa Rp98.000.
   Diperbarui: charter.md + docx (deskripsi, latar, tujuan 1, sasaran 9, R6, ringkasan anggaran), deck slide 3, 6, 13
   (grafik batas Rp1 juta, "Sisa Rp98.000") + catatan bicara, naskah, CLAUDE.md, README, pedoman ringkas, handover.
+- Mux: toko lokal hanya punya SSOP (celah pad ±0,25 mm, tidak lolos aturan cetak 0,254). Dapat **CD74HC4067M SOP-24
+  Rp20.000 di WKH Electronic** (Tokopedia; SOP-24 dikonfirmasi penjual), beli 1 tanpa cadangan. PCB sensor tetap.
+  RAB **Rp887.000** (elektrikal Rp832.000), sisa Rp113.000: charter.md + docx, deck slide 4, 5, 11, 13, 15 + lampiran
+  (subtotal lampiran A dibetulkan jadi Rp456.000), naskah, CLAUDE.md, README, handover.
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck

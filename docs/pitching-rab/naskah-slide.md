@@ -49,7 +49,7 @@ Catatan bicara: buka dengan harga kit, lalu arahan dosen sebagai batas proyek.
   sebagai urutan indeks (pola sensor → aksi → ikuti garis), dan di grid urutannya bisa dibuat otomatis dari rute terpendek.
 - **Block coding berbasis web (Blockly)**: siswa memprogram tanpa instalasi aplikasi.
 - **Aman**: BMS baterai, motor mati di bawah 3,2 V per sel, berhenti ≤ 500 ms kalau garis hilang.
-- **Rp902.000**, sekitar 45% harga kit pembanding.
+- **Rp887.000**, sekitar 44% harga kit pembanding.
 
 Target uji lapangan: lomba **IARC XII Smart Robotics** (9–10/01/2027, arena grid, garis hitam 2 cm).
 
@@ -57,7 +57,7 @@ Target uji lapangan: lomba **IARC XII Smart Robotics** (9–10/01/2027, arena gr
 
 | Aspek | Ichiduino Pro (pembanding) | Line Tracer Micro | Keputusan |
 |---|---|---|---|
-| Harga | ± Rp1.999.999 | **Rp902.000** | 55% lebih murah |
+| Harga | ± Rp1.999.999 | **Rp887.000** | 56% lebih murah |
 | Otak | ATmega2560 | ESP32 240 MHz dual-core, WiFi/Bluetooth | diganti |
 | Sensor garis | 12 sensor optik | 12 QRE1113GR + multiplexer | dipertahankan (12) |
 | Layar | OLED 0,96" | OLED 0,96" (bacaan sensor tampil sebagai bar) | dipertahankan |
@@ -128,19 +128,19 @@ Gambar: `mechanical/render/ltm-v16-iso.png`, `ltm-v16-samping.png`, `ltm-v16-ata
 - PCB sensor dibaut di bawah hidung PCB utama, muka sensor ± 3 mm dari lantai.
 - Body 3D print (cover, bumper, dudukan motor & baterai, sayap belakang): **belum masuk RAB**, menunggu info printer lab.
 
-## 11. RAB ringkas: Rp902.000
+## 11. RAB ringkas: Rp887.000
 
 Grafik batang/donat per kelompok:
 
 | Kelompok | Isi | Biaya | Porsi |
 |---|---|---|---|
-| PCB & konektor | fabrikasi 2 PCB + ongkir Rp200.000, konektor JST, komponen pendukung | Rp240.000 | 26,6% |
-| Sensor garis | 12 QRE1113GR Rp180.000, mux Rp35.000, resistor SMD | Rp218.000 | 24,2% |
-| Penggerak | 2 motor N20 + encoder Rp110.000, TB6612, roda, bracket | Rp170.000 | 18,8% |
-| Daya | 2× 18650 Rp80.000, holder, BMS, charger USB-C, buck, saklar | Rp136.000 | 15,1% |
-| Otak & antarmuka | ESP32 Rp76.000, OLED Rp33.000, tombol, buzzer, resistor | Rp118.000 | 13,1% |
-| Mekanik lain | skid nilon, baut/mur/spacer | Rp20.000 | 2,2% |
-| **Total** | Electrical Rp847.000 + Mechanical Rp55.000 | **Rp902.000** | |
+| PCB & konektor | fabrikasi 2 PCB + ongkir Rp200.000, konektor JST, komponen pendukung | Rp240.000 | 27,1% |
+| Sensor garis | 12 QRE1113GR Rp180.000, mux Rp20.000, resistor SMD | Rp203.000 | 22,9% |
+| Penggerak | 2 motor N20 + encoder Rp110.000, TB6612, roda, bracket | Rp170.000 | 19,2% |
+| Daya | 2× 18650 Rp80.000, holder, BMS, charger USB-C, buck, saklar | Rp136.000 | 15,3% |
+| Otak & antarmuka | ESP32 Rp76.000, OLED Rp33.000, tombol, buzzer, resistor | Rp118.000 | 13,3% |
+| Mekanik lain | skid nilon, baut/mur/spacer | Rp20.000 | 2,3% |
+| **Total** | Electrical Rp832.000 + Mechanical Rp55.000 | **Rp887.000** | |
 
 Di luar RAB: lintasan uji, breadboard + timah (pinjam lab), software (Blockly, Arduino-ESP32, KiCad: gratis).
 Kit Ichiduino Pro tidak dianggarkan ulang.
@@ -170,9 +170,10 @@ Grafik garis total RAB per revisi + garis batas Rp1.000.000:
 | 20/10 | Rp859.500 | MCP23017 + LED indikator dihapus, bacaan di OLED, skid nilon (−Rp20.000) |
 | 20/10 | Rp867.000 | sensor QRE1113GR (+Rp7.500) |
 | 21/10 | Rp887.000 | mux berupa IC SOIC-24 di PCB (+Rp20.000) |
-| 22/10 | **Rp902.000** | QRE harga lokal Rp15.000/pcs (+Rp105.000); breadboard + timah pinjam lab (−Rp85.000); JST XH (−Rp5.000) |
+| 22/10 | Rp902.000 | QRE harga lokal Rp15.000/pcs (+Rp105.000); breadboard + timah pinjam lab (−Rp85.000); JST XH (−Rp5.000) |
+| 26/10 | **Rp887.000** | mux CD74HC4067M SOP-24 harga toko WKH Electronic Rp20.000, 1 pcs tanpa cadangan (−Rp15.000) |
 
-**Sisa Rp98.000 (9,8%)** dari batas Rp1.000.000 (batas naik dari Rp900.000 pada 26/10/2026). Kenaikan terbesar
+**Sisa Rp113.000 (11,3%)** dari batas Rp1.000.000 (batas naik dari Rp900.000 pada 26/10/2026). Kenaikan terbesar
 dari harga QRE1113GR lokal yang ternyata 3× perkiraan awal; sisa anggaran bisa menutup kenaikan harga atau item yang
 belum di RAB (body 3D print).
 
@@ -190,19 +191,19 @@ belum di RAB (body 3D print).
 Risiko yang berkaitan dengan dana: PCB salah desain/terlambat (prototipe breadboard dulu, pesan PCB ≤ minggu 10);
 biaya melebihi batas (RAB dipantau tiap pembelian); QRE tanpa cadangan (uji tiap sensor di breadboard sebelum disolder).
 
-Penutup: **mohon persetujuan dana Rp902.000** untuk pembelian komponen dan fabrikasi PCB. Sesudah dana cair: beli
+Penutup: **mohon persetujuan dana Rp887.000** untuk pembelian komponen dan fabrikasi PCB. Sesudah dana cair: beli
 komponen → uji di breadboard → pesan PCB → firmware → G3.
 
 ---
 
-## Lampiran A. RAB elektrikal (Rp847.000)
+## Lampiran A. RAB elektrikal (Rp832.000)
 
 | Item | Harga | Qty | Total |
 |---|---|---|---|
 | ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | Rp76.000 |
 | OLED 0,96" 128×64 I2C | Rp33.000 | 1 | Rp33.000 |
 | Sensor reflektif QRE1113GR SMD | Rp15.000 | 12 | Rp180.000 |
-| IC multiplexer CD74HC4067 SOIC-24 | Rp35.000 | 1 | Rp35.000 |
+| IC multiplexer CD74HC4067M SOP-24 (WKH Electronic) | Rp20.000 | 1 | Rp20.000 |
 | Modul driver motor TB6612FNG | Rp25.000 | 1 | Rp25.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | Rp110.000 |
 | Push button | Rp1.000 | 4 | Rp4.000 |
@@ -232,5 +233,5 @@ komponen → uji di breadboard → pesan PCB → firmware → G3.
 ## Belum lengkap (cek sebelum presentasi)
 
 - Peran tiap anggota (slide 2).
-- **Tautan toko tiap harga** (sasaran 9 di charter mewajibkan; QRE1113GR belum ada nama toko dan tautan).
+- **Tautan toko tiap harga** (sasaran 9 di charter mewajibkan; QRE1113GR belum ada nama toko dan tautan; mux dari WKH Electronic di Tokopedia, tautan menyusul).
 - Harga masih perkiraan untuk JST XH 8 pin dan fabrikasi PCB; cek ulang kalau sempat.
