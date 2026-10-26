@@ -8,7 +8,11 @@ Entri terbaru di atas.
 - Bahan **pitching RAB** (27/10): analisis progres repo, naskah 14 slide + 2 lampiran RAB
   (`docs/pitching-rab/naskah-slide.md`), render PCB sensor rev B dan PCB utama terbaru dari KiCad 10
   (`docs/pitching-rab/gambar/`; `hardware/render/` masih PCB lama). DRC ulang: PCB sensor 0 error, PCB utama 11 error
-  (Q1, SW1), keduanya 0 unconnected. Deck dipindah ke template kelompok setelah template dikirim.
+  (Q1, SW1), keduanya 0 unconnected.
+- **Deck pitching RAB** `docs/pitching-rab/LFM_Pitching_RAB_P01-5.pptx` (15 slide + 3 lampiran RAB, + PDF pratinjau):
+  gaya template Canva kelompok (latar diambil dari PDF template, teks/tabel/grafik tetap bisa diedit, font Arial).
+  Generator `docs/pitching-rab/generator/build.js` (pptxgenjs). Diagram blok dibetulkan: PCB sensor "bentuk jangkar",
+  bukan "gaya XLINE" (`docs/diagram-blok.png` + sumber). Peran anggota di slide 2 masih `[isi peran]`.
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck
