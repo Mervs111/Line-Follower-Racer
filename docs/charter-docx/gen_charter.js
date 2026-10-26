@@ -91,8 +91,8 @@ const identity = table(W1, [
   row([cell(para("Nama", { bold: true }), W1[0]), cell(para("Robot Line Tracer Micro"), W1[1])]),
   row([cell(para("Short Description", { bold: true }), W1[0]),
     cell(para("Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino " +
-      "Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning pada lintasan grid " +
-      "yang petanya ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan " +
+      "Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning dengan peta yang " +
+      "ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan " +
       "dibangun dengan anggaran maksimal Rp 900.000.", { align: AlignmentType.JUSTIFIED }), W1[1])]),
   row([cell(para("Supervisor", { bold: true }), W1[0]), cell(para("Fira Aulia, S.Tr.T, M.Tr.T"), W1[1])]),
   row([cell(para("Team Member", { bold: true }), W1[0]), cell(timParas, W1[1])]),
@@ -112,10 +112,12 @@ const business = table(W2, [
     para("Proyek ini melakukan reverse engineering terhadap Ichiduino Pro: fungsi dan arsitekturnya " +
       "dianalisis, lalu dirancang ulang dari nol dengan anggaran maksimal Rp 900.000. Fitur yang " +
       "dipertahankan, diganti, atau ditiadakan dipilih berdasarkan kebutuhan edukasi dan batas anggaran. " +
-      "Selain mengikuti garis, robot memiliki kemampuan path planning dengan peta lintasan yang ditentukan " +
-      "di awal (pre-defined map by index): setiap persimpangan grid diberi nomor indeks, lalu rute disusun " +
-      "sebagai aksi per indeks atau dihitung otomatis sebagai rute terpendek menuju titik tujuan, sehingga " +
-      "pengguna dapat belajar konsep algoritma dan navigasi melalui block coding berbasis web tanpa instalasi.", J),
+      "Selain mengikuti garis, robot memiliki kemampuan path planning dengan peta yang ditentukan di awal " +
+      "(pre-defined map by index): rute dituliskan sebagai urutan indeks, dan tiap indeks berisi pola sensor " +
+      "pemicu (misalnya persimpangan kiri, kanan, atau perempatan), aksi (maju, belok kiri, belok kanan), dan " +
+      "perintah mengikuti garis berikutnya. Pada lintasan grid, urutan indeks dapat dibuat otomatis dari rute " +
+      "terpendek menuju titik tujuan, sehingga pengguna dapat belajar konsep algoritma dan navigasi melalui " +
+      "block coding berbasis web tanpa instalasi.", J),
   ], TABLE_W)], { cantSplit: false }),
 ]);
 
@@ -125,10 +127,10 @@ const tujuan = [
     "ESP32 dengan anggaran maksimal Rp 900.000.",
   "Membuat robot yang mampu mengikuti garis hitam di atas putih secara otomatis dengan kendali PID, dengan " +
     "akurasi pembacaan posisi garis ≤ 2 mm dan kecepatan rata-rata ≥ 0,5 m/s.",
-  "Menerapkan path planning dengan peta lintasan yang ditentukan di awal (pre-defined map by index): " +
-    "setiap persimpangan grid diberi nomor indeks, robot menghitung persimpangan yang dilewati dan menjalankan " +
-    "aksi tiap indeks (belok kiri, belok kanan, lurus, berhenti), baik dari rute yang disusun pengguna maupun " +
-    "rute terpendek yang dihitung otomatis dari peta.",
+  "Menerapkan path planning dengan peta yang ditentukan di awal (pre-defined map by index): rute " +
+    "dituliskan sebagai urutan indeks; pada tiap indeks robot menunggu pola sensor pemicu, menjalankan aksi " +
+    "(maju, belok kiri, belok kanan, berhenti) dengan jarak dan sudut dari encoder, lalu kembali mengikuti " +
+    "garis. Pada lintasan grid, urutan indeks dapat dihitung otomatis sebagai rute terpendek menuju titik tujuan.",
   "Menerapkan fitur keamanan berupa berhenti ≤ 500 ms setelah garis tidak terdeteksi dan pemutusan saat " +
     "tegangan baterai < 3,2 V per sel.",
   "Mengembangkan platform block coding berbasis web (Blockly), termasuk blok aksi per indeks dan blok rute " +
@@ -148,8 +150,8 @@ const lingkup = [
   "Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk jangkar) + multiplexer, " +
     "motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)",
   "Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan",
-  "Path planning: peta grid yang ditentukan di awal (indeks persimpangan), rute berupa aksi per indeks atau " +
-    "rute terpendek otomatis ke titik tujuan",
+  "Path planning: peta by index (urutan langkah pola sensor → aksi → ikuti garis) dan pembuatan urutan " +
+    "indeks otomatis dari rute terpendek pada lintasan grid",
   "Platform block coding berbasis web (Blockly)",
   "Prototipe sampai desain PCB yang siap diproduksi",
   "Uji performa robot, uji path planning, dan uji coba",

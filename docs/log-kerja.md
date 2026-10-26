@@ -17,6 +17,8 @@ Entri terbaru di atas.
 - **Path planning diganti ke pre-defined map by index** (usulan Bu Fira): peta grid 4 × 4 berindeks 1–16 ditentukan di awal,
   aksi per indeks lewat blok + rute terpendek otomatis (BFS). Diperbarui: `docs/charter.md` + docx (tujuan 3 dan 5,
   lingkup, sasaran 5), deck slide 4, 5, 6, 8 + catatan bicara, naskah, CLAUDE.md.
+- Koreksi dari screenshot blok Ichiduino di mBlock (user): indeks = **nomor langkah rute** (pemicu pola sensor → aksi →
+  ikuti garis), bukan nomor persimpangan 1–16. Charter + docx, deck slide 4, 5, 8, naskah, CLAUDE.md disesuaikan.
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck

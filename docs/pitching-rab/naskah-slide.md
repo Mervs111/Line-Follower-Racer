@@ -45,8 +45,8 @@ Catatan bicara: buka dengan harga kit, lalu arahan dosen sebagai batas proyek.
 **Robot Line Tracer Micro**: hasil reverse engineering Ichiduino Pro, dirancang ulang dari nol.
 
 - Mengikuti garis hitam otomatis dengan kendali **PID**, 12 sensor garis.
-- **Path planning** dengan peta grid yang ditentukan di awal (pre-defined map by index, usulan Bu Fira 26/10): tiap
-  persimpangan bernomor, rute disusun per indeks lewat blok atau dihitung otomatis sebagai rute terpendek.
+- **Path planning** dengan peta yang ditentukan di awal (pre-defined map by index, usulan Bu Fira 26/10): rute ditulis
+  sebagai urutan indeks (pola sensor → aksi → ikuti garis), dan di grid urutannya bisa dibuat otomatis dari rute terpendek.
 - **Block coding berbasis web (Blockly)**: siswa memprogram tanpa instalasi aplikasi.
 - **Aman**: BMS baterai, motor mati di bawah 3,2 V per sel, berhenti ≤ 500 ms kalau garis hilang.
 - **Rp902.000**, sekitar 45% harga kit pembanding.
@@ -64,7 +64,7 @@ Target uji lapangan: lomba **IARC XII Smart Robotics** (9–10/01/2027, arena gr
 | Baterai | LiPo 2S 400 mAh | 2× 18650 (2S) + BMS + charger USB-C, ± 3 jam | diganti (lebih aman, lebih awet) |
 | Motor | DC 16 mm 12 V 1200 RPM | N20 6 V 500 RPM **+ encoder** | diganti (belok 90° presisi untuk path planning) |
 | Pemrograman | mBlock, Arduino IDE | Blockly web, Arduino | diganti (tanpa instalasi) |
-| Path planning | aksi per indeks lewat mBlock | peta indeks + rute terpendek otomatis | dikembangkan |
+| Path planning | per indeks lewat mBlock, aksi berbasis waktu (ms) | per indeks + encoder + rute terpendek otomatis di grid | dikembangkan |
 | Servo, kipas | 2 port servo, 1 port kipas | tidak ada | ditiadakan (fitur lomba) |
 | Ukuran | 12,5 × 14,3 × 5,5 cm | 11,6 × 16,5 × 6,2 cm | setara |
 
@@ -99,11 +99,13 @@ Gambar: `docs/diagram-blok.png`
 Gambar: `docs/diagram-blok-kendali.png`
 
 - Loop tertutup: posisi garis dari sensor → PID → kecepatan motor kiri/kanan; loop dalam dari encoder.
-- Peta ditentukan di awal (pre-defined map by index, usulan Bu Fira 26/10): grid 4 × 4, persimpangan berindeks 1–16,
-  jarak 30 cm. Robot tidak menjelajah; ia menghitung persimpangan yang dilewati dan menjalankan aksi tiap indeks
-  (belok kiri, belok kanan, lurus, berhenti).
-- Aksi per indeks disusun siswa lewat blok (seperti Ichiduino), atau dihitung otomatis sebagai rute terpendek (BFS)
-  dari peta yang sama. Belok 90° dari selisih putaran roda (encoder), lalu dikunci ke garis oleh sensor (tanpa IMU).
+- Peta ditentukan di awal (pre-defined map by index, usulan Bu Fira 26/10), seperti blok path planning Ichiduino di
+  mBlock: rute ditulis sebagai urutan **indeks = langkah**. Tiap indeks: pola sensor pemicu (mis. persimpangan kiri,
+  OR/XOR, atau langsung) → aksi (maju, belok kiri, belok kanan, kecepatan motor kiri/kanan) → ikuti garis hitam/putih
+  dengan kecepatan tertentu sampai indeks berikutnya. Robot tidak menjelajah.
+- Contoh di grid 4 × 4 (jarak 30 cm), rute S → T: indeks 1 kiri, 2 kanan, 3 kiri, 4 kanan, 5 kiri, 6 berhenti.
+- Bedanya dengan kit: aksi diukur encoder (jarak, sudut 90°), bukan waktu ms, jadi tidak tergantung tegangan baterai;
+  di lintasan grid urutan indeks bisa dibuat otomatis dari rute terpendek (BFS).
 
 ## 9. Rancangan PCB (2 papan)
 

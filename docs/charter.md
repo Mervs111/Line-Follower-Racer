@@ -8,7 +8,7 @@ budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU; arahan 26/10/2026: pat
 | | |
 |---|---|
 | Nama | Robot Line Tracer Micro |
-| Short Description | Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning pada lintasan grid yang petanya ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan dibangun dengan anggaran maksimal Rp 900.000. |
+| Short Description | Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning dengan peta yang ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan dibangun dengan anggaran maksimal Rp 900.000. |
 | Supervisor | Fira Aulia, S.Tr.T, M.Tr.T |
 
 | No | Nama | NRP | Peran |
@@ -30,10 +30,12 @@ Harga dan fiturnya (kecepatan tinggi, baterai LiPo 2S) kurang sesuai sebagai med
 Proyek ini melakukan reverse engineering terhadap Ichiduino Pro: fungsi dan arsitekturnya dianalisis,
 lalu dirancang ulang dari nol dengan anggaran maksimal Rp 900.000. Fitur yang dipertahankan, diganti,
 atau ditiadakan dipilih berdasarkan kebutuhan edukasi dan batas anggaran. Selain mengikuti garis,
-robot memiliki kemampuan path planning dengan peta lintasan yang ditentukan di awal (pre-defined map
-by index): setiap persimpangan grid diberi nomor indeks, lalu rute disusun sebagai aksi per indeks atau
-dihitung otomatis sebagai rute terpendek menuju titik tujuan, sehingga siswa dapat belajar konsep
-algoritma dan navigasi melalui block coding berbasis web tanpa instalasi aplikasi.
+robot memiliki kemampuan path planning dengan peta yang ditentukan di awal (pre-defined map by index):
+rute dituliskan sebagai urutan indeks, dan tiap indeks berisi pola sensor pemicu (misalnya persimpangan
+kiri, kanan, atau perempatan), aksi (maju, belok kiri, belok kanan), dan perintah mengikuti garis
+berikutnya. Pada lintasan grid, urutan indeks dapat dibuat otomatis dari rute terpendek menuju titik
+tujuan, sehingga siswa dapat belajar konsep algoritma dan navigasi melalui block coding berbasis web tanpa
+instalasi aplikasi.
 
 ## 3. Project Objectives / Purposes
 
@@ -41,10 +43,11 @@ algoritma dan navigasi melalui block coding berbasis web tanpa instalasi aplikas
    berbasis ESP32 dengan anggaran maksimal Rp 900.000.
 2. Membuat robot yang mampu mengikuti garis hitam di atas putih secara otomatis dengan kendali PID,
    dengan akurasi pembacaan posisi garis ≤ 2 mm dan kecepatan rata-rata ≥ 0,5 m/s.
-3. Menerapkan path planning dengan peta lintasan yang ditentukan di awal (pre-defined map by index):
-   setiap persimpangan grid diberi nomor indeks, robot menghitung persimpangan yang dilewati dan menjalankan
-   aksi tiap indeks (belok kiri, belok kanan, lurus, berhenti), baik dari rute yang disusun pengguna maupun
-   rute terpendek yang dihitung otomatis dari peta.
+3. Menerapkan path planning dengan peta yang ditentukan di awal (pre-defined map by index): rute
+   dituliskan sebagai urutan indeks; pada tiap indeks robot menunggu pola sensor pemicu, menjalankan aksi
+   (maju, belok kiri, belok kanan, berhenti) dengan jarak dan sudut dari encoder, lalu kembali mengikuti
+   garis. Pada lintasan grid, urutan indeks dapat dihitung otomatis sebagai rute terpendek menuju titik
+   tujuan.
 4. Menerapkan fitur keamanan berupa berhenti ≤ 500 ms setelah garis tidak terdeteksi dan pemutusan
    saat tegangan baterai < 3,2 V per sel.
 5. Mengembangkan platform block coding berbasis web (Blockly), termasuk blok aksi per indeks dan blok rute
@@ -60,8 +63,8 @@ algoritma dan navigasi melalui block coding berbasis web tanpa instalasi aplikas
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
 - Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk jangkar) + multiplexer, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
-- Path planning: peta grid yang ditentukan di awal (indeks persimpangan), rute berupa aksi per indeks atau
-  rute terpendek otomatis ke titik tujuan
+- Path planning: peta by index (urutan langkah pola sensor → aksi → ikuti garis) dan pembuatan urutan indeks
+  otomatis dari rute terpendek pada lintasan grid
 - Platform block coding berbasis web (Blockly)
 - Prototipe sampai desain PCB yang siap diproduksi
 - Uji performa robot, uji path planning, dan uji coba ke pengguna (anak sekolah)
@@ -95,7 +98,7 @@ algoritma dan navigasi melalui block coding berbasis web tanpa instalasi aplikas
 
 ## 6. Project's Criteria for Success
 
-Lintasan uji path planning berupa grid garis 4 × 4 titik persimpangan (indeks 1–16) dengan jarak antar titik 30 cm.
+Lintasan uji path planning berupa grid garis 4 × 4 titik persimpangan dengan jarak antar titik 30 cm.
 
 1. **Akurasi pembacaan posisi garis ≤ 2 mm.** Diuji dengan meletakkan robot dalam keadaan diam (motor mati) pada posisi geser −20 s.d. +20 mm (tiap 5 mm) dari tengah garis, lalu posisi yang terbaca sensor dibandingkan dengan posisi sebenarnya, 3 kali ulangan. Alat ukur: kertas milimeter dan jangka sorong.
 2. **Kecepatan rata-rata robot ≥ 0,5 m/s.** Dihitung dari panjang lintasan dibagi waktu tempuh, 3 kali ulangan. Alat ukur: meteran dan stopwatch/video.
