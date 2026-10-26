@@ -27,6 +27,14 @@ Entri terbaru di atas.
   Rp20.000 di WKH Electronic** (Tokopedia; SOP-24 dikonfirmasi penjual), beli 1 tanpa cadangan. PCB sensor tetap.
   RAB **Rp887.000** (elektrikal Rp832.000), sisa Rp113.000: charter.md + docx, deck slide 4, 5, 11, 13, 15 + lampiran
   (subtotal lampiran A dibetulkan jadi Rp456.000), naskah, CLAUDE.md, README, handover.
+- Syarat pitching dari dosen: charter + RAB, desain rangkaian & mekanik, simulasi (seperti CoppeliaSim). Checklist
+  dibuat; simulasi belum ada sama sekali.
+- **Simulasi** `simulasi/`: logika kendali `lfm_control.py` (PID, deteksi persimpangan, path planning per indeks,
+  belok diukur encoder, rute terpendek grid) + uji 2D `test_2d.py` (lulus: rute slide 8,2 s / 9 mm dari T, rute
+  terpendek dengan halangan, 0,3–0,7 m/s 25/25; video tampak atas `hasil/uji2d_slide.mp4`). CoppeliaSim:
+  `build_scene.py` (arena, robot dinamis ukuran asli, 12 vision sensor, mesh rakitan PCB, 2 kamera) dan
+  `run_sim.py` (stepping, video + log, mode kinematik cadangan); dicek terhadap tiruan API, belum di CoppeliaSim
+  asli (dijalankan Claude lokal, prompt di `docs/handover-claude-lokal.md` bagian 6).
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck

@@ -1,0 +1,257 @@
+{
+ "units": "m",
+ "frame": "robot: x kanan, y maju, z atas, nol = lantai di bawah tengah poros roda",
+ "source": "mechanical/rakitan-pcb/LFM_rakitan.glb",
+ "groups": [
+  {
+   "file": "g00.obj",
+   "rgb": [
+    0.776,
+    0.768,
+    0.624
+   ],
+   "tris": 516,
+   "materials": "m0-m6"
+  },
+  {
+   "file": "g01.obj",
+   "rgb": [
+    0.643,
+    0.637,
+    0.575
+   ],
+   "tris": 7044,
+   "materials": "m1-m2-steel"
+  },
+  {
+   "file": "g02.obj",
+   "rgb": [
+    0.022,
+    0.024,
+    0.028
+   ],
+   "tris": 5330,
+   "materials": "black_plastic-cap_black-cell-m13-m17-m3-"
+  },
+  {
+   "file": "g03.obj",
+   "rgb": [
+    0.42,
+    0.449,
+    0.29
+   ],
+   "tris": 2582,
+   "materials": "m12-m19-m5"
+  },
+  {
+   "file": "g04.obj",
+   "rgb": [
+    0.007,
+    0.008,
+    0.009
+   ],
+   "tris": 288,
+   "materials": "glass-m7-pcb-pcb_dark"
+  },
+  {
+   "file": "g05.obj",
+   "rgb": [
+    0.7,
+    0.61,
+    0.0
+   ],
+   "tris": 17880,
+   "materials": "m8"
+  },
+  {
+   "file": "g06.obj",
+   "rgb": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "tris": 15370,
+   "materials": "m9"
+  },
+  {
+   "file": "g07.obj",
+   "rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "tris": 2333,
+   "materials": "m10"
+  },
+  {
+   "file": "g08.obj",
+   "rgb": [
+    0.08,
+    0.2,
+    0.14
+   ],
+   "tris": 2088,
+   "materials": "m11"
+  },
+  {
+   "file": "g09.obj",
+   "rgb": [
+    0.753,
+    0.465,
+    0.207
+   ],
+   "tris": 1068,
+   "materials": "m14-m15"
+  },
+  {
+   "file": "g10.obj",
+   "rgb": [
+    0.672,
+    0.403,
+    0.057
+   ],
+   "tris": 844,
+   "materials": "gold-m16"
+  },
+  {
+   "file": "g11.obj",
+   "rgb": [
+    0.028,
+    0.115,
+    0.452
+   ],
+   "tris": 4981,
+   "materials": "m18-wire_blu"
+  },
+  {
+   "file": "g12.obj",
+   "rgb": [
+    0.619,
+    0.152,
+    0.019
+   ],
+   "tris": 22,
+   "materials": "m20"
+  },
+  {
+   "file": "g13.obj",
+   "rgb": [
+    0.93,
+    0.896,
+    0.807
+   ],
+   "tris": 24,
+   "materials": "jst_plug"
+  },
+  {
+   "file": "g14.obj",
+   "rgb": [
+    0.855,
+    0.823,
+    0.745
+   ],
+   "tris": 508,
+   "materials": "jst-nylon"
+  },
+  {
+   "file": "g15.obj",
+   "rgb": [
+    0.768,
+    0.791,
+    0.823
+   ],
+   "tris": 40,
+   "materials": "chrome"
+  },
+  {
+   "file": "g16.obj",
+   "rgb": [
+    0.514,
+    0.329,
+    0.103
+   ],
+   "tris": 36,
+   "materials": "flex-gearbox"
+  },
+  {
+   "file": "g17.obj",
+   "rgb": [
+    0.347,
+    0.644,
+    1.0
+   ],
+   "tris": 60,
+   "materials": "screen"
+  },
+  {
+   "file": "g18.obj",
+   "rgb": [
+    0.546,
+    0.578,
+    0.617
+   ],
+   "tris": 60,
+   "materials": "shield"
+  },
+  {
+   "file": "g19.obj",
+   "rgb": [
+    0.147,
+    0.023,
+    0.271
+   ],
+   "tris": 12,
+   "materials": "pcb_purple"
+  },
+  {
+   "file": "g20.obj",
+   "rgb": [
+    0.012,
+    0.074,
+    0.323
+   ],
+   "tris": 24,
+   "materials": "pcb_blue"
+  },
+  {
+   "file": "g21.obj",
+   "rgb": [
+    0.024,
+    0.159,
+    0.672
+   ],
+   "tris": 12,
+   "materials": "pot"
+  },
+  {
+   "file": "g22.obj",
+   "rgb": [
+    0.013,
+    0.147,
+    0.042
+   ],
+   "tris": 412,
+   "materials": "pcb_green"
+  },
+  {
+   "file": "g23.obj",
+   "rgb": [
+    0.651,
+    0.014,
+    0.027
+   ],
+   "tris": 936,
+   "materials": "tire_red-wire_red"
+  },
+  {
+   "file": "g24.obj",
+   "rgb": [
+    0.807,
+    0.485,
+    0.017
+   ],
+   "tris": 902,
+   "materials": "wire_yel"
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+coppeliasim-zmqremoteapi-client
+numpy
+pillow
+matplotlib
+imageio
+imageio-ffmpeg
+# hanya untuk make_mesh.py (membuat ulang mesh/):
+# fast-simplification

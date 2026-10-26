@@ -135,6 +135,12 @@ odejs` ke PATH.
   Rp902.000 tetap, sisa Rp98.000. Charter, deck pitching, README, pedoman ringkas ikut diperbarui.
 - 26/10: toko lokal hanya punya mux SSOP (tidak lolos aturan cetak); dapat **CD74HC4067M SOP-24 Rp20.000 di WKH
   Electronic**, beli 1 tanpa cadangan (keputusan user). PCB tidak berubah. RAB **Rp887.000**, sisa Rp113.000.
+- 26/10: syarat pitching dari dosen: (1) charter + RAB, (2) desain rangkaian dan mekanik, (3) **simulasi seperti
+  CoppeliaSim**. Dipilih **CoppeliaSim**, dijalankan user lewat Claude lokal (container cloud tidak bisa mengunduh
+  CoppeliaSim). `simulasi/`: `lfm_control.py` (PID, persimpangan dari sensor lengan, path planning per indeks, belok
+  encoder 60° lalu kunci sensor, rute terpendek) dipakai bersama uji 2D dan CoppeliaSim; arena grid 4 × 4 jarak 30 cm
+  (perkiraan). Uji 2D lulus (rute slide 8,2 s, 9 mm dari T; 0,3–0,7 m/s 25/25). Skrip CoppeliaSim baru dicek
+  terhadap tiruan API.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →
@@ -195,6 +201,7 @@ Line-Follower-Racer/
 ├── mindplus-ext/    extension Mind+ (belum dimulai)
 ├── hardware/        KiCad: sensor-garis/ (PCB sensor), pcb-utama/ (PCB utama baru), ltm-main/ (v2 lama), tools/
 ├── mechanical/      model 3D v16 (CadQuery, STEP, DXF, STL, render)
+├── simulasi/        logika kendali + uji 2D + CoppeliaSim (lihat simulasi/README.md)
 ├── docs/            charter, skematik, wiring diagram, logbook, referensi
 └── arsip/           file yang sudah digantikan (lihat arsip/README.md)
 ```

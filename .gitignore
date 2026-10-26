@@ -16,3 +16,4 @@ node_modules/
 # hasil Python dan STEP rakitan versi tembaga (21 MB, buat ulang: py mechanical/rakitan-pcb/gen_rakitan_step.py --tembaga)
 __pycache__/
 mechanical/rakitan-pcb/*_tembaga.step
+simulasi/**/__pycache__/

@@ -85,7 +85,22 @@ Panduan lengkap: `hardware/tools/kicad-mcp/README.md`. Ringkas:
 - Label net lokal KiCad berawalan `/` (`/S1`), net simbol daya tidak (`+5V`, `GND`).
 - Commit per pekerjaan selesai, pesan commit Bahasa Indonesia, lalu push ke `main` (cara kerja selama ini).
 
-## 6. Yang tinggal di cloud / claude.ai
+## 6. Simulasi CoppeliaSim (26/10, untuk pitching 27/10)
+
+Syarat pitching dari dosen: charter + RAB, desain rangkaian dan mekanik, **simulasi** (seperti CoppeliaSim). Sesi
+cloud membuat `simulasi/` (lihat `simulasi/README.md`): logika kendali + uji 2D sudah lulus, skrip CoppeliaSim
+(`build_scene.py`, `run_sim.py`) sudah dicek terhadap tiruan API tapi **belum pernah dijalankan di CoppeliaSim
+asli**. Itu tugas Claude lokal. Pesan pembuka yang disarankan:
+
+> Baca simulasi/README.md. CoppeliaSim sudah terbuka dengan New scene. Pasang dependensi
+> (py -m pip install -r simulasi/requirements.txt), jalankan simulasi/coppeliasim/build_scene.py lalu
+> run_sim.py (rute slide) dari folder simulasi/. Perbaiki skrip kalau ada error atau robot tidak jalan benar
+> (lihat tabel gejala di README; jangan ubah logika lfm_control.py selain setelan kp/kd/kecepatan). Cek
+> hasil/cek_kamera.png (gambar tegak, tidak tercermin). Target: rute slide LULUS + video
+> hasil/coppeliasim_slide.mp4, lalu --scenario bfs --blocked 1,0 2,2 1,2. Simpan lfm_grid.ttt, ambil 1 screenshot
+> jendela CoppeliaSim untuk slide Simulasi, catat di docs/log-kerja.md, commit + push.
+
+## 7. Yang tinggal di cloud / claude.ai
 
 - Link artifact (model 3D, wiring diagram, diagram blok, flowchart, arsitektur) ada di `CLAUDE.md`.
 - Sumber diagram blok (Design canvas) disalin ke `docs/diagram-blok-src/` (butuh runtime artifact untuk
