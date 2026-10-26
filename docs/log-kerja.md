@@ -4,6 +4,12 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 26/10/2026
+- Bahan **pitching RAB** (27/10): analisis progres repo, naskah 14 slide + 2 lampiran RAB
+  (`docs/pitching-rab/naskah-slide.md`), render PCB sensor rev B dan PCB utama terbaru dari KiCad 10
+  (`docs/pitching-rab/gambar/`; `hardware/render/` masih PCB lama). DRC ulang: PCB sensor 0 error, PCB utama 11 error
+  (Q1, SW1), keduanya 0 unconnected. Deck dipindah ke template kelompok setelah template dikirim.
+
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck
   MP1584, tambahan tombol, buzzer, sensor tegangan baterai, charger USB-C, saklar, upload USB-C. Database / Log
