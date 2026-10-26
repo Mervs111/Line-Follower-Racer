@@ -13,6 +13,7 @@ Entri terbaru di atas.
   gaya template Canva kelompok (latar diambil dari PDF template, teks/tabel/grafik tetap bisa diedit, font Arial).
   Generator `docs/pitching-rab/generator/build.js` (pptxgenjs). Diagram blok dibetulkan: PCB sensor "bentuk jangkar",
   bukan "gaya XLINE" (`docs/diagram-blok.png` + sumber). Peran anggota di slide 2 masih `[isi peran]`.
+- Charter docx dibuat ulang (RAB Rp902.000 sama dengan deck; tanggal persetujuan 27 Oktober 2026).
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck

@@ -10,7 +10,7 @@ const {
 
 const OUT = process.argv[2];
 const KOP = path.join(__dirname, "kop.png");
-const TANGGAL = "21 Oktober 2026";
+const TANGGAL = "27 Oktober 2026";
 
 // Ukuran halaman A4 dan margin meniru PDF asli (teks mulai x ≈ 65 pt, tabel lebar ≈ 503 pt)
 const PAGE_W = 11906;
