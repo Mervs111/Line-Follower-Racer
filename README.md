@@ -1,7 +1,7 @@
 # Line Follower ESP32 + Block Programming
 
 Proyek PjBL Semester 5: robot line follower edukasi yang murah tapi performanya bagus, dan bisa diprogram pakai
-blok (user extension Mind+). Target lomba: IARC XII Smart Robotics (9–10/01/2027). Anggaran maks Rp900.000.
+blok (user extension Mind+). Target lomba: IARC XII Smart Robotics (9–10/01/2027). Anggaran maks Rp1.000.000 (naik dari Rp900.000 pada 26/10/2026).
 
 > **Untuk anggota kelompok:** baca bagian [Status terkini](#status-terkini-23102026) dan
 > [Yang harus dilakukan](#yang-harus-dilakukan-berikutnya) dulu. Catatan kerja harian ada di
@@ -12,7 +12,7 @@ blok (user extension Mind+). Target lomba: IARC XII Smart Robotics (9–10/01/20
 
 | Bagian | Status | Di mana |
 |---|---|---|
-| Charter & RAB | Charter sudah disesuaikan dengan rancangan terbaru. **RAB Rp902.000, lewat Rp2.000** dari batas | `docs/charter.md`, `docs/Project_Charter_PJBL.docx` |
+| Charter & RAB | Charter sudah disesuaikan dengan rancangan terbaru. **RAB Rp902.000, sisa Rp98.000** dari batas Rp1.000.000 | `docs/charter.md`, `docs/Project_Charter_PJBL.docx` |
 | Diagram (blok, wiring, arsitektur, flowchart) | Selesai, sudah sesuai rancangan 22/10 | tautan di bawah, `docs/wiring-diagram.html` |
 | PCB sensor | **Rev B disetujui**: bentuk jangkar, lebar 95 mm, 12 QRE1113GR + mux CD74HC4067, DRC 0 | `hardware/sensor-garis/` (+ `REVISI.md`) |
 | Skematik PCB utama | **Selesai**: 21 komponen, ERC 0, netlist dicek terhadap pin map | `hardware/pcb-utama/pcb-utama.kicad_sch`, PDF `pcb-utama-skematik.pdf` |
@@ -39,7 +39,7 @@ PCB dipesan **paling lambat minggu 10**, prototipe jalan 3× berturut-turut untu
 
 ### 1. Keputusan kelompok (perlu dibahas dulu)
 
-- [ ] **Pangkas RAB Rp2.000** supaya ≤ Rp900.000 sebelum pitching.
+- [x] ~~Pangkas RAB Rp2.000~~: tidak perlu lagi, batas anggaran naik jadi Rp1.000.000 (26/10).
 - [ ] **Ukuran PCB utama**: tetap 100 × 127 mm, atau dipadatkan (OLED ditumpuk di atas ESP32, hidung dipendekkan,
       resistor SMD; perkiraan 15–25 % lebih kecil). Mengganti 18650 dengan LiPo bisa membuat papan jauh lebih kecil,
       tapi bertentangan dengan alasan keselamatan di charter, jadi tanyakan dosen dulu.

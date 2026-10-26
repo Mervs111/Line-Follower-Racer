@@ -93,7 +93,7 @@ const identity = table(W1, [
     cell(para("Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino " +
       "Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning dengan peta yang " +
       "ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan " +
-      "dibangun dengan anggaran maksimal Rp 900.000.", { align: AlignmentType.JUSTIFIED }), W1[1])]),
+      "dibangun dengan anggaran maksimal Rp 1.000.000.", { align: AlignmentType.JUSTIFIED }), W1[1])]),
   row([cell(para("Supervisor", { bold: true }), W1[0]), cell(para("Fira Aulia, S.Tr.T, M.Tr.T"), W1[1])]),
   row([cell(para("Team Member", { bold: true }), W1[0]), cell(timParas, W1[1])]),
 ]);
@@ -110,7 +110,7 @@ const business = table(W2, [
       "belajar anak.", J),
     para("", J),
     para("Proyek ini melakukan reverse engineering terhadap Ichiduino Pro: fungsi dan arsitekturnya " +
-      "dianalisis, lalu dirancang ulang dari nol dengan anggaran maksimal Rp 900.000. Fitur yang " +
+      "dianalisis, lalu dirancang ulang dari nol dengan anggaran maksimal Rp 1.000.000. Fitur yang " +
       "dipertahankan, diganti, atau ditiadakan dipilih berdasarkan kebutuhan edukasi dan batas anggaran. " +
       "Selain mengikuti garis, robot memiliki kemampuan path planning dengan peta yang ditentukan di awal " +
       "(pre-defined map by index): rute dituliskan sebagai urutan indeks, dan tiap indeks berisi pola sensor " +
@@ -124,7 +124,7 @@ const business = table(W2, [
 // ---------- 3. Objectives ----------
 const tujuan = [
   "Melakukan reverse engineering kit Ichiduino Pro dan merancang ulang robot line tracer edukasi berbasis " +
-    "ESP32 dengan anggaran maksimal Rp 900.000.",
+    "ESP32 dengan anggaran maksimal Rp 1.000.000.",
   "Membuat robot yang mampu mengikuti garis hitam di atas putih secara otomatis dengan kendali PID, dengan " +
     "akurasi pembacaan posisi garis ≤ 2 mm dan kecepatan rata-rata ≥ 0,5 m/s.",
   "Menerapkan path planning dengan peta yang ditentukan di awal (pre-defined map by index): rute " +
@@ -211,7 +211,7 @@ const kriteria = [
     "rekaman video slow-motion. Alat ukur: video HP 240 fps."],
   ["Motor mati saat tegangan baterai < 3,2 V per sel.", " Baterai diganti power supply, lalu tegangan " +
     "diturunkan perlahan dan dicatat saat motor mati. Alat ukur: power supply dan multimeter."],
-  ["Total biaya proyek ≤ Rp 900.000.", " Dihitung dari jumlah RAB, dan setiap harga disertai tautan toko. " +
+  ["Total biaya proyek ≤ Rp 1.000.000.", " Dihitung dari jumlah RAB, dan setiap harga disertai tautan toko. " +
     "Alat ukur: daftar harga."],
   ["", "Seluruh proses dan hasil pengujian terdokumentasi dalam laporan mingguan dan laporan akhir PJBL."],
 ];

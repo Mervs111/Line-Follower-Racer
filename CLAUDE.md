@@ -77,7 +77,8 @@ memakai pin map yang sama.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen
-- RAB terakhir **Rp902.000** (22/10/2026), **lewat Rp2.000 dari batas Rp900.000** → perlu dipangkas sebelum pitching.
+- RAB terakhir **Rp902.000** (22/10/2026). **Batas anggaran naik dari Rp900.000 menjadi Rp1.000.000** (26/10/2026, info
+  user) → **sisa Rp98.000**.
   QRE1113GR ternyata ada di toko lokal **Rp15.000/pcs** → dibeli 12 tanpa cadangan (keputusan user); breadboard +
   timah dipinjam lab (keluar RAB); kabel pita → JST XH 8 pin (Rp5.000, perkiraan). Nama toko + link QRE menyusul
   dari user. Lintasan uji di luar RAB.
@@ -128,6 +129,9 @@ odejs` ke PATH.
   waktu. Robot tidak menjelajah. Charter (tujuan 3 dan 5, lingkup, sasaran 5) dan deck pitching sudah ikut; hardware
   dan RAB tetap. Tambahan blok Mind+: `indeks () jika [pola sensor] lakukan [aksi] lalu ikuti garis [hitam/putih]
   kecepatan ()`, `buat rute terpendek dari () ke ()`.
+
+- 26/10: **batas RAB menjadi Rp1.000.000** (sebelumnya Rp900.000; info user, charter Word user sudah direvisi). RAB
+  Rp902.000 tetap, sisa Rp98.000. Charter, deck pitching, README, pedoman ringkas ikut diperbarui.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

@@ -13,7 +13,7 @@ Gambar: `docs/pitching-rab/gambar/` (render PCB terbaru dari KiCad 10, 26/10), `
 ## 1. Judul
 
 **Robot Line Tracer Micro**
-Robot edukasi pengikut garis dengan path planning, dibuat ulang dari nol dengan anggaran ≤ Rp900.000
+Robot edukasi pengikut garis dengan path planning, dibuat ulang dari nol dengan anggaran ≤ Rp1.000.000
 
 Pitching RAB · PjBL Semester 5 Proyek 3 · P01 Kel.5 · DTEO FV ITS · Pembimbing: Fira Aulia, S.Tr.T, M.Tr.T · 27/10/2026
 
@@ -35,7 +35,7 @@ RAB & Dokumentasi.
 
 - Kit line tracer edukasi di pasaran mahal: **Ichiduino Pro ± Rp2.000.000 per kit**, unit kontrolnya saja Rp825.000.
 - Kit dirancang untuk kompetisi (motor 1200 RPM, LiPo 2S kecil), kurang pas sebagai media belajar anak sekolah.
-- Arahan dosen (05/10/2026): reverse engineering produk contoh, buat ulang dengan **budget maks Rp900.000**, minimal
+- Arahan dosen (05/10/2026): reverse engineering produk contoh, buat ulang dengan **budget maks Rp1.000.000** (naik dari Rp900.000 pada 26/10), minimal
   **mengikuti garis otomatis + path planning**.
 
 Catatan bicara: buka dengan harga kit, lalu arahan dosen sebagai batas proyek.
@@ -82,7 +82,7 @@ Catatan bicara: kinerja nyata kit (kecepatan, akurasi, daya tahan) akan diukur d
 | Ketepatan berhenti | error ≤ 30 mm | 10 rute |
 | Berhenti saat garis hilang | ≤ 500 ms | video 240 fps, 3 ulangan |
 | Cutoff baterai | < 3,2 V/sel | power supply, 3 ulangan |
-| Total biaya | ≤ Rp900.000 | RAB + tautan toko |
+| Total biaya | ≤ Rp1.000.000 | RAB + tautan toko |
 
 ## 7. Arsitektur sistem
 
@@ -158,7 +158,7 @@ Kit Ichiduino Pro tidak dianggarkan ulang.
 
 ## 13. Riwayat RAB dan efisiensi
 
-Grafik garis total RAB per revisi + garis batas Rp900.000:
+Grafik garis total RAB per revisi + garis batas Rp1.000.000:
 
 | Revisi | Total | Perubahan utama |
 |---|---|---|
@@ -172,11 +172,9 @@ Grafik garis total RAB per revisi + garis batas Rp900.000:
 | 21/10 | Rp887.000 | mux berupa IC SOIC-24 di PCB (+Rp20.000) |
 | 22/10 | **Rp902.000** | QRE harga lokal Rp15.000/pcs (+Rp105.000); breadboard + timah pinjam lab (−Rp85.000); JST XH (−Rp5.000) |
 
-Selisih **Rp2.000 (0,2%)** dari batas berasal dari harga QRE1113GR lokal yang ternyata 3× perkiraan awal. Jumlah sensor
-tidak dikurangi supaya tetap setara kit pembanding (12 sensor).
-
-Catatan bicara (kalau penguji minta pas ≤ Rp900.000): push button di RAB 4 buah, rancangan memakai 2 (tombol A/B);
-mengurangi 2 buah menutup selisih Rp2.000.
+**Sisa Rp98.000 (9,8%)** dari batas Rp1.000.000 (batas naik dari Rp900.000 pada 26/10/2026). Kenaikan terbesar
+dari harga QRE1113GR lokal yang ternyata 3× perkiraan awal; sisa anggaran bisa menutup kenaikan harga atau item yang
+belum di RAB (body 3D print).
 
 ## 14. Jadwal, risiko, dan penutup
 

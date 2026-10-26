@@ -11,7 +11,7 @@ Menurut pedoman M-0 = 17 Agustus 2026, tenggat jatuh hari Senin.
 | Gerbang | Pekan | Nama | Yang harus sudah ada |
 |---|---|---|---|
 | G1 | M-2 | Penetapan | Topik, Project Charter, sasaran terukur, hasil uji defisit |
-| G2 | M-6 | Rancangan | WBS + jadwal + RAB (≤ Rp 900.000), rancangan teknis berdiagram |
+| G2 | M-6 | Rancangan | WBS + jadwal + RAB (≤ Rp 900.000 di pedoman; **Rp 1.000.000 sejak 26/10/2026**), rancangan teknis berdiagram |
 | G3 | M-10 | Realisasi awal | Analisis bahaya (FMEA), hasil awal 3 ulangan, demo progres |
 | G4 | M-14 | Pembuktian | Pengujian menyeluruh, status tiap sasaran, tabel selisih |
 | G5 | M-16 | Serah terima | Laporan akhir, manual (diuji orang luar), demo akhir, Pertanyaan perseorangan |
@@ -23,7 +23,7 @@ Ujian komprehensif: tengah M-7, akhir M-15 (perseorangan, 5% masing-masing).
 | Butir | Isi | Pekan | Gerbang | Kunci penerimaan |
 |---|---|---|---|---|
 | 1 | Charter & sasaran terukur | M-1–M-2 | G1 | Lingkup 2 sisi; ≥ 4 sasaran bernilai, bersatuan, **bercara uji**; jadwal per gerbang + risiko terbesar; **peran tiap anggota**; ditandatangani semua anggota; daftar risiko + penanganan |
-| 2 | Rancangan pekerjaan & RAB | M-3–M-5 | G2 | WBS sampai paket 1 pekan, tiap paket ada PJ & tenggat; RAB ≤ Rp 900.000, tertelusur ke daftar harga, alasan ≥ 3 komponen; **rumusan optimasi** (peubah, fungsi tujuan, kendala bersatuan) |
+| 2 | Rancangan pekerjaan & RAB | M-3–M-5 | G2 | WBS sampai paket 1 pekan, tiap paket ada PJ & tenggat; RAB ≤ Rp 900.000 (**Rp 1.000.000 sejak 26/10/2026**), tertelusur ke daftar harga, alasan ≥ 3 komponen; **rumusan optimasi** (peubah, fungsi tujuan, kendala bersatuan) |
 | 3 | Rancangan teknis | M-3–M-6 | G2 | Diagram (blok/alir/arsitektur); tabel ≥ 2 alternatif + apa yang dikorbankan; ≥ 5 pustaka 5 tahun terakhir, gaya IEEE |
 | 4 | Analisis bahaya | M-7–M-8 | G3 | ≥ 8 mode kegagalan (gerak & listrik), sebab, akibat, kekerapan, keparahan, angka risiko; 3 risiko tertinggi dicegah nyata |
 | 5 | Realisasi & hasil awal | M-7–M-10 | G3 | Jalan 3× berturut-turut tanpa perbaikan; data 3 ulangan bersatuan; data metode cerdas dipisah latih/uji; catatan penyimpangan |
@@ -52,7 +52,8 @@ Kinerja nyata (kecepatan, akurasi, daya tahan baterai) belum diukur — ukur di 
 
 ## Arahan dosen (diterima 05/10/2026) — WAJIB
 
-- Proyek = **reverse engineering** produk contoh, lalu dibuat ulang dengan **budget maksimal Rp 900.000**;
+- Proyek = **reverse engineering** produk contoh, lalu dibuat ulang dengan **budget maksimal Rp 900.000**
+  (**dinaikkan menjadi Rp 1.000.000 pada 26/10/2026**, info user);
   fitur pengembangan disesuaikan dengan budget.
 - Produk contoh line tracer: https://id.shp.ee/b3NmXYCh dan https://store.ichibot.id/product/new-product-2/
 - Line tracer = robot edukasi untuk anak sekolah.

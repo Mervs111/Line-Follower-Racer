@@ -146,10 +146,10 @@ s.addText("harga satu kit line tracer edukasi Ichiduino Pro; unit kontrolnya saj
 dots(s, 1.6, 4.75);
 bullets(s, [
   "Kit edukasi di pasaran dirancang untuk kompetisi (motor 1200 RPM, LiPo 2S 400 mAh): mahal dan kurang pas sebagai media belajar anak sekolah.",
-  "Arahan dosen (05/10/2026): reverse engineering produk contoh, lalu buat ulang dengan budget maksimal Rp900.000.",
+  "Arahan dosen: reverse engineering produk contoh, lalu buat ulang dengan budget maksimal Rp1.000.000.",
   "Syarat minimum robot: mengikuti garis secara otomatis dan punya kemampuan path planning.",
 ], { x: 6.85, y: 2.55, w: 4.85, h: 3.3, gap: 12, objectName: "Masalah poin" });
-s.addNotes("Masalah: kit edukasi mahal, sekitar dua juta rupiah, dan dirancang untuk lomba. Dari dosen kami mendapat batas: reverse engineering, anggaran maksimal 900 ribu, minimal bisa ikut garis dan path planning.");
+s.addNotes("Masalah: kit edukasi mahal, sekitar dua juta rupiah, dan dirancang untuk lomba. Dari dosen kami mendapat batas: reverse engineering, anggaran maksimal satu juta rupiah (naik dari 900 ribu), minimal bisa ikut garis dan path planning.");
 
 // ---------------------------------------------------------------- 4. Solusi
 s = pres.addSlide({ masterName: "ISI_B", sectionTitle: "Masalah dan solusi" });
@@ -210,7 +210,7 @@ s.addText("SASARAN TERUKUR", { placeholder: "title" });
   s.addText([{ text: v, options: { bold: true, fontSize: 28, color: HI, breakLine: true, paraSpaceAfter: 4 } }, { text: l, options: { fontSize: 14, color: WHITE } }],
     { x: x + 0.17, y: y + 0.14, w: w - 0.34, h: h - 0.24, valign: "top", margin: 0, isTextBox: true, objectName: `Sasaran ${i + 1}` });
 });
-s.addText("Tiap sasaran punya cara uji dan alat ukur bersatuan (3–10 ulangan); sasaran ke-9: total biaya ≤ Rp900.000.",
+s.addText("Tiap sasaran punya cara uji dan alat ukur bersatuan (3–10 ulangan); sasaran ke-9: total biaya ≤ Rp1.000.000.",
   { x: 1.6, y: 5.75, w: 10.1, h: 0.35, fontSize: 14, color: SOFT, margin: 0, isTextBox: true, objectName: "Catatan sasaran" });
 s.addNotes("Sasaran terukur dari charter. Semua bernilai, bersatuan, dan punya cara uji. Sasaran biaya dibahas di bagian RAB.");
 
@@ -335,26 +335,26 @@ const revVal = [845, 858, 833, 896, 879.5, 859.5, 867, 887, 902];
 s.addChart(
   [
     { type: pres.ChartType.line, data: [{ name: "Total RAB", labels: revLbl, values: revVal }], options: { chartColors: ["9CC7EE"], lineSize: 3, lineDataSymbol: "circle", lineDataSymbolSize: 9, showValue: true, dataLabelPosition: "t", dataLabelFormatCode: "General", dataLabelColor: "FFFFFF", dataLabelFontSize: 12, dataLabelFontFace: "+mn-lt" } },
-    { type: pres.ChartType.line, data: [{ name: "Batas Rp900 rb", labels: revLbl, values: revVal.map(() => 900) }], options: { chartColors: ["E57373"], lineSize: 2, lineDash: "dash", lineDataSymbol: "none", showValue: false } },
+    { type: pres.ChartType.line, data: [{ name: "Batas Rp1.000 rb", labels: revLbl, values: revVal.map(() => 1000) }], options: { chartColors: ["E57373"], lineSize: 2, lineDash: "dash", lineDataSymbol: "none", showValue: false } },
   ],
   {
     x: 1.15, y: 2.2, w: 7.0, h: 3.95,
-    valAxisMinVal: 800, valAxisMaxVal: 920, valAxisMajorUnit: 40, valAxisLabelColor: "BFD3E6", valAxisLabelFontSize: 12, valAxisLabelFontFace: "+mn-lt", valAxisLineShow: false,
+    valAxisMinVal: 800, valAxisMaxVal: 1050, valAxisMajorUnit: 50, valAxisLabelColor: "BFD3E6", valAxisLabelFontSize: 12, valAxisLabelFontFace: "+mn-lt", valAxisLineShow: false,
     valGridLine: { color: "2A4466", size: 0.75 }, catGridLine: { style: "none" },
     catAxisLabelColor: "BFD3E6", catAxisLabelFontSize: 12, catAxisLabelFontFace: "+mn-lt",
     showLegend: true, legendPos: "b", legendColor: "FFFFFF", legendFontSize: 12, legendFontFace: "+mn-lt",
     showTitle: true, title: "Total RAB per revisi (ribu rupiah)", titleColor: "BFD3E6", titleFontSize: 14, titleFontFace: "+mn-lt",
-    objectName: "Grafik riwayat RAB", altText: "Grafik garis total RAB per revisi dari 845 sampai 902 ribu rupiah, dengan garis batas 900 ribu",
+    objectName: "Grafik riwayat RAB", altText: "Grafik garis total RAB per revisi dari 845 sampai 902 ribu rupiah, dengan garis batas 1 juta rupiah",
   }
 );
-s.addText([{ text: "+Rp2.000", options: { bold: true, fontSize: 40, color: HI, breakLine: true } }, { text: "(0,2%) di atas batas Rp900.000", options: { fontSize: 16, color: WHITE } }],
+s.addText([{ text: "Sisa Rp98.000", options: { bold: true, fontSize: 36, color: HI, breakLine: true } }, { text: "(9,8%) di bawah batas Rp1.000.000", options: { fontSize: 16, color: WHITE } }],
   { x: 8.45, y: 2.3, w: 3.7, h: 1.25, margin: 0, valign: "top", isTextBox: true, objectName: "Selisih anggaran" });
 bullets(s, [
-  "Penyebab: QRE1113GR lokal Rp15.000/pcs, 3× perkiraan awal (+Rp105.000).",
-  "Sudah dihemat: MCP23017 + LED indikator dihapus, skid nilon pengganti ball caster, breadboard dan timah pinjam lab (−Rp85.000).",
-  "12 sensor dipertahankan supaya setara kit pembanding.",
-], { x: 8.45, y: 3.75, w: 3.7, h: 2.4, gap: 8, objectName: "Selisih poin" });
-s.addNotes("RAB sudah sembilan kali direvisi dan dijaga dekat batas. Sekarang 902 ribu, lebih 2 ribu (0,2 persen) karena harga QRE1113GR lokal ternyata tiga kali perkiraan. Kalau diminta pas 900 ribu: push button di RAB 4 buah, rancangan memakai 2 (tombol A dan B); mengurangi 2 buah menutup selisih 2 ribu.");
+  "Kenaikan terbesar: QRE1113GR lokal Rp15.000/pcs, 3× perkiraan awal (+Rp105.000).",
+  "Sudah dihemat: MCP23017 + LED indikator dihapus, skid nilon, alat pinjam lab (−Rp85.000).",
+  "Sisa bisa menutup kenaikan harga atau body 3D print (belum di RAB).",
+], { x: 8.45, y: 3.5, w: 3.7, h: 2.3, gap: 8, objectName: "Selisih poin" });
+s.addNotes("RAB sudah sembilan kali direvisi. Kenaikan terbesar dari harga QRE1113GR lokal yang ternyata tiga kali perkiraan, sedangkan penghematan datang dari penghapusan MCP23017 dan LED indikator, skid nilon, serta alat yang dipinjam dari lab. Dengan batas anggaran Rp1.000.000, RAB 902 ribu masih menyisakan 98 ribu (9,8 persen) untuk kenaikan harga atau item yang belum masuk RAB seperti body 3D print.");
 
 // ---------------------------------------------------------------- 14. Jadwal & risiko
 pres.addSection({ title: "Penutup" });

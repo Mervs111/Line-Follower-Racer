@@ -1,14 +1,14 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
 Semester Gasal 2026/2027 · Revisi 3.4 (arahan dosen 05/10/2026: reverse engineering, path planning,
-budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU; arahan 26/10/2026: path planning dengan peta yang ditentukan di awal) · diperbarui 22/10/2026: 12 QRE1113GR (toko lokal), PCB sensor bentuk jangkar
+budget maksimal Rp 900.000, dinaikkan menjadi Rp 1.000.000 pada 26/10/2026; arahan 09/10/2026: tanpa IMU; arahan 26/10/2026: path planning dengan peta yang ditentukan di awal) · diperbarui 22/10/2026: 12 QRE1113GR (toko lokal), PCB sensor bentuk jangkar
 
 ## 1. Project Identity
 
 | | |
 |---|---|
 | Nama | Robot Line Tracer Micro |
-| Short Description | Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning dengan peta yang ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan dibangun dengan anggaran maksimal Rp 900.000. |
+| Short Description | Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning dengan peta yang ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan dibangun dengan anggaran maksimal Rp 1.000.000. |
 | Supervisor | Fira Aulia, S.Tr.T, M.Tr.T |
 
 | No | Nama | NRP | Peran |
@@ -28,7 +28,7 @@ lengkap dengan unit kontrol (Ultimate 5 Max) seharga Rp 825.000, dan ditujukan u
 Harga dan fiturnya (kecepatan tinggi, baterai LiPo 2S) kurang sesuai sebagai media belajar anak sekolah.
 
 Proyek ini melakukan reverse engineering terhadap Ichiduino Pro: fungsi dan arsitekturnya dianalisis,
-lalu dirancang ulang dari nol dengan anggaran maksimal Rp 900.000. Fitur yang dipertahankan, diganti,
+lalu dirancang ulang dari nol dengan anggaran maksimal Rp 1.000.000. Fitur yang dipertahankan, diganti,
 atau ditiadakan dipilih berdasarkan kebutuhan edukasi dan batas anggaran. Selain mengikuti garis,
 robot memiliki kemampuan path planning dengan peta yang ditentukan di awal (pre-defined map by index):
 rute dituliskan sebagai urutan indeks, dan tiap indeks berisi pola sensor pemicu (misalnya persimpangan
@@ -40,7 +40,7 @@ instalasi aplikasi.
 ## 3. Project Objectives / Purposes
 
 1. Melakukan reverse engineering kit Ichiduino Pro dan merancang ulang robot line tracer edukasi
-   berbasis ESP32 dengan anggaran maksimal Rp 900.000.
+   berbasis ESP32 dengan anggaran maksimal Rp 1.000.000.
 2. Membuat robot yang mampu mengikuti garis hitam di atas putih secara otomatis dengan kendali PID,
    dengan akurasi pembacaan posisi garis ≤ 2 mm dan kecepatan rata-rata ≥ 0,5 m/s.
 3. Menerapkan path planning dengan peta yang ditentukan di awal (pre-defined map by index): rute
@@ -109,7 +109,7 @@ Lintasan uji path planning berupa grid garis 4 × 4 titik persimpangan dengan ja
 6. **Ketepatan berhenti di titik tujuan dengan error ≤ 30 mm.** Jarak pusat robot ke titik tujuan diukur setelah robot berhenti, pada 10 rute di poin 5. Alat ukur: penggaris/meteran.
 7. **Robot berhenti ≤ 500 ms setelah garis tidak terdeteksi.** Garis diputus, lalu waktu dihitung dari rekaman video slow-motion, 3 kali ulangan. Alat ukur: video HP 240 fps.
 8. **Motor mati saat tegangan baterai < 3,2 V per sel.** Baterai diganti power supply, lalu tegangan diturunkan perlahan dan dicatat saat motor mati, 3 kali ulangan. Alat ukur: power supply dan multimeter.
-9. **Total biaya proyek ≤ Rp 900.000.** Dihitung dari jumlah RAB, dan setiap harga disertai tautan toko. Alat ukur: daftar harga.
+9. **Total biaya proyek ≤ Rp 1.000.000.** Dihitung dari jumlah RAB, dan setiap harga disertai tautan toko. Alat ukur: daftar harga.
 10. **Seluruh proses dan hasil pengujian terdokumentasi** dalam laporan mingguan dan laporan akhir PJBL.
 
 ## 7. Milestone Dates
@@ -134,7 +134,7 @@ sehingga posisi garis dan persimpangan tidak terbaca akurat.
 | R3 | Belokan 90° di persimpangan tidak presisi | Rute dan titik berhenti salah | Belok berbasis encoder, lalu dikunci kembali ke garis oleh sensor |
 | R4 | PID tidak stabil saat kecepatan/tegangan baterai berubah | Kecepatan dan keterulangan gagal | Tuning lewat serial, kompensasi tegangan baterai |
 | R5 | PCB salah desain atau terlambat datang | Jadwal G3–G4 mundur | Prototipe breadboard dulu, pesan PCB paling lambat minggu 10 |
-| R6 | Biaya melebihi Rp 900.000 | Sasaran biaya gagal | RAB dipantau tiap pembelian |
+| R6 | Biaya melebihi Rp 1.000.000 | Sasaran biaya gagal | RAB dipantau tiap pembelian |
 | R7 | Baterai Li-ion overcharge / overdischarge / korsleting | Bahaya keselamatan | BMS 2S, cutoff firmware, ruang baterai tertutup |
 | R8 | QRE1113GR mahal (Rp15.000/pcs di toko lokal) sehingga dibeli 12 tanpa cadangan; sensor rusak saat disolder atau barang palsu | Satu titik sensor mati, posisi garis kurang presisi | Cek tanda pin 1 dan uji tiap sensor di breadboard (LED IR dilihat lewat kamera HP) sebelum disolder; kalau ada yang rusak, beli satuan di toko yang sama |
 
@@ -178,8 +178,8 @@ Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro t
 | Baut, mur, spacer | Rp15.000 | 1 | paket | Rp15.000 |
 | **TOTAL** | | | | **Rp55.000** |
 
-**TOTAL BUDGET: Rp902.000** (Electrical Rp847.000 + Mechanical Rp55.000), **lewat Rp2.000 dari batas Rp900.000**
-(perlu dipangkas sebelum pitching RAB). Lintasan uji disediakan di luar RAB; breadboard + kabel jumper dan timah
+**TOTAL BUDGET: Rp902.000** (Electrical Rp847.000 + Mechanical Rp55.000), **sisa Rp98.000 dari batas Rp1.000.000**
+(batas anggaran dinaikkan dari Rp900.000 menjadi Rp1.000.000 pada 26/10/2026). Lintasan uji disediakan di luar RAB; breadboard + kabel jumper dan timah
 solder + flux dipinjam dari lab (tidak masuk RAB sejak 22/10/2026). Revisi 13/10/2026: 16 sensor +
 multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000, LED IR selalu nyala tanpa MOSFET (−Rp16.500).
 Revisi 20/10/2026: sensor jadi 12 pasang LED merah + fototransistor SMD 1206, MCP23017 + LED indikator dihapus

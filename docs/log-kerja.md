@@ -20,6 +20,9 @@ Entri terbaru di atas.
 - Koreksi dari screenshot blok Ichiduino di mBlock (user): indeks = **nomor langkah rute** (pemicu pola sensor → aksi →
   ikuti garis), bukan nomor persimpangan 1–16. Charter + docx, deck slide 4, 5, 8, naskah, CLAUDE.md disesuaikan.
 - Charter.md "Yang TIDAK dikerjakan": batas 90° hanya untuk rute terpendek otomatis; rencana per indeks bisa di lintasan lain.
+- **Batas RAB naik jadi Rp1.000.000** (info user; charter Word user sudah direvisi): RAB Rp902.000 sekarang sisa Rp98.000.
+  Diperbarui: charter.md + docx (deskripsi, latar, tujuan 1, sasaran 9, R6, ringkasan anggaran), deck slide 3, 6, 13
+  (grafik batas Rp1 juta, "Sisa Rp98.000") + catatan bicara, naskah, CLAUDE.md, README, pedoman ringkas, handover.
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck
