@@ -118,6 +118,14 @@ odejs` ke PATH.
 - 25/10: gambar arsitektur sistem: kotak **Database / Log Pengujian** dan jalur **Wi-Fi/HTTP** ESP32 ↔ platform
   Blockly dipertahankan (keputusan user); upload program juga bisa lewat USB-C.
 
+- 26/10: **path planning = pre-defined map by index** (usulan Bu Fira lewat WhatsApp; pemetaan otonom dinilai terlalu
+  lama). Peta grid 4 × 4 ditentukan di awal, persimpangan berindeks 1–16 (dari kiri bawah, baris demi baris). Konsep
+  **gabungan** (keputusan user): aksi per indeks (kiri/kanan/lurus/berhenti) disusun lewat blok seperti Ichiduino
+  (video ICHIBOT "02. Tutorial Path Planning ICHIDUINO PRO … mBlock") + blok rute terpendek otomatis (BFS) dari peta
+  yang sama. Robot tidak menjelajah. Charter (tujuan 3 dan 5, lingkup, sasaran 5) dan deck pitching sudah ikut.
+  Hardware dan RAB tetap. Tambahan blok Mind+: `aksi di indeks () [kiri/kanan/lurus/berhenti]`,
+  `rute terpendek dari indeks () ke ()`.
+
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →
   `ledcAttach`). Bungkus pakai `#if ESP_ARDUINO_VERSION_MAJOR >= 3`, karena Mind+ bisa jadi pakai core yang lebih lama.

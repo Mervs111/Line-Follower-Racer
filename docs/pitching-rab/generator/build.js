@@ -164,11 +164,11 @@ s.addText("Target uji lapangan: lomba IARC XII Smart Robotics, 9–10 Januari 20
   { x: 1.23, y: 5.05, w: 4.6, h: 0.8, fontSize: 14, color: SOFT, margin: 0, valign: "top", isTextBox: true, objectName: "Target lomba" });
 [
   ["Ikuti garis", "Kendali PID dengan 12 sensor QRE1113GR"],
-  ["Path planning", "Persimpangan grid disimpan sebagai graf, robot menjalankan rute terpendek"],
+  ["Path planning", "Peta grid ditentukan di awal (indeks); rute per indeks atau rute terpendek otomatis"],
   ["Block coding web", "Diprogram lewat Blockly di browser, tanpa instalasi"],
   ["Aman", "BMS baterai, motor mati < 3,2 V/sel, berhenti ≤ 500 ms saat garis hilang"],
 ].forEach(([h, b], i) => card(s, 6.35 + (i % 2) * 2.83, 2.35 + Math.floor(i / 2) * 1.83, 2.68, 1.68, h, b, `Fitur ${i + 1}`));
-s.addNotes("Solusi kami empat fitur utama: ikut garis dengan PID, path planning di grid, block coding berbasis web, dan fitur keamanan. Biayanya sekitar 45 persen harga kit pembanding.");
+s.addNotes("Solusi kami empat fitur utama: ikut garis dengan PID, path planning dengan peta grid yang ditentukan di awal (per indeks persimpangan), block coding berbasis web, dan fitur keamanan. Biayanya sekitar 45 persen harga kit pembanding.");
 
 // ---------------------------------------------------------------- 5. Reverse engineering
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Masalah dan solusi" });
@@ -182,7 +182,7 @@ const re = [
   ["Baterai", "LiPo 2S 400 mAh", "2× 18650 + BMS + charger USB-C", "diganti, lebih awet"],
   ["Motor", "DC 16 mm 12 V 1200 RPM", "N20 6 V 500 RPM + encoder", "diganti"],
   ["Pemrograman", "mBlock, Arduino IDE", "Blockly web, Arduino", "diganti"],
-  ["Path planning", "tidak disebut di brosur", "grid 4 × 4, rute terpendek", "ditambah"],
+  ["Path planning", "aksi per indeks lewat mBlock", "peta indeks + rute terpendek otomatis", "dikembangkan"],
   ["Servo, kipas", "2 port servo, 1 port kipas", "tidak ada", "ditiadakan"],
 ];
 s.addTable(
@@ -190,7 +190,7 @@ s.addTable(
    ...re.map((r, i) => r.map((c, j) => ({ text: c, options: { bold: j === 0 || (i === 0 && j === 2), color: j === 3 ? HI : WHITE, fill: { color: i % 2 ? C.accent5 : C.text1 } } })))],
   { x: 1.23, y: 2.25, w: 10.87, colW: [1.9, 3.1, 3.77, 2.1], rowH: 0.36, fontSize: 14, color: WHITE, valign: "middle", margin: [0.03, 0.1, 0.03, 0.1], border: { type: "solid", pt: 0.75, color: C.accent3 }, objectName: "Tabel reverse engineering" }
 );
-s.addNotes("Tabel reverse engineering: fungsi utama kit dipertahankan (12 sensor, OLED), komponen yang mahal atau kurang cocok untuk edukasi diganti, path planning ditambahkan, fitur lomba ditiadakan. Kinerja nyata kit akan diukur di lintasan yang sama.");
+s.addNotes("Tabel reverse engineering: fungsi utama kit dipertahankan (12 sensor, OLED), komponen yang mahal atau kurang cocok untuk edukasi diganti. Path planning di kit disusun per indeks lewat mBlock; kami pakai cara yang sama ditambah rute terpendek otomatis dari peta indeks. Fitur lomba ditiadakan. Kinerja nyata kit akan diukur di lintasan yang sama.");
 
 // ---------------------------------------------------------------- 6. Sasaran terukur
 s = pres.addSlide({ masterName: "ISI_TENGAH", sectionTitle: "Masalah dan solusi" });
@@ -200,7 +200,7 @@ s.addText("SASARAN TERUKUR", { placeholder: "title" });
   ["≥ 0,5 m/s", "kecepatan rata-rata"],
   ["≤ 5%", "simpangan baku waktu tempuh, 10 putaran"],
   ["≥ 95%", "deteksi persimpangan, ≥ 40 persimpangan"],
-  ["10 / 10", "rute terpendek benar"],
+  ["10 / 10", "rute pada peta indeks dijalankan benar"],
   ["≤ 30 mm", "error berhenti di titik tujuan"],
   ["≤ 500 ms", "berhenti saat garis hilang"],
   ["< 3,2 V", "per sel: motor mati, baterai lemah"],
@@ -234,8 +234,8 @@ framed(s, "diagram-kendali.png", 1.29, 2.3, 7.3, 7.3 / (1840 / 620), "Diagram ke
 bullets(s, [
   "Loop luar: posisi garis dari 12 sensor → PID → kecepatan motor kiri/kanan.",
   "Loop dalam: encoder mengukur jarak tempuh dan sudut belok 90° (tanpa IMU).",
-  "Tiap persimpangan grid = simpul graf; rute terpendek dicari dengan BFS/Dijkstra.",
-], { x: 1.23, y: 4.95, w: 7.4, h: 1.15, gap: 4, objectName: "Kendali poin" });
+  "Peta grid ditentukan di awal (pre-defined map by index): robot menghitung persimpangan dan menjalankan aksi tiap indeks, disusun lewat blok atau rute terpendek otomatis (BFS).",
+], { x: 1.23, y: 4.9, w: 7.4, h: 1.25, gap: 3, objectName: "Kendali poin" });
 // grid 4 × 4 dengan rute contoh
 const gx = 9.25, gy = 2.45, gs = 0.74;
 const node = (i, j) => [gx + i * gs, gy + j * gs];
@@ -252,13 +252,19 @@ for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
   const [x, y] = node(i, j);
   s.addShape(pres.ShapeType.ellipse, { x: x - 0.08, y: y - 0.08, w: 0.16, h: 0.16, fill: { color: WHITE }, objectName: `Simpul ${i}-${j}` });
 }
+for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
+  const [x, y] = node(i, j);
+  const idx = (3 - j) * 4 + i + 1; // indeks 1–16 dari kiri bawah, baris demi baris
+  if (idx === 1 || idx === 16) continue;
+  s.addText(String(idx), { x: x + 0.08, y: y - 0.34, w: 0.34, h: 0.26, fontSize: 11, color: SOFT, margin: 0, isTextBox: true, objectName: `Indeks ${idx}` });
+}
 for (const [lbl, [i, j]] of [["S", [0, 3]], ["T", [3, 0]]]) {
   const [x, y] = node(i, j);
   s.addShape(pres.ShapeType.ellipse, { x: x - 0.2, y: y - 0.2, w: 0.4, h: 0.4, fill: { color: C.accent2 }, objectName: `Titik ${lbl} lingkaran` });
   s.addText(lbl, { x: x - 0.2, y: y - 0.2, w: 0.4, h: 0.4, fontSize: 14, bold: true, color: C.text1, align: "center", valign: "middle", margin: 0, isTextBox: true, objectName: `Titik ${lbl}` });
 }
-s.addText("Grid 4 × 4 persimpangan, jarak 30 cm\nS = awal, T = tujuan", { x: 8.95, y: 4.95, w: 2.9, h: 0.65, fontSize: 14, color: SOFT, margin: 0, valign: "top", isTextBox: true, objectName: "Grid keterangan" });
-s.addNotes("Kendali loop tertutup: posisi garis diumpankan ke PID. Encoder dipakai untuk jarak dan belok 90 derajat. Path planning: lintasan grid 4x4 dipetakan sebagai graf, lalu rute terpendek dihitung dengan BFS atau Dijkstra.");
+s.addText("Peta 4 × 4, indeks 1–16 (30 cm)\nContoh rute S = 1 → T = 16", { x: 8.95, y: 4.98, w: 3.1, h: 0.6, fontSize: 14, color: SOFT, margin: 0, valign: "top", isTextBox: true, objectName: "Grid keterangan" });
+s.addNotes("Kendali loop tertutup: posisi garis diumpankan ke PID. Encoder dipakai untuk jarak dan belok 90 derajat. Path planning memakai peta yang ditentukan di awal (pre-defined map by index, usulan Bu Fira): tiap persimpangan grid diberi nomor 1 sampai 16. Robot menghitung persimpangan yang dilewati dan menjalankan aksi untuk tiap indeks: belok kiri, belok kanan, lurus, atau berhenti. Aksinya bisa disusun siswa lewat blok seperti di Ichiduino, atau dihitung otomatis sebagai rute terpendek (BFS) dari peta yang sama. Robot tidak perlu menjelajah dulu, jadi lebih cepat dikerjakan dan diuji.");
 
 // ---------------------------------------------------------------- 9. PCB
 s = pres.addSlide({ masterName: "ISI_A", sectionTitle: "Rancangan" });

@@ -1,14 +1,14 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
 Semester Gasal 2026/2027 · Revisi 3.4 (arahan dosen 05/10/2026: reverse engineering, path planning,
-budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU) · diperbarui 22/10/2026: 12 QRE1113GR (toko lokal), PCB sensor bentuk jangkar
+budget maksimal Rp 900.000; arahan 09/10/2026: tanpa IMU; arahan 26/10/2026: path planning dengan peta yang ditentukan di awal) · diperbarui 22/10/2026: 12 QRE1113GR (toko lokal), PCB sensor bentuk jangkar
 
 ## 1. Project Identity
 
 | | |
 |---|---|
 | Nama | Robot Line Tracer Micro |
-| Short Description | Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino Pro, yang mampu mengikuti garis secara otomatis dan merencanakan rute terpendek (path planning) pada lintasan bercabang. Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan dibangun dengan anggaran maksimal Rp 900.000. |
+| Short Description | Robot line tracer edukasi untuk anak sekolah, hasil reverse engineering kit Ichiduino Pro, yang mampu mengikuti garis secara otomatis dan menjalankan path planning pada lintasan grid yang petanya ditentukan di awal (pre-defined map by index). Berbasis ESP32, dapat diprogram dengan block coding berbasis web, dan dibangun dengan anggaran maksimal Rp 900.000. |
 | Supervisor | Fira Aulia, S.Tr.T, M.Tr.T |
 
 | No | Nama | NRP | Peran |
@@ -30,9 +30,10 @@ Harga dan fiturnya (kecepatan tinggi, baterai LiPo 2S) kurang sesuai sebagai med
 Proyek ini melakukan reverse engineering terhadap Ichiduino Pro: fungsi dan arsitekturnya dianalisis,
 lalu dirancang ulang dari nol dengan anggaran maksimal Rp 900.000. Fitur yang dipertahankan, diganti,
 atau ditiadakan dipilih berdasarkan kebutuhan edukasi dan batas anggaran. Selain mengikuti garis,
-robot memiliki kemampuan path planning, yaitu memetakan lintasan bercabang dan menentukan rute
-terpendek menuju titik tujuan, sehingga siswa dapat belajar konsep algoritma dan navigasi melalui
-block coding berbasis web tanpa instalasi aplikasi.
+robot memiliki kemampuan path planning dengan peta lintasan yang ditentukan di awal (pre-defined map
+by index): setiap persimpangan grid diberi nomor indeks, lalu rute disusun sebagai aksi per indeks atau
+dihitung otomatis sebagai rute terpendek menuju titik tujuan, sehingga siswa dapat belajar konsep
+algoritma dan navigasi melalui block coding berbasis web tanpa instalasi aplikasi.
 
 ## 3. Project Objectives / Purposes
 
@@ -40,11 +41,14 @@ block coding berbasis web tanpa instalasi aplikasi.
    berbasis ESP32 dengan anggaran maksimal Rp 900.000.
 2. Membuat robot yang mampu mengikuti garis hitam di atas putih secara otomatis dengan kendali PID,
    dengan akurasi pembacaan posisi garis ≤ 2 mm dan kecepatan rata-rata ≥ 0,5 m/s.
-3. Menerapkan path planning: robot mendeteksi persimpangan, menyimpan peta lintasan sebagai graf,
-   serta menghitung dan menjalankan rute terpendek menuju titik tujuan.
+3. Menerapkan path planning dengan peta lintasan yang ditentukan di awal (pre-defined map by index):
+   setiap persimpangan grid diberi nomor indeks, robot menghitung persimpangan yang dilewati dan menjalankan
+   aksi tiap indeks (belok kiri, belok kanan, lurus, berhenti), baik dari rute yang disusun pengguna maupun
+   rute terpendek yang dihitung otomatis dari peta.
 4. Menerapkan fitur keamanan berupa berhenti ≤ 500 ms setelah garis tidak terdeteksi dan pemutusan
    saat tegangan baterai < 3,2 V per sel.
-5. Mengembangkan platform block coding berbasis web (Blockly), termasuk blok navigasi menuju titik tujuan.
+5. Mengembangkan platform block coding berbasis web (Blockly), termasuk blok aksi per indeks dan blok rute
+   terpendek menuju titik tujuan.
 6. Menguji performa, keterulangan gerak, dan path planning robot, serta melakukan uji coba kepada
    siswa sekolah.
 
@@ -56,7 +60,8 @@ block coding berbasis web tanpa instalasi aplikasi.
 - Robot line tracer edukasi berbasis ESP32, dirancang dari nol
 - Elektronik: 12 sensor garis QRE1113GR (PCB sensor bentuk jangkar) + multiplexer, motor DC + encoder, driver motor, OLED, catu daya baterai 2S (2× 18650)
 - Firmware: baca sensor, kalibrasi, kendali PID, deteksi persimpangan, fitur keamanan
-- Path planning: pemetaan lintasan bercabang dan pencarian rute terpendek ke titik tujuan
+- Path planning: peta grid yang ditentukan di awal (indeks persimpangan), rute berupa aksi per indeks atau
+  rute terpendek otomatis ke titik tujuan
 - Platform block coding berbasis web (Blockly)
 - Prototipe sampai desain PCB yang siap diproduksi
 - Uji performa robot, uji path planning, dan uji coba ke pengguna (anak sekolah)
@@ -66,6 +71,8 @@ block coding berbasis web tanpa instalasi aplikasi.
 - Produksi massal dan penjualan (baru rencana bisnis)
 - Lintasan selain garis hitam di atas putih
 - Path planning pada persimpangan dengan sudut cabang selain 90° (peta lintasan berbentuk grid; garis yang berbelok dan melengkung tetap dapat diikuti)
+- Pemetaan lintasan secara otonom (robot menjelajah sendiri); peta ditentukan di awal sesuai arahan dosen
+  26/10/2026
 - Penghindaran halangan / obstacle avoidance (bukan kebutuhan line tracer)
 - Upload program lewat Bluetooth dan dukungan iPad/Safari (jadi pengembangan lanjutan)
 - Fitur lomba, seperti kecepatan tinggi dan kipas penyedot
@@ -88,13 +95,13 @@ block coding berbasis web tanpa instalasi aplikasi.
 
 ## 6. Project's Criteria for Success
 
-Lintasan uji path planning berupa grid garis 4 × 4 titik persimpangan dengan jarak antar titik 30 cm.
+Lintasan uji path planning berupa grid garis 4 × 4 titik persimpangan (indeks 1–16) dengan jarak antar titik 30 cm.
 
 1. **Akurasi pembacaan posisi garis ≤ 2 mm.** Diuji dengan meletakkan robot dalam keadaan diam (motor mati) pada posisi geser −20 s.d. +20 mm (tiap 5 mm) dari tengah garis, lalu posisi yang terbaca sensor dibandingkan dengan posisi sebenarnya, 3 kali ulangan. Alat ukur: kertas milimeter dan jangka sorong.
 2. **Kecepatan rata-rata robot ≥ 0,5 m/s.** Dihitung dari panjang lintasan dibagi waktu tempuh, 3 kali ulangan. Alat ukur: meteran dan stopwatch/video.
 3. **Keterulangan waktu tempuh dengan simpangan baku ≤ 5%.** Robot dijalankan 10 putaran pada lintasan dan kondisi baterai yang sama. Alat ukur: stopwatch/timer firmware.
 4. **Deteksi persimpangan benar ≥ 95%.** Robot melewati minimal 40 persimpangan, lalu catatan deteksi robot dibandingkan dengan jumlah persimpangan sebenarnya. Alat ukur: log serial dan video.
-5. **Path planning menghasilkan rute terpendek pada 10 dari 10 percobaan.** Diuji pada 10 pasang titik awal dan tujuan yang berbeda; rute yang dipilih robot dibandingkan dengan rute terpendek hasil hitung manual. Alat ukur: log serial.
+5. **Path planning dengan peta indeks benar pada 10 dari 10 percobaan.** Diuji pada 10 pasang titik awal dan tujuan yang berbeda; robot harus menjalankan seluruh aksi indeks tanpa salah belok, dan rute yang dihitung otomatis dibandingkan dengan rute terpendek hasil hitung manual. Alat ukur: log serial dan video.
 6. **Ketepatan berhenti di titik tujuan dengan error ≤ 30 mm.** Jarak pusat robot ke titik tujuan diukur setelah robot berhenti, pada 10 rute di poin 5. Alat ukur: penggaris/meteran.
 7. **Robot berhenti ≤ 500 ms setelah garis tidak terdeteksi.** Garis diputus, lalu waktu dihitung dari rekaman video slow-motion, 3 kali ulangan. Alat ukur: video HP 240 fps.
 8. **Motor mati saat tegangan baterai < 3,2 V per sel.** Baterai diganti power supply, lalu tegangan diturunkan perlahan dan dicatat saat motor mati, 3 kali ulangan. Alat ukur: power supply dan multimeter.

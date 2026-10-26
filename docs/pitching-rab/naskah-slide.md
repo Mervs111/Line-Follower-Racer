@@ -45,7 +45,8 @@ Catatan bicara: buka dengan harga kit, lalu arahan dosen sebagai batas proyek.
 **Robot Line Tracer Micro**: hasil reverse engineering Ichiduino Pro, dirancang ulang dari nol.
 
 - Mengikuti garis hitam otomatis dengan kendali **PID**, 12 sensor garis.
-- **Path planning**: persimpangan grid disimpan sebagai graf, robot menghitung dan menjalankan rute terpendek.
+- **Path planning** dengan peta grid yang ditentukan di awal (pre-defined map by index, usulan Bu Fira 26/10): tiap
+  persimpangan bernomor, rute disusun per indeks lewat blok atau dihitung otomatis sebagai rute terpendek.
 - **Block coding berbasis web (Blockly)**: siswa memprogram tanpa instalasi aplikasi.
 - **Aman**: BMS baterai, motor mati di bawah 3,2 V per sel, berhenti ≤ 500 ms kalau garis hilang.
 - **Rp902.000**, sekitar 45% harga kit pembanding.
@@ -63,7 +64,7 @@ Target uji lapangan: lomba **IARC XII Smart Robotics** (9–10/01/2027, arena gr
 | Baterai | LiPo 2S 400 mAh | 2× 18650 (2S) + BMS + charger USB-C, ± 3 jam | diganti (lebih aman, lebih awet) |
 | Motor | DC 16 mm 12 V 1200 RPM | N20 6 V 500 RPM **+ encoder** | diganti (belok 90° presisi untuk path planning) |
 | Pemrograman | mBlock, Arduino IDE | Blockly web, Arduino | diganti (tanpa instalasi) |
-| Path planning | tidak disebut di brosur | grid 4 × 4, rute terpendek | ditambah |
+| Path planning | aksi per indeks lewat mBlock | peta indeks + rute terpendek otomatis | dikembangkan |
 | Servo, kipas | 2 port servo, 1 port kipas | tidak ada | ditiadakan (fitur lomba) |
 | Ukuran | 12,5 × 14,3 × 5,5 cm | 11,6 × 16,5 × 6,2 cm | setara |
 
@@ -77,7 +78,7 @@ Catatan bicara: kinerja nyata kit (kecepatan, akurasi, daya tahan) akan diukur d
 | Kecepatan rata-rata | ≥ 0,5 m/s | panjang lintasan / waktu, 3 ulangan |
 | Keterulangan waktu tempuh | simpangan baku ≤ 5% | 10 putaran |
 | Deteksi persimpangan | ≥ 95% | ≥ 40 persimpangan |
-| Path planning | rute terpendek 10/10 | 10 pasang titik awal–tujuan |
+| Path planning (peta indeks) | rute dijalankan benar 10/10 | 10 pasang titik awal–tujuan |
 | Ketepatan berhenti | error ≤ 30 mm | 10 rute |
 | Berhenti saat garis hilang | ≤ 500 ms | video 240 fps, 3 ulangan |
 | Cutoff baterai | < 3,2 V/sel | power supply, 3 ulangan |
@@ -98,9 +99,11 @@ Gambar: `docs/diagram-blok.png`
 Gambar: `docs/diagram-blok-kendali.png`
 
 - Loop tertutup: posisi garis dari sensor → PID → kecepatan motor kiri/kanan; loop dalam dari encoder.
-- Lintasan grid 4 × 4 persimpangan, jarak 30 cm: tiap persimpangan = simpul graf.
-- Rute terpendek dicari dengan BFS/Dijkstra; belok 90° dihitung dari selisih putaran roda (encoder), lalu dikunci
-  kembali ke garis oleh sensor (tanpa IMU, sesuai arahan dosen 09/10).
+- Peta ditentukan di awal (pre-defined map by index, usulan Bu Fira 26/10): grid 4 × 4, persimpangan berindeks 1–16,
+  jarak 30 cm. Robot tidak menjelajah; ia menghitung persimpangan yang dilewati dan menjalankan aksi tiap indeks
+  (belok kiri, belok kanan, lurus, berhenti).
+- Aksi per indeks disusun siswa lewat blok (seperti Ichiduino), atau dihitung otomatis sebagai rute terpendek (BFS)
+  dari peta yang sama. Belok 90° dari selisih putaran roda (encoder), lalu dikunci ke garis oleh sensor (tanpa IMU).
 
 ## 9. Rancangan PCB (2 papan)
 

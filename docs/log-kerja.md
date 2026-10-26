@@ -14,6 +14,9 @@ Entri terbaru di atas.
   Generator `docs/pitching-rab/generator/build.js` (pptxgenjs). Diagram blok dibetulkan: PCB sensor "bentuk jangkar",
   bukan "gaya XLINE" (`docs/diagram-blok.png` + sumber). Peran anggota di slide 2 masih `[isi peran]`.
 - Charter docx dibuat ulang (RAB Rp902.000 sama dengan deck; tanggal persetujuan 27 Oktober 2026).
+- **Path planning diganti ke pre-defined map by index** (usulan Bu Fira): peta grid 4 × 4 berindeks 1–16 ditentukan di awal,
+  aksi per indeks lewat blok + rute terpendek otomatis (BFS). Diperbarui: `docs/charter.md` + docx (tujuan 3 dan 5,
+  lingkup, sasaran 5), deck slide 4, 5, 6, 8 + catatan bicara, naskah, CLAUDE.md.
 
 ## 25/10/2026
 - Daftar perubahan gambar arsitektur sistem untuk kelompok: sensor 12 QRE1113GR + mux, TB6612FNG, motor N20, buck
