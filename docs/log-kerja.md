@@ -5,6 +5,11 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 27/10/2026
+- **Naskah bicara pitching** `docs/pitching-rab/naskah-bicara.md`: kalimat per slide (16 slide, ±13 menit, 1.342
+  kata), usulan pembagian 4 pembicara per blok (pembuka, produk & sasaran, rancangan teknis & simulasi, RAB, penutup),
+  daftar persiapan (peran slide 2, gambar CoppeliaSim di slide 11, video offline), angka wajib hafal, dan 13
+  antisipasi pertanyaan dengan jawaban dari charter dan hasil simulasi. Slide 11 dibacakan dengan hasil CoppeliaSim
+  (8,3 s / 12,6 mm; rute terpendek 5,7 s / 11,2 mm).
 - **RAB diperbarui dari spreadsheet kelompok** `RAB PJBL P01.ods` (harga hasil validasi di marketplace online):
   total **Rp937.390** (Electrical Rp862.390 + Mechanical Rp50.000 + Lain-lain timah + flux Rp25.000), sisa
   Rp62.610 dari Rp1.000.000. Perubahan utama: TB6612FNG Rp50.000, baterai 18650 1 paket isi 2 Rp94.990, ESP32

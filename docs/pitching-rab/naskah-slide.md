@@ -1,5 +1,7 @@
 # Naskah slide Pitching RAB (27/10/2026)
 
+Kalimat yang diucapkan tiap pembicara (pembagian, waktu, antisipasi tanya jawab): `naskah-bicara.md`.
+
 Pitching RAB untuk minta dana ke dosen/departemen, 10–15 menit, 15 slide utama + 2 lampiran (±50 detik per
 slide). Semua angka diambil dari `docs/charter.md` (rev 3.4, 22/10/2026) dan file desain di repo per 26/10/2026; RAB diperbarui 27/10/2026 dengan harga
 hasil validasi di marketplace online.
