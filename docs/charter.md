@@ -213,7 +213,7 @@ menggantikan skid nilon (+Rp5.000); timah solder + flux masuk RAB (+Rp25.000); k
 | QRE1113GR | Shopee | [produk](https://shopee.co.id/product/12793026/28316976609) |
 | CD74HC4067M SOP-24 | WKH Electronic (Tokopedia) | menyusul |
 | TB6612FNG | Shopee | [produk](https://shopee.co.id/Modul-Driver-Motor-Dual-TB6612FNG-i.116951623.49164769328) |
-| Motor N20 + encoder (pilih 6 V 500 RPM) | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/motor-dc-jga12-n20-3v-6v-micro-gearbox-high-torque-encoder-untuk-robot-arduino-diy-1731127914696705598) |
+| Motor N20 + encoder, varian MTR-0239 (6 V 500 RPM; torsi rated 0,2 kg·cm, rasio 30:1) | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/motor-dc-jga12-n20-3v-6v-micro-gearbox-high-torque-encoder-untuk-robot-arduino-diy-1731127914696705598) |
 | Push button TC-1212T 12×12×5 mm | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/cnc-tactile-switch-push-button-tc-1212t-12x12x5-mm-for-arduino-1733707899505378878) |
 | Resistor SMD 0805 220 Ω dan 10 kΩ | mikro-automasi (Tokopedia) | [produk](https://www.tokopedia.com/mikro-automasi/resistor-smd-0805-220r-220-dan-10k-10-k-ohm-1-1-8-w-10k-393a6) |
 | Buzzer aktif 12 × 9,5 mm | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/buzzer-speaker-active-3v-5v-12x9-5mm-modul-alarm-suara-mini-for-arduino-esp32-uno-mega-nano-diy-elektronik-project-1733103146066150974) |

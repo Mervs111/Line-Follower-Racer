@@ -5,6 +5,9 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 27/10/2026
+- Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
+  0,2 kg·cm (1,9× kebutuhan 0,10), stall 0,45 kg·cm, rasio 30:1; arus stall tertulis 60 mA (salah ketik, ditanyakan).
+  Pada beban rated robot masih 0,53 m/s. Perhitungan + tautan charter diperbarui; teks slide "kenapa N20" disiapkan.
 - **Perhitungan rancangan diperbarui** (`docs/perhitungan-motor.md`; draf 08/10 jadi lampiran): kecepatan (0,89 m/s,
   281 RPM untuk 0,5 m/s, duty PWM terkompensasi 6,0/V_bat), torsi (10,2 N·mm ≈ 0,10 kg·cm per roda, SF 2), traksi,
   tikungan, rem (2,8 cm / 0,11 s), anggaran massa (±0,29 kg; luas PCB dari file KiCad), encoder (0,16°/hitungan,

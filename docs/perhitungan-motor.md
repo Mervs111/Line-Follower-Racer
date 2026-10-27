@@ -12,7 +12,8 @@ Semua angka dihitung ulang dengan skrip, bukan dengan tangan.
 | Besaran | Hasil | Sasaran / batas | Status |
 |---|---|---|---|
 | Kecepatan maksimum teoritis | 0,89 m/s | ≥ 0,5 m/s (sasaran 2) | memenuhi |
-| Torsi desain per roda (SF 2) | 10,2 N·mm ≈ 0,10 kg·cm | torsi rated motor (**cek listing**) | perlu dicek |
+| Torsi desain per roda (SF 2) | 10,2 N·mm ≈ 0,10 kg·cm | torsi rated N20 0,20 kg·cm (listing) | memenuhi (1,9×) |
+| Kecepatan pada beban rated (300 RPM) | 0,53 m/s | ≥ 0,5 m/s | memenuhi |
 | Massa robot | ±0,25 kg tanpa 3D print, ±0,29 kg lengkap | desain 0,30 kg | memenuhi |
 | Jarak dan waktu rem dari 0,5 m/s | 2,8 cm, 0,11 s | berhenti ≤ 500 ms (sasaran 7) | memenuhi |
 | Daya total saat berjalan | 3,1–4,1 W | | |
@@ -21,6 +22,23 @@ Semua angka dihitung ulang dengan skrip, bukan dengan tangan.
 | Arus LED sensor | 15,7 mA (17,3 mA kalau buck 5,35 V) | maks 50 mA | memenuhi |
 | Tegangan ADC baterai | 1,59–2,08 V | rentang ADC 11 dB | memenuhi |
 | Waktu baca 12 sensor | ±0,36 ms | loop kendali 1 ms | memenuhi |
+
+## Spesifikasi motor (listing CNC Store Bandung, varian MTR-0239, dicek 27/10)
+
+| Data | Nilai | Artinya untuk robot |
+|---|---|---|
+| Kecepatan tanpa beban | 500 RPM | 0,89 m/s di roda Ø34 |
+| Kecepatan pada beban rated | 300 RPM | 0,53 m/s: sasaran 0,5 m/s tetap tercapai walau motor dibebani penuh |
+| Torsi rated | 0,2 kg·cm | 1,9× torsi desain 0,10 kg·cm (yang sudah memakai SF 2) |
+| Torsi stall | 0,45 kg·cm | 4,3× torsi desain |
+| Arus rated | 170 mA | 2 motor pada beban rated: 6 V × 0,34 A = 2,0 W |
+| Arus stall | tertulis 60 mA | lebih kecil dari arus rated, jadi hampir pasti salah ketik (kemungkinan 600 mA); tanya penjual |
+| Rasio gearbox | 30 : 1 | dipakai di bagian 5 |
+| Tegangan kerja | 3–6 V | PWM dibatasi 6,0 / V_bat (bagian 1) |
+| PPR encoder, jenis konektor | tidak tertulis | tanya penjual (konektor: PH 2.0 atau XH 2.54) |
+
+Saat robot melaju datar, beban tiap roda hanya ±0,005 kg·cm (hambatan gulir), jauh di bawah torsi rated, jadi
+motor bekerja dekat putaran tanpa bebannya.
 
 ## 1. Kecepatan
 
@@ -57,7 +75,7 @@ hambatan gulir roda karet di kertas/banner C_rr = 0,02 *(asumsi)*.
 | Torsi per roda | τ / 2 | 5,1 N·mm |
 | **Torsi desain per roda (SF 2)** | 5,1 × 2 | **10,2 N·mm ≈ 0,10 kg·cm** |
 
-(1 kg·cm = 98,1 N·mm.) **Cek listing:** torsi *rated* (bukan stall) motor N20 6 V 500 RPM harus ≥ 0,10 kg·cm.
+(1 kg·cm = 98,1 N·mm.) Torsi rated N20 500 RPM di listing **0,2 kg·cm**, jadi 1,9× torsi desain.
 Charter menulis ±9 N·mm karena belum memasukkan hambatan gulir; bedanya kecil.
 
 Daya mekanik puncak saat berakselerasi F · v_maks = 0,53 W. Saat melaju 0,5 m/s cukup melawan hambatan gulir
@@ -110,8 +128,8 @@ memakai 0,22 kg; samakan menjadi 0,30 kg saat simulasi dijalankan lagi.
 
 ## 5. Encoder dan belok 90° tanpa IMU
 
-**Cek listing:** jumlah pulsa encoder per putaran motor (PPR) dan rasio gearbox. Contoh perhitungan dengan
-7 PPR dan rasio 1:30 *(asumsi)*, dibaca kuadratur (×4):
+Rasio gearbox **30 : 1** (listing). PPR encoder belum tertulis di listing; contoh perhitungan memakai 7 PPR
+*(asumsi, tanya penjual)*, dibaca kuadratur (×4):
 
 | | Rumus | Hasil |
 |---|---|---|
@@ -141,7 +159,8 @@ dihitung di rel 5 V.
 | **Total** | **±370 mA** | buzzer (±30 mA) hanya sesekali |
 
 Daya keluaran buck 5,0 V × 0,37 A = 1,84 W; efisiensi buck 88% *(asumsi)* → **2,1 W dari baterai**.
-Motor saat berjalan dengan belokan rata-rata 1–2 W *(asumsi)*, jadi **total 3,1–4,1 W**.
+Motor saat berjalan dengan belokan rata-rata 1–2 W *(asumsi; batas atasnya = 2 motor pada arus rated 170 mA, 2,0 W)*,
+jadi **total 3,1–4,1 W**.
 
 **Energi baterai.** 2 sel 3000 mAh seri: 3,0 Ah × 7,4 V = 22,2 Wh; dipakai sampai 3,2 V/sel ±90% → 20,0 Wh.
 Kapasitas sel marketplace sering di bawah label, jadi kemungkinan buruk 2000 mAh → 13,3 Wh.
@@ -156,8 +175,8 @@ Klaim "±3 jam pemakaian" di charter adalah batas bawahnya.
 **Pengisian.** Adaptor USB-C 5 V 2 A = 10 W, efisiensi charger 85% *(asumsi)* → ±1,0 A ke baterai 8,4 V →
 ±3 jam fase arus tetap + ±0,5 jam fase tegangan tetap = **±3–3,5 jam**.
 
-**Arus puncak.** Kedua motor tertahan (stall) ±0,8 A per motor *(asumsi, **cek listing**)* + rel 5 V ±0,3 A dari
-sisi baterai → ±1,9 A. Syarat: arus stall motor ≤ 1,2 A (batas kontinu TB6612 per kanal, puncak 3,2 A), dan arus
+**Arus puncak.** Arus stall di listing tertulis 60 mA (salah ketik, lihat tabel spesifikasi); dengan asumsi
+±0,8 A per motor + rel 5 V ±0,3 A dari sisi baterai → ±1,9 A. Syarat: arus stall motor ≤ 1,2 A (batas kontinu TB6612 per kanal, puncak 3,2 A), dan arus
 BMS ≥ 3 A (**cek listing**).
 
 ## 7. Rangkaian
@@ -185,8 +204,9 @@ BMS ≥ 3 A (**cek listing**).
    ESP32 tanpa kapasitor (τ = 2,5 ms, cukup untuk memantau baterai).
 3. Batasi PWM motor dengan **kompensasi tegangan** (duty = 6,0 / V_bat), bukan angka tetap 70%.
 4. Baca encoder dengan **PCNT** ESP32.
-5. **Cek listing motor:** torsi rated ≥ 0,10 kg·cm, arus stall ≤ 1,2 A, PPR encoder, dan rasio gear. Cek juga
-   arus maksimum BMS dan arus cas modul charger.
+5. Motor MTR-0239 sudah dicek: torsi rated 0,2 kg·cm (cukup), rasio 30 : 1. **Masih ditanyakan ke penjual:** arus
+   stall (tertulis 60 mA, salah ketik), PPR encoder, dan jenis konektor (PH 2.0 atau XH 2.54). Cek juga arus maksimum
+   BMS dan arus cas modul charger.
 6. Samakan massa simulasi menjadi 0,30 kg, dan torsi di charter menjadi ±10 N·mm (0,10 kg·cm).
 
 ---
