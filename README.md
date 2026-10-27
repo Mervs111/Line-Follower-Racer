@@ -12,7 +12,7 @@ blok (user extension Mind+). Target lomba: IARC XII Smart Robotics (9–10/01/20
 
 | Bagian | Status | Di mana |
 |---|---|---|
-| Charter & RAB | Charter sudah disesuaikan dengan rancangan terbaru. **RAB Rp887.000, sisa Rp113.000** dari batas Rp1.000.000 | `docs/charter.md`, `docs/Project_Charter_PJBL.docx` |
+| Charter & RAB | Charter sudah disesuaikan dengan rancangan terbaru. **RAB Rp937.390 (harga hasil validasi marketplace 27/10), sisa Rp62.610** dari batas Rp1.000.000 | `docs/charter.md`, `docs/Project_Charter_PJBL.docx` |
 | Diagram (blok, wiring, arsitektur, flowchart) | Selesai, sudah sesuai rancangan 22/10 | tautan di bawah, `docs/wiring-diagram.html` |
 | PCB sensor | **Rev B disetujui**: bentuk jangkar, lebar 95 mm, 12 QRE1113GR + mux CD74HC4067, DRC 0 | `hardware/sensor-garis/` (+ `REVISI.md`) |
 | Skematik PCB utama | **Selesai**: 21 komponen, ERC 0, netlist dicek terhadap pin map | `hardware/pcb-utama/pcb-utama.kicad_sch`, PDF `pcb-utama-skematik.pdf` |
@@ -45,7 +45,7 @@ PCB dipesan **paling lambat minggu 10**, prototipe jalan 3× berturut-turut untu
       tapi bertentangan dengan alasan keselamatan di charter, jadi tanyakan dosen dulu.
 - [ ] **Saklar SW1**: pad pemasangnya berjarak 0,25 mm dari pad lain (batas tempat cetak 0,254 mm). Pilihannya:
       pelanggaran ini dikecualikan di DRC, atau ganti saklar.
-- [ ] **Skid nilon** di baut H1/H2 sebagai penahan depan (usulan v16): setuju atau tidak.
+- [x] ~~Skid nilon~~: diganti **ball caster** (RAB 27/10). Model 3D v16 masih memakai skid, perlu diperbarui.
 
 ### 2. PCB utama (sampai siap pesan)
 
@@ -54,11 +54,16 @@ PCB dipesan **paling lambat minggu 10**, prototipe jalan 3× berturut-turut untu
 - [ ] Rapikan jalur Q1 ↔ R3/R4/buzzer, jalur daya (BAT+ masih melintang miring di B.Cu), dan silkscreen yang bertumpuk.
 - [ ] **Cocokkan footprint modul dengan modul yang dibeli** (ESP32 DevKit, TB6612, MP1584 di `hardware/ltm-lib/`).
       Ukur jarak pin modul asli pakai jangka sorong; footprint sekarang masih perkiraan.
+- [ ] **Footprint ikut barang di RAB 27/10**: tombol SW2/SW3 → tactile 12×12 mm (sekarang `SW_PUSH_6mm`), konektor
+      motor J2/J3 → JST XH 6 pin `B6B-XH-A` (sekarang JST PH 2,0). Kabel encoder N20 bawaan biasanya berkonektor
+      PH 2,0, jadi ujung kabelnya perlu diganti housing XH.
 - [ ] DRC 0 error → buat Gerber → pesan PCB utama **bersama PCB sensor** (ikuti `docs/aturan-cetak-pcb.md`).
 
 ### 3. Pembelian & mekanik
 
-- [ ] Nama toko + link QRE1113GR (Rp15.000/pcs, 12 pcs) untuk RAB (harga di RAB wajib ada tautan toko).
+- [x] ~~Tautan toko~~: ada di `docs/charter.md` bagian 8 (27/10), kecuali mux WKH Electronic (menyusul).
+- [ ] Koreksi spreadsheet RAB kelompok: baris mux masih modul CD74HC4067 kakarobot Rp35.000; yang dipakai IC
+      CD74HC4067M SOP-24 dari WKH Electronic Rp20.000 (keputusan 27/10).
 - [ ] Info printer 3D lab → body 3D print (cover, bumper, dudukan motor & baterai, sayap) masuk RAB atau tidak.
 - [ ] Sinkronkan `docs/perhitungan-motor.md` dengan charter (≥ 0,5 m/s) dan roda Ø34.
 

@@ -1,7 +1,7 @@
 # PROJECT CHARTER — Robot Line Tracer Micro
 
 Semester Gasal 2026/2027 · Revisi 3.4 (arahan dosen 05/10/2026: reverse engineering, path planning,
-budget maksimal Rp 900.000, dinaikkan menjadi Rp 1.000.000 pada 26/10/2026; arahan 09/10/2026: tanpa IMU; arahan 26/10/2026: path planning dengan peta yang ditentukan di awal) · diperbarui 22/10/2026: 12 QRE1113GR (toko lokal), PCB sensor bentuk jangkar
+budget maksimal Rp 900.000, dinaikkan menjadi Rp 1.000.000 pada 26/10/2026; arahan 09/10/2026: tanpa IMU; arahan 26/10/2026: path planning dengan peta yang ditentukan di awal) · diperbarui 22/10/2026: 12 QRE1113GR (toko lokal), PCB sensor bentuk jangkar · RAB 27/10/2026: harga hasil validasi marketplace
 
 ## 1. Project Identity
 
@@ -140,47 +140,54 @@ sehingga posisi garis dan persimpangan tidak terbaca akurat.
 
 ## 8. Budget Summary
 
-Harga perkiraan; wajib dicek ulang dan disertai tautan toko. Kit Ichiduino Pro tidak dianggarkan ulang.
+Harga dari marketplace online (Shopee/Tokopedia), sudah divalidasi kelompok pada 27/10/2026 (spreadsheet RAB PJBL P01).
+Tautan toko ada di bawah tabel. Item tanpa tautan (fabrikasi PCB, komponen pendukung, roda, ball caster, baut, timah)
+masih perkiraan. Kit Ichiduino Pro tidak dianggarkan ulang.
 
 ### Electrical
 
 | Item | Price per unit | Qty | Unit | Total Price |
 |---|---|---|---|---|
-| ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | pcs | Rp76.000 |
-| OLED 0.96" 128×64 I2C | Rp33.000 | 1 | pcs | Rp33.000 |
-| Sensor reflektif QRE1113GR SMD, toko lokal (tanpa cadangan) | Rp15.000 | 12 | pcs | Rp180.000 |
+| ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp65.900 | 1 | pcs | Rp65.900 |
+| OLED 0.96" 128×64 I2C | Rp36.500 | 1 | pcs | Rp36.500 |
+| Sensor reflektif QRE1113GR SMD (tanpa cadangan) | Rp15.000 | 12 | pcs | Rp180.000 |
 | IC multiplexer analog CD74HC4067M SOP-24 (SOIC), 16 kanal (dipakai 12), WKH Electronic (tanpa cadangan) | Rp20.000 | 1 | pcs | Rp20.000 |
-| Modul driver motor TB6612FNG | Rp25.000 | 1 | pcs | Rp25.000 |
+| Modul driver motor TB6612FNG | Rp50.000 | 1 | pcs | Rp50.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | pcs | Rp110.000 |
-| Push button | Rp1.000 | 4 | pcs | Rp4.000 |
+| Push button tactile 12×12 mm | Rp1.000 | 3 | pcs | Rp3.000 |
 | Resistor SMD 0805 (220 Ω dan 10 kΩ untuk PCB sensor) | Rp100 | 30 | pcs | Rp3.000 |
-| Resistor 10 kΩ | Rp200 | 10 | pcs | Rp2.000 |
-| Buzzer | Rp3.000 | 1 | pcs | Rp3.000 |
-| Baterai Li-ion 18650 | Rp40.000 | 2 | pcs | Rp80.000 |
+| Buzzer aktif 12 × 9,5 mm | Rp3.000 | 1 | pcs | Rp3.000 |
+| Baterai Li-ion 18650 3000 mAh (1 paket isi 2) | Rp94.990 | 1 | paket | Rp94.990 |
 | Holder baterai 2× 18650 (seri) | Rp8.000 | 1 | pcs | Rp8.000 |
 | Modul BMS 2S | Rp10.000 | 1 | pcs | Rp10.000 |
 | Modul charger 2S USB-C | Rp25.000 | 1 | pcs | Rp25.000 |
 | Modul buck converter 5 V (MP1584) | Rp10.000 | 1 | pcs | Rp10.000 |
 | Saklar on/off | Rp3.000 | 1 | pcs | Rp3.000 |
-| Konektor JST PH2.0 6 pin + header (motor encoder) | Rp5.000 | 2 | set | Rp10.000 |
-| Komponen pendukung (header & socket female, kapasitor, dioda 1N5819) | Rp25.000 | 1 | paket | Rp25.000 |
-| Konektor JST XH 2,5 mm 8 pin (2 header + 2 housing + terminal) + kabel, perkiraan | Rp5.000 | 1 | set | Rp5.000 |
+| Konektor JST XH 6 pin + header (motor encoder) | Rp5.000 | 2 | set | Rp10.000 |
+| Konektor JST XH 2,5 mm 8 pin (2 header + 2 housing + terminal) + kabel | Rp5.000 | 1 | set | Rp5.000 |
 | Fabrikasi PCB (papan utama + papan sensor) + ongkir | Rp200.000 | 1 | paket | Rp200.000 |
-| **TOTAL** | | | | **Rp832.000** |
+| Komponen pendukung minsys (header & socket female, kapasitor, dioda 1N5819, resistor THT) | Rp25.000 | 1 | paket | Rp25.000 |
+| **TOTAL** | | | | **Rp862.390** |
 
 ### Mechanical
 
 | Item | Price per unit | Qty | Unit | Total Price |
 |---|---|---|---|---|
 | Roda N20 Ø34 mm | Rp25.000 | 1 | pasang | Rp25.000 |
-| Bracket motor N20 | Rp10.000 | 1 | pasang | Rp10.000 |
-| Skid nilon (pengganti ball caster; baut M2/M3, spacer, mur nilon) | Rp5.000 | 1 | paket | Rp5.000 |
+| Ball caster | Rp10.000 | 1 | pcs | Rp10.000 |
 | Baut, mur, spacer | Rp15.000 | 1 | paket | Rp15.000 |
-| **TOTAL** | | | | **Rp55.000** |
+| **TOTAL** | | | | **Rp50.000** |
 
-**TOTAL BUDGET: Rp887.000** (Electrical Rp832.000 + Mechanical Rp55.000), **sisa Rp113.000 dari batas Rp1.000.000**
-(batas anggaran dinaikkan dari Rp900.000 menjadi Rp1.000.000 pada 26/10/2026). Lintasan uji disediakan di luar RAB; breadboard + kabel jumper dan timah
-solder + flux dipinjam dari lab (tidak masuk RAB sejak 22/10/2026). Revisi 13/10/2026: 16 sensor +
+### Lain-lain
+
+| Item | Price per unit | Qty | Unit | Total Price |
+|---|---|---|---|---|
+| Timah solder + flux | Rp25.000 | 1 | paket | Rp25.000 |
+| **TOTAL** | | | | **Rp25.000** |
+
+**TOTAL BUDGET: Rp937.390** (Electrical Rp862.390 + Mechanical Rp50.000 + Lain-lain Rp25.000), **sisa Rp62.610
+dari batas Rp1.000.000** (batas anggaran dinaikkan dari Rp900.000 menjadi Rp1.000.000 pada 26/10/2026). Lintasan uji
+disediakan di luar RAB; breadboard + kabel jumper dipinjam dari lab. Revisi 13/10/2026: 16 sensor +
 multiplexer + LED indikator (+Rp63.000). Revisi 15/10/2026: sensor jadi 12 TCRT5000, LED IR selalu nyala tanpa MOSFET (−Rp16.500).
 Revisi 20/10/2026: sensor jadi 12 pasang LED merah + fototransistor SMD 1206, MCP23017 + LED indikator dihapus
 (bacaan sensor tampil di OLED), OLED 0,96", skid nilon pengganti ball caster (−Rp20.000). Revisi kedua 20/10/2026:
@@ -190,11 +197,38 @@ tempat cetak sanggup jalur 0,3 mm. Revisi 22/10/2026: PCB sensor bentuk jangkar 
 toko lokal dengan harga Rp15.000/pcs (sebelumnya perkiraan impor Rp5.000), jadi dibeli 12 tanpa cadangan
 (+Rp105.000); kabel pita IDC diganti konektor JST XH 8 pin (−Rp5.000, perkiraan); breadboard dan timah dipinjam
 dari lab (−Rp85.000). Revisi 26/10/2026: IC mux CD74HC4067M SOP-24 dari toko WKH Electronic Rp20.000 (sebelumnya
-perkiraan Rp35.000), dibeli 1 tanpa cadangan (−Rp15.000).
+perkiraan Rp35.000), dibeli 1 tanpa cadangan (−Rp15.000). Revisi 27/10/2026: harga hasil validasi di marketplace
+online: ESP32 Rp65.900 (−Rp10.100), OLED Rp36.500 (+Rp3.500), TB6612FNG Rp50.000 (+Rp25.000), baterai 18650 1 paket
+isi 2 Rp94.990 (+Rp14.990); push button jadi 3 pcs tactile 12×12 mm (−Rp1.000); resistor THT masuk paket komponen
+pendukung (−Rp2.000); bracket motor dihapus karena dudukan motor dibuat 3D print (−Rp10.000); ball caster
+menggantikan skid nilon (+Rp5.000); timah solder + flux masuk RAB (+Rp25.000); konektor motor jadi JST XH 6 pin
+(harga sama). Total +Rp50.390. Akibatnya footprint tombol dan konektor motor di PCB utama perlu disesuaikan.
+
+### Tautan toko (dicek 27/10/2026)
+
+| Item | Toko | Tautan |
+|---|---|---|
+| ESP32 DevKit (pilih varian CH340, Type-C, 30 pin) | Shopee | [produk](https://shopee.co.id/ESP32-ESP-32-WROOM-WIFI-Bluetooth-CP2102-CH340-30-38-Pin-BLE-IOT-Develompent-Board-ESP-32S-Micro-USB-Type-C-Solder-i.70136393.57406160712) |
+| OLED 0,96" I2C (kuning-biru) | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/cnc-yellow-blue-0-96-i2c-128x64-oled-lcd-display-module) |
+| QRE1113GR | Shopee | [produk](https://shopee.co.id/product/12793026/28316976609) |
+| CD74HC4067M SOP-24 | WKH Electronic (Tokopedia) | menyusul |
+| TB6612FNG | Shopee | [produk](https://shopee.co.id/Modul-Driver-Motor-Dual-TB6612FNG-i.116951623.49164769328) |
+| Motor N20 + encoder (pilih 6 V 500 RPM) | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/motor-dc-jga12-n20-3v-6v-micro-gearbox-high-torque-encoder-untuk-robot-arduino-diy-1731127914696705598) |
+| Push button TC-1212T 12×12×5 mm | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/cnc-tactile-switch-push-button-tc-1212t-12x12x5-mm-for-arduino-1733707899505378878) |
+| Resistor SMD 0805 220 Ω dan 10 kΩ | mikro-automasi (Tokopedia) | [produk](https://www.tokopedia.com/mikro-automasi/resistor-smd-0805-220r-220-dan-10k-10-k-ohm-1-1-8-w-10k-393a6) |
+| Buzzer aktif 12 × 9,5 mm | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/buzzer-speaker-active-3v-5v-12x9-5mm-modul-alarm-suara-mini-for-arduino-esp32-uno-mega-nano-diy-elektronik-project-1733103146066150974) |
+| Baterai 18650 3000 mAh (isi 2) | kanbaigadget (Tokopedia) | [produk](https://www.tokopedia.com/kanbaigadget/smartoools-18650-li-ion-3-7v-3000mah-battery-1-pack-2pcs-1729383030075721073) |
+| Holder 2× 18650 | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/cnc-tempat-baterai-18650-holder-batteray-18650-case-baterry-18650-2) |
+| BMS 2S | supreme (Tokopedia) | [produk](https://www.tokopedia.com/supreme/2s-7-4v-li-ion-lithium-18650-bms-battery-charger-module-8-4v-16a) |
+| Charger 2S USB-C | cncstorebandung (Tokopedia) | [produk](https://www.tokopedia.com/cncstorebandung/charger-bms-2s-3s-4s-4a-module-step-up-type-c-input-dc-3-7-6v-bms-2s-3d675) |
+| Buck MP1584 | easyware-id (Tokopedia) | [produk](https://www.tokopedia.com/easyware-id/mp1584-3a-dc-dc-step-down-buck-converter-module-adjustable-3-3v-5v-9v-12v-1735712197220599327-1735712260417160735) |
+| Saklar on/off | bbelektronik-1 (Tokopedia) | [produk](https://www.tokopedia.com/bbelektronik-1/saklar-on-off-kecil-2-pin-1731781398715729555) |
+| JST XH 6 pin (motor) | pcmelektrobik (Tokopedia) | [produk](https://www.tokopedia.com/pcmelektrobik/konektor-xh-6pin-2-54-jst-6-pin-pcb-connector-header-plug-xh2-54mm-6p-1729834630991284132) |
+| JST XH 8 pin | s3-satriasecure (Tokopedia) | [produk](https://www.tokopedia.com/s3-satriasecure/molex-mini-8pin-2-54-molek-2-54mm-header-8-pin-jst-xh-2-54-mm-soket-8p-terminal-8p-8-pin-konektor-connector-8-p-kaki-8pin-konector-conektor-8kaki-8lubang-8-lubang-jalur-8jalur-1731323197141649188) |
 
 ### Alasan pemilihan komponen utama
 
-- **ESP32 DevKit** (Rp76.000): prosesor 240 MHz dual-core dengan WiFi/Bluetooth, jauh lebih murah dari
+- **ESP32 DevKit** (Rp65.900): prosesor 240 MHz dual-core dengan WiFi/Bluetooth, jauh lebih murah dari
   ESP32-S3 (> Rp130.000). 12 sensor garis dibaca bergantian lewat multiplexer CD74HC4067 ke satu kanal
   ADC1 (GPIO36), tegangan baterai ke kanal ADC1 lain (GPIO39).
 - **12 sensor garis QRE1113GR pada PCB bentuk jangkar (jarak antar sensor 8 mm di busur, lebar baca

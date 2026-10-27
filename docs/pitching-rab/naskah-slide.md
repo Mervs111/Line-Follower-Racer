@@ -1,7 +1,8 @@
 # Naskah slide Pitching RAB (27/10/2026)
 
 Pitching RAB untuk minta dana ke dosen/departemen, 10–15 menit, 15 slide utama + 2 lampiran (±50 detik per
-slide). Semua angka diambil dari `docs/charter.md` (rev 3.4, 22/10/2026) dan file desain di repo per 26/10/2026.
+slide). Semua angka diambil dari `docs/charter.md` (rev 3.4, 22/10/2026) dan file desain di repo per 26/10/2026; RAB diperbarui 27/10/2026 dengan harga
+hasil validasi di marketplace online.
 Isi ini dipindah ke template kelompok setelah templatenya ada.
 
 Gambar: `docs/pitching-rab/gambar/` (render PCB terbaru dari KiCad 10, 26/10), `mechanical/render/ltm-v16-*.png`,
@@ -49,7 +50,7 @@ Catatan bicara: buka dengan harga kit, lalu arahan dosen sebagai batas proyek.
   sebagai urutan indeks (pola sensor → aksi → ikuti garis), dan di grid urutannya bisa dibuat otomatis dari rute terpendek.
 - **Block coding berbasis web (Blockly)**: siswa memprogram tanpa instalasi aplikasi.
 - **Aman**: BMS baterai, motor mati di bawah 3,2 V per sel, berhenti ≤ 500 ms kalau garis hilang.
-- **Rp887.000**, sekitar 44% harga kit pembanding.
+- **Rp937.390**, sekitar 47% harga kit pembanding.
 
 Target uji lapangan: lomba **IARC XII Smart Robotics** (9–10/01/2027, arena grid, garis hitam 2 cm).
 
@@ -57,7 +58,7 @@ Target uji lapangan: lomba **IARC XII Smart Robotics** (9–10/01/2027, arena gr
 
 | Aspek | Ichiduino Pro (pembanding) | Line Tracer Micro | Keputusan |
 |---|---|---|---|
-| Harga | ± Rp1.999.999 | **Rp887.000** | 56% lebih murah |
+| Harga | ± Rp1.999.999 | **Rp937.390** | 53% lebih murah |
 | Otak | ATmega2560 | ESP32 240 MHz dual-core, WiFi/Bluetooth | diganti |
 | Sensor garis | 12 sensor optik | 12 QRE1113GR + multiplexer | dipertahankan (12) |
 | Layar | OLED 0,96" | OLED 0,96" (bacaan sensor tampil sebagai bar) | dipertahankan |
@@ -139,32 +140,33 @@ tangkapan layar CoppeliaSim** (dan perbarui angka) setelah `simulasi/coppeliasim
 - Hasil uji logika kendali (simulasi 2D): rute contoh S → T 8,2 s, berhenti 9 mm dari T; kecepatan 0,3–0,7 m/s ×
   5 variasi derau 25/25 lulus; rute terpendek otomatis lulus, juga saat simpul terhalang kubus.
 
-## 12. RAB ringkas: Rp887.000
+## 12. RAB ringkas: Rp937.390
 
 Grafik batang/donat per kelompok:
 
 | Kelompok | Isi | Biaya | Porsi |
 |---|---|---|---|
-| PCB & konektor | fabrikasi 2 PCB + ongkir Rp200.000, konektor JST, komponen pendukung | Rp240.000 | 27,1% |
-| Sensor garis | 12 QRE1113GR Rp180.000, mux Rp20.000, resistor SMD | Rp203.000 | 22,9% |
-| Penggerak | 2 motor N20 + encoder Rp110.000, TB6612, roda, bracket | Rp170.000 | 19,2% |
-| Daya | 2× 18650 Rp80.000, holder, BMS, charger USB-C, buck, saklar | Rp136.000 | 15,3% |
-| Otak & antarmuka | ESP32 Rp76.000, OLED Rp33.000, tombol, buzzer, resistor | Rp118.000 | 13,3% |
-| Mekanik lain | skid nilon, baut/mur/spacer | Rp20.000 | 2,3% |
-| **Total** | Electrical Rp832.000 + Mechanical Rp55.000 | **Rp887.000** | |
+| PCB & konektor | fabrikasi 2 PCB + ongkir Rp200.000, konektor JST XH, komponen pendukung | Rp240.000 | 25,6% |
+| Sensor garis | 12 QRE1113GR Rp180.000, mux Rp20.000, resistor SMD | Rp203.000 | 21,7% |
+| Penggerak | 2 motor N20 + encoder Rp110.000, TB6612 Rp50.000, roda | Rp185.000 | 19,7% |
+| Daya | 2× 18650 Rp94.990, holder, BMS, charger USB-C, buck, saklar | Rp150.990 | 16,1% |
+| Otak & antarmuka | ESP32 Rp65.900, OLED Rp36.500, tombol, buzzer | Rp108.400 | 11,6% |
+| Mekanik & timah | ball caster, baut/mur/spacer, timah solder + flux | Rp50.000 | 5,3% |
+| **Total** | Electrical Rp862.390 + Mechanical Rp50.000 + Lain-lain Rp25.000 | **Rp937.390** | |
 
-Di luar RAB: lintasan uji, breadboard + timah (pinjam lab), software (Blockly, Arduino-ESP32, KiCad: gratis).
+Harga sudah divalidasi di marketplace online (27/10/2026); tautan toko di `docs/charter.md` bagian 8.
+Di luar RAB: lintasan uji, breadboard (pinjam lab), software (Blockly, Arduino-ESP32, KiCad: gratis).
 Kit Ichiduino Pro tidak dianggarkan ulang.
 
 ## 13. Alasan komponen utama
 
 | Komponen | Harga | Alasan |
 |---|---|---|
-| ESP32 DevKit | Rp76.000 | 240 MHz dual-core + WiFi untuk Blockly; ESP32-S3 > Rp130.000 |
+| ESP32 DevKit | Rp65.900 | 240 MHz dual-core + WiFi untuk Blockly; ESP32-S3 > Rp130.000 |
 | 12× QRE1113GR | Rp180.000 | LED IR + fototransistor satu kemasan bersekat (2,9 × 3,6 mm): papan tipis, sensor rendah ± 3 mm, tidak perlu menata pasangan LED sendiri |
 | Motor N20 + encoder | Rp110.000 | v maks teoritis 0,89 m/s (sasaran ≥ 0,5 m/s); encoder untuk belok 90° dan jarak tempuh |
-| TB6612FNG | Rp25.000 | tegangan jatuh jauh lebih kecil dari L298N, tidak panas |
-| 2× 18650 + BMS + charger | Rp115.000 | ± 3 jam pemakaian, dilindungi BMS, diisi lewat USB-C |
+| TB6612FNG | Rp50.000 | tegangan jatuh jauh lebih kecil dari L298N, tidak panas |
+| 2× 18650 + BMS + charger | Rp129.990 | ± 3 jam pemakaian, dilindungi BMS, diisi lewat USB-C |
 | Fabrikasi PCB | Rp200.000 | 2 papan custom, menggantikan kabel-kabel breadboard (rapi, awet untuk siswa) |
 
 ## 14. Riwayat RAB dan efisiensi
@@ -182,11 +184,12 @@ Grafik garis total RAB per revisi + garis batas Rp1.000.000:
 | 20/10 | Rp867.000 | sensor QRE1113GR (+Rp7.500) |
 | 21/10 | Rp887.000 | mux berupa IC SOIC-24 di PCB (+Rp20.000) |
 | 22/10 | Rp902.000 | QRE harga lokal Rp15.000/pcs (+Rp105.000); breadboard + timah pinjam lab (−Rp85.000); JST XH (−Rp5.000) |
-| 26/10 | **Rp887.000** | mux CD74HC4067M SOP-24 harga toko WKH Electronic Rp20.000, 1 pcs tanpa cadangan (−Rp15.000) |
+| 26/10 | Rp887.000 | mux CD74HC4067M SOP-24 harga toko WKH Electronic Rp20.000, 1 pcs tanpa cadangan (−Rp15.000) |
+| 27/10 | **Rp937.390** | harga hasil validasi marketplace: TB6612FNG +Rp25.000, timah + flux masuk RAB +Rp25.000, baterai +Rp14.990, OLED +Rp3.500, ESP32 −Rp10.100, bracket motor dihapus (dudukan 3D print) −Rp10.000, ball caster ganti skid +Rp5.000, resistor THT masuk komponen pendukung −Rp2.000, push button 3 pcs −Rp1.000 (+Rp50.390) |
 
-**Sisa Rp113.000 (11,3%)** dari batas Rp1.000.000 (batas naik dari Rp900.000 pada 26/10/2026). Kenaikan terbesar
-dari harga QRE1113GR lokal yang ternyata 3× perkiraan awal; sisa anggaran bisa menutup kenaikan harga atau item yang
-belum di RAB (body 3D print).
+**Sisa Rp62.610 (6,3%)** dari batas Rp1.000.000 (batas naik dari Rp900.000 pada 26/10/2026). Kenaikan terbesar
+dari harga QRE1113GR lokal yang ternyata 3× perkiraan awal, lalu harga marketplace 27/10 (+Rp50.390); sisa anggaran
+bisa menutup kenaikan harga atau item yang belum di RAB (body 3D print).
 
 ## 15. Jadwal, risiko, dan penutup
 
@@ -202,48 +205,48 @@ belum di RAB (body 3D print).
 Risiko yang berkaitan dengan dana: PCB salah desain/terlambat (prototipe breadboard dulu, pesan PCB ≤ minggu 10);
 biaya melebihi batas (RAB dipantau tiap pembelian); QRE tanpa cadangan (uji tiap sensor di breadboard sebelum disolder).
 
-Penutup: **mohon persetujuan dana Rp887.000** untuk pembelian komponen dan fabrikasi PCB. Sesudah dana cair: beli
+Penutup: **mohon persetujuan dana Rp937.390** untuk pembelian komponen dan fabrikasi PCB. Sesudah dana cair: beli
 komponen → uji di breadboard → pesan PCB → firmware → G3.
 
 ---
 
-## Lampiran A. RAB elektrikal (Rp832.000)
+## Lampiran A. RAB elektrikal (Rp862.390)
 
 | Item | Harga | Qty | Total |
 |---|---|---|---|
-| ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp76.000 | 1 | Rp76.000 |
-| OLED 0,96" 128×64 I2C | Rp33.000 | 1 | Rp33.000 |
+| ESP32 DevKit WiFi Bluetooth CH340 Type-C | Rp65.900 | 1 | Rp65.900 |
+| OLED 0,96" 128×64 I2C | Rp36.500 | 1 | Rp36.500 |
 | Sensor reflektif QRE1113GR SMD | Rp15.000 | 12 | Rp180.000 |
 | IC multiplexer CD74HC4067M SOP-24 (WKH Electronic) | Rp20.000 | 1 | Rp20.000 |
-| Modul driver motor TB6612FNG | Rp25.000 | 1 | Rp25.000 |
+| Modul driver motor TB6612FNG | Rp50.000 | 1 | Rp50.000 |
 | Motor N20 6V 500 RPM + encoder | Rp55.000 | 2 | Rp110.000 |
-| Push button | Rp1.000 | 4 | Rp4.000 |
+| Push button tactile 12×12 mm | Rp1.000 | 3 | Rp3.000 |
 | Resistor SMD 0805 (220 Ω, 10 kΩ) | Rp100 | 30 | Rp3.000 |
-| Resistor 10 kΩ | Rp200 | 10 | Rp2.000 |
-| Buzzer | Rp3.000 | 1 | Rp3.000 |
-| Baterai Li-ion 18650 | Rp40.000 | 2 | Rp80.000 |
+| Buzzer aktif 12 × 9,5 mm | Rp3.000 | 1 | Rp3.000 |
+| Baterai Li-ion 18650 3000 mAh (isi 2) | Rp94.990 | 1 paket | Rp94.990 |
 | Holder baterai 2× 18650 | Rp8.000 | 1 | Rp8.000 |
 | Modul BMS 2S | Rp10.000 | 1 | Rp10.000 |
 | Modul charger 2S USB-C | Rp25.000 | 1 | Rp25.000 |
 | Buck converter 5 V (MP1584) | Rp10.000 | 1 | Rp10.000 |
 | Saklar on/off | Rp3.000 | 1 | Rp3.000 |
-| Konektor JST PH2.0 6 pin + header (encoder motor) | Rp5.000 | 2 set | Rp10.000 |
-| Komponen pendukung (header, socket, kapasitor, dioda) | Rp25.000 | 1 paket | Rp25.000 |
-| Konektor JST XH 8 pin + kabel (perkiraan) | Rp5.000 | 1 set | Rp5.000 |
+| Konektor JST XH 6 pin + header (encoder motor) | Rp5.000 | 2 set | Rp10.000 |
+| Konektor JST XH 8 pin + kabel | Rp5.000 | 1 set | Rp5.000 |
 | Fabrikasi PCB (2 papan) + ongkir | Rp200.000 | 1 paket | Rp200.000 |
+| Komponen pendukung (header, socket, kapasitor, dioda, resistor THT) | Rp25.000 | 1 paket | Rp25.000 |
 
-## Lampiran B. RAB mekanik (Rp55.000)
+## Lampiran B. RAB mekanik (Rp50.000) dan lain-lain (Rp25.000)
 
 | Item | Harga | Qty | Total |
 |---|---|---|---|
 | Roda N20 Ø34 mm | Rp25.000 | 1 pasang | Rp25.000 |
-| Bracket motor N20 | Rp10.000 | 1 pasang | Rp10.000 |
-| Skid nilon (baut, spacer, mur nilon) | Rp5.000 | 1 paket | Rp5.000 |
+| Ball caster | Rp10.000 | 1 pcs | Rp10.000 |
 | Baut, mur, spacer | Rp15.000 | 1 paket | Rp15.000 |
+| Timah solder + flux (lain-lain) | Rp25.000 | 1 paket | Rp25.000 |
 
 ## Belum lengkap (cek sebelum presentasi)
 
 - Peran tiap anggota (slide 2).
 - Slide 11 Simulasi: ganti gambar 2D dengan tangkapan CoppeliaSim + angka hasilnya (lihat `simulasi/README.md`).
-- **Tautan toko tiap harga** (sasaran 9 di charter mewajibkan; QRE1113GR belum ada nama toko dan tautan; mux dari WKH Electronic di Tokopedia, tautan menyusul).
-- Harga masih perkiraan untuk JST XH 8 pin dan fabrikasi PCB; cek ulang kalau sempat.
+- **Tautan toko tiap harga** (sasaran 9 di charter): sudah ada di `docs/charter.md` bagian 8 kecuali mux WKH Electronic
+  (menyusul) dan item perkiraan (fabrikasi PCB, komponen pendukung, roda, ball caster, baut, timah).
+- Harga masih perkiraan untuk fabrikasi PCB, komponen pendukung, roda, ball caster, baut, dan timah; cek ulang kalau sempat.

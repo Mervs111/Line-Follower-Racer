@@ -52,9 +52,11 @@ outline**, simetris kiri-kanan, lalu U13, J1, C, routing.
 
 1. ~~Jarak antar sensor~~: selesai, rev B jarak 8 mm (garis lomba 2 cm).
 2. ~~Model 3D rev B~~: selesai, v16 https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3 (koordinat sensor untuk
-   firmware di `hardware/sensor-garis/REVISI.md`). Belum dikonfirmasi user: skid nilon di H1/H2, posisi J5.
-3. ~~QRE lokal~~: Rp15.000/pcs, 12 tanpa cadangan; `charter.md` + `gen_charter.js` sudah diperbarui (RAB Rp887.000
-   sejak 26/10 karena mux SOP-24 Rp20.000 dari WKH Electronic; batas anggaran Rp1.000.000, sisa Rp113.000). Docx sudah dibuat ulang. Nama toko + link menyusul dari user.
+   firmware di `hardware/sensor-garis/REVISI.md`). Skid nilon di H1/H2 diganti ball caster (RAB 27/10, model belum diperbarui); posisi J5 belum dikonfirmasi.
+3. ~~QRE lokal~~: Rp15.000/pcs, 12 tanpa cadangan; `charter.md` + `gen_charter.js` sudah diperbarui. **27/10: RAB Rp937.390**
+   (harga hasil validasi marketplace dari spreadsheet RAB kelompok, mux tetap IC WKH Rp20.000), sisa Rp62.610 dari
+   Rp1.000.000. Tautan toko di `charter.md` bagian 8. Deck `.pptx` diperbarui langsung di XML (generator `build.js`
+   butuh gambar + `apply_theme.js` yang hanya ada di container cloud); `build.js` tetap disamakan.
 4. ~~Wiring diagram blok 4~~: selesai (JST XH 8 pin, mux I2–I13), artifact versi 7.
 5. ~~FPC1~~: diabaikan (keputusan user).
 6. **PCB utama baru**: `hardware/pcb-utama/` berisi outline, lubang, gambar bantu, dan **skematik lengkap** (dibuat

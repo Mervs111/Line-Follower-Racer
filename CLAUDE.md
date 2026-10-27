@@ -55,7 +55,8 @@ memakai pin map yang sama.
   `hardware/tools/gen_sch_utama.py` + `kisym.py`; ERC 0, netlist dicek terhadap tabel pin). **Layout 22/10**:
   21 footprint ditempatkan sesuai model v16, routing pertama FreeRouting (`hardware/tools/autoroute/`) + GND pour 2 sisi,
   0 unconnected; tertunda: Q1 → `TO-92_Inline_Wide` (ganti di Eeschema + F8, jangan buat ulang skematik karena UUID
-  acak), keputusan SW1 (pad pemasang 0,25 mm), merapikan jalur. Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
+  acak), keputusan SW1 (pad pemasang 0,25 mm), merapikan jalur, footprint
+  SW2/SW3 → tactile 12×12 mm dan J2/J3 → JST XH 6 pin (ikut barang di RAB 27/10). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
   di tepi miring sidepod kiri (pin 1 dekat hidung), urutan = J1; C1 elko di sidepod kiri. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
   `hardware/pcb-utama/README.md`. `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
@@ -67,8 +68,8 @@ memakai pin map yang sama.
 - **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.
   Bentuk rendah gaya Ichiduino: PCB sensor + PCB utama sejajar dekat lantai, semua komponen + baterai di atas.
   PCB sensor rev B dibaca langsung dari `.kicad_pcb` (`cadquery/ltm_v16.py`), PCB utama bentuk mobil F1, kabel JST
-  XH 8 pin menyusuri tepi kiri hidung, usulan skid nilon
-  di baut H1/H2 (belum dikonfirmasi user). v15 (XLINE) https://claude.ai/artifact/AKgsuWNwB9LYzNtRYeSRqo.
+  XH 8 pin menyusuri tepi kiri hidung, skid nilon
+  di baut H1/H2 (diganti **ball caster** di RAB 27/10; model belum diperbarui). v15 (XLINE) https://claude.ai/artifact/AKgsuWNwB9LYzNtRYeSRqo.
 - **Rakitan PCB LFM** (`mechanical/rakitan-pcb/`, 24/10): kedua PCB asli diekspor `kicad-cli` (GLB) + mekanik v16,
   viewer dengan garis ukuran + alat ukur https://claude.ai/artifact/7JpKSCkUepxGQdxK5ZhVpv. Jalankan ulang
   `gen_rakitan.py` tiap PCB berubah. Footprint `pcb-utama` belum punya model 3D (skrip menambahkannya di salinan).
@@ -78,11 +79,11 @@ memakai pin map yang sama.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen
-- RAB terakhir **Rp887.000** (26/10/2026; mux Rp20.000). **Batas anggaran naik dari Rp900.000 menjadi Rp1.000.000**
-  (26/10/2026, info user) → **sisa Rp113.000**.
-  QRE1113GR ternyata ada di toko lokal **Rp15.000/pcs** → dibeli 12 tanpa cadangan (keputusan user); breadboard +
-  timah dipinjam lab (keluar RAB); kabel pita → JST XH 8 pin (Rp5.000, perkiraan). Nama toko + link QRE menyusul
-  dari user. Lintasan uji di luar RAB.
+- RAB terakhir **Rp937.390** (27/10/2026, harga hasil validasi marketplace dari spreadsheet kelompok
+  `RAB PJBL P01.ods`): Electrical Rp862.390 + Mechanical Rp50.000 + Lain-lain (timah + flux) Rp25.000.
+  **Batas anggaran Rp1.000.000** (naik dari Rp900.000 pada 26/10) → **sisa Rp62.610**. Mux tetap IC WKH Rp20.000
+  (spreadsheet masih menulis modul kakarobot Rp35.000, perlu dikoreksi kelompok). QRE1113GR Rp15.000/pcs, 12 tanpa
+  cadangan. Breadboard dipinjam lab; lintasan uji di luar RAB. Tautan toko di `docs/charter.md` bagian 8.
 - Charter: `docs/charter.md`; docx dibuat ulang dengan `docs/charter-docx/gen_charter.js` (`npm i docx`, lalu
   `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `charter.md`). Node.js 24 LTS sudah
   terpasang di laptop (22/10); di shell lama tambahkan `C:Program Files
@@ -142,6 +143,11 @@ odejs` ke PATH.
   (perkiraan). Uji 2D lulus (rute slide 8,2 s, 9 mm dari T; 0,3–0,7 m/s 25/25). **CoppeliaSim Edu 4.10 di laptop
   (26/10 malam): rute slide LULUS 8,30 s / 12,6 mm dari T, BFS dengan halangan LULUS 5,69 s / 11,2 mm**, fisika roda
   asli (Bullet), video + screenshot di `simulasi/hasil/`.
+- 27/10: **RAB Rp937.390** dari harga hasil validasi marketplace (spreadsheet kelompok `RAB PJBL P01.ods`).
+  Keputusan user: mux tetap IC CD74HC4067M WKH Rp20.000 (bukan modul kakarobot di spreadsheet), ball caster
+  menggantikan skid nilon, bracket motor dihapus (dudukan 3D print), timah + flux masuk RAB, resistor THT masuk
+  paket komponen pendukung, dan **PCB utama ikut barang di link**: tombol tactile 12×12 mm dan konektor motor JST XH
+  6 pin (footprint belum diganti). Charter + docx, deck (diubah langsung di XML .pptx), naskah, README ikut.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

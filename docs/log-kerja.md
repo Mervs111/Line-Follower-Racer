@@ -4,6 +4,18 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 27/10/2026
+- **RAB diperbarui dari spreadsheet kelompok** `RAB PJBL P01.ods` (harga hasil validasi di marketplace online):
+  total **Rp937.390** (Electrical Rp862.390 + Mechanical Rp50.000 + Lain-lain timah + flux Rp25.000), sisa
+  Rp62.610 dari Rp1.000.000. Perubahan utama: TB6612FNG Rp50.000, baterai 18650 1 paket isi 2 Rp94.990, ESP32
+  Rp65.900, OLED Rp36.500, ball caster menggantikan skid nilon, bracket motor dihapus, timah masuk RAB.
+- Dicek terhadap rancangan (tautan Tokopedia dibuka satu per satu): baris mux di spreadsheet ternyata modul kakarobot
+  Rp35.000 (chip SSOP), jadi tetap IC CD74HC4067M WKH Rp20.000 (keputusan user). Tautan push button (12×12 mm) dan
+  konektor motor (JST XH 2,54) tidak cocok dengan footprint PCB utama; user memilih PCB yang menyesuaikan barang.
+- Diperbarui: `docs/charter.md` (tabel RAB + tabel tautan toko), `gen_charter.js` + docx, deck pitching (slide 4, 5,
+  12, 13, 14, 16, lampiran A–C, grafik, catatan bicara; diubah langsung di XML .pptx karena generator butuh file
+  container cloud) + PDF pratinjau, `build.js`, naskah, README, handover, CLAUDE.md.
+
 ## 26/10/2026
 - Bahan **pitching RAB** (27/10): analisis progres repo, naskah 14 slide + 2 lampiran RAB
   (`docs/pitching-rab/naskah-slide.md`), render PCB sensor rev B dan PCB utama terbaru dari KiCad 10

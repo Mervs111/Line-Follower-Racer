@@ -1,6 +1,7 @@
 // Membuat Project Charter (.docx) dengan format sama seperti versi Google Docs 09/10/2026.
 // Isi diperbarui sesuai keputusan 22/10/2026 (12 QRE1113GR toko lokal, PCB sensor bentuk jangkar, JST XH 8 pin, RAB Rp902.000);
-// 26/10/2026: mux CD74HC4067M SOP-24 Rp20.000 dari WKH Electronic, RAB Rp887.000
+// 26/10/2026: mux CD74HC4067M SOP-24 Rp20.000 dari WKH Electronic, RAB Rp887.000;
+// 27/10/2026: harga hasil validasi marketplace (spreadsheet RAB PJBL P01), RAB Rp937.390
 // dan 26/10/2026 (path planning dengan peta yang ditentukan di awal / pre-defined map by index).
 const fs = require("fs");
 const path = require("path");
@@ -254,34 +255,35 @@ const milestones = table(W7, [
 // ---------- 8. Budget ----------
 const W8 = [4100, 1700, 800, 1160, TABLE_W - 4100 - 1700 - 800 - 1160];
 const electrical = [
-  ["ESP32 DevKit WiFi Bluetooth CH340 Type-C", 76000, 1, "pcs"],
-  ["OLED 0.96\" 128×64 I2C", 33000, 1, "pcs"],
-  ["Sensor reflektif QRE1113GR SMD, toko lokal (tanpa cadangan)", 15000, 12, "pcs"],
+  ["ESP32 DevKit WiFi Bluetooth CH340 Type-C", 65900, 1, "pcs"],
+  ["OLED 0.96\" 128×64 I2C", 36500, 1, "pcs"],
+  ["Sensor reflektif QRE1113GR SMD (tanpa cadangan)", 15000, 12, "pcs"],
   ["IC multiplexer analog CD74HC4067M SOP-24 (SOIC), 16 kanal, WKH Electronic (tanpa cadangan)", 20000, 1, "pcs"],
-  ["Modul driver motor TB6612FNG", 25000, 1, "pcs"],
+  ["Modul driver motor TB6612FNG", 50000, 1, "pcs"],
   ["Motor N20 6V ± 500 RPM + encoder", 55000, 2, "pcs"],
-  ["Push button", 1000, 4, "pcs"],
+  ["Push button tactile 12×12 mm", 1000, 3, "pcs"],
   ["Resistor SMD 0805 (220 Ω dan 10 kΩ untuk PCB sensor)", 100, 30, "pcs"],
-  ["Resistor 10 kΩ", 200, 10, "pcs"],
-  ["Buzzer", 3000, 1, "pcs"],
-  ["Baterai Li-ion 18650", 40000, 2, "pcs"],
+  ["Buzzer aktif 12 × 9,5 mm", 3000, 1, "pcs"],
+  ["Baterai Li-ion 18650 3000 mAh (1 paket isi 2)", 94990, 1, "paket"],
   ["Holder baterai 2× 18650 (seri)", 8000, 1, "pcs"],
   ["Modul BMS 2S", 10000, 1, "pcs"],
   ["Modul charger 2S USB-C", 25000, 1, "pcs"],
   ["Modul buck converter 5 V (MP1584)", 10000, 1, "pcs"],
   ["Saklar on/off", 3000, 1, "pcs"],
-  ["Konektor JST PH2.0 6 pin + header (motor encoder)", 5000, 2, "set"],
+  ["Konektor JST XH 6 pin + header (motor encoder)", 5000, 2, "set"],
   ["Konektor JST XH 2,5 mm 8 pin (2 header + 2 housing + terminal) + kabel", 5000, 1, "set"],
   ["Fabrikasi PCB (papan utama + papan sensor) + ongkir", 200000, 1, "paket"],
-  ["Komponen pendukung minsys (header & socket female, kapasitor, dioda 1N5819)", 25000, 1, "paket"],
+  ["Komponen pendukung minsys (header & socket female, kapasitor, dioda 1N5819, resistor THT)", 25000, 1, "paket"],
 ];
 const mechanical = [
   ["Roda N20 Ø34 mm", 25000, 1, "pasang"],
-  ["Bracket motor N20", 10000, 1, "pasang"],
-  ["Skid nilon (pengganti ball caster; baut M2/M3, spacer, mur nilon)", 5000, 1, "paket"],
+  ["Ball caster", 10000, 1, "pcs"],
   ["Baut, mur, spacer", 15000, 1, "paket"],
 ];
-// Breadboard + jumper dan timah + flux dipinjam dari lab (keluar dari RAB 22/10/2026).
+// Timah + flux masuk RAB lagi 27/10/2026 (sebelumnya dipinjam dari lab); breadboard + jumper tetap pinjam lab.
+const lainLain = [
+  ["Timah solder + flux", 25000, 1, "paket"],
+];
 const S = { size: 10, align: C };
 const VC = { vAlign: VerticalAlign.CENTER };
 function groupRows(title, items) {
@@ -301,12 +303,13 @@ function groupRows(title, items) {
 }
 const gE = groupRows("Electrical", electrical);
 const gM = groupRows("Mechanical", mechanical);
-const TOTAL = gE.sub + gM.sub;
-if (TOTAL !== 887000) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
+const gL = groupRows("Lain-lain", lainLain);
+const TOTAL = gE.sub + gM.sub + gL.sub;
+if (TOTAL !== 937390) throw new Error("Total RAB tidak cocok dengan charter.md: " + TOTAL);
 const budget = table(W8, [
   sectionHead("8. Budget Summary", W8),
   italicNote("Summary of what are required items to be used", W8),
-  ...gE.rows, ...gM.rows,
+  ...gE.rows, ...gM.rows, ...gL.rows,
   row([cell(para("TOTAL BUDGET", { bold: true, align: C }), sum(W8.slice(0, 4)), { span: 4 }),
     cell(para(rp(TOTAL), { bold: true, align: C }), W8[4])]),
 ]);
