@@ -88,8 +88,9 @@ memakai pin map yang sama.
   `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `charter.md`). Node.js 24 LTS sudah
   terpasang di laptop (22/10); di shell lama tambahkan `C:Program Files
 odejs` ke PATH.
-- Perhitungan motor kelompok (`docs/perhitungan-motor.md`): masih draf, belum sinkron dengan charter (≥ 0,5 m/s)
-  dan roda Ø34.
+- Perhitungan rancangan (`docs/perhitungan-motor.md`, diperbarui 27/10): kecepatan 0,89 m/s, torsi desain 10,2 N·mm
+  (0,10 kg·cm) per roda, massa ±0,29 kg (desain 0,30), daya 3,1–4,1 W, baterai 3,3–6,5 jam, rangkaian. Rekomendasi:
+  MP1584 5,35 V (kompensasi dioda D1), 100 nF di GPIO39, PWM kompensasi 6,0/V_bat, encoder via PCNT; cek listing motor.
 - Belum ikut rancangan terkini: `docs/skematik-v1.md`, `docs/minsys-v1.md`, `docs/gen_rab_pemeliharaan.py`,
   generator `hardware/tools/`, `firmware/Pins.h`, `README.md` bagian firmware.
 

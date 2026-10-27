@@ -1,83 +1,207 @@
-# Perhitungan Awal Motor & Roda (draf kelompok, 08/10/2026)
+# Perhitungan rancangan Line Follower Micro (diperbarui 27/10/2026)
 
-Disimpan sebagai konteks. Status: **draf asumsi**, belum dikunci di charter/RAB.
+Perhitungan untuk rancangan dan RAB terkini (27/10): motor N20 6 V 500 RPM + encoder, roda Ø34, jarak roda 91 mm,
+baterai 2× 18650 (2S), buck MP1584, 12 QRE1113GR + mux CD74HC4067, nilai komponen dari skematik PCB utama
+(`hardware/tools/gen_sch_utama.py`). Draf awal kelompok (08/10) ada di lampiran paling bawah.
 
-## Asumsi
+**Asumsi** ditandai *(asumsi)*; angka yang perlu dicocokkan dengan listing toko ditandai **cek listing**.
+Semua angka dihitung ulang dengan skrip, bukan dengan tangan.
 
-| Besaran | Nilai |
-|---|---|
-| Target kecepatan | ≈ 1,5 m/s |
-| Diameter roda | 60 mm (r = 0,03 m) |
-| Massa robot | 0,3 kg |
-| Roda penggerak | 2 |
-| Waktu akselerasi 0 → 1,5 m/s | 0,5 s |
+## Ringkasan
 
-## 1. Kebutuhan RPM
+| Besaran | Hasil | Sasaran / batas | Status |
+|---|---|---|---|
+| Kecepatan maksimum teoritis | 0,89 m/s | ≥ 0,5 m/s (sasaran 2) | memenuhi |
+| Torsi desain per roda (SF 2) | 10,2 N·mm ≈ 0,10 kg·cm | torsi rated motor (**cek listing**) | perlu dicek |
+| Massa robot | ±0,25 kg tanpa 3D print, ±0,29 kg lengkap | desain 0,30 kg | memenuhi |
+| Jarak dan waktu rem dari 0,5 m/s | 2,8 cm, 0,11 s | berhenti ≤ 500 ms (sasaran 7) | memenuhi |
+| Daya total saat berjalan | 3,1–4,1 W | | |
+| Lama pakai (berjalan terus) | 3,3–6,5 jam | klaim "±3 jam" di charter | memenuhi (batas bawah) |
+| Waktu cas | ±3–3,5 jam (adaptor 5 V 2 A) | | |
+| Arus LED sensor | 15,7 mA (17,3 mA kalau buck 5,35 V) | maks 50 mA | memenuhi |
+| Tegangan ADC baterai | 1,59–2,08 V | rentang ADC 11 dB | memenuhi |
+| Waktu baca 12 sensor | ±0,36 ms | loop kendali 1 ms | memenuhi |
 
-v = ω·r → ω = v / r = 1,5 / 0,03 = 50 rad/s
+## 1. Kecepatan
 
-RPM = ω · 60 / (2π) = 50 · 60 / (2π) ≈ 477 RPM → pilih motor ± **500 RPM**.
+Roda Ø34 mm (r = 0,017 m), motor 500 RPM tanpa beban pada 6 V:
 
-## 2. Kecepatan teoritis motor 500 RPM vs diameter roda
+v_maks = π · D · n / 60 = π · 0,034 · 500 / 60 = **0,89 m/s**
 
-v = 2π·r·RPM / 60
+Untuk sasaran 0,5 m/s, roda cukup berputar n = 0,5 · 60 / (π · 0,034) = **281 RPM** (56% putaran maksimum),
+jadi masih ada cadangan untuk beban dan baterai yang melemah.
 
-| Diameter roda | Kecepatan teoritis |
-|---|---|
-| 40 mm | 1,05 m/s |
-| 50 mm | 1,31 m/s |
-| **60 mm** | **1,57 m/s** (dipilih sebagai titik awal) |
-| 65 mm | 1,70 m/s |
-| 70 mm | 1,83 m/s |
+**Tegangan motor.** Motor 6 V dipasok baterai 2S 6,4–8,4 V (3,2–4,2 V per sel). Supaya tegangan rata-rata motor
+tidak lebih dari 6 V, duty PWM dibatasi sesuai tegangan baterai yang dibaca VBAT_SENSE:
 
-Diameter roda memengaruhi: kecepatan, torsi di roda, kemampuan melewati permukaan, kestabilan saat belok.
-Angka di atas kondisi ideal tanpa beban; kecepatan nyata lebih rendah.
+| Tegangan baterai | Duty maksimum = 6,0 / V_bat | Nilai PWM 8-bit |
+|---|---|---|
+| 8,4 V (penuh) | 71,4% | 182 / 255 |
+| 7,4 V (nominal) | 81,1% | 207 / 255 |
+| 6,4 V (batas 3,2 V/sel) | 93,8% | 239 / 255 |
 
-## 3. Gaya dan torsi
+Dengan batas tetap 70% (tanpa kompensasi), pada 6,4 V motor hanya mendapat 4,48 V → 373 RPM → 0,66 m/s: masih di
+atas 0,5 m/s, tapi kecepatan berubah mengikuti baterai. Kompensasi ini sekaligus penanganan risiko R4 di charter.
 
-a = Δv / Δt = 1,5 / 0,5 = 3 m/s²
+## 2. Gaya dan torsi
 
-F = m·a = 0,3 · 3 = 0,9 N (akselerasi ideal, belum termasuk hambatan)
+Asumsi: massa desain m = 0,30 kg (lihat bagian 4), percepatan 0 → 0,9 m/s dalam 0,5 s (a = 1,8 m/s²), koefisien
+hambatan gulir roda karet di kertas/banner C_rr = 0,02 *(asumsi)*.
 
-τ = F·r = 0,9 · 0,03 = 0,027 N·m = 27 N·mm
+| | Rumus | Hasil |
+|---|---|---|
+| Gaya percepatan | F_a = m · a = 0,30 · 1,8 | 0,540 N |
+| Hambatan gulir | F_rr = C_rr · m · g = 0,02 · 0,30 · 9,81 | 0,059 N |
+| Gaya total | F = F_a + F_rr | 0,599 N |
+| Torsi total di roda | τ = F · r = 0,599 · 0,017 | 10,2 N·mm |
+| Torsi per roda | τ / 2 | 5,1 N·mm |
+| **Torsi desain per roda (SF 2)** | 5,1 × 2 | **10,2 N·mm ≈ 0,10 kg·cm** |
 
-Per roda (2 roda): τ_roda ≈ 27 / 2 ≈ **13,5 N·mm**
+(1 kg·cm = 98,1 N·mm.) **Cek listing:** torsi *rated* (bukan stall) motor N20 6 V 500 RPM harus ≥ 0,10 kg·cm.
+Charter menulis ±9 N·mm karena belum memasukkan hambatan gulir; bedanya kecil.
 
-## 4. Margin desain (safety factor)
+Daya mekanik puncak saat berakselerasi F · v_maks = 0,53 W. Saat melaju 0,5 m/s cukup melawan hambatan gulir
+(0,03 W), jadi motor jarang mendekati beban penuh.
 
-Jangan desain pas-pasan; perlu margin untuk gesekan roda, gearbox, hambatan permukaan, perubahan
-arah, beban baterai/chassis, akselerasi, dan kondisi lintasan.
+**Traksi.** Titik berat diperkirakan 20 mm di depan poros dan ball caster 85,6 mm di depan poros *(asumsi)*, jadi
+±77% berat ada di roda penggerak. Dengan koefisien gesek ban μ = 0,6 *(asumsi)*, percepatan maksimum tanpa selip
+a = μ · g · 0,77 = **4,5 m/s²**, lebih besar dari 1,8 m/s² yang dibutuhkan.
 
-Safety factor 2: τ_design = 13,5 × 2 = **27 N·mm per roda**
+**Tikungan.** Kecepatan maksimum tanpa selip di tikungan berjari-jari R: v = √(μ · g · R).
 
-**Target motor: torsi output ≥ 27 N·mm per roda** (≈ 0,28 kg·cm; 1 kg·cm = 98,1 N·mm — penjual
-motor biasanya menulis torsi dalam kg·cm). Bandingkan dengan torsi rated (bukan stall) di datasheet.
+| R | 5 cm | 10 cm | 20 cm |
+|---|---|---|---|
+| v maksimum | 0,54 m/s | 0,77 m/s | 1,08 m/s |
 
-## Catatan pemeriksaan (Claude)
+**Terguling.** Titik berat ±25 mm dari lantai *(asumsi)* dan setengah jarak roda 45,5 mm: robot baru terguling pada
+percepatan samping g · 45,5 / 25 = 17,9 m/s², jauh di atas batas selip 5,9 m/s². Robot akan selip dulu, tidak
+terguling.
 
-- Hitungan aritmetika di atas sudah dicek dan benar.
-- Faktor keamanan 2 sudah ditambahkan di bagian 4 (hambatan gulir & efisiensi gearbox dicakup lewat margin ini).
-  Lazimnya torsi motor dipilih beberapa kali lipat (mis. 2–3×) dari hasil hitung ideal,
-  dan dibandingkan dengan torsi **rated** (bukan stall) di datasheet motor yang dipilih.
-- Belum sinkron dengan charter revisi 3 & RAB:
-  - Charter: sasaran kecepatan ≥ 0,5 m/s (dibatasi demi keamanan anak). Hitungan ini memakai 1,5 m/s.
-    Bisa konsisten bila 1,5 m/s = kemampuan maksimum desain, 0,5 m/s = batas mode pemula.
-  - RAB: roda N20 Ø34 mm; hitungan ini memakai roda Ø60 mm (motor 500 RPM).
-  - Massa 0,3 kg perlu dicek ulang setelah ada perkiraan berat baterai 2× 18650 (± 90–100 g) + PCB + motor.
+## 3. Berhenti saat garis hilang (sasaran 7)
 
-## Keputusan (08/10/2026)
+Pengereman dibatasi traksi (4,5 m/s², motor di-*short brake* oleh TB6612). Dari 0,5 m/s:
+t = v / a = **0,11 s**, jarak = v² / 2a = **2,8 cm**. Ditambah waktu memastikan garis hilang (±20 ms), total
+±0,13 s, jauh di bawah batas 500 ms.
 
-- Kecepatan: sasaran charter tetap ≥ 0,5 m/s; 1,5 m/s hanya dasar pemilihan motor (bukan sasaran uji).
-- Roda Ø43 mm + motor N20 6V ± 700 RPM + encoder → v_maks teoritis ≈ 1,58 m/s.
-  Kebutuhan pada roda Ø43 mm: ± 666 RPM, torsi desain (SF 2) ± 19 N·mm ≈ 0,20 kg·cm per roda.
-- PWM dibatasi ± 70% di firmware karena motor 6V dipasok baterai 2S (7,4–8,4 V).
+## 4. Anggaran massa
 
-## Keputusan (revisi, 08/10/2026) — menggantikan keputusan di atas
+| Bagian | Massa (g) | Keterangan |
+|---|---|---|
+| Baterai 18650 × 2 | 92 | ±46 g per sel |
+| Holder 2× 18650 | 12 | |
+| ESP32 DevKit + socket | 14 | |
+| TB6612 modul + socket | 5 | |
+| MP1584 + BMS 2S + charger USB-C | 10 | |
+| OLED 0,96" | 5 | |
+| Motor N20 + encoder × 2 | 24 | ±12 g per motor |
+| Roda Ø34 × 2 | 12 | |
+| PCB utama (±96 cm², FR4 1,6 mm) | 34 | 0,36 g/cm² |
+| PCB sensor (20,7 cm²) + komponen | 10 | |
+| Ball caster | 8 | |
+| Baut, mur, spacer | 10 | |
+| Kabel dan konektor | 8 | |
+| Tombol, buzzer, saklar, kapasitor, dioda | 6 | |
+| **Subtotal** | **250** | |
+| Cetak 3D (dudukan motor dan baterai, cover, bumper, sayap) | ±40 | *(asumsi, belum didesain)* |
+| **Total** | **±290** | dipakai m_desain = **0,30 kg** |
 
-- Di marketplace hanya tersedia N20 + encoder **6V 500 RPM** → dipakai.
-- Desain robot rendah satu bidang → roda **Ø34 mm**.
-- v_maks teoritis = π × 0,034 × 500 / 60 ≈ **0,89 m/s** (sasaran ≥ 0,5 m/s tetap tercapai dengan cadangan).
-- Torsi (target 0,9 m/s dalam 0,5 s → a = 1,8 m/s², m = 0,3 kg): F = 0,54 N; τ total = 0,54 × 0,017 ≈ 9,2 N·mm;
-  per roda ≈ 4,6 N·mm; dengan SF 2 ≈ **9,2 N·mm ≈ 0,09 kg·cm per roda**. Motor 500 RPM (rasio gear lebih besar)
-  punya torsi lebih tinggi dari 700 RPM, jadi aman.
-- Baterai: 2× 14500 (± 40 g) menggantikan 2× 18650 (± 90 g).
+Massa tiap komponen adalah perkiraan *(asumsi)*; timbang komponen setelah dibeli. Simulasi CoppeliaSim (26/10)
+memakai 0,22 kg; samakan menjadi 0,30 kg saat simulasi dijalankan lagi.
+
+## 5. Encoder dan belok 90° tanpa IMU
+
+**Cek listing:** jumlah pulsa encoder per putaran motor (PPR) dan rasio gearbox. Contoh perhitungan dengan
+7 PPR dan rasio 1:30 *(asumsi)*, dibaca kuadratur (×4):
+
+| | Rumus | Hasil |
+|---|---|---|
+| Hitungan per putaran roda | 7 · 30 · 4 | 840 |
+| Jarak per hitungan | π · 34 mm / 840 | 0,127 mm |
+| Busur tiap roda saat putar di tempat 90° | (π/2) · (91 mm / 2) | 71,5 mm = 562 hitungan |
+| Resolusi sudut belok | 90° / 562 | 0,16° per hitungan |
+| Laju pulsa pada 500 RPM | 500/60 · 840 | 7.000 hitungan/s per roda |
+
+Resolusi sudut jauh lebih halus dari yang dibutuhkan, jadi belok 90° cukup diukur encoder lalu dikunci ke garis oleh
+sensor (arahan dosen 09/10). Laju 7.000 pulsa/s per roda sebaiknya dibaca **PCNT** (penghitung pulsa hardware
+ESP32), bukan interrupt.
+
+## 6. Daya dan baterai
+
+**Rel +5 V.** MP1584 diatur 5,0 V, lalu melewati dioda D1 1N5819 (mencegah arus USB balik ke buck), turun ±0,35 V
+→ +5 V ≈ **4,65 V**. ESP32, OLED, dan encoder mengambil 3,3 V dari regulator ESP32 yang dipasok +5 V, jadi arusnya
+dihitung di rel 5 V.
+
+| Beban | Arus | Keterangan |
+|---|---|---|
+| 12 LED IR QRE1113GR | 188 mA | (4,65 − 1,2) / 220 Ω = 15,7 mA per sensor |
+| ESP32 dengan WiFi aktif | 150 mA | rata-rata *(asumsi)*, puncak ±300 mA saat kirim data |
+| OLED | 15 mA | *(asumsi)* |
+| 2 encoder motor | 10 mA | *(asumsi)* |
+| 12 pull-up fototransistor | 4 mA | 3,3 V / 10 kΩ, paling besar |
+| **Total** | **±370 mA** | buzzer (±30 mA) hanya sesekali |
+
+Daya keluaran buck 5,0 V × 0,37 A = 1,84 W; efisiensi buck 88% *(asumsi)* → **2,1 W dari baterai**.
+Motor saat berjalan dengan belokan rata-rata 1–2 W *(asumsi)*, jadi **total 3,1–4,1 W**.
+
+**Energi baterai.** 2 sel 3000 mAh seri: 3,0 Ah × 7,4 V = 22,2 Wh; dipakai sampai 3,2 V/sel ±90% → 20,0 Wh.
+Kapasitas sel marketplace sering di bawah label, jadi kemungkinan buruk 2000 mAh → 13,3 Wh.
+
+| Kondisi | Kemungkinan buruk (13,3 Wh, 4,1 W) | Nominal (20,0 Wh, 3,1 W) |
+|---|---|---|
+| Berjalan terus | **3,3 jam** | 6,5 jam |
+| Menyala tanpa motor (2,1 W) | 6,4 jam | 9,6 jam |
+
+Klaim "±3 jam pemakaian" di charter adalah batas bawahnya.
+
+**Pengisian.** Adaptor USB-C 5 V 2 A = 10 W, efisiensi charger 85% *(asumsi)* → ±1,0 A ke baterai 8,4 V →
+±3 jam fase arus tetap + ±0,5 jam fase tegangan tetap = **±3–3,5 jam**.
+
+**Arus puncak.** Kedua motor tertahan (stall) ±0,8 A per motor *(asumsi, **cek listing**)* + rel 5 V ±0,3 A dari
+sisi baterai → ±1,9 A. Syarat: arus stall motor ≤ 1,2 A (batas kontinu TB6612 per kanal, puncak 3,2 A), dan arus
+BMS ≥ 3 A (**cek listing**).
+
+## 7. Rangkaian
+
+| Bagian | Perhitungan | Hasil |
+|---|---|---|
+| Resistor LED QRE (220 Ω, 0805) | P = I² · R = 0,0157² · 220 | 54 mW < 125 mW |
+| Pembagi baterai R1 100k / R2 33k | k = 33 / 133 = 0,248 | 8,4 V → 2,08 V; 7,4 V → 1,84 V; 6,4 V → 1,59 V di GPIO39 (rentang ADC 11 dB) |
+| Arus pembagi | 8,4 V / 133 kΩ | 63 µA, hanya saat saklar ON (pembagi di VBAT setelah SW1) |
+| Resolusi baca baterai | 3,1 V / 4095 / 0,248 | ±3,1 mV per langkah ADC |
+| Basis buzzer (R3 1k, R4 10k, S8050) | I_B = (3,3 − 0,7)/1k − 0,7/10k = 2,53 mA; dengan h_FE ≥ 85 → mampu 215 mA | buzzer ±30 mA: transistor jenuh. R4 menjaga GPIO12 LOW saat boot |
+| Pull-up tombol (R5, R6 10k) | 3,3 V / 10 kΩ | 0,33 mA saat ditekan; GPIO34/35 tidak punya pull-up internal, jadi R5/R6 wajib |
+| C1 100 µF 16 V di VBAT | 16 V / 8,4 V | 1,9× tegangan maksimum |
+| MP1584 | masukan 6,4–8,4 V (batas 4,5–28 V), keluaran 0,37 A (batas 3 A) | longgar |
+
+**Waktu baca sensor.** Tiap kanal mux butuh waktu tenang ±5 µs (sumber 10 kΩ × kapasitansi mux + ADC ±100 pF,
+τ ≈ 1 µs *(asumsi)*) ditambah `analogRead` ±10–25 µs, jadi 12 sensor ≈ 0,36 ms. Itu muat dalam loop kendali 1 ms
+(1 kHz). Pada 0,5 m/s robot hanya bergerak 0,5 mm tiap siklus kendali.
+
+## 8. Rekomendasi dari perhitungan
+
+1. Atur keluaran **MP1584 ke 5,35 V** supaya rel +5 V setelah dioda D1 ≈ 5,0 V. Arus LED jadi 17,3 mA dan regulator
+   3,3 V ESP32 punya cadangan tegangan yang cukup.
+2. Tambah **kapasitor 100 nF** dari GPIO39 (VBAT_SENSE) ke GND. Impedansi pembagi 24,8 kΩ terlalu tinggi untuk ADC
+   ESP32 tanpa kapasitor (τ = 2,5 ms, cukup untuk memantau baterai).
+3. Batasi PWM motor dengan **kompensasi tegangan** (duty = 6,0 / V_bat), bukan angka tetap 70%.
+4. Baca encoder dengan **PCNT** ESP32.
+5. **Cek listing motor:** torsi rated ≥ 0,10 kg·cm, arus stall ≤ 1,2 A, PPR encoder, dan rasio gear. Cek juga
+   arus maksimum BMS dan arus cas modul charger.
+6. Samakan massa simulasi menjadi 0,30 kg, dan torsi di charter menjadi ±10 N·mm (0,10 kg·cm).
+
+---
+
+## Lampiran: draf awal kelompok (08/10/2026)
+
+Disimpan sebagai riwayat. Dasar awalnya target 1,5 m/s, roda Ø60 mm, massa 0,3 kg, akselerasi 0 → 1,5 m/s dalam
+0,5 s:
+
+- ω = v / r = 1,5 / 0,03 = 50 rad/s → 477 RPM → dipilih motor ±500 RPM.
+- a = 3 m/s², F = 0,9 N, τ = 27 N·mm (13,5 N·mm per roda), safety factor 2 → 27 N·mm per roda (≈ 0,28 kg·cm).
+- Kecepatan teoritis motor 500 RPM: Ø40 1,05 · Ø50 1,31 · Ø60 1,57 · Ø65 1,70 · Ø70 1,83 m/s.
+
+Keputusan sesudahnya (08/10):
+- Sasaran kecepatan charter tetap ≥ 0,5 m/s; 1,5 m/s hanya dasar pemilihan motor.
+- Di marketplace hanya ada N20 + encoder 6 V 500 RPM. Robot dibuat rendah satu bidang dengan roda Ø34
+  → v_maks 0,89 m/s.
+- Sempat dipakai baterai 2× 14500, lalu kembali ke 2× 18650 (rancangan sekarang).

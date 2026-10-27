@@ -5,6 +5,12 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 27/10/2026
+- **Perhitungan rancangan diperbarui** (`docs/perhitungan-motor.md`; draf 08/10 jadi lampiran): kecepatan (0,89 m/s,
+  281 RPM untuk 0,5 m/s, duty PWM terkompensasi 6,0/V_bat), torsi (10,2 N·mm ≈ 0,10 kg·cm per roda, SF 2), traksi,
+  tikungan, rem (2,8 cm / 0,11 s), anggaran massa (±0,29 kg; luas PCB dari file KiCad), encoder (0,16°/hitungan,
+  contoh 7 PPR × 1:30), daya (rel 5 V ±370 mA, total 3,1–4,1 W), baterai (3,3–6,5 jam, cas ±3–3,5 jam), rangkaian
+  (pembagi 100k/33k, buzzer S8050, LED 15,7 mA). Temuan: +5 V hanya ±4,65 V karena dioda D1 → usul MP1584 5,35 V;
+  usul 100 nF di GPIO39. Spesifikasi motor dari listing belum bisa dibuka (Tokopedia diblokir di container).
 - **Naskah bicara pitching** `docs/pitching-rab/naskah-bicara.md`: kalimat per slide (16 slide, ±13 menit, 1.342
   kata), usulan pembagian 4 pembicara per blok (pembuka, produk & sasaran, rancangan teknis & simulasi, RAB, penutup),
   daftar persiapan (peran slide 2, gambar CoppeliaSim di slide 11, video offline), angka wajib hafal, dan 13
