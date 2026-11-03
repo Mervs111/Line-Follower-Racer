@@ -56,7 +56,7 @@ box("Holder 2x18650", -38, 38, -21, 21, 24, 44, "battery")
 box("Charger 2S USB-C (di skid plate)", -12.5, 12.5, -28.0, -12.0, CH_Z1, CH_Z1 + 5.5, "hidden", "charger")
 box("Steker USB-C charger", -4.5, 4.5, -48.0, -28.0, CH_Z1 + 0.5, CH_Z1 + 8.0, "keepzone")
 # rangka: skid plate, PCB sensor (digantung di bawah hidung skid plate), ball caster di skid plate di belakang PCB sensor
-box("Skid plate 3D print", -33, 33, -30, 93, CH_Z0, CH_Z1, "frame")
+box("Skid plate 3D print", -33, 33, -32, 93, CH_Z0, CH_Z1, "frame")
 box("PCB sensor rev B", -47.5, 47.5, 80.0, 131.0, 4.8, 6.4, "frame")
 CASTER_Y = 72.0
 box("Ball caster", -5, 5, CASTER_Y - 5, CASTER_Y + 5, 0, CH_Z0, "frame")
@@ -213,6 +213,46 @@ def sensor_outline():
 
 
 SENSOR = sensor_outline()
+
+# skid plate trapesium: sisi lurus dari hidung (±SK_F di y 93) melebar ke belakang sampai sisi luar ban (y −32),
+# dipotong coakan roda (celah ±4 mm ke ban di ketinggian skid plate)
+SK_F, SK_R, SK_Y0, SK_Y1, WELL = 31.0, WOUT, -32.0, 93.0, 20.5
+
+
+def sk_x(y):
+    return SK_F + (SK_Y1 - y) * (SK_R - SK_F) / (SK_Y1 - SK_Y0)
+
+
+SKID = fillet_dense([(SK_R, SK_Y0, 4), (sk_x(-WELL), -WELL, 1.5), (38, -WELL, 1.5), (38, WELL, 1.5),
+                     (sk_x(WELL), WELL, 1.5), (SK_F, SK_Y1, 5)])
+
+
+def in_poly(p, poly):
+    x, y, c = p[0], p[1], False
+    for i in range(len(poly)):
+        (x1, y1), (x2, y2) = poly[i - 1], poly[i]
+        if (y1 > y) != (y2 > y) and x < x1 + (y - y1) * (x2 - x1) / (y2 - y1):
+            c = not c
+    return c
+
+
+def seg_dist(p, a, b):
+    ax, ay, bx, by = *a, *b
+    L2 = (bx - ax) ** 2 + (by - ay) ** 2
+    u = max(0.0, min(1.0, ((p[0] - ax) * (bx - ax) + (p[1] - ay) * (by - ay)) / L2)) if L2 else 0.0
+    return math.dist(p, (ax + u * (bx - ax), ay + u * (by - ay)))
+
+
+# PCB utama harus di dalam skid plate dengan jarak tepi >= 1,5 mm (tampak atas)
+_mb = [(x, y, MB["r"]) for x, y in ((MB["x1"], MB["y0"]), (MB["x1"], MB["y1"]))]
+for k in range(0, 360, 5):
+    for cx in (MB["x0"] + MB["r"], MB["x1"] - MB["r"]):
+        for cy in (MB["y0"] + MB["r"], MB["y1"] - MB["r"]):
+            p = (cx + MB["r"] * math.cos(math.radians(k)), cy + MB["r"] * math.sin(math.radians(k)))
+            d = min(seg_dist(p, SKID[i - 1], SKID[i]) for i in range(len(SKID)))
+            if not in_poly(p, SKID) or d < 1.5:
+                problems.append(f"PCB utama terlalu dekat/keluar tepi skid plate di ({p[0]:.1f}, {p[1]:.1f}): {d:.1f} mm")
+                break
 V16 = fillet_dense(MAIN_R_V16)
 A_V16 = poly_area(V16) / 100
 A_MB, A_IB = rr_area(MB), rr_area(IB)
@@ -281,9 +321,7 @@ def view_v16():
 
 def skid_and_battery():
     g = []
-    sk = fillet_dense([(WOUT, -32, 5), (WOUT, -20.5, 2), (38, -20.5, 1.5), (38, 24, 3), (33, 30, 4), (33, 80, 8),
-                       (14, 93, 5)])
-    g.append(poly(sk, "skid"))
+    g.append(poly(SKID, "skid"))
     g.append(label(-WOUT + 2, -27.5, "skid plate 3D print", "lbl dim", 2.6, "start"))
     g += [rect(-38, 38, -21, 21, "battery-above", 2), label(0, -16.5, "holder 2×18650 (di atas)", "lbl dim", 2.8)]
     g.append(f'<circle class="caster-top" cx="0" cy="{-CASTER_Y}" r="5"/>')
@@ -374,7 +412,7 @@ def side_v17():
         return f'<rect class="{cls}" x="{y0:.2f}" y="{-z1:.2f}" width="{y1 - y0:.2f}" height="{z1 - z0:.2f}" rx="{rx}"/>'
     sens_y = [y for _, y in SENSOR]
     g.append(r(min(sens_y), max(sens_y), 4.8, 6.4, "sensor"))
-    g.append(r(-30, 93, CH_Z0, CH_Z1, "skid-side"))
+    g.append(r(SK_Y0, SK_Y1, CH_Z0, CH_Z1, "skid-side"))
     g.append(f'<circle class="wheel" cx="0" cy="{-R_W}" r="{R_W}"/>')
     g.append(f'<circle class="axis-dot" cx="0" cy="{-R_W}" r="1.2"/>')
     g.append(r(-6, 6, CH_Z1, CH_Z1 + 10, "motor"))
@@ -420,7 +458,7 @@ rows = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>" for a, b, c in [
     ("Total PCB utama + interface", "{:.1f} cm²".format(A_V16).replace(".", ","),
      "{:.1f} cm² ({:+.0f}%)".format(A_MB + A_IB, (A_MB + A_IB) / A_V16 * 100 - 100).replace(".", ",")),
     ("PCB sensor", "{:.1f} cm²".format(A_SENS).replace(".", ","), "tetap"),
-    ("Sasis", "PCB utama", "skid plate 3D print, belakang melebar sampai sisi luar ban"),
+    ("Sasis", "PCB utama", f"skid plate 3D print trapesium: depan {2 * SK_F:.0f} mm, belakang {2 * SK_R:.0f} mm, coakan roda"),
     ("Ban", "Ø34 × 12 mm di model (roda Ø34 N20 di toko umumnya 6,5–7 mm)", f"Ø34 × {W17:.0f} mm, melebar ke luar"),
     ("Lebar robot / jarak tengah ban", f"{2 * (WX0 + W_W):.0f} mm / {2 * WX0 + W_W:.0f} mm",
      f"{2 * WOUT:.0f} mm / {2 * WX0 + W17:.0f} mm (batas lomba 200 mm)"),
@@ -568,7 +606,8 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
         depan MP1584, C1, buzzer, SW1 (tuas ke kanan), header J6 ke board interface, J5 ke PCB sensor (kabel lurus ke depan).</li>
         <li><b>Ban lebih lebar</b> (18 mm, melebar ke luar karena sisi dalam ada motor): kecepatan maksimum tetap, karena ditentukan
         RPM × diameter. Grip naik, jadi akselerasi dan pengereman lebih jarang selip. Jarak tengah ban naik 91 → 97 mm (lebih stabil, PID perlu
-        dituning ulang). <b>Skid plate belakang</b> melebar sampai sisi luar ban di belakang roda, celah ke ban ±4 mm.</li>
+        dituning ulang). <b>Skid plate</b> berbentuk trapesium: sisi lurus dari hidung (62 mm) melebar ke belakang sampai sisi luar ban (115 mm),
+        dengan coakan roda (celah ke ban ±4 mm). Ban menonjol keluar dari garis miring seperti mobil balap.</li>
         <li><b>Ball caster</b> pindah ke skid plate tepat di belakang PCB sensor (y ±72 mm dari poros). Di v16 caster masih di baut PCB sensor dan
         bertabrakan dengan PCB sensor (celah ke lantai cuma 4,8 mm).</li>
         <li><b>Di bawah ESP32</b> (celah socket 8,5 mm): TB6612 disolder rendah tanpa socket, Q1 + R3/R4 buzzer.</li>

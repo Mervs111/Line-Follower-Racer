@@ -36,6 +36,12 @@ Entri terbaru di atas.
   luar (lebar robot 103 → 115 mm, jarak tengah ban 91 → 97 mm). Kecepatan maksimum tidak berubah (RPM × diameter),
   grip naik. Cek Tokopedia: roda N20 Ø34 umumnya 6,5–7 mm; alternatif velg 3D print + ban TPU, atau roda Ø44 × 17,5 mm
   (CNC Store Bandung; maks 1,15 m/s, torsi desain 0,13 kg·cm). Belum diputuskan.
+- Konsep v17 versi 4 (komentar user: bentuk sebelumnya jelek): skid plate jadi trapesium, sisi lurus dari hidung 62 mm
+  melebar ke belakang sampai sisi luar ban 115 mm, coakan roda celah 4 mm. Cek baru: PCB utama di dalam skid plate
+  (jarak tepi ≥ 1,5 mm, nyatanya ±3 mm). Hidung tidak bisa lebih runcing tanpa memutar ESP32 membujur.
+- Pertanyaan user: MP1584 22 × 17 mm cocok footprint (masih "UKUR ULANG"; letak lubang dan polaritas diukur saat
+  modul datang). TB6612 cukup 1 modul (2 kanal, PWMA GPIO18 kiri, PWMB GPIO16 kanan); diagram blok kendali
+  hanya menggambar 1 panah PWM, diusulkan diperbaiki jadi 2 jalur (menunggu jawaban user).
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated

@@ -167,8 +167,8 @@ odejs` ke PATH.
   socket OLED) ditumpuk di atas PCB utama, **di depan baterai**. Konsep v17 to-scale (`mechanical/konsep-v17/`,
   https://claude.ai/artifact/3zbiuQzc9YBamEs8NX5sxH): PCB utama 62 × 58 mm + interface 46 × 32 mm (−47% luas),
   OLED di tengah diapit tombol (2 kiri, 3 kanan; permintaan user), 5 tombol lewat resistor ladder di GPIO34, TB6612 disolder rendah di bawah ESP32, charger di skid plate, BMS di
-  holder, ball caster di skid plate (y ±72). Komentar user di artifact: skid plate belakang melebar sampai sisi luar
-  ban, **ban lebih lebar ke luar** (konsep Ø34 × 18 mm → lebar robot 115 mm, jarak tengah ban 97 mm). Roda N20 Ø34
+  holder, ball caster di skid plate (y ±72). Komentar user di artifact: **skid plate trapesium** (depan 62 mm melebar
+  lurus ke belakang sampai sisi luar ban 115 mm, coakan roda celah 4 mm), **ban lebih lebar ke luar** (konsep Ø34 × 18 mm → lebar robot 115 mm, jarak tengah ban 97 mm). Roda N20 Ø34
   di toko hanya 6,5–7 mm; pilihan: velg 3D print + ban TPU, atau Ø44 × 17,5 mm (CNC Store Bandung, maks 1,15 m/s),
   belum diputuskan. Menunggu konfirmasi user sebelum KiCad + model 3D diubah.
 
