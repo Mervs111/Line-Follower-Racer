@@ -272,14 +272,16 @@ def build_footprints():
     pads += [pad(str(9 + i), 7.62, -8.89 + 2.54 * i) for i in range(8)]
     write_fp("TB6612_Module_2x8_W15.24", "Modul TB6612FNG 2x8 pin, jarak baris 15,24 mm. SEMENTARA: ukur modul asli.",
              (-10.2, -10.15, 10.2, 10.15), pads, [("UKUR ULANG", 0, 0)], crt=0.1)   # rapat dengan ESP32 di PCB v2
-    pads = [pad("1", -9.5, -6.0, 2.0, 1.2), pad("2", -9.5, 6.0, 2.0, 1.2),
-            pad("3", 9.5, -6.0, 2.0, 1.2), pad("4", 9.5, 6.0, 2.0, 1.2)]
+    # 2 lubang per terminal jarak 2,54 (foto listing CNC Store 03/11/2026, perkiraan: ukur modul asli)
+    pads = [pad(n, x, y) for n, x, ys in (("1", -9.5, (-6.87, -4.33)), ("2", -9.5, (4.33, 6.87)),
+                                          ("3", 9.5, (-6.87, -4.33)), ("4", 9.5, (4.33, 6.87))) for y in ys]
     pads = [pad(str(i + 1), 2.54 * i, 0) for i in range(16)]
     pads += [pad(str(17 + i), 10.16 + 2.54 * i, 15.24) for i in range(8)]
     write_fp("CD74HC4067_Module", "Modul mux CD74HC4067 40,6 x 17,8 mm: C0-C15 satu baris, SIG..GND baris kedua. "
              "SEMENTARA: ukur modul asli (jarak baris, urutan pin).",
              (-1.25, -1.27, 39.35, 16.51), pads, [("C0..C15", 19.05, 2.5), ("UKUR ULANG", 19.05, 8)])
-    write_fp("MP1584_Module", "Modul MP1584 22x17 mm, 4 titik solder di sudut. SEMENTARA: ukur modul asli.",
+    write_fp("MP1584_Module", "Modul MP1584EN mini 22x17 mm, 2 lubang per terminal (jarak 2,54), kolom +-9,5 mm. Posisi dari foto "
+             "listing (perkiraan, 03/11/2026): ukur modul asli. Polaritas +/- belum pasti (label di sisi bawah modul).",
              (-11.0, -8.5, 11.0, 8.5), pads, [("IN", -6.5, 0), ("OUT", 6.5, 0), ("UKUR ULANG", 0, 3.5)])
     pads = [pad("1", -1.27, -1.27, 1.4, 0.8), pad("2", -1.27, 1.27, 1.4, 0.8),
             pad("3", 1.27, -1.27, 1.4, 0.8), pad("4", 1.27, 1.27, 1.4, 0.8)]

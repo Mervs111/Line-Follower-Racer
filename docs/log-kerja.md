@@ -61,6 +61,10 @@ Entri terbaru di atas.
 - **Skematik board interface rev A** (proyek baru `hardware/board-interface/`, `gen_sch_interface.py`): J1 header 1×6,
   J2 socket OLED, SW1–SW5 6×6, tangga R 1k/3,9k/8,2k/18k/39k (0,30–2,63 V), C1 100 nF. ERC 0.
 - Layout PCB utama belum: MCP KiCad tidak tersambung (2 jendela KiCad terbuka, PCB Editor tidak terbaca API).
+- **Footprint MP1584 diperbarui sesuai foto listing CNC Store** (pertanyaan user): dari 4 pad tunggal jadi 8 lubang,
+  2 per terminal. Foto diluruskan (homografi dari 4 pojok badan 22 × 17 mm), lubang terukur di x ±9,3–9,6, jarak
+  pasangan 2,6–2,9 mm → dipakai 2,54 (header), y ±4,33 / ±6,87. Overlay di foto pas. `gen_kicad.py` ikut diubah.
+  Polaritas +/− tetap dicek di sisi bawah modul saat datang (ada tanda ⊕ dekat pasangan kanan bawah di foto).
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
