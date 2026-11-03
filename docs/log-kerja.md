@@ -48,6 +48,9 @@ Entri terbaru di atas.
   PNG `docs/diagram-blok-kendali.png`, artifact diagram blok versi 5. Deck pitching masih memakai gambar lama.
 - Keputusan user: velg 3D print Ø34 × 18 mm, 5 tombol untuk menu OLED (label ▲ ▼ / ◀ OK ▶ di konsep v17 versi 5),
   TB6612 di bawah ESP32 oke.
+- Pertanyaan user: PCB utama trapesium mengikuti skid plate (tidak sampai belakang). Ditambahkan panel opsi di konsep
+  v17 (belum dipilih): depan 62, belakang 87, panjang 58 mm, 42,9 cm² (+20% dari persegi 35,8), kotak pembungkus
+  50,2 cm² (+40%), total dengan interface 57,6 cm² (−40% dari v16). 4 lubang M3 di sayap, cek otomatis 0 masalah.
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated

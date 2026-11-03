@@ -259,6 +259,28 @@ A_V16 = poly_area(V16) / 100
 A_MB, A_IB = rr_area(MB), rr_area(IB)
 A_SENS = poly_area(SENSOR) / 100
 
+# opsi (belum dipilih): PCB utama trapesium, sisi sejajar skid plate, belakang tetap di depan baterai (y 24)
+TR_D = sk_x(MB["y1"]) - MB["x1"]             # jarak mendatar sisi PCB ke tepi skid plate
+
+
+def tr_x(y):
+    return sk_x(y) - TR_D
+
+
+TRAP = fillet_dense([(tr_x(MB["y0"]), MB["y0"], 4), (MB["x1"], MB["y1"], 4)])
+A_TR = poly_area(TRAP) / 100
+BB_MB = (MB["x1"] - MB["x0"]) * (MB["y1"] - MB["y0"]) / 100
+BB_TR = 2 * tr_x(MB["y0"]) * (MB["y1"] - MB["y0"]) / 100
+TR_HOLES = [(s * 38.5, 29.0) for s in (-1, 1)] + [(s * 32.5, 56.0) for s in (-1, 1)]   # M3 ke skid plate
+for hx, hy in TR_HOLES:
+    d = min(seg_dist((hx, hy), TRAP[i - 1], TRAP[i]) for i in range(len(TRAP)))
+    if not in_poly((hx, hy), TRAP) or d < 1.6 + 1.0:
+        problems.append(f"opsi trapesium: lubang ({hx}, {hy}) terlalu dekat tepi PCB ({d:.1f} mm)")
+    for b in BOX:   # kepala baut M3 (r 2,75) tidak boleh di bawah komponen PCB utama / ESP32
+        top = abs(b[5] - MBT) < 0.01 or b[7] in ("esp", "espmod", "espusb", "socket")
+        if top and b[1] - 2.75 < hx < b[2] + 2.75 and b[3] - 2.75 < hy < b[4] + 2.75:
+            problems.append(f"opsi trapesium: lubang ({hx}, {hy}) menabrak {b[0]}")
+
 # ------------------------------ gambar SVG ------------------------------
 CLS = {  # kelas CSS per jenis
     "motor": "motor", "wheel": "wheel", "print": "print", "battery": "battery", "conn": "conn", "small": "small",
@@ -329,10 +351,10 @@ def skid_and_battery():
     return g
 
 
-def main_board_layer(dim=False):
+def main_board_layer(dim=False, outline=None):
     """PCB utama + komponennya (+ charger di skid plate); dim=True untuk latar panel tumpukan"""
     g = [f'<g{" class=\"faded\"" if dim else ""}>']
-    g.append(rect(MB["x0"], MB["x1"], MB["y0"], MB["y1"], "board", MB["r"]))
+    g.append(poly(outline, "board") if outline else rect(MB["x0"], MB["x1"], MB["y0"], MB["y1"], "board", MB["r"]))
     for cls in ["hidden", "conn", "small", "module", "socket", "esp", "espmod", "espusb", "under", "header"]:
         for b in BOX:
             if b[7] != cls or b[5] >= IB["z0"] - 0.01 and cls != "header":
@@ -368,6 +390,19 @@ def view_v17_main():
     g += axle_and_dims("")
     g.append(dim_v(37, MB["y0"], MB["y1"], "58 mm"))
     g.append(dim_h(MB["x0"], MB["x1"], 87.5, "62 mm"))
+    return g
+
+
+def view_v17_trap():
+    g = common_frame(W17) + skid_and_battery() + main_board_layer(outline=TRAP)
+    for hx, hy in TR_HOLES:
+        g.append(f'<circle class="hole" cx="{hx}" cy="{-hy}" r="1.6"/>')
+    for hx, hy in H12:
+        g.append(f'<circle class="hole" cx="{hx}" cy="{-hy}" r="1.6"/>')
+    g += axle_and_dims("")
+    g.append(dim_h(MB["x0"], MB["x1"], 87.5, "62 mm"))
+    g.append(dim_h(-tr_x(MB["y0"]), tr_x(MB["y0"]), 20.5, f"{2 * tr_x(MB['y0']):.0f} mm"))
+    g.append(dim_v(47, MB["y0"], MB["y1"], "58 mm"))
     return g
 
 
@@ -449,8 +484,13 @@ def svg(body, vb, aria):
             + "".join(body) + "</svg>")
 
 
+def fmt(v):
+    return f"{v:.1f}".replace(".", ",")
+
+
 top16 = svg(view_v16(), "-58 -136 116 182", "Tampak atas v16: PCB utama bentuk mobil F1 127 kali 100 mm")
 top17 = svg(view_v17_main(), "-58 -136 116 182", "Tampak atas usulan v17: PCB utama 62 kali 58 mm")
+top17t = svg(view_v17_trap(), "-58 -136 116 182", "Opsi PCB utama trapesium mengikuti sisi skid plate")
 top17b = svg(view_v17_stack(), "-58 -136 116 182", "Tampak atas usulan v17 dengan board interface 46 kali 32 mm di atasnya")
 side17 = svg(side_v17(), "-44 -56 186 62", "Tampak samping usulan v17")
 
@@ -570,6 +610,9 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
 .cols {{ display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }}
 @media (max-width: 720px) {{ .cols {{ grid-template-columns: 1fr; }} }}
 .cols > section {{ min-width: 0; }}
+.opt {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 20px; align-items: start; }}
+@media (max-width: 720px) {{ .opt {{ grid-template-columns: 1fr; }} }}
+.optbody {{ display: grid; gap: 16px; min-width: 0; }}
 </style>
 <main>
   <header style="display:grid;gap:10px">
@@ -593,6 +636,29 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
     <span><i class="sw" style="border:1px dashed var(--module);background:color-mix(in srgb, var(--module) 25%, transparent)"></i>charger di skid plate (di bawah dudukan)</span>
     <span><i class="sw" style="background:var(--print);opacity:.6"></i>skid plate 3D print</span>
   </div>
+
+  <section>
+    <h2>Opsi: PCB utama trapesium (belum dipilih)</h2>
+    <div class="opt">
+      <figure>{top17t}<figcaption>Sisi PCB sejajar skid plate, belakang tetap di depan baterai. Lingkaran = 4 lubang baut M3 ke skid plate.</figcaption></figure>
+      <div class="optbody">
+        <div class="tablewrap"><table><thead><tr><th></th><th>Persegi (usulan sekarang)</th><th>Trapesium</th></tr></thead><tbody>
+          <tr><td>Ukuran</td><td>62 × 58 mm</td><td>depan 62, belakang {2 * tr_x(MB["y0"]):.0f}, panjang 58 mm</td></tr>
+          <tr><td>Luas PCB</td><td>{fmt(A_MB)} cm²</td><td>{fmt(A_TR)} cm² ({(A_TR / A_MB - 1) * 100:+.0f}%)</td></tr>
+          <tr><td>Kotak pembungkus (p × l)</td><td>{fmt(BB_MB)} cm²</td><td>{fmt(BB_TR)} cm² ({(BB_TR / BB_MB - 1) * 100:+.0f}%)</td></tr>
+          <tr><td>Total dengan interface</td><td>{fmt(A_MB + A_IB)} cm² ({(A_MB + A_IB) / A_V16 * 100 - 100:+.0f}% dari v16)</td>
+            <td>{fmt(A_TR + A_IB)} cm² ({(A_TR + A_IB) / A_V16 * 100 - 100:+.0f}% dari v16)</td></tr>
+        </tbody></table></div>
+        <ul>
+          <li><b>Kelebihan:</b> garis PCB menyatu dengan skid plate. Sayap kiri-kanan kosong, jadi 4 lubang baut M3 bisa ditaruh jauh
+          dari komponen dan PCB lebih kokoh di skid plate. Masih ada ruang untuk label silkscreen dan titik ukur (test point).</li>
+          <li><b>Kekurangan:</b> luas naik. Kalau tempat cetak menghitung harga dari panjang × lebar, yang dihitung kotak pembungkusnya,
+          jadi kenaikannya lebih besar. Sayap kiri ada di bawah colokan USB ESP32, jadi komponen di sana harus pendek.</li>
+          <li><b>Tidak berubah:</b> isi PCB, board interface, jarak ke ban (sudut belakang 7 mm di depan ban), cek tabrakan tetap 0.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
   <figure class="wide">{side17}<figcaption>Tampak samping v17 (dari kiri, depan ke kanan). Tinggi OLED ±46 mm, sejajar atas holder baterai.</figcaption></figure>
 
