@@ -161,6 +161,13 @@ odejs` ke PATH.
   lambat sekali** (sasaran ≥ 0,5 m/s, simulasi 0,4 m/s). Usulan teman: roda lebih kecil atau motor N20 1000 RPM.
   Opsi kecepatan sedang dihitung (03/11), belum diputuskan.
 - 29/10: user menghapus 11 catatan teks di skematik PCB utama (disengaja), revisi skematik "A"; listrik tidak berubah.
+- 03/11: motor **tetap N20 500 RPM + encoder** (versi 1000 RPM di CNC Store tanpa encoder). Keputusan user untuk
+  rombak desain: **tetap pakai modul** (bukan chip-down), PCB utama **seringkas mungkin** supaya hemat cetak,
+  **sasis jadi skid plate 3D print** (PCB tidak lagi jadi sasis), **board interface terpisah** (hanya tombol 6×6 +
+  socket OLED) ditumpuk di atas PCB utama, **di depan baterai**. Konsep v17 to-scale (`mechanical/konsep-v17/`,
+  https://claude.ai/artifact/3zbiuQzc9YBamEs8NX5sxH): PCB utama 62 × 58 mm + interface 42 × 42 mm (−44% luas),
+  5 tombol lewat resistor ladder di GPIO34, TB6612 disolder rendah di bawah ESP32, charger di skid plate, BMS di
+  holder, ball caster di skid plate (y ±72). Menunggu konfirmasi user sebelum KiCad + model 3D diubah.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

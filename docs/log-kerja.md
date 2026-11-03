@@ -21,6 +21,14 @@ Entri terbaru di atas.
   melainkan bentuk tangga/H 4 × 3 m (2 jalur panjang + 3 jalur melintang, simpang T 90°, objek 10/30/50 poin).
   Batas robot 350 g, Li-ion 8,2 V ± 1 V, program onsite Ardublock. CLAUDE.md diperbaiki; charter, deck, naskah, dan
   arena simulasi (grid 4 × 4 jarak 30 cm) masih memakai anggapan grid.
+- Motor diputuskan **tetap N20 500 RPM + encoder**. Opsi chip-down (ESP32-WROOM, MX1508, MP1584EN) dibahas, user
+  memilih tetap modul.
+- **Konsep v17** (`mechanical/konsep-v17/gen_konsep.py` → `konsep-v17.html`, artifact
+  https://claude.ai/artifact/3zbiuQzc9YBamEs8NX5sxH): sasis skid plate 3D print, PCB utama 62 × 58 mm (35,8 cm²) +
+  board interface 42 × 42 mm (17,6 cm²; OLED di socket + 5 tombol 6×6 + resistor ladder) ditumpuk di depan baterai,
+  total −44% dari PCB utama v16 (95,3 cm²). Cek kotak 3D: 0 tabrakan, jalur USB dan zona antena ESP32 kosong.
+  Ball caster pindah ke skid plate di belakang PCB sensor (posisi v16 bertabrakan dengan PCB sensor). Menunggu
+  konfirmasi user.
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
