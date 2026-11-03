@@ -7,8 +7,15 @@ Arsitektur 3 lapis:
 2. **Desain blok**: 1 blok = 1 fungsi library
 3. **Extension Mind+**: blok menghasilkan kode C++ yang memanggil library (compile native → PID tetap cepat)
 
-Target lomba: **IARC XII Smart Robotics** (9–10/01/2027): arena grid, **garis hitam 2 cm**, misi dorong kubus 4 cm;
-spesifikasi kit panitia (Nano, TCRT5000 5 ch) tidak wajib. Robot dibuat **serbaguna** (grid + lintasan banyak tikungan).
+Target lomba: **IARC XII Smart Robotics tingkat SD** (9–10/01/2027; guidebook `docs/GUIDEBOOK SD.pdf`, baca itu,
+jangan dari ingatan). Arena 4 × 3 m banner FL, **garis hitam 2 cm**, **bentuk tangga/H, bukan grid**: 2 jalur panjang
+(±3,7 m, berjarak ±2 m) dihubungkan 3 jalur melintang, semua simpang T 90°, tanpa tikungan lengkung. 4 zona tim di
+pojok (start + 2 lingkaran 10 poin di cabang pendek); di tengah 2 lingkaran biru 30 poin dan 1 hexagon 50 poin (babak
+grup 4 robot sekaligus, jadi objek tengah kemungkinan diperebutkan). Jarak antar simpang ±0,3–0,9 m (perkiraan dari
+gambar, ukuran tidak tertulis). Misi: dorong kubus 4 × 4 × 4 cm keluar zona poin lalu ke finish, 5 menit/match,
+peringkat dari poin. Robot maks 25 × 20 × 10 cm, **350 g** (butir C; butir A menulis 500 g), Li-ion maks 8,2 V ± 1 V.
+Program onsite pakai **Ardublock** (wajib di Day 2), belum dibahas terhadap rencana Mind+. Spesifikasi kit panitia
+(Nano, TCRT5000 5 ch, motor kuning) tidak wajib. Robot dibuat **serbaguna** (arena lomba + lintasan banyak tikungan).
 
 ## Rancangan terkini (22/10/2026)
 

@@ -15,6 +15,12 @@ Entri terbaru di atas.
   0 → 1,25 m/s dalam 0,31 s / 21 cm, rem 17 cm, torsi rated ±0,09 kg·cm (asumsi, setengah varian 500 RPM).
   Batas tikungan tetap dari traksi (R 10 cm → 0,77 m/s). Data varian 1000 RPM di listing belum dicek (Tokopedia
   timeout).
+- Info user: di CNC Store N20 1000 RPM **tidak ada versi encoder** (hanya 2 kabel +/−). Saran: tetap 500 RPM +
+  encoder, karena belok 90°, masuk cabang, dan jarak dorong kubus diukur encoder.
+- **Guidebook IARC XII Smart Robotics SD** masuk repo (`docs/GUIDEBOOK SD.pdf`). Koreksi: arena **bukan grid**,
+  melainkan bentuk tangga/H 4 × 3 m (2 jalur panjang + 3 jalur melintang, simpang T 90°, objek 10/30/50 poin).
+  Batas robot 350 g, Li-ion 8,2 V ± 1 V, program onsite Ardublock. CLAUDE.md diperbaiki; charter, deck, naskah, dan
+  arena simulasi (grid 4 × 4 jarak 30 cm) masih memakai anggapan grid.
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
