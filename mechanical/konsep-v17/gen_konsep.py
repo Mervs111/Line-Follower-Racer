@@ -23,7 +23,7 @@ H12 = [(-4.75, 85.55), (4.75, 85.55)]       # baut PCB sensor
 CH_Z0, CH_Z1 = 10.0, 12.0                    # skid plate 3D print (ganti PCB utama sebagai sasis)
 MB = dict(x0=-31.0, x1=31.0, y0=24.0, y1=82.0, r=4.0, z0=15.0)   # PCB utama di atas spacer 3 mm
 MB["z1"] = MB["z0"] + 1.6
-IB = dict(x0=-24.0, x1=18.0, y0=35.0, y1=77.0, r=3.0, z0=33.0)   # board interface
+IB = dict(x0=-27.0, x1=19.0, y0=45.0, y1=77.0, r=3.0, z0=33.0)   # board interface (tepi kanan < zona antena 19,25)
 IB["z1"] = IB["z0"] + 1.6
 EY0, EY1 = 32.0, 60.3                        # ESP32 DevKit melintang (USB ke kiri, antena ke kanan)
 EY = (EY0 + EY1) / 2
@@ -73,17 +73,21 @@ box("MP1584", -30.0, -7.5, 62.0, 79.5, MBT, MBT + 8.1, "module", "MP1584")
 box("C1 100uF", -6.15, 0.15, 62.85, 69.15, MBT, MBT + 11.0, "small", "C1")
 box("Buzzer", 8.0, 20.0, 61.0, 73.0, MBT, MBT + 9.5, "small", "BZ")
 box("SW1 saklar (tuas keluar ke kanan)", 21.6, 31.0, 62.0, 73.4, MBT, MBT + 4.4, "small", "SW1")
-box("Header ke board interface", -7.2, 8.0, 73.5, 76.0, MBT, IB["z0"], "header", "J6")
+box("Header ke board interface", 2.0, 17.24, 73.5, 76.0, MBT, IB["z0"], "header", "J6")
 box("J5 ke PCB sensor (JST XH 8)", -6.0, 16.4, 76.0, 81.75, MBT, MBT + 9.8, "conn", "J5")
 
 # board interface: OLED di socket + 5 tombol 6x6 + resistor ladder di bawah OLED
 IBT = IB["z1"]
-box("Socket OLED", -8.1, 2.1, 62.3, 64.8, IBT, IBT + SOCK, "socket")
-box("OLED 0,96 inci", -16.65, 10.65, 37.0, 64.8, IBT + SOCK, IBT + SOCK + 2.6, "oled", "OLED")
-box("Resistor ladder (di bawah OLED)", -14.0, 8.0, 40.0, 52.0, IBT, IBT + 2.5, "under", "ladder")
-BTN_X = [-21 + 3 + i * 8.0 for i in range(5)]
-for i, x in enumerate(BTN_X):
-    box(f"Tombol {i + 1} (6x6)", x - 3, x + 3, 66.5, 72.5, IBT, IBT + 5.0, "button")
+OX = (IB["x0"] + IB["x1"]) / 2                  # OLED di tengah board, tombol mengapit kiri-kanan
+OY = (IB["y0"] + IB["y1"]) / 2
+box("Socket OLED", OX - 5.08, OX + 5.08, OY + 13.9 - 2.5, OY + 13.9, IBT, IBT + SOCK, "socket")
+box("OLED 0,96 inci", OX - 13.65, OX + 13.65, OY - 13.9, OY + 13.9, IBT + SOCK, IBT + SOCK + 2.6, "oled", "OLED")
+box("Resistor ladder (di bawah OLED)", OX - 10, OX + 10, OY - 11, OY - 1, IBT, IBT + 2.5, "under", "ladder")
+# kiri 2 tombol (sejajar baris atas dan bawah kanan), kanan 3 tombol; jarak tepi 1,5 mm, celah ke OLED 1,85 mm
+BTN = [(IB["x0"] + 4.5, OY + 9), (IB["x0"] + 4.5, OY - 9),
+       (IB["x1"] - 4.5, OY + 9), (IB["x1"] - 4.5, OY), (IB["x1"] - 4.5, OY - 9)]
+for i, (x, y) in enumerate(BTN):
+    box(f"Tombol {i + 1} (6x6)", x - 3, x + 3, y - 3, y + 3, IBT, IBT + 5.0, "button")
 
 # zona yang harus kosong
 KEEP = [
@@ -123,6 +127,14 @@ for a in BOX:
         problems.append(f"keluar outline PCB utama: {a[0]}")
     if IBT - 0.01 <= a[5] <= IBT + 0.01 and not inside(a, IB):
         problems.append(f"keluar outline board interface: {a[0]}")
+# kaki THT header J6 menembus board interface: tidak boleh di bawah komponen board interface (cek tampak atas)
+for a in BOX:
+    if a[7] == "header":
+        for b in BOX:
+            if IBT - 0.01 <= b[5] <= IBT + 0.01 and all(min(a[i + 1], b[i + 1]) - max(a[i], b[i]) > 0.05 for i in (1, 3)):
+                problems.append(f"kaki {a[0]} di bawah {b[0]} (board interface)")
+        if not inside(a, IB):
+            problems.append(f"{a[0]} di luar board interface")
 # komponen di bawah DevKit harus di bawah sisi bawah DevKit (sambungan kaki + chip CH340 kalau ada: 1,6 mm)
 for a in BOX:
     if a[7] == "under" and a[0] != "Resistor ladder (di bawah OLED)" and a[6] > DK_Z0 - 1.6:
@@ -317,19 +329,20 @@ def view_v17_main():
 def view_v17_stack():
     g = common_frame() + skid_and_battery() + main_board_layer(dim=True)
     g.append(rect(IB["x0"], IB["x1"], IB["y0"], IB["y1"], "iboard", IB["r"]))
-    g.append(rect(-14.0, 8.0, 40.0, 52.0, "under", 0.4))
+    lad = next(b for b in BOX if b[0].startswith("Resistor ladder"))
+    g.append(rect(lad[1], lad[2], lad[3], lad[4], "under", 0.4))
     for b in BOX:
         if b[5] >= IB["z1"] - 0.01 and b[7] in ("oled", "button", "socket"):
             g.append(rect(b[1], b[2], b[3], b[4], CLS[b[7]], 0.8 if b[7] == "button" else 1))
             if b[7] == "button":
                 g.append(f'<circle class="cap" cx="{(b[1] + b[2]) / 2:.2f}" cy="{-(b[3] + b[4]) / 2:.2f}" r="1.75"/>')
-    g += [label(-3, 52, "OLED", "lbl light", 3.2), label(-3, 47.5, "di socket", "lbl light", 2.3),
-          label(-3, 74.3, "5 tombol 6×6", "lbl inv", 2.3)]
+    g += [label(OX, OY + 1, "OLED", "lbl light", 3.2), label(OX, OY - 3.5, "di socket", "lbl light", 2.3),
+          label(OX, IB["y1"] + 1.8, "2 tombol kiri · 3 tombol kanan (6×6)", "lbl", 2.3)]
     for hx, hy in H12:
         g.append(f'<circle class="hole" cx="{hx}" cy="{-hy}" r="1.6"/>')
     g += axle_and_dims("")
-    g.append(dim_h(IB["x0"], IB["x1"], 87.5, "42 mm", "dim2"))
-    g.append(dim_v(-28.5, IB["y0"], IB["y1"], "42 mm", "dim2"))
+    g.append(dim_h(IB["x0"], IB["x1"], 87.5, "46 mm", "dim2"))
+    g.append(dim_v(-31.0, IB["y0"], IB["y1"], "32 mm", "dim2"))
     return g
 
 
@@ -390,13 +403,13 @@ def svg(body, vb, aria):
 
 top16 = svg(view_v16(), "-58 -136 116 182", "Tampak atas v16: PCB utama bentuk mobil F1 127 kali 100 mm")
 top17 = svg(view_v17_main(), "-58 -136 116 182", "Tampak atas usulan v17: PCB utama 62 kali 58 mm")
-top17b = svg(view_v17_stack(), "-58 -136 116 182", "Tampak atas usulan v17 dengan board interface 42 kali 42 mm di atasnya")
+top17b = svg(view_v17_stack(), "-58 -136 116 182", "Tampak atas usulan v17 dengan board interface 46 kali 32 mm di atasnya")
 side17 = svg(side_v17(), "-44 -56 186 62", "Tampak samping usulan v17")
 
 rows = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>" for a, b, c in [
     ("PCB utama", "127 × 100 mm, {:.1f} cm²".format(A_V16).replace(".", ","),
      "62 × 58 mm, {:.1f} cm²".format(A_MB).replace(".", ",")),
-    ("Board interface", "tidak ada", "42 × 42 mm, {:.1f} cm²".format(A_IB).replace(".", ",")),
+    ("Board interface", "tidak ada", "46 × 32 mm, {:.1f} cm²".format(A_IB).replace(".", ",")),
     ("Total PCB utama + interface", "{:.1f} cm²".format(A_V16).replace(".", ","),
      "{:.1f} cm² ({:+.0f}%)".format(A_MB + A_IB, (A_MB + A_IB) / A_V16 * 100 - 100).replace(".", ",")),
     ("PCB sensor", "{:.1f} cm²".format(A_SENS).replace(".", ","), "tetap"),
@@ -518,7 +531,7 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
   <div class="sheets">
     <figure>{top16}<figcaption>Sekarang (v16): PCB utama = sasis, 127 × 100 mm</figcaption></figure>
     <figure>{top17}<figcaption>Usulan (v17): PCB utama 62 × 58 mm di skid plate 3D print</figcaption></figure>
-    <figure>{top17b}<figcaption>Usulan (v17): board interface 42 × 42 mm ditumpuk di atas PCB utama</figcaption></figure>
+    <figure>{top17b}<figcaption>Usulan (v17): board interface 46 × 32 mm ditumpuk di atas PCB utama</figcaption></figure>
   </div>
   <div class="legend">
     <span><i class="sw" style="background:var(--mask)"></i>PCB utama</span>
@@ -546,7 +559,7 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
         <li><b>Ball caster</b> pindah ke skid plate tepat di belakang PCB sensor (y ±72 mm dari poros). Di v16 caster masih di baut PCB sensor dan
         bertabrakan dengan PCB sensor (celah ke lantai cuma 4,8 mm).</li>
         <li><b>Di bawah ESP32</b> (celah socket 8,5 mm): TB6612 disolder rendah tanpa socket, Q1 + R3/R4 buzzer.</li>
-        <li><b>Board interface</b>: socket OLED, 5 tombol 6×6 sebaris, resistor ladder di bawah OLED. Ke PCB utama lewat J6 6 pin:
+        <li><b>Board interface</b>: OLED di socket di tengah, 5 tombol 6×6 mengapit (2 di kiri, 3 di kanan), resistor ladder di bawah OLED. Ke PCB utama lewat J6 6 pin:
         3V3, GND, SDA, SCL, tombol (GPIO34), cadangan.</li>
         <li><b>Charger 2S</b> pindah ke skid plate di belakang motor, di bawah dudukan baterai, USB-C menghadap ke belakang.
         <b>BMS</b> (tanpa konektor) ditempel di holder baterai. Keduanya tidak lagi di PCB.</li>
@@ -555,7 +568,7 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
     <section>
       <h2>Perlu dicek / diputuskan</h2>
       <ol>
-        <li>Fungsi 5 tombol (usul: kiri, kanan, OK, atas, bawah, atau START/STOP).</li>
+        <li>Fungsi 5 tombol. Usul: kiri = atas, bawah; kanan = OK di tengah, kembali, START/STOP. Bisa juga 3 + 3 (6 tombol) supaya simetris.</li>
         <li>TB6612 di bawah ESP32: ringkas, tapi ESP32 harus dicabut dulu untuk melihat TB6612.</li>
         <li>Sisi bawah ESP32 DevKit yang dibeli: kalau ada chip (CH340 di bawah), celah untuk TB6612 tinggal ±1 mm.</li>
         <li>Ukuran modul charger 2S yang dibeli: konsep memakai 25 × 16 mm dengan USB-C di sisi panjang (seperti model v16).</li>

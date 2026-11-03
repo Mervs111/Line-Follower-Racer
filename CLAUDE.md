@@ -165,8 +165,8 @@ odejs` ke PATH.
   rombak desain: **tetap pakai modul** (bukan chip-down), PCB utama **seringkas mungkin** supaya hemat cetak,
   **sasis jadi skid plate 3D print** (PCB tidak lagi jadi sasis), **board interface terpisah** (hanya tombol 6×6 +
   socket OLED) ditumpuk di atas PCB utama, **di depan baterai**. Konsep v17 to-scale (`mechanical/konsep-v17/`,
-  https://claude.ai/artifact/3zbiuQzc9YBamEs8NX5sxH): PCB utama 62 × 58 mm + interface 42 × 42 mm (−44% luas),
-  5 tombol lewat resistor ladder di GPIO34, TB6612 disolder rendah di bawah ESP32, charger di skid plate, BMS di
+  https://claude.ai/artifact/3zbiuQzc9YBamEs8NX5sxH): PCB utama 62 × 58 mm + interface 46 × 32 mm (−47% luas),
+  OLED di tengah diapit tombol (2 kiri, 3 kanan; permintaan user), 5 tombol lewat resistor ladder di GPIO34, TB6612 disolder rendah di bawah ESP32, charger di skid plate, BMS di
   holder, ball caster di skid plate (y ±72). Menunggu konfirmasi user sebelum KiCad + model 3D diubah.
 
 ## Aturan teknis firmware

@@ -29,6 +29,9 @@ Entri terbaru di atas.
   total −44% dari PCB utama v16 (95,3 cm²). Cek kotak 3D: 0 tabrakan, jalur USB dan zona antena ESP32 kosong.
   Ball caster pindah ke skid plate di belakang PCB sensor (posisi v16 bertabrakan dengan PCB sensor). Menunggu
   konfirmasi user.
+- Konsep v17 versi 2 (komentar user di artifact): tombol dipindah ke kiri-kanan OLED (2 kiri, 3 kanan), board
+  interface jadi 46 × 32 mm (14,6 cm²), total −47%. Header J6 digeser ke kanan supaya kakinya tidak di bawah
+  OLED/tombol; cek otomatis ditambah untuk itu. 0 masalah.
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
