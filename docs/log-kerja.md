@@ -4,6 +4,18 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 03/11/2026
+- Masukan pitching RAB 27/10 (info user): dosen minta **perhitungan ditambah** dan bertanya **kenapa kecepatan robot
+  lambat sekali**. Dana belum turun, belum ada barang yang dibeli (status mux di CLAUDE.md dikoreksi jadi "dipilih").
+- Skematik PCB utama: 11 catatan teks dihapus user di Eeschema (29/10, disengaja), revisi skematik "A". Komponen,
+  footprint, kabel, dan label tidak berubah (dicek per simbol). Handover: urutan mux dibetulkan jadi I2–I13.
+- Hitungan awal opsi kecepatan (model kurva torsi-kecepatan N20, 6 V, massa 0,30 kg; belum masuk
+  `perhitungan-motor.md`, belum diputuskan): roda lebih kecil justru **lebih lambat** (Ø25 + 500 RPM = 0,65 m/s).
+  N20 1000 RPM (rasio 15:1, badan sama) dengan roda Ø34: maksimum 1,78 m/s, kecepatan dasar PID ±1,25 m/s,
+  0 → 1,25 m/s dalam 0,31 s / 21 cm, rem 17 cm, torsi rated ±0,09 kg·cm (asumsi, setengah varian 500 RPM).
+  Batas tikungan tetap dari traksi (R 10 cm → 0,77 m/s). Data varian 1000 RPM di listing belum dicek (Tokopedia
+  timeout).
+
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
   0,2 kg·cm (1,9× kebutuhan 0,10), stall 0,45 kg·cm, rasio 30:1; arus stall tertulis 60 mA (salah ketik, ditanyakan).

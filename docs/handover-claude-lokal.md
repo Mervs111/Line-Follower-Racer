@@ -33,7 +33,7 @@ Isi PCB sensor user (sesuai keputusan 20–21/10 di `CLAUDE.md`):
 
 - 12× **QRE1113GR** (simbol: 1 A, 2 K, 3 C, 4 E). Tiap sensor: A ← R 220 Ω ← +5V, K → GND, C ← R 10k ← +3V3,
   C → label `S1`…`S12`, E → GND.
-- **U13 CD74HC4067M** SOIC-24W (`Package_SO:SOIC-24W_7.5x15.4mm_P1.27mm`): I0–I11 = S1–S12, I12–I15 ke GND,
+- **U13 CD74HC4067M** SOIC-24W (`Package_SO:SOIC-24W_7.5x15.4mm_P1.27mm`): S1–S12 = I2–I13, I0/I1/I14/I15 tidak tersambung,
   COM → `MUX_SIG`, select → `MUX_S0`…`MUX_S3` (jangan dinamai `S0`–`S3`, bentrok dengan label sensor), E̅ → GND,
   VCC +3V3 + C 100 nF.
 - **J1 = JST XH 8 pin** (pitch 2,50 mm, footprint vertikal B8B-XH-A; origin footprint = pin 1). Urutan pin yang

@@ -19,8 +19,8 @@ spesifikasi kit panitia (Nano, TCRT5000 5 ch) tidak wajib. Robot dibuat **serbag
   (tanpa MOSFET/IR_EN): andalkan kalibrasi + pelindung cahaya.
 - **Mux: IC CD74HC4067M SOIC-24W** (`Package_SO:SOIC-24W_7.5x15.4mm_P1.27mm`) disolder di PCB sensor: VCC +3V3 +
   C 100 nF, E̅ → GND, **S1–S12 = I2–I13**, I0/I1/I14/I15 tidak tersambung, COM → `MUX_SIG`, select → `MUX_S0`…`MUX_S3`.
-  **Dibeli: CD74HC4067M SOP-24 (SOIC, bukan SSOP; dikonfirmasi penjual) Rp20.000 di WKH Electronic (Tokopedia), 1 pcs
-  tanpa cadangan** (26/10). Cadangan toko: 74HC4067D (SO-24) Rp35.000 di marconijawa. Hindari akhiran DB/SM (SSOP).
+  **Dipilih: CD74HC4067M SOP-24 (SOIC, bukan SSOP; dikonfirmasi penjual) Rp20.000 di WKH Electronic (Tokopedia), 1 pcs
+  tanpa cadangan** (26/10; belum dibeli, dana belum turun per 03/11). Cadangan toko: 74HC4067D (SO-24) Rp35.000 di marconijawa. Hindari akhiran DB/SM (SSOP).
 - **J1 PCB sensor = JST XH 8 pin** (B8B-XH-A): 1 +5V, 2 +3V3, 3 GND, 4 MUX_S3, 5 MUX_S2, 6 MUX_S1, 7 MUX_S0,
   8 MUX_SIG. Konektor pasangannya di PCB utama **wajib urutan sama**.
 - Motor N20 6V 500 RPM + encoder, **roda Ø34**; driver TB6612FNG (modul).
@@ -84,6 +84,7 @@ memakai pin map yang sama.
   **Batas anggaran Rp1.000.000** (naik dari Rp900.000 pada 26/10) → **sisa Rp62.610**. Mux tetap IC WKH Rp20.000
   (spreadsheet masih menulis modul kakarobot Rp35.000, perlu dikoreksi kelompok). QRE1113GR Rp15.000/pcs, 12 tanpa
   cadangan. Breadboard dipinjam lab; lintasan uji di luar RAB. Tautan toko di `docs/charter.md` bagian 8.
+  **Dana belum turun, belum ada barang yang dibeli (03/11)**, jadi pilihan komponen masih bisa diganti.
 - Charter: `docs/charter.md`; docx dibuat ulang dengan `docs/charter-docx/gen_charter.js` (`npm i docx`, lalu
   `node gen_charter.js ../Project_Charter_PJBL.docx`; isinya harus sama dengan `charter.md`). Node.js 24 LTS sudah
   terpasang di laptop (22/10); di shell lama tambahkan `C:Program Files
@@ -149,6 +150,10 @@ odejs` ke PATH.
   menggantikan skid nilon, bracket motor dihapus (dudukan 3D print), timah + flux masuk RAB, resistor THT masuk
   paket komponen pendukung, dan **PCB utama ikut barang di link**: tombol tactile 12×12 mm dan konektor motor JST XH
   6 pin (footprint belum diganti). Charter + docx, deck (diubah langsung di XML .pptx), naskah, README ikut.
+- 27/10 (pitching RAB, info user 03/11): masukan dosen **perhitungan ditambah** dan ditanya **kenapa kecepatan robot
+  lambat sekali** (sasaran ≥ 0,5 m/s, simulasi 0,4 m/s). Usulan teman: roda lebih kecil atau motor N20 1000 RPM.
+  Opsi kecepatan sedang dihitung (03/11), belum diputuskan.
+- 29/10: user menghapus 11 catatan teks di skematik PCB utama (disengaja), revisi skematik "A"; listrik tidak berubah.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →
