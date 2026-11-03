@@ -67,9 +67,13 @@ memakai pin map yang sama.
   SW2/SW3 → tactile 12×12 mm dan J2/J3 → JST XH 6 pin (ikut barang di RAB 27/10). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
   di tepi miring sidepod kiri (pin 1 dekat hidung), urutan = J1; C1 elko di sidepod kiri. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
   `hardware/pcb-utama/README.md`. **Skematik rev B (03/11)**: J6 1×6 ke board interface (+3V3, GND, SDA, SCL, BTN, AUX),
-  J4/SW2/SW3/R6 dihapus, C2 100 nF di VBAT_SENSE, J2/J3 XH 6 pin, Q1 TO-92 Wide; ERC 0. **Layout masih rev A** (perlu
-  F8 + outline trapesium + penempatan ulang). **Board interface**: `hardware/board-interface/` (skematik rev A dari
-  `hardware/tools/gen_sch_interface.py`, ERC 0; PCB dan cara pasang belum). `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
+  J4/SW2/SW3/R6 dihapus, C2 100 nF di VBAT_SENSE, J2/J3 XH 6 pin, Q1 TO-92 Wide; ERC 0. **Layout rev B (04/11)** dari
+  file: `hardware/tools/gen_pcb_utama_v17.py` + FreeRouting `-mp 8` (SES di `pcb-utama/routing/`), trapesium
+  86,6/62 × 58, ESP32 melintang di tengah, TB6612 di bawahnya, SW1 di tepi kiri; DRC 0 error / 0 unconnected / parity
+  0 (warning SW1 pad dikecilkan, jangan Update from Library). Butir "tertunda" rev A di atas sudah tidak berlaku.
+  **Board interface**: `hardware/board-interface/` (skematik rev A dari `gen_sch_interface.py`; **PCB rev A 04/11**
+  dari `gen_pcb_interface.py` + `autoroute/sisa.py`: 46 × 36, 4 lubang M2, J1 di sisi bawah tepat di atas J6, DRC 0;
+  cara pasang dan panjang header belum diputuskan). `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
   via 0,6/1,0 (2 layer 1,27), slot 1/1,5, silkscreen 0,2, mask expansion 0,1. SOIC aman, SSOP 0,65 tidak. Isian
   KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. Konstanta `FAB` di

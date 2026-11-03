@@ -20,10 +20,47 @@ skid plate 3D print, PCB utama **trapesium** sejajar skid plate (depan 62, belak
   atas, induktor kanan): **IN kiri, OUT kanan, − di atas, + di bawah** (pad kotak = +, sama dengan modul). Pad 1–4 =
   IN+, IN−, OUT+, OUT− (simbol tidak berubah). Silkscreen +/−/IN/OUT ditambahkan. Masih "UKUR ULANG" (±0,2 mm
   dari foto). Footprint di `.kicad_pcb` baru ikut setelah Tools → Update Footprints from Library.
-- **Layout belum diperbarui**: `pcb-utama.kicad_pcb` masih layout rev A (bentuk mobil F1). Langkah berikutnya:
-  buka PCB Editor → Update PCB from Schematic (F8) → outline trapesium + penempatan sesuai konsep v17 → routing.
 
-## Isi awal
+### Layout rev B (04/11/2026)
+
+Dibuat dari file oleh `hardware/tools/gen_pcb_utama_v17.py` (outline, penempatan, silkscreen, pour) + FreeRouting
+2.1 (langkah lengkap: `hardware/tools/autoroute/README.md` bagian "Rev B"). Render: `render-atas.png`,
+`render-bawah.png` (footprint `ltm` belum punya model 3D, jadi ESP32/TB6612/MP1584 tidak tergambar).
+
+- **Outline** trapesium 86,6 / 62 × 58 mm (y robot 24–82), sudut R4, sisi miring sejajar skid plate. Lubang M3 di
+  (±38,5; 29) dan (±32,5; 56).
+- **Penempatan** (koordinat robot; footprint pustaka KiCad diukur dari pin 1):
+
+| Blok | Posisi | Catatan |
+|---|---|---|
+| J2 motor kiri / J1 baterai / J3 motor kanan | baris belakang, y 28,6 (pin 1 x −31,9 / −1,25 / 19,4) | JST XH, label di dalam badan konektor |
+| R1/R2 pembagi baterai, C1 elko | (−15,2; 26,2 / 29,6), (6,7; 28,1) | C1 di antara J1 dan J3, dekat VM TB6612 |
+| SW1 saklar | tepi kiri (−37; 40,5), **tuas keluar ke kiri** | jalur VBAT semua di sisi kiri |
+| U1 ESP32 DevKit | tengah (−3,5; 46,15), diputar −90° | USB ke kiri, antena ke kanan; **tanpa tembaga** di x 19–36,6, y 26,5–55,7 |
+| U2 TB6612 | di bawah ESP32, (−10,75; 46,05) | disolder rendah, ESP32 di socket 8,5 mm di atasnya |
+| R3, R4, Q1, R5, C2 | di bawah ESP32, kanan TB6612 (x 0,9 dan 12) | rendah (≤ 5 mm) |
+| U3 MP1584 | kiri depan (−18,9; 70,5) | IN kiri, OUT kanan |
+| D1, J6, J5 | (4,16; 72), pin 1 J6 (−5,6; 67,5), pin 1 J5 (13; 77,8) diputar 180° | J6 tepat di bawah J1 board interface |
+| BZ1 buzzer | kanan depan (20,7; 67,5) | |
+
+- **Beda dari gambar konsep v17**: SW1 di tepi kiri (konsep: depan, tuas ke kanan), D1 di depan dekat MP1584
+  (konsep: belakang), J6 di tengah (konsep: x 2–17, y 73–75,5). Board interface jadi 46 × 36 mm (konsep 46 × 32,
+  ditambah 4 lubang M2), tetap jauh dari holder baterai (y ≤ 21).
+- **Routing**: 304 segmen, 17 via, panjang total ±1,41 m. Lebar: VBAT/BAT+ 1,0; motor, +5V, +5V_BUCK 0,8;
+  +3V3/GND 0,5; sinyal 0,3 mm. GND pour F.Cu + B.Cu (jarak 0,5, tebal minimum 0,35). DSN + SES di `routing/`.
+- **DRC** (`kicad-cli pcb drc --schematic-parity`): **0 error, 0 unconnected, cocok dengan skematik**. Sisa
+  1 warning: SW1 tidak sama dengan pustaka. Pad pemasangnya sengaja dikecilkan (2,0 × 3,3 mm, `PAD_FIX`) supaya
+  jaraknya ke kaki 1/3 dan tepi papan lolos aturan cetak, jadi **jangan "Update Footprints from Library" untuk SW1**.
+- **Aturan tambahan** `pcb-utama.kicad_dru`: courtyard U1 boleh menumpuk komponen rendah di bawahnya; pad GND Q1 dan
+  J6 cukup 1 spoke per layer (terkepung jalur, tersambung di dua layer, arus kecil).
+- **Masih terbuka**:
+  - Footprint MP1584 bertanda "UKUR ULANG". Ukur modulnya saat datang.
+  - Sisi bawah ESP32 DevKit belum dicek (kalau CH340 di bawah, TB6612 tidak muat).
+  - Cara pasang dan panjang header ke board interface (lihat `../board-interface/README.md`).
+- Dibuat dari file saat KiCad mungkin masih membuka layout lama. **Tutup PCB Editor tanpa menyimpan** (atau
+  File → Revert) sebelum membuka file ini, supaya layout rev A tidak tersimpan menimpa.
+
+## Isi awal (rev A, 22/10; bagian ini dan di bawahnya riwayat, layout rev A ada di riwayat git)
 
 | File | Isi |
 |---|---|

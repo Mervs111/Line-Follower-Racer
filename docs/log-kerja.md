@@ -4,6 +4,26 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 04/11/2026
+- **Layout PCB utama rev B** (permintaan user "update semua dan buat pcb yang baru"): dibuat dari file karena MCP
+  KiCad tidak tersambung. `hardware/tools/gen_pcb_utama_v17.py`: outline trapesium 86,6/62 × 58 mm, 4 lubang M3,
+  19 footprint sesuai skematik rev B (path = UUID simbol, jadi F8 tidak membuat ulang), zona tanpa tembaga di bawah
+  antena ESP32, silkscreen rapi (label konektor di dalam badan JST XH, teks sisi bawah dicermin). Penempatan: J2/J1/J3
+  di belakang, SW1 di tepi kiri (tuas ke kiri), ESP32 melintang di tengah dengan TB6612 + R3/R4/Q1/R5/C2 di bawahnya,
+  MP1584 kiri depan, J6 tengah depan, buzzer kanan depan, J5 depan.
+- Routing FreeRouting 2.1 (JRE plugin terhapus bersama Temp, dipakai Java 21 dari STM32CubeMX). Ketemu bug FR 2.1:
+  SES kadang berisi board lama yang kurang 1–4 net ("Restoring an earlier board"). Penempatan dirapatkan, lalu
+  `-mp 8` lengkap: 304 segmen, 17 via, ±1,41 m. Jalur kembar/menggantung dibuang otomatis, GND pour 2 sisi (tebal
+  minimum 0,35). **DRC 0 error, 0 unconnected, cocok dengan skematik**; 1 warning SW1 (pad pemasang sengaja
+  dikecilkan). DSN/SES di `hardware/pcb-utama/routing/`, render `render-atas.png`/`render-bawah.png`.
+- **PCB board interface rev A** (`hardware/tools/gen_pcb_interface.py`): 46 × 36 mm dengan 4 lubang M2 di pojok, OLED
+  di tengah, tombol ATAS/BAWAH kiri dan KEMBALI/OK/LANJUT kanan, tangga resistor di bawah OLED. J1 di sisi bawah,
+  pin 1–6 tepat di atas J6 PCB utama (dicek dari kedua file). Di-route dengan router A* sendiri
+  (`hardware/tools/autoroute/sisa.py`), 2 layer tanpa via, GND pour. DRC 0 error / 0 warning / cocok dengan skematik.
+- Masih terbuka: cara pasang board interface + header pin panjang (socket 8,5 mm + header biasa tidak sampai ke
+  z 33), sisi bawah ESP32 DevKit (CH340), ukur MP1584 saat datang, Pins.h (BTN GPIO34, AUX GPIO35), RAB (tombol 6×6,
+  header), model 3D v17.
+
 ## 03/11/2026
 - Masukan pitching RAB 27/10 (info user): dosen minta **perhitungan ditambah** dan bertanya **kenapa kecepatan robot
   lambat sekali**. Dana belum turun, belum ada barang yang dibeli (status mux di CLAUDE.md dikoreksi jadi "dipilih").

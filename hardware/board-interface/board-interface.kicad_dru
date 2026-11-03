@@ -1,0 +1,7 @@
+(version 1)
+# Courtyard SW_PUSH_6mm melebar sampai pad. Badan tombol berjarak 3 mm, kepala baut M2 ke badan tombol >= 1,5 mm,
+# tembaga pad ke lubang >= 1,1 mm: tumpukan courtyard tombol-tombol dan tombol-lubang diabaikan.
+(rule "Tombol 6x6 dan lubang M2"
+  (constraint courtyard_clearance)
+  (severity ignore)
+  (condition "(A.Reference == 'SW*' || A.Reference == 'H*') && (B.Reference == 'SW*' || B.Reference == 'H*')"))

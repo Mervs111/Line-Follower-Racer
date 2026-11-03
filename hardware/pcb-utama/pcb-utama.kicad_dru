@@ -1,0 +1,12 @@
+(version 1)
+# ESP32 DevKit duduk di socket 8,5 mm: TB6612, Q1, R3-R5, C2 (rendah) boleh berada di bawahnya
+(rule "Komponen rendah di bawah ESP32"
+  (constraint courtyard_clearance)
+  (severity ignore)
+  (condition "A.Reference == 'U1' || B.Reference == 'U1'"))
+
+# Pad GND yang terkepung jalur: 1 spoke per layer (tersambung di F.Cu dan B.Cu), cukup untuk arus kecil
+# (emitor S8050 buzzer ±30 mA, GND header board interface).
+(rule "Spoke GND Q1 dan J6"
+  (constraint min_resolved_spokes 1)
+  (condition "A.Type == 'Pad' && (A.memberOfFootprint('Q1') || A.memberOfFootprint('J6'))"))
