@@ -42,6 +42,12 @@ Entri terbaru di atas.
 - Pertanyaan user: MP1584 22 × 17 mm cocok footprint (masih "UKUR ULANG"; letak lubang dan polaritas diukur saat
   modul datang). TB6612 cukup 1 modul (2 kanal, PWMA GPIO18 kiri, PWMB GPIO16 kanan); diagram blok kendali
   hanya menggambar 1 panah PWM, diusulkan diperbaiki jadi 2 jalur (menunggu jawaban user).
+- **Diagram blok kendali diperbaiki** (masukan dosen: 2 roda = 2 PWM): PID → pembagi kecepatan (kiri = dasar + u,
+  kanan = dasar − u) → PWM kiri (GPIO18) ke TB6612 kanal A → motor kiri, PWM kanan (GPIO16) ke kanal B → motor kanan;
+  encoder kiri (GPIO13, 14) dan kanan (GPIO23, 19) terpisah. Sumber `docs/diagram-blok-src/Kendali.dc.html` (1920 × 900),
+  PNG `docs/diagram-blok-kendali.png`, artifact diagram blok versi 5. Deck pitching masih memakai gambar lama.
+- Keputusan user: velg 3D print Ø34 × 18 mm, 5 tombol untuk menu OLED (label ▲ ▼ / ◀ OK ▶ di konsep v17 versi 5),
+  TB6612 di bawah ESP32 oke.
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated

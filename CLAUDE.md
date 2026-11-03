@@ -105,7 +105,7 @@ odejs` ke PATH.
 ### Visual (artifact claude.ai)
 - Wiring diagram per blok: https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY (sumber `docs/wiring-diagram.html`;
   22/10: kabel JST XH 8 pin, mux I2–I13)
-- Diagram blok (21/10): https://claude.ai/artifact/VgPaH3FbRFSDaHB658YTcT (`docs/diagram-blok.png`,
+- Diagram blok (21/10; kendali 03/11: 2 jalur PWM, encoder kiri/kanan): https://claude.ai/artifact/VgPaH3FbRFSDaHB658YTcT (`docs/diagram-blok.png`,
   `docs/diagram-blok-kendali.png`, sumber `docs/diagram-blok-src/`)
 - Arsitektur sistem: https://claude.ai/artifact/9dNV7sB3TdaNBcSojbtzAa; flowchart 3 slide:
   https://claude.ai/artifact/EMfY1GGrPrx9etNHpKmhEi
@@ -171,6 +171,10 @@ odejs` ke PATH.
   lurus ke belakang sampai sisi luar ban 115 mm, coakan roda celah 4 mm), **ban lebih lebar ke luar** (konsep Ø34 × 18 mm → lebar robot 115 mm, jarak tengah ban 97 mm). Roda N20 Ø34
   di toko hanya 6,5–7 mm; pilihan: velg 3D print + ban TPU, atau Ø44 × 17,5 mm (CNC Store Bandung, maks 1,15 m/s),
   belum diputuskan. Menunggu konfirmasi user sebelum KiCad + model 3D diubah.
+- 03/11 (jawaban user): ban **velg 3D print Ø34 × 18 mm** (bahan ban + printer TPU belum dicek), **5 tombol untuk menu
+  OLED** (kiri ▲ ▼, kanan ◀ kembali / OK / ▶ lanjut), **TB6612 disolder di bawah ESP32 disetujui**. TB6612 cukup 1 modul
+  (2 kanal); diagram blok kendali diperbaiki jadi **2 jalur PWM kiri/kanan** (masukan dosen 27/10). Sisi bawah ESP32
+  DevKit (chip CH340 di bawah atau tidak) belum dicek.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

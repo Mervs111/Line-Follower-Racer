@@ -91,6 +91,7 @@ box("Resistor ladder (di bawah OLED)", OX - 10, OX + 10, OY - 11, OY - 1, IBT, I
 # kiri 2 tombol (sejajar baris atas dan bawah kanan), kanan 3 tombol; jarak tepi 1,5 mm, celah ke OLED 1,85 mm
 BTN = [(IB["x0"] + 4.5, OY + 9), (IB["x0"] + 4.5, OY - 9),
        (IB["x1"] - 4.5, OY + 9), (IB["x1"] - 4.5, OY), (IB["x1"] - 4.5, OY - 9)]
+BTN_LBL = ["▲", "▼", "◀", "OK", "▶"]        # menu OLED: kiri naik/turun, kanan kembali/OK/lanjut (keputusan user 03/11)
 for i, (x, y) in enumerate(BTN):
     box(f"Tombol {i + 1} (6x6)", x - 3, x + 3, y - 3, y + 3, IBT, IBT + 5.0, "button")
 
@@ -380,6 +381,8 @@ def view_v17_stack():
             g.append(rect(b[1], b[2], b[3], b[4], CLS[b[7]], 0.8 if b[7] == "button" else 1))
             if b[7] == "button":
                 g.append(f'<circle class="cap" cx="{(b[1] + b[2]) / 2:.2f}" cy="{-(b[3] + b[4]) / 2:.2f}" r="1.75"/>')
+                s = BTN_LBL[int(b[0].split()[1]) - 1]
+                g.append(label((b[1] + b[2]) / 2, (b[3] + b[4]) / 2 - 0.55, s, "lbl inv", 1.5 if len(s) > 1 else 1.7))
     g += [label(OX, OY + 1, "OLED", "lbl light", 3.2), label(OX, OY - 3.5, "di socket", "lbl light", 2.3),
           label(OX, IB["y1"] + 1.8, "2 tombol kiri · 3 tombol kanan (6×6)", "lbl", 2.3)]
     for hx, hy in H12:
@@ -610,8 +613,9 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
         dengan coakan roda (celah ke ban ±4 mm). Ban menonjol keluar dari garis miring seperti mobil balap.</li>
         <li><b>Ball caster</b> pindah ke skid plate tepat di belakang PCB sensor (y ±72 mm dari poros). Di v16 caster masih di baut PCB sensor dan
         bertabrakan dengan PCB sensor (celah ke lantai cuma 4,8 mm).</li>
-        <li><b>Di bawah ESP32</b> (celah socket 8,5 mm): TB6612 disolder rendah tanpa socket, Q1 + R3/R4 buzzer.</li>
-        <li><b>Board interface</b>: OLED di socket di tengah, 5 tombol 6×6 mengapit (2 di kiri, 3 di kanan), resistor ladder di bawah OLED. Ke PCB utama lewat J6 6 pin:
+        <li><b>Di bawah ESP32</b> (celah socket 8,5 mm): TB6612 disolder rendah tanpa socket (disetujui 03/11), Q1 + R3/R4 buzzer.</li>
+        <li><b>Board interface</b>: OLED di socket di tengah, 5 tombol 6×6 mengapit untuk menu OLED (kiri ▲ ▼ pindah pilihan, kanan ◀ kembali,
+        OK, ▶ lanjut/ubah nilai), resistor ladder di bawah OLED. Ke PCB utama lewat J6 6 pin:
         3V3, GND, SDA, SCL, tombol (GPIO34), cadangan.</li>
         <li><b>Charger 2S</b> pindah ke skid plate di belakang motor, di bawah dudukan baterai, USB-C menghadap ke belakang.
         <b>BMS</b> (tanpa konektor) ditempel di holder baterai. Keduanya tidak lagi di PCB.</li>
@@ -620,14 +624,11 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
     <section>
       <h2>Perlu dicek / diputuskan</h2>
       <ol>
-        <li>Fungsi 5 tombol. Usul: kiri = atas, bawah; kanan = OK di tengah, kembali, START/STOP. Bisa juga 3 + 3 (6 tombol) supaya simetris.</li>
-        <li>TB6612 di bawah ESP32: ringkas, tapi ESP32 harus dicabut dulu untuk melihat TB6612.</li>
         <li>Sisi bawah ESP32 DevKit yang dibeli: kalau ada chip (CH340 di bawah), celah untuk TB6612 tinggal ±1 mm.</li>
         <li>Ukuran modul charger 2S yang dibeli: konsep memakai 25 × 16 mm dengan USB-C di sisi panjang (seperti model v16).</li>
         <li>Harga cetak: 3 desain PCB (sensor, utama, interface); tanya apakah bisa digabung satu panel.</li>
-        <li>Roda N20 Ø34 di toko lebarnya 6,5–7 mm, versi 18 mm tidak umum. Pilihan: velg 3D print + ban TPU/silikon Ø34 × 18,
-        atau roda Ø44 × 17,5 mm yang ada di toko (lebar dan sekaligus lebih cepat: maks 0,89 → 1,15 m/s, torsi desain 0,13 kg·cm
-        dari rated 0,20; poros naik 5 mm, lubang D harus dicek cocok poros N20 3 mm).</li>
+        <li>Roda <b>velg 3D print Ø34 × 18 mm</b> (dipilih 03/11; roda N20 Ø34 di toko hanya 6,5–7 mm): bahan ban (TPU, silikon
+        cetak, atau karet) dan apakah printer lab bisa mencetak TPU.</li>
       </ol>
     </section>
   </div>
