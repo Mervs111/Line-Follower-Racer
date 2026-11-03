@@ -32,6 +32,10 @@ Entri terbaru di atas.
 - Konsep v17 versi 2 (komentar user di artifact): tombol dipindah ke kiri-kanan OLED (2 kiri, 3 kanan), board
   interface jadi 46 × 32 mm (14,6 cm²), total −47%. Header J6 digeser ke kanan supaya kakinya tidak di bawah
   OLED/tombol; cek otomatis ditambah untuk itu. 0 masalah.
+- Konsep v17 versi 3 (komentar user): skid plate belakang melebar sampai sisi luar ban, ban Ø34 × 18 mm melebar ke
+  luar (lebar robot 103 → 115 mm, jarak tengah ban 91 → 97 mm). Kecepatan maksimum tidak berubah (RPM × diameter),
+  grip naik. Cek Tokopedia: roda N20 Ø34 umumnya 6,5–7 mm; alternatif velg 3D print + ban TPU, atau roda Ø44 × 17,5 mm
+  (CNC Store Bandung; maks 1,15 m/s, torsi desain 0,13 kg·cm). Belum diputuskan.
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated

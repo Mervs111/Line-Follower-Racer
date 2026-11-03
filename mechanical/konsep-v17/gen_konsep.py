@@ -16,6 +16,8 @@ ROOT = os.path.join(HERE, "..", "..")
 
 # ------------------------------ dari v16 (mechanical/cadquery/ltm_v16.py) ------------------------------
 R_W, W_W, WX0 = 17.0, 12.0, 39.5            # roda O34, lebar 12, sisi dalam roda
+W17 = 18.0                                  # usulan v17: ban lebih lebar, melebar ke luar (sisi dalam tetap)
+WOUT = WX0 + W17                            # sisi luar ban v17
 MAIN_R_V16 = [(37, -34, 10), (37, 20, 3), (50, 23.5, 3), (50, 54, 6), (27, 65, 8), (27, 84, 8), (12, 93, 5)]
 H12 = [(-4.75, 85.55), (4.75, 85.55)]       # baut PCB sensor
 
@@ -43,8 +45,11 @@ def box(name, x0, x1, y0, y1, z0, z1, cls, label=None):
 for s in (-1, 1):
     box(f"Motor N20 {'kiri' if s < 0 else 'kanan'}", min(s * 13, s * 38), max(s * 13, s * 38), -6, 6, CH_Z1, CH_Z1 + 10,
         "motor")
-    box(f"Roda {'kiri' if s < 0 else 'kanan'}", min(s * WX0, s * (WX0 + W_W)), max(s * WX0, s * (WX0 + W_W)),
+    box(f"Roda {'kiri' if s < 0 else 'kanan'}", min(s * WX0, s * WOUT), max(s * WX0, s * WOUT),
         -R_W, R_W, 0, 2 * R_W, "wheel")
+    # sayap belakang skid plate: melebar sampai sisi luar ban, di belakang roda (celah ke ban ±4 mm)
+    box(f"Sayap belakang skid plate {'kiri' if s < 0 else 'kanan'}", min(s * 38, s * WOUT), max(s * 38, s * WOUT),
+        -32, -20.5, CH_Z0, CH_Z1, "frame")
 box("Dudukan baterai (3D print)", -38, 38, -24, 24, 22, 24, "print")
 box("Holder 2x18650", -38, 38, -21, 21, 24, 44, "battery")
 # charger 2S di skid plate di antara/di belakang motor, di bawah dudukan baterai, USB-C menghadap ke belakang
@@ -238,11 +243,11 @@ def label(x, y, s, cls="lbl", size=3.0, anchor="middle"):
     return f'<text class="{cls}" x="{x:.2f}" y="{-y:.2f}" font-size="{size}" text-anchor="{anchor}">{s}</text>'
 
 
-def common_frame():
+def common_frame(ww=W_W):
     out = [poly(SENSOR, "sensor")]
     out.append(label(0, 133.5, "PCB sensor rev B (tetap)", "lbl dim", 3.0))
     for s in (-1, 1):
-        x0, x1 = sorted((s * WX0, s * (WX0 + W_W)))
+        x0, x1 = sorted((s * WX0, s * (WX0 + ww)))
         out.append(rect(x0, x1, -R_W, R_W, "wheel", 2))
         x0, x1 = sorted((s * 13, s * 38))
         out.append(rect(x0, x1, -6, 6, "motor", 1))
@@ -276,9 +281,10 @@ def view_v16():
 
 def skid_and_battery():
     g = []
-    sk = fillet_dense([(38, -30, 6), (38, 24, 3), (33, 30, 4), (33, 80, 8), (14, 93, 5)])
+    sk = fillet_dense([(WOUT, -32, 5), (WOUT, -20.5, 2), (38, -20.5, 1.5), (38, 24, 3), (33, 30, 4), (33, 80, 8),
+                       (14, 93, 5)])
     g.append(poly(sk, "skid"))
-    g.append(label(-35.5, -27, "skid plate 3D print", "lbl dim", 2.6, "start"))
+    g.append(label(-WOUT + 2, -27.5, "skid plate 3D print", "lbl dim", 2.6, "start"))
     g += [rect(-38, 38, -21, 21, "battery-above", 2), label(0, -16.5, "holder 2×18650 (di atas)", "lbl dim", 2.8)]
     g.append(f'<circle class="caster-top" cx="0" cy="{-CASTER_Y}" r="5"/>')
     return g
@@ -317,7 +323,7 @@ def main_board_layer(dim=False):
 
 
 def view_v17_main():
-    g = common_frame() + skid_and_battery() + main_board_layer()
+    g = common_frame(W17) + skid_and_battery() + main_board_layer()
     for hx, hy in H12:
         g.append(f'<circle class="hole" cx="{hx}" cy="{-hy}" r="1.6"/>')
     g += axle_and_dims("")
@@ -327,7 +333,7 @@ def view_v17_main():
 
 
 def view_v17_stack():
-    g = common_frame() + skid_and_battery() + main_board_layer(dim=True)
+    g = common_frame(W17) + skid_and_battery() + main_board_layer(dim=True)
     g.append(rect(IB["x0"], IB["x1"], IB["y0"], IB["y1"], "iboard", IB["r"]))
     lad = next(b for b in BOX if b[0].startswith("Resistor ladder"))
     g.append(rect(lad[1], lad[2], lad[3], lad[4], "under", 0.4))
@@ -342,6 +348,7 @@ def view_v17_stack():
         g.append(f'<circle class="hole" cx="{hx}" cy="{-hy}" r="1.6"/>')
     g += axle_and_dims("")
     g.append(dim_h(IB["x0"], IB["x1"], 87.5, "46 mm", "dim2"))
+    g.append(dim_h(-WOUT, WOUT, -40, f"{2 * WOUT:.0f} mm"))
     g.append(dim_v(-31.0, IB["y0"], IB["y1"], "32 mm", "dim2"))
     return g
 
@@ -413,7 +420,10 @@ rows = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>" for a, b, c in [
     ("Total PCB utama + interface", "{:.1f} cm²".format(A_V16).replace(".", ","),
      "{:.1f} cm² ({:+.0f}%)".format(A_MB + A_IB, (A_MB + A_IB) / A_V16 * 100 - 100).replace(".", ",")),
     ("PCB sensor", "{:.1f} cm²".format(A_SENS).replace(".", ","), "tetap"),
-    ("Sasis", "PCB utama", "skid plate 3D print"),
+    ("Sasis", "PCB utama", "skid plate 3D print, belakang melebar sampai sisi luar ban"),
+    ("Ban", "Ø34 × 12 mm di model (roda Ø34 N20 di toko umumnya 6,5–7 mm)", f"Ø34 × {W17:.0f} mm, melebar ke luar"),
+    ("Lebar robot / jarak tengah ban", f"{2 * (WX0 + W_W):.0f} mm / {2 * WX0 + W_W:.0f} mm",
+     f"{2 * WOUT:.0f} mm / {2 * WX0 + W17:.0f} mm (batas lomba 200 mm)"),
     ("Tombol", "2 × 12×12 mm (GPIO34, GPIO35)", "5 × 6×6 mm, resistor ladder di GPIO34 (GPIO35 bebas)"),
     ("Charger 2S + BMS", "di PCB utama bagian belakang", "charger di skid plate (di bawah dudukan baterai), BMS ditempel di holder"),
 ])
@@ -556,6 +566,9 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
       <ul>
         <li><b>PCB utama</b>: belakang J2, J1 baterai, J3, R1/R2, D1; tengah ESP32 DevKit melintang di socket (USB ke kiri, antena ke kanan);
         depan MP1584, C1, buzzer, SW1 (tuas ke kanan), header J6 ke board interface, J5 ke PCB sensor (kabel lurus ke depan).</li>
+        <li><b>Ban lebih lebar</b> (18 mm, melebar ke luar karena sisi dalam ada motor): kecepatan maksimum tetap, karena ditentukan
+        RPM × diameter. Grip naik, jadi akselerasi dan pengereman lebih jarang selip. Jarak tengah ban naik 91 → 97 mm (lebih stabil, PID perlu
+        dituning ulang). <b>Skid plate belakang</b> melebar sampai sisi luar ban di belakang roda, celah ke ban ±4 mm.</li>
         <li><b>Ball caster</b> pindah ke skid plate tepat di belakang PCB sensor (y ±72 mm dari poros). Di v16 caster masih di baut PCB sensor dan
         bertabrakan dengan PCB sensor (celah ke lantai cuma 4,8 mm).</li>
         <li><b>Di bawah ESP32</b> (celah socket 8,5 mm): TB6612 disolder rendah tanpa socket, Q1 + R3/R4 buzzer.</li>
@@ -573,6 +586,9 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
         <li>Sisi bawah ESP32 DevKit yang dibeli: kalau ada chip (CH340 di bawah), celah untuk TB6612 tinggal ±1 mm.</li>
         <li>Ukuran modul charger 2S yang dibeli: konsep memakai 25 × 16 mm dengan USB-C di sisi panjang (seperti model v16).</li>
         <li>Harga cetak: 3 desain PCB (sensor, utama, interface); tanya apakah bisa digabung satu panel.</li>
+        <li>Roda N20 Ø34 di toko lebarnya 6,5–7 mm, versi 18 mm tidak umum. Pilihan: velg 3D print + ban TPU/silikon Ø34 × 18,
+        atau roda Ø44 × 17,5 mm yang ada di toko (lebar dan sekaligus lebih cepat: maks 0,89 → 1,15 m/s, torsi desain 0,13 kg·cm
+        dari rated 0,20; poros naik 5 mm, lubang D harus dicek cocok poros N20 3 mm).</li>
       </ol>
     </section>
   </div>
