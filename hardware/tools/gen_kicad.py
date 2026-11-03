@@ -272,17 +272,21 @@ def build_footprints():
     pads += [pad(str(9 + i), 7.62, -8.89 + 2.54 * i) for i in range(8)]
     write_fp("TB6612_Module_2x8_W15.24", "Modul TB6612FNG 2x8 pin, jarak baris 15,24 mm. SEMENTARA: ukur modul asli.",
              (-10.2, -10.15, 10.2, 10.15), pads, [("UKUR ULANG", 0, 0)], crt=0.1)   # rapat dengan ESP32 di PCB v2
-    # 2 lubang per terminal jarak 2,54 (foto listing CNC Store 03/11/2026, perkiraan: ukur modul asli)
-    pads = [pad(n, x, y) for n, x, ys in (("1", -9.5, (-6.87, -4.33)), ("2", -9.5, (4.33, 6.87)),
-                                          ("3", 9.5, (-6.87, -4.33)), ("4", 9.5, (4.33, 6.87))) for y in ys]
     pads = [pad(str(i + 1), 2.54 * i, 0) for i in range(16)]
     pads += [pad(str(17 + i), 10.16 + 2.54 * i, 15.24) for i in range(8)]
     write_fp("CD74HC4067_Module", "Modul mux CD74HC4067 40,6 x 17,8 mm: C0-C15 satu baris, SIG..GND baris kedua. "
              "SEMENTARA: ukur modul asli (jarak baris, urutan pin).",
              (-1.25, -1.27, 39.35, 16.51), pads, [("C0..C15", 19.05, 2.5), ("UKUR ULANG", 19.05, 8)])
-    write_fp("MP1584_Module", "Modul MP1584EN mini 22x17 mm, 2 lubang per terminal (jarak 2,54), kolom +-9,5 mm. Posisi dari foto "
-             "listing (perkiraan, 03/11/2026): ukur modul asli. Polaritas +/- belum pasti (label di sisi bawah modul).",
-             (-11.0, -8.5, 11.0, 8.5), pads, [("IN", -6.5, 0), ("OUT", 6.5, 0), ("UKUR ULANG", 0, 3.5)])
+    # dilihat dari sisi komponen (SS34 kiri atas, induktor kanan): IN kiri, OUT kanan, - atas, + bawah; pad kotak = +
+    # (foto atas/bawah listing CNC Store 03/11/2026, 2 lubang per terminal jarak 2,54; ukur ulang modul asli)
+    pads = [pad(n, x, y, shape="rect" if n in ("1", "3") else "circle")
+            for n, x, ys in (("2", -9.35, (-7.09, -4.55)), ("1", -9.35, (4.55, 7.09)),
+                             ("4", 9.35, (-7.09, -4.55)), ("3", 9.35, (4.55, 7.09))) for y in ys]
+    write_fp("MP1584_Module", "Modul MP1584EN mini 22x17 mm dilihat dari sisi komponen (SS34 kiri atas, induktor kanan): "
+             "IN kiri, OUT kanan, - di atas, + di bawah (pad kotak = +, sama dengan modul). 2 lubang per terminal jarak "
+             "2,54, kolom +-9,35, y +-4,55/+-7,09. Diukur dari foto CNC Store 03/11/2026: ukur ulang modul asli.",
+             (-11.0, -8.5, 11.0, 8.5), pads,
+             [("IN-", -5, -5.8), ("IN+", -5, 5.8), ("OUT-", 4.6, -5.8), ("OUT+", 4.6, 5.8), ("UKUR ULANG", 0, 1.5)])
     pads = [pad("1", -1.27, -1.27, 1.4, 0.8), pad("2", -1.27, 1.27, 1.4, 0.8),
             pad("3", 1.27, -1.27, 1.4, 0.8), pad("4", 1.27, 1.27, 1.4, 0.8)]
     write_fp("ITR20001", "ITR20001/T 4 kaki. SEMENTARA: cocokkan jarak & urutan kaki dengan datasheet.",

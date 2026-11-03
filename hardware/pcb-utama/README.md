@@ -15,10 +15,11 @@ skid plate 3D print, PCB utama **trapesium** sejajar skid plate (depan 62, belak
   R6 dihapus; **J6** socket 1×6 ke board interface (1 +3V3, 2 GND, 3 SDA, 4 SCL, 5 BTN = GPIO34, 6 AUX = GPIO35);
   R5 10k tetap jadi pull-up BTN; **C2** 100 nF di VBAT_SENSE; J2/J3 **JST XH 6 pin**; Q1 **TO-92 Inline Wide**.
   Rev A disimpan di riwayat git (commit sebelum 03/11).
-- **Footprint `ltm:MP1584_Module` diperbarui** (03/11): 8 lubang, 2 per terminal jarak 2,54 (diukur dari foto listing
-  CNC Store dengan koreksi perspektif, badan 22 × 17 sebagai skala), masih "UKUR ULANG". Pad 1–4 = IN+, IN−, OUT+,
-  OUT− seperti sebelumnya; IN di sisi kapasitor input, polaritas +/− belum pasti (label di sisi bawah modul).
-  Footprint di `.kicad_pcb` baru ikut setelah Tools → Update Footprints from Library.
+- **Footprint `ltm:MP1584_Module` diperbarui** (03/11) dari 3 foto listing CNC Store (miring, sisi atas, sisi bawah
+  berlabel): 8 lubang, 2 per terminal jarak 2,54, kolom ±9,35, y ±4,55 / ±7,09. Dilihat dari sisi komponen (SS34 kiri
+  atas, induktor kanan): **IN kiri, OUT kanan, − di atas, + di bawah** (pad kotak = +, sama dengan modul). Pad 1–4 =
+  IN+, IN−, OUT+, OUT− (simbol tidak berubah). Silkscreen +/−/IN/OUT ditambahkan. Masih "UKUR ULANG" (±0,2 mm
+  dari foto). Footprint di `.kicad_pcb` baru ikut setelah Tools → Update Footprints from Library.
 - **Layout belum diperbarui**: `pcb-utama.kicad_pcb` masih layout rev A (bentuk mobil F1). Langkah berikutnya:
   buka PCB Editor → Update PCB from Schematic (F8) → outline trapesium + penempatan sesuai konsep v17 → routing.
 

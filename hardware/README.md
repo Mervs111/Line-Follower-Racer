@@ -120,8 +120,9 @@ Di model v12 tepi depan dudukan baterai dimundurkan ke Y 29,5 (ESP32 mulai Y 30,
    - ESP32 DevKit: jarak antar baris pin. Pilih `ESP32_DevKit_30P_W25.4` atau `..._W22.86`
      (properti Footprint U1), cek juga urutan pin dengan tulisan di papan.
    - TB6612: jarak baris (sementara 15,24 mm) dan urutan pin.
-   - MP1584: 2 lubang per terminal, jarak 2,54, kolom ±9,5, pasangan di y ±4,33 / ±6,87 (diukur dari foto listing
-     CNC Store 03/11, perkiraan). Cek juga **polaritas**: label IN+/IN−/OUT+/OUT− ada di sisi bawah modul.
+   - MP1584: 2 lubang per terminal jarak 2,54, kolom ±9,35, y ±4,55 / ±7,09 (diukur dari foto listing CNC Store
+     03/11). Polaritas dari foto sisi bawah: dilihat dari sisi komponen, IN kiri (sisi SS34), OUT kanan, − atas,
+     + bawah (pad kotak). Cocokkan dengan modul yang datang.
    - Modul mux CD74HC4067: jarak baris (sementara 15,24 mm) dan urutan C0..C15 / SIG..GND.
    - ITR20001: jarak & urutan kaki dari datasheet (sementara 2×2 kaki 2,54 mm, THT).
    - OLED: urutan GND/VCC; kalau terbalik, tukar label pin 1 dan 2 di J4.

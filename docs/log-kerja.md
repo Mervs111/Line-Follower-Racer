@@ -65,6 +65,11 @@ Entri terbaru di atas.
   2 per terminal. Foto diluruskan (homografi dari 4 pojok badan 22 × 17 mm), lubang terukur di x ±9,3–9,6, jarak
   pasangan 2,6–2,9 mm → dipakai 2,54 (header), y ±4,33 / ±6,87. Overlay di foto pas. `gen_kicad.py` ikut diubah.
   Polaritas +/− tetap dicek di sisi bawah modul saat datang (ada tanda ⊕ dekat pasangan kanan bawah di foto).
+- **Footprint MP1584 dikoreksi dari 2 foto lurus user** (sisi bawah berlabel + sisi komponen): polaritas tadi
+  **terbalik**. Dilihat dari sisi komponen: IN kiri (sisi SS34), OUT kanan (sisi induktor), − di atas, + di bawah
+  (pad kotak = +, cocok dengan tanda ⊖/⊕ di sisi komponen). Jarak pasangan terukur 2,54–2,62 → 2,54; kolom ±9,35;
+  y ±4,55 / ±7,09. Silkscreen +/−/IN/OUT ditambahkan. Overlay pad di foto sisi komponen pas. `gen_kicad.py` ikut
+  (sekalian membetulkan bug lama: pad MP1584 tertimpa pad modul mux sebelum `write_fp`).
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
