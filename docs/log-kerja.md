@@ -54,6 +54,13 @@ Entri terbaru di atas.
 - User memilih **trapesium** (komentar artifact): konsep v17 versi 7 memakai trapesium sebagai PCB utama, cek komponen
   di dalam outline (≥ 0,5 mm dari tepi). Koreksi: J2/J3 JST XH 6 pin 17,4 mm (sebelumnya tergambar 14,9 mm = 5 pin);
   J5/J6 mundur 0,5 mm dari tepi depan.
+- **Skematik PCB utama rev B** (`gen_sch_utama.py --paksa`): J6 socket 1×6 ke board interface (+3V3, GND, SDA, SCL,
+  BTN GPIO34, AUX GPIO35), J4 OLED/SW2/SW3/R6 dihapus, R5 jadi pull-up BTN, C2 100 nF di VBAT_SENSE (rekomendasi
+  perhitungan), J2/J3 JST XH 6 pin, Q1 TO-92 Wide. Catatan teks blok 2/4/5 tetap tidak ada (dihapus user 29/10).
+  ERC 0, 22 pin ESP32 cocok tabel pin, tidak ada net 1 node. PDF diperbarui.
+- **Skematik board interface rev A** (proyek baru `hardware/board-interface/`, `gen_sch_interface.py`): J1 header 1×6,
+  J2 socket OLED, SW1–SW5 6×6, tangga R 1k/3,9k/8,2k/18k/39k (0,30–2,63 V), C1 100 nF. ERC 0.
+- Layout PCB utama belum: MCP KiCad tidak tersambung (2 jendela KiCad terbuka, PCB Editor tidak terbaca API).
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated

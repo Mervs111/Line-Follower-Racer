@@ -33,7 +33,8 @@ Program onsite pakai **Ardublock** (wajib di Day 2), belum dibahas terhadap renc
 - Motor N20 6V 500 RPM + encoder, **roda Ø34**; driver TB6612FNG (modul).
 - Daya: 2S (2× 18650, holder 76×42×20 mm), BMS 2S, charger 2S USB-C (di dinding belakang rangka, OUT ke P+/P− BMS),
   buck MP1584 5 V, pembagi baterai 100k/33k.
-- UI: OLED 0,96" I2C (bacaan sensor tampil sebagai bar), 2 tombol, buzzer aktif + S8050. **Tanpa IMU** (arahan dosen
+- UI: OLED 0,96" I2C (bacaan sensor tampil sebagai bar) + **5 tombol 6×6 di board interface** (tangga resistor ke
+  GPIO34, rev B 03/11), buzzer aktif + S8050 di PCB utama. **Tanpa IMU** (arahan dosen
   09/10: belok 90° di persimpangan pakai selisih encoder lalu dikunci ke garis oleh sensor). **Tanpa MCP23017/LED
   indikator**. I2C hanya untuk OLED.
 
@@ -43,7 +44,7 @@ Program onsite pakai **Ardublock** (wajib di Day 2), belum dibahas terhadap renc
 | MUX_SIG (ADC1) | 36 | | TB6612 PWMA / AIN1 / AIN2 | 18 / 5 / 17 |
 | VBAT_SENSE (ADC1) | 39 | | TB6612 PWMB / BIN1 / BIN2 | 16 / 4 / 15 |
 | MUX_S0 / S1 / S2 / S3 | 26 / 25 / 33 / 32 | | TB6612 STBY (LOW saat boot) | 2 |
-| BTN_A / BTN_B (+R 10k pull-up) | 34 / 35 | | ENC_L A / B | 13 / 14 |
+| BTN tangga 5 tombol (R5 10k pull-up) / AUX | 34 / 35 | | ENC_L A / B | 13 / 14 |
 | Buzzer (R4 pull-down, LOW saat boot) | 12 | | ENC_R A / B | 23 / 19 |
 | I2C SDA / SCL | 21 / 22 | | IR_EN (tidak dipakai lagi) | 27 |
 
@@ -65,7 +66,10 @@ memakai pin map yang sama.
   acak), keputusan SW1 (pad pemasang 0,25 mm), merapikan jalur, footprint
   SW2/SW3 → tactile 12×12 mm dan J2/J3 → JST XH 6 pin (ikut barang di RAB 27/10). Koordinat sama dengan proyek PCB sensor (X = 200 + x robot, Y = 180,55 − y robot). J5 JST XH 8 pin
   di tepi miring sidepod kiri (pin 1 dekat hidung), urutan = J1; C1 elko di sidepod kiri. ESP32 di socket di atas (jangan di bawah, keputusan user 18/10). Penjelasan di
-  `hardware/pcb-utama/README.md`. `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
+  `hardware/pcb-utama/README.md`. **Skematik rev B (03/11)**: J6 1×6 ke board interface (+3V3, GND, SDA, SCL, BTN, AUX),
+  J4/SW2/SW3/R6 dihapus, C2 100 nF di VBAT_SENSE, J2/J3 XH 6 pin, Q1 TO-92 Wide; ERC 0. **Layout masih rev A** (perlu
+  F8 + outline trapesium + penempatan ulang). **Board interface**: `hardware/board-interface/` (skematik rev A dari
+  `hardware/tools/gen_sch_interface.py`, ERC 0; PCB dan cara pasang belum). `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
   via 0,6/1,0 (2 layer 1,27), slot 1/1,5, silkscreen 0,2, mask expansion 0,1. SOIC aman, SSOP 0,65 tidak. Isian
   KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. Konstanta `FAB` di

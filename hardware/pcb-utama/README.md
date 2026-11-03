@@ -5,6 +5,19 @@ Proyek PCB utama pengganti `ltm-main/` (v2, 13/10). Skematik dibuat Claude atas 
 (sekali jalan; `--paksa` menimpa .kicad_pcb dan .kicad_sch, jadi **jangan dijalankan lagi** sesudah user mulai
 menggambar).
 
+## Rev B (03/11/2026, konsep v17)
+
+Rombak sesuai konsep v17 (`mechanical/konsep-v17/`, https://claude.ai/artifact/3zbiuQzc9YBamEs8NX5sxH): sasis jadi
+skid plate 3D print, PCB utama **trapesium** sejajar skid plate (depan 62, belakang 87, panjang 58 mm; y robot 24–82),
+4 lubang M3 di sayap, OLED dan tombol pindah ke **board interface** (`../board-interface/`) yang ditumpuk di atas.
+
+- **Skematik rev B** (`gen_sch_utama.py --paksa`, 19 komponen, ERC 0, 22 pin ESP32 cocok tabel pin): J4 OLED, SW2/SW3,
+  R6 dihapus; **J6** socket 1×6 ke board interface (1 +3V3, 2 GND, 3 SDA, 4 SCL, 5 BTN = GPIO34, 6 AUX = GPIO35);
+  R5 10k tetap jadi pull-up BTN; **C2** 100 nF di VBAT_SENSE; J2/J3 **JST XH 6 pin**; Q1 **TO-92 Inline Wide**.
+  Rev A disimpan di riwayat git (commit sebelum 03/11).
+- **Layout belum diperbarui**: `pcb-utama.kicad_pcb` masih layout rev A (bentuk mobil F1). Langkah berikutnya:
+  buka PCB Editor → Update PCB from Schematic (F8) → outline trapesium + penempatan sesuai konsep v17 → routing.
+
 ## Isi awal
 
 | File | Isi |

@@ -1,9 +1,14 @@
 """Membuat skematik PCB utama (hardware/pcb-utama/pcb-utama.kicad_sch), KiCad 10.
 
 Isi sesuai wiring diagram blok 1-4 dan tabel di hardware/pcb-utama/README.md: daya, driver motor + motor,
-layar/tombol/buzzer, ESP32, dan J5 kabel ke PCB sensor. Gaya label: tiap pin diberi kabel pendek lalu label global
-(nama sama = tersambung) atau simbol daya, kecuali rangkaian kecil (pembagi tegangan, tombol, buzzer) yang digambar
-dengan kabel.
+header ke board interface + buzzer, ESP32, dan J5 kabel ke PCB sensor. Gaya label: tiap pin diberi kabel pendek lalu
+label global (nama sama = tersambung) atau simbol daya, kecuali rangkaian kecil (pembagi tegangan, buzzer) yang
+digambar dengan kabel.
+
+Rev B (03/11/2026, konsep v17): OLED dan tombol pindah ke board interface (hardware/board-interface/) lewat J6 1x6
+(3V3, GND, SDA, SCL, BTN = tangga resistor 5 tombol di GPIO34, AUX = GPIO35 cadangan); R5 tetap jadi pull-up BTN supaya
+GPIO34 tidak mengambang saat board interface dilepas. J2/J3 JST XH 6 pin, Q1 TO-92 Wide, C2 100 nF di VBAT_SENSE.
+Catatan teks blok 2, 4, 5 sengaja tidak ditulis (dihapus user 29/10).
 
 Jalankan dari folder repo: py hardware/tools/gen_sch_utama.py [--paksa]
 Tanpa --paksa, skrip menolak menimpa skematik yang sudah berisi simbol (supaya gambar user tidak hilang).
@@ -61,36 +66,34 @@ part("C1", "Device:C_Polarized", "100uF 16V", "Capacitor_THT:CP_Radial_D6.3mm_P2
      {"1": "VBAT", "2": "GND"}, fields="right")
 part("R1", "Device:R", "100k", FP_R, 50.8, 86.36, {"1": "VBAT", "2": None}, fields="right")
 part("R2", "Device:R", "33k", FP_R, 50.8, 101.6, {"1": None, "2": "GND"}, fields="right")
+part("C2", "Device:C", "100nF", "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm", 78.74, 91.44,
+     {"1": "VBAT_SENSE", "2": "GND"}, fields="right")
 
 # ---- 2. DRIVER MOTOR + MOTOR ----
 part("U2", "ltm:TB6612_Module", "TB6612 modul", "ltm:TB6612_Module_2x8_W15.24", 190.5, 55.88,
      {"1": "PWMA", "2": "AIN2", "3": "AIN1", "4": "STBY", "5": "BIN1", "6": "BIN2", "7": "PWMB", "8": "GND",
       "9": "VBAT", "10": "+3V3", "11": "GND", "12": "ML_P", "13": "ML_N", "14": "MR_N", "15": "MR_P", "16": "GND"})
-MOTOR_FP = "Connector_JST:JST_PH_B6B-PH-K_1x06_P2.00mm_Vertical"
+MOTOR_FP = "Connector_JST:JST_XH_B6B-XH-A_1x06_P2.50mm_Vertical"
 part("J2", "Connector_Generic:Conn_01x06", "Motor kiri + encoder", MOTOR_FP, 271.78, 50.8,
      {"1": "ML_P", "2": "+3V3", "3": "ENC_L_A", "4": "ENC_L_B", "5": "GND", "6": "ML_N"})
 part("J3", "Connector_Generic:Conn_01x06", "Motor kanan + encoder", MOTOR_FP, 347.98, 50.8,
      {"1": "MR_P", "2": "+3V3", "3": "ENC_R_A", "4": "ENC_R_B", "5": "GND", "6": "MR_N"})
 
-# ---- 3. LAYAR, TOMBOL, BUZZER ----
-part("J4", "Connector_Generic:Conn_01x04", "OLED 0,96 I2C", "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical",
-     50.8, 140.97, {"1": "GND", "2": "+3V3", "3": "SCL", "4": "SDA"})
-part("R5", "Device:R", "10k", FP_R, 30.48, 167.64, {"1": "+3V3", "2": None}, fields="right")
-part("SW2", "Switch:SW_Push", "Tombol A", "Button_Switch_THT:SW_PUSH_6mm", 38.1, 175.26,
-     {"1": None, "2": {"net": "GND", "pdir": 270}})
-part("R6", "Device:R", "10k", FP_R, 86.36, 167.64, {"1": "+3V3", "2": None}, fields="right")
-part("SW3", "Switch:SW_Push", "Tombol B", "Button_Switch_THT:SW_PUSH_6mm", 93.98, 175.26,
-     {"1": None, "2": {"net": "GND", "pdir": 270}})
+# ---- 3. HEADER BOARD INTERFACE, BUZZER ----
+part("J6", "Connector_Generic:Conn_01x06", "Ke board interface (J1)",
+     "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical", 50.8, 143.51,
+     {"1": "+3V3", "2": "GND", "3": "SDA", "4": "SCL", "5": "BTN", "6": "AUX"})
+part("R5", "Device:R", "10k", FP_R, 30.48, 167.64, {"1": "+3V3", "2": "BTN"}, fields="right")
 part("R3", "Device:R", "1k", FP_R, 40.64, 207.01, {"1": "BUZ", "2": None}, fields="right")
 part("R4", "Device:R", "10k", FP_R, 48.26, 222.25, {"1": None, "2": "GND"}, fields="right")
-part("Q1", "Transistor_BJT:S8050", "S8050", "Package_TO_SOT_THT:TO-92_Inline", 66.04, 214.63,
+part("Q1", "Transistor_BJT:S8050", "S8050", "Package_TO_SOT_THT:TO-92_Inline_Wide", 66.04, 214.63,
      {"2": None, "3": None, "1": "GND"})
 part("BZ1", "Device:Buzzer", "Buzzer aktif 5V", "Buzzer_Beeper:Buzzer_12x9.5RM7.6", 76.2, 198.12,
      {"1": {"net": "+5V", "pdir": 90}, "2": None}, fields="right_far")
 
 # ---- 4. ESP32 ----
 part("U1", "ltm:ESP32_DevKit_30", "ESP32 DevKit 30 pin", "ltm:ESP32_DevKit_30P_W25.4", 210.82, 180.34,
-     {"1": "NC", "2": "MUX_SIG", "3": "VBAT_SENSE", "4": "BTN_A", "5": "BTN_B", "6": "MUX_S3", "7": "MUX_S2",
+     {"1": "NC", "2": "MUX_SIG", "3": "VBAT_SENSE", "4": "BTN", "5": "AUX", "6": "MUX_S3", "7": "MUX_S2",
       "8": "MUX_S1", "9": "MUX_S0", "10": "NC", "11": "ENC_L_B", "12": "BUZ", "13": "ENC_L_A", "14": "GND",
       "15": "+5V", "16": "ENC_R_A", "17": "SCL", "18": "NC", "19": "NC", "20": "SDA", "21": "ENC_R_B",
       "22": "PWMA", "23": "AIN1", "24": "AIN2", "25": "PWMB", "26": "BIN1", "27": "STBY", "28": "BIN2",
@@ -113,29 +116,15 @@ BLOCKS = [
         (17.78, 106.68, "C1 dekat pin VM TB6612"),
         (60.96, 106.68, "VBAT_SENSE ke GPIO39 (ADC1)"),
     ]),
-    (144.78, 12.7, 406.4, 114.3, "2. DRIVER MOTOR + MOTOR  (wiring diagram blok 2)", [
-        (152.4, 81.28, "Urutan pin modul TB6612 beda tiap penjual: cocokkan dengan modul yang dibeli."),
-        (152.4, 86.36, "VM = VBAT (7,4 V) langsung, VCC = 3,3 V logika. AO ke motor kiri, BO ke motor kanan."),
-        (241.3, 81.28 + 10.16, "J2/J3 = JST PH 6 pin. Encoder tanpa resistor (firmware INPUT_PULLUP)."),
-        (241.3, 96.52, "Urutan 6 kabel motor N20 beda tiap penjual: cek sebelum crimp."),
-    ]),
-    (12.7, 119.38, 139.7, 248.92, "3. LAYAR, TOMBOL, BUZZER  (wiring diagram blok 3)", [
-        (63.5, 139.7, "Cek urutan pin modul OLED\n(ada yang VCC dulu baru GND)"),
-        (17.78, 187.96, "R5/R6 wajib: GPIO34/35 tanpa pull-up internal"),
+    (144.78, 12.7, 406.4, 114.3, "2. DRIVER MOTOR + MOTOR  (wiring diagram blok 2)", []),
+    (12.7, 119.38, 139.7, 248.92, "3. BOARD INTERFACE (OLED + 5 TOMBOL), BUZZER", [
+        (63.5, 137.16, "J6: board interface ditumpuk di atas\n(OLED + tangga resistor 5 tombol)"),
+        (17.78, 182.88, "R5 wajib: GPIO34 tanpa pull-up internal"),
         (86.36, 210.82, "R4 menjaga GPIO12 LOW\nsaat boot (syarat boot ESP32)"),
         (86.36, 222.25, "Q1 TO-92: cek urutan E-B-C"),
     ]),
-    (144.78, 119.38, 276.86, 248.92, "4. ESP32 DEVKIT  (otak)", [
-        (149.86, 208.28, "GPIO34/35/36/39: hanya input"),
-        (149.86, 213.36, "GPIO2 (STBY) dan GPIO12 (BUZ) harus LOW saat boot"),
-        (149.86, 218.44, "EN, GPIO27, TX0, RX0: tidak dipakai (X)"),
-        (149.86, 223.52, "Footprint W25.4: ukur jarak baris pin modul (22,86 mm -> W22.86)"),
-    ]),
-    (281.94, 119.38, 406.4, 200.66, "5. KABEL KE PCB SENSOR  (wiring diagram blok 4)", [
-        (335.28, 147.32, "J5 = JST XH 8 pin, urutan pin SAMA\ndengan J1 PCB sensor (kabel lurus,\npin n ke pin n)"),
-        (335.28, 162.56, "Ikuti NOMOR pin: pin 4-7 terbalik\ndari urutan nama (S3 dulu)"),
-        (287.02, 185.42, "Di PCB: J5 sejajar tepi miring sidepod kiri, pin 1 di ujung dekat hidung"),
-    ]),
+    (144.78, 119.38, 276.86, 248.92, "4. ESP32 DEVKIT  (otak)", []),
+    (281.94, 119.38, 406.4, 200.66, "5. KABEL KE PCB SENSOR  (wiring diagram blok 4)", []),
 ]
 
 # ============================== GEOMETRI ==============================
@@ -231,13 +220,6 @@ mid = (a[0], round((a[1] + b[1]) / 2 / 1.27) * 1.27)
 wire(a, mid), wire(mid, b), JUNCS.append(mid)
 wire(mid, (mid[0] + 5.08, mid[1])), label("VBAT_SENSE", (mid[0] + 5.08, mid[1]), 0)
 
-# tombol: +3V3 - R - node(BTN) - tombol - GND
-for r_, sw, net in (("R5", "SW2", "BTN_A"), ("R6", "SW3", "BTN_B")):
-    rb, s1 = pin(r_, "2"), pin(sw, "1")
-    node = (rb[0], s1[1])
-    wire(rb, node), wire(node, s1), JUNCS.append(node)
-    wire(node, (node[0] - 2.54, node[1])), label(net, (node[0] - 2.54, node[1]), 180)
-
 # buzzer: BUZ - R3 - basis Q1, R4 basis ke GND, kolektor ke kaki - buzzer
 r3b, qb, r4t = pin("R3", "2"), pin("Q1", "2"), pin("R4", "1")
 k1 = (r3b[0], qb[1])
@@ -310,7 +292,7 @@ def symbol(lib_id, ref, value, fp, X, Y, r=0, fields="lib", hide_ref=False, hide
 used = sorted({p["lib_id"] for p in PARTS} | {lid for lid, _, _ in POWERS})
 out.append("(kicad_sch\n\t(version 20260306)\n\t(generator \"eeschema\")\n\t(generator_version \"10.0\")")
 out.append(f'\t(uuid "{root_uuid}")\n\t(paper "A3")')
-out.append('\t(title_block\n\t\t(title "LTM - PCB utama")\n\t\t(date "2026-10-22")\n\t\t(rev "A")\n'
+out.append('\t(title_block\n\t\t(title "LTM - PCB utama")\n\t\t(date "2026-11-03")\n\t\t(rev "B")\n'
            '\t\t(company "P01 Kel.5 PjBL DTEO FV ITS")\n'
            '\t\t(comment 1 "Panduan per blok: docs/wiring-diagram.html")\n'
            '\t\t(comment 2 "Dibuat oleh hardware/tools/gen_sch_utama.py, pin ESP32 sesuai CLAUDE.md")\n\t)')
