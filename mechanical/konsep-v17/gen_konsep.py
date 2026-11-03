@@ -62,9 +62,9 @@ CASTER_Y = 72.0
 box("Ball caster", -5, 5, CASTER_Y - 5, CASTER_Y + 5, 0, CH_Z0, "frame")
 
 # PCB utama: baris belakang (konektor), ESP32 di tengah (TB6612 di bawahnya), baris depan (daya, buzzer, J5)
-box("J2 motor kiri (JST XH 6)", -30, -15.1, 25, 30.75, MBT, MBT + 9.8, "conn", "J2")
+box("J2 motor kiri (JST XH 6)", -33.0, -15.6, 25, 30.75, MBT, MBT + 9.8, "conn", "J2")
 box("J1 baterai (JST XH 2)", -4.2, 4.2, 24.5, 31.3, MBT, MBT + 9.8, "conn", "J1")
-box("J3 motor kanan (JST XH 6)", 15.1, 30, 25, 30.75, MBT, MBT + 9.8, "conn", "J3")
+box("J3 motor kanan (JST XH 6)", 15.6, 33.0, 25, 30.75, MBT, MBT + 9.8, "conn", "J3")
 box("R1/R2 pembagi baterai", -14.6, -4.9, 25.0, 31.3, MBT, MBT + 2.5, "small", "R1 R2")
 box("D1 1N5819", 4.6, 14.6, 26.0, 29.2, MBT, MBT + 2.8, "small", "D1")
 for yr in (EY - 12.7, EY + 12.7):
@@ -78,8 +78,8 @@ box("MP1584", -30.0, -7.5, 62.0, 79.5, MBT, MBT + 8.1, "module", "MP1584")
 box("C1 100uF", -6.15, 0.15, 62.85, 69.15, MBT, MBT + 11.0, "small", "C1")
 box("Buzzer", 8.0, 20.0, 61.0, 73.0, MBT, MBT + 9.5, "small", "BZ")
 box("SW1 saklar (tuas keluar ke kanan)", 21.6, 31.0, 62.0, 73.4, MBT, MBT + 4.4, "small", "SW1")
-box("Header ke board interface", 2.0, 17.24, 73.5, 76.0, MBT, IB["z0"], "header", "J6")
-box("J5 ke PCB sensor (JST XH 8)", -6.0, 16.4, 76.0, 81.75, MBT, MBT + 9.8, "conn", "J5")
+box("Header ke board interface", 2.0, 17.24, 73.0, 75.5, MBT, IB["z0"], "header", "J6")
+box("J5 ke PCB sensor (JST XH 8)", -6.0, 16.4, 75.5, 81.25, MBT, MBT + 9.8, "conn", "J5")
 
 # board interface: OLED di socket + 5 tombol 6x6 + resistor ladder di bawah OLED
 IBT = IB["z1"]
@@ -129,8 +129,6 @@ for name, brd in BOARDS:
         if k[0].startswith("Zona") and overlap(bb, k) and name != "PCB utama":
             problems.append(f"{name} menutupi {k[0]}")
 for a in BOX:
-    if MBT - 0.01 <= a[5] <= MBT + 0.01 and a[7] not in ("motor", "wheel") and not inside(a, MB):
-        problems.append(f"keluar outline PCB utama: {a[0]}")
     if IBT - 0.01 <= a[5] <= IBT + 0.01 and not inside(a, IB):
         problems.append(f"keluar outline board interface: {a[0]}")
 # kaki THT header J6 menembus board interface: tidak boleh di bawah komponen board interface (cek tampak atas)
@@ -280,6 +278,14 @@ for hx, hy in TR_HOLES:
         top = abs(b[5] - MBT) < 0.01 or b[7] in ("esp", "espmod", "espusb", "socket")
         if top and b[1] - 2.75 < hx < b[2] + 2.75 and b[3] - 2.75 < hy < b[4] + 2.75:
             problems.append(f"opsi trapesium: lubang ({hx}, {hy}) menabrak {b[0]}")
+# komponen PCB utama harus di dalam outline trapesium, >= 0,5 mm dari tepi
+for a in BOX:
+    if abs(a[5] - MBT) < 0.01 and a[7] not in ("motor", "wheel"):
+        for p in ((a[1], a[3]), (a[1], a[4]), (a[2], a[3]), (a[2], a[4])):
+            d = min(seg_dist(p, TRAP[i - 1], TRAP[i]) for i in range(len(TRAP)))
+            if not in_poly(p, TRAP) or d < 0.5:
+                problems.append(f"keluar/mepet outline PCB utama: {a[0]} ({d:.1f} mm)")
+                break
 
 # ------------------------------ gambar SVG ------------------------------
 CLS = {  # kelas CSS per jenis
@@ -384,6 +390,10 @@ def main_board_layer(dim=False, outline=None):
 
 
 def view_v17_main():
+    return view_v17_trap()
+
+
+def view_v17_rect():
     g = common_frame(W17) + skid_and_battery() + main_board_layer()
     for hx, hy in H12:
         g.append(f'<circle class="hole" cx="{hx}" cy="{-hy}" r="1.6"/>')
@@ -407,7 +417,7 @@ def view_v17_trap():
 
 
 def view_v17_stack():
-    g = common_frame(W17) + skid_and_battery() + main_board_layer(dim=True)
+    g = common_frame(W17) + skid_and_battery() + main_board_layer(dim=True, outline=TRAP)
     g.append(rect(IB["x0"], IB["x1"], IB["y0"], IB["y1"], "iboard", IB["r"]))
     lad = next(b for b in BOX if b[0].startswith("Resistor ladder"))
     g.append(rect(lad[1], lad[2], lad[3], lad[4], "under", 0.4))
@@ -489,17 +499,16 @@ def fmt(v):
 
 
 top16 = svg(view_v16(), "-58 -136 116 182", "Tampak atas v16: PCB utama bentuk mobil F1 127 kali 100 mm")
-top17 = svg(view_v17_main(), "-58 -136 116 182", "Tampak atas usulan v17: PCB utama 62 kali 58 mm")
-top17t = svg(view_v17_trap(), "-58 -136 116 182", "Opsi PCB utama trapesium mengikuti sisi skid plate")
+top17 = svg(view_v17_main(), "-58 -136 116 182", "Tampak atas usulan v17: PCB utama trapesium mengikuti sisi skid plate")
 top17b = svg(view_v17_stack(), "-58 -136 116 182", "Tampak atas usulan v17 dengan board interface 46 kali 32 mm di atasnya")
 side17 = svg(side_v17(), "-44 -56 186 62", "Tampak samping usulan v17")
 
 rows = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>" for a, b, c in [
     ("PCB utama", "127 × 100 mm, {:.1f} cm²".format(A_V16).replace(".", ","),
-     "62 × 58 mm, {:.1f} cm²".format(A_MB).replace(".", ",")),
+     f"trapesium depan 62, belakang {2 * tr_x(MB['y0']):.0f}, panjang 58 mm, {fmt(A_TR)} cm²"),
     ("Board interface", "tidak ada", "46 × 32 mm, {:.1f} cm²".format(A_IB).replace(".", ",")),
     ("Total PCB utama + interface", "{:.1f} cm²".format(A_V16).replace(".", ","),
-     "{:.1f} cm² ({:+.0f}%)".format(A_MB + A_IB, (A_MB + A_IB) / A_V16 * 100 - 100).replace(".", ",")),
+     "{:.1f} cm² ({:+.0f}%)".format(A_TR + A_IB, (A_TR + A_IB) / A_V16 * 100 - 100).replace(".", ",")),
     ("PCB sensor", "{:.1f} cm²".format(A_SENS).replace(".", ","), "tetap"),
     ("Sasis", "PCB utama", f"skid plate 3D print trapesium: depan {2 * SK_F:.0f} mm, belakang {2 * SK_R:.0f} mm, coakan roda"),
     ("Ban", "Ø34 × 12 mm di model (roda Ø34 N20 di toko umumnya 6,5–7 mm)", f"Ø34 × {W17:.0f} mm, melebar ke luar"),
@@ -610,8 +619,6 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
 .cols {{ display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }}
 @media (max-width: 720px) {{ .cols {{ grid-template-columns: 1fr; }} }}
 .cols > section {{ min-width: 0; }}
-.opt {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 20px; align-items: start; }}
-@media (max-width: 720px) {{ .opt {{ grid-template-columns: 1fr; }} }}
 .optbody {{ display: grid; gap: 16px; min-width: 0; }}
 </style>
 <main>
@@ -624,7 +631,7 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
 
   <div class="sheets">
     <figure>{top16}<figcaption>Sekarang (v16): PCB utama = sasis, 127 × 100 mm</figcaption></figure>
-    <figure>{top17}<figcaption>Usulan (v17): PCB utama 62 × 58 mm di skid plate 3D print</figcaption></figure>
+    <figure>{top17}<figcaption>Usulan (v17): PCB utama trapesium sejajar skid plate, 4 lubang baut M3 di sayap</figcaption></figure>
     <figure>{top17b}<figcaption>Usulan (v17): board interface 46 × 32 mm ditumpuk di atas PCB utama</figcaption></figure>
   </div>
   <div class="legend">
@@ -638,11 +645,10 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
   </div>
 
   <section>
-    <h2>Opsi: PCB utama trapesium (belum dipilih)</h2>
-    <div class="opt">
-      <figure>{top17t}<figcaption>Sisi PCB sejajar skid plate, belakang tetap di depan baterai. Lingkaran = 4 lubang baut M3 ke skid plate.</figcaption></figure>
+    <h2>Persegi vs trapesium (trapesium dipilih 03/11)</h2>
+    <div>
       <div class="optbody">
-        <div class="tablewrap"><table><thead><tr><th></th><th>Persegi (usulan sekarang)</th><th>Trapesium</th></tr></thead><tbody>
+        <div class="tablewrap"><table><thead><tr><th></th><th>Persegi (konsep awal)</th><th>Trapesium (dipilih)</th></tr></thead><tbody>
           <tr><td>Ukuran</td><td>62 × 58 mm</td><td>depan 62, belakang {2 * tr_x(MB["y0"]):.0f}, panjang 58 mm</td></tr>
           <tr><td>Luas PCB</td><td>{fmt(A_MB)} cm²</td><td>{fmt(A_TR)} cm² ({(A_TR / A_MB - 1) * 100:+.0f}%)</td></tr>
           <tr><td>Kotak pembungkus (p × l)</td><td>{fmt(BB_MB)} cm²</td><td>{fmt(BB_TR)} cm² ({(BB_TR / BB_MB - 1) * 100:+.0f}%)</td></tr>
@@ -671,7 +677,7 @@ ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72
     <section>
       <h2>Susunan</h2>
       <ul>
-        <li><b>PCB utama</b>: belakang J2, J1 baterai, J3, R1/R2, D1; tengah ESP32 DevKit melintang di socket (USB ke kiri, antena ke kanan);
+        <li><b>PCB utama</b> trapesium, sisi sejajar skid plate, 4 lubang M3 di sayap: belakang J2, J1 baterai, J3, R1/R2, D1; tengah ESP32 DevKit melintang di socket (USB ke kiri, antena ke kanan);
         depan MP1584, C1, buzzer, SW1 (tuas ke kanan), header J6 ke board interface, J5 ke PCB sensor (kabel lurus ke depan).</li>
         <li><b>Ban lebih lebar</b> (18 mm, melebar ke luar karena sisi dalam ada motor): kecepatan maksimum tetap, karena ditentukan
         RPM × diameter. Grip naik, jadi akselerasi dan pengereman lebih jarang selip. Jarak tengah ban naik 91 → 97 mm (lebih stabil, PID perlu

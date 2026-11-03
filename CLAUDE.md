@@ -175,6 +175,8 @@ odejs` ke PATH.
   OLED** (kiri ▲ ▼, kanan ◀ kembali / OK / ▶ lanjut), **TB6612 disolder di bawah ESP32 disetujui**. TB6612 cukup 1 modul
   (2 kanal); diagram blok kendali diperbaiki jadi **2 jalur PWM kiri/kanan** (masukan dosen 27/10). Sisi bawah ESP32
   DevKit (chip CH340 di bawah atau tidak) belum dicek.
+- 03/11 (komentar user): **PCB utama trapesium** dipilih: sisi sejajar skid plate, depan 62, belakang 87, panjang 58 mm
+  (y robot 24–82), 42,9 cm², 4 lubang M3 di sayap (±38,5; 29) dan (±32,5; 56). J2/J3 = JST XH 6 pin (17,4 mm).
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

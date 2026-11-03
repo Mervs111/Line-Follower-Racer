@@ -51,6 +51,9 @@ Entri terbaru di atas.
 - Pertanyaan user: PCB utama trapesium mengikuti skid plate (tidak sampai belakang). Ditambahkan panel opsi di konsep
   v17 (belum dipilih): depan 62, belakang 87, panjang 58 mm, 42,9 cm² (+20% dari persegi 35,8), kotak pembungkus
   50,2 cm² (+40%), total dengan interface 57,6 cm² (−40% dari v16). 4 lubang M3 di sayap, cek otomatis 0 masalah.
+- User memilih **trapesium** (komentar artifact): konsep v17 versi 7 memakai trapesium sebagai PCB utama, cek komponen
+  di dalam outline (≥ 0,5 mm dari tepi). Koreksi: J2/J3 JST XH 6 pin 17,4 mm (sebelumnya tergambar 14,9 mm = 5 pin);
+  J5/J6 mundur 0,5 mm dari tepi depan.
 
 ## 27/10/2026
 - Spesifikasi motor dari foto listing (CNC Store Bandung, MTR-0239 500 RPM): rated 300 RPM, 170 mA, torsi rated
