@@ -5,6 +5,10 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 04/11/2026
+- **Cek PCB utama rev B langsung di KiCad (MCP)**: KiCad lama tidak punya API (dibuka saat pipe API masih dipakai
+  KiCad sensor-garis), jadi ditutup (tanpa perubahan) lalu dibuka ulang. Board yang terbuka = rev B (23 footprint,
+  304 track, 17 via); DRC live 0 error, 0 unconnected. Warning hanya SW1 (disengaja) + 3 warning pustaka `ltm` yang
+  berasal dari cara `run_drc` MCP menyalin board ke folder sementara. Dicatat di `hardware/tools/kicad-mcp/README.md`.
 - **Layout PCB utama rev B** (permintaan user "update semua dan buat pcb yang baru"): dibuat dari file karena MCP
   KiCad tidak tersambung. `hardware/tools/gen_pcb_utama_v17.py`: outline trapesium 86,6/62 × 58 mm, 4 lubang M3,
   19 footprint sesuai skematik rev B (path = UUID simbol, jadi F8 tidak membuat ulang), zona tanpa tembaga di bawah

@@ -89,3 +89,10 @@ Koordinat dalam mm, sumbu Y ke bawah seperti KiCad. Parameter `origin` = `page` 
 - `run_drc` dan `render_board` memanggil `kicad-cli` milik KiCad yang sedang jalan. Kalau tidak ketemu, set
   variabel lingkungan `KICAD_CLI` ke path `kicad-cli`.
 - Edit di KiCad dan di Claude boleh bergantian, tapi jangan saat KiCad sedang menjalankan perintah lain.
+- **Hanya satu KiCad yang punya API** (pipe `%TEMP%\kicad\api.sock`, milik KiCad yang dibuka pertama). KiCad kedua
+  yang dibuka saat pipe masih dipakai tidak pernah membuka API, walaupun yang pertama sudah ditutup. Kalau
+  `kicad_status` menjawab "Connection refused": tutup semua KiCad (termasuk jendela proyek), buka lagi hanya proyek
+  yang mau diedit + PCB Editor-nya. `/mcp` reconnect di Claude Code saja tidak cukup.
+- `run_drc` memeriksa salinan board di folder sementara, jadi pustaka proyek dengan path `${KIPRJMOD}/..` (mis. `ltm`)
+  tidak ketemu dan muncul warning `lib_footprint_issues` "library 'ltm' is not enabled". Warning itu bawaan alat ini,
+  bukan masalah board (DRC `kicad-cli` pada file aslinya tidak memunculkannya).
