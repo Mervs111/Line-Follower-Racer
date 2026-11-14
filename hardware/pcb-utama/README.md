@@ -56,7 +56,10 @@ Dibuat dari file oleh `hardware/tools/gen_pcb_utama_v17.py` (outline, penempatan
 - **Masih terbuka**:
   - Footprint MP1584 bertanda "UKUR ULANG". Ukur modulnya saat datang.
   - Sisi bawah ESP32 DevKit belum dicek (kalau CH340 di bawah, TB6612 tidak muat).
-  - Cara pasang dan panjang header ke board interface (lihat `../board-interface/README.md`).
+  - Cara pasang dan panjang header ke board interface: usulan 14/11 = rangka 3D print di 4 baut M3 PCB utama +
+    header susun (lihat `../board-interface/README.md` dan `mechanical/konsep-v18/`). Board interface sekarang rev B
+    39 × 45 mm; **gambar bantu "board interface (z 33)" di layer User.Drawings masih outline rev A** (hanya gambar,
+    tidak ikut dicetak).
 - Dibuat dari file saat KiCad mungkin masih membuka layout lama. **Tutup PCB Editor tanpa menyimpan** (atau
   File → Revert) sebelum membuka file ini, supaya layout rev A tidak tersimpan menimpa.
 

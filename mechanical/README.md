@@ -1,15 +1,31 @@
 # Mekanik — Robot Line Tracer Micro
 
-## Konsep v18 (14/11/2026, menunggu pilihan user): pack Li-ion 2S diikat strap, sebidang dengan PCB
+## Konsep v18 (14/11/2026): susunan A "ransel" dipilih user, semua PCB punya pengikat
 
-Model 3D yang bisa diputar + angka: https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm
-(`konsep-v18/gen_konsep.py` → `konsep-v18.html` + `konsep-v18-model.json`, jalankan dengan `py`; untuk melihat lokal,
-sajikan foldernya lewat `py -m http.server` karena halaman mengambil JSON dengan `fetch`). Holder 2× 18650 di atas motor
-(puncak 44 mm) diganti pack Li-ion 14500 7,4 V 50 × 30 × 15 mm, 46 g. Usulan **A ransel**: pack rebah tepat di
-belakang motor, strap velcro 16 mm lewat celah skid plate, puncak baterai 27 mm, panjang 174 mm, lebar 115 mm.
-Pembanding: B bak (pack turun ke bak, puncak 22,5 mm), C tengah (bagian depan maju 22 mm). PCB tidak diubah. Model
-dirakit dari mesh v16 (`viewer/model.json`) + bentuk buatan skrip, tanpa CadQuery. Versi pertama (2× 18650 rebah)
-ditolak user. Konsep v17 (PCB ringkas + board interface, skid plate) ada di `konsep-v17/`.
+Model 3D yang bisa diputar + gambar urai (tombol **Urai**): https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm
+(`konsep-v18/gen_konsep.py` → `konsep-v18.html` + `konsep-v18-model.json` + `interface-rev-b.png`, jalankan dengan `py`;
+untuk melihat lokal, bungkus HTML-nya dengan `<html><body>` dan sajikan foldernya lewat `py -m http.server` karena
+halaman mengambil JSON dengan `fetch`). Model dirakit dari mesh v16 (`viewer/model.json`) + bentuk buatan skrip, tanpa
+CadQuery; belum ada STEP/STL.
+
+- **Baterai**: pack Li-ion 14500 7,4 V 50 × 30 × 15 mm, 46 g, rebah tepat di belakang motor, strap velcro 16 mm lewat
+  celah skid plate + bibir 4 mm. Puncak baterai 27 mm (v17: 44 mm), panjang 174 mm, lebar 115 mm, perkiraan ±230 g.
+- **Cara pasang PCB**:
+
+  | Bagian | Pengikat |
+  |---|---|
+  | PCB sensor rev B | 2 baut M3 × 10 dari bawah di H1/H2, spacer nilon ±3,5 mm, mur di atas hidung skid plate |
+  | PCB utama rev B | 4 baut M3 × 30 kepala benam dari bawah skid plate, boss 3 mm menyatu dengan skid plate |
+  | Rangka interface (3D print, baru) | pelat 2,5 mm + 4 kaki 19,5 mm di 4 baut M3 yang sama, mur di atas kaki |
+  | Board interface rev B | 4 baut M2 × 6 ke boss rangka, tepi belakang bertumpu di balok rangka, header ke J6 |
+  | OLED | socket 4 pin + 4 spacer M2 ±11 mm, baut di 2 lubang atas |
+
+- **Koreksi tinggi**: plastik header pin (2,54 mm) antara socket dan ESP32/OLED sekarang ikut dihitung. Puncak ESP32
+  32,3 mm (model lama 29,8), board interface z 36,1–37,7 (dulu 33), puncak robot (kaca OLED) 51,4 mm.
+- Cek kotak pembatas (rangka terhadap komponen PCB utama, kabel, jalur USB, tuas SW1; kaki solder board interface
+  terhadap ESP32): 0 masalah. Kaki solder ESP32 dan tinggi nyata modul belum diukur.
+- Riwayat: versi 1 (2× 18650 rebah) ditolak user; versi 2 membandingkan tiga susunan pack (A ransel, B bak, C tengah),
+  ada di commit 620f487. Konsep v17 (PCB ringkas + board interface, skid plate) ada di `konsep-v17/`.
 
 ## Rakitan PCB LFM (24/10/2026): v16 dengan PCB asli dari KiCad
 

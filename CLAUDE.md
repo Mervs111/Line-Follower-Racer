@@ -71,9 +71,11 @@ memakai pin map yang sama.
   file: `hardware/tools/gen_pcb_utama_v17.py` + FreeRouting `-mp 8` (SES di `pcb-utama/routing/`), trapesium
   86,6/62 × 58, ESP32 melintang di tengah, TB6612 di bawahnya, SW1 di tepi kiri; DRC 0 error / 0 unconnected / parity
   0 (warning SW1 pad dikecilkan, jangan Update from Library). Butir "tertunda" rev A di atas sudah tidak berlaku.
-  **Board interface**: `hardware/board-interface/` (skematik rev A dari `gen_sch_interface.py`; **PCB rev A 04/11**
-  dari `gen_pcb_interface.py` + `autoroute/sisa.py`: 46 × 36, 4 lubang M2, J1 di sisi bawah tepat di atas J6, DRC 0;
-  cara pasang dan panjang header belum diputuskan). `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
+  **Board interface**: `hardware/board-interface/` (skematik rev A dari `gen_sch_interface.py`; **PCB rev B 14/11**
+  dari `gen_pcb_interface.py` + `autoroute/sisa.py`: **39 × 45 mm simetris**, OLED di tengah, 5 tombol sebaris di
+  belakangnya (KEMBALI, ATAS, OK, BAWAH, LANJUT; permintaan user), 4 lubang M2 ke rangka + 4 lubang M2 spacer OLED
+  (jarak lubang OLED belum diukur dari modul asli), J1 di sisi bawah tepat di atas J6, DRC 0. Gambar bantu outline
+  interface di PCB utama masih rev A). `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
   via 0,6/1,0 (2 layer 1,27), slot 1/1,5, silkscreen 0,2, mask expansion 0,1. SOIC aman, SSOP 0,65 tidak. Isian
   KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. Konstanta `FAB` di
@@ -91,13 +93,17 @@ memakai pin map yang sama.
   STEP kedua PCB (sumbu = STEP v16, nol di lantai): `LFM_rakitan_pcb.step` dari `gen_rakitan_step.py`.
 - Body 3D print = opsi B: PCB jadi sasis, 3D print untuk cover, bumper, dudukan motor & baterai, sayap belakang.
   Belum di RAB (tunggu info printer lab). Target dosen: desain mekanik selesai minggu ke-8.
-- **Konsep v18** (`mechanical/konsep-v18/`, 14/11, model 3D https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm,
-  **menunggu pilihan user**): baterai satu bidang dengan PCB (permintaan user: tidak bertingkat, PCB tetap). Versi
-  2× 18650 rebah ditolak user; sekarang **pack Li-ion 14500 2S siap colok** (usulan user: BLACK CELL 7,4 V, 50 × 30 ×
-  15 mm, 46 g) **diikat strap**. Usulan A ransel: pack tepat di belakang motor, strap velcro lewat celah skid plate,
-  puncak baterai 44 → 27 mm, panjang 174 mm, lebar 115 mm, ±224 g. Pembanding: B bak, C tengah. Belum diputuskan:
-  susunan, cas di luar robot (charger balance; modul charger + BMS keluar) atau tetap USB-C di robot, harga pack,
-  label 5.000 mAh vs batas 4.000 mAh guidebook. Model dirakit skrip dari mesh v16 (CadQuery tidak ada di laptop).
+- **Konsep v18** (`mechanical/konsep-v18/`, 14/11, model 3D + gambar urai
+  https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm): baterai satu bidang dengan PCB. **Susunan A "ransel" dipilih
+  user 14/11**: **pack Li-ion 14500 2S siap colok** (BLACK CELL 7,4 V, 50 × 30 × 15 mm, 46 g) rebah tepat di belakang
+  motor, **diikat strap** velcro lewat celah skid plate. Puncak baterai 44 → 27 mm, 174 × 115 × 51 mm, ±230 g.
+  Pengikat PCB: sensor 2 baut M3 + spacer ke hidung skid plate; PCB utama 4 baut M3 × 30 dari bawah skid plate (boss
+  3 mm); **rangka interface 3D print** (4 kaki di baut M3 yang sama) memikul board interface rev B (4 baut M2, tepi
+  belakang bertumpu di balok rangka); OLED socket + 4 spacer M2. **Koreksi tinggi**: plastik header pin 2,54 mm ikut
+  dihitung → puncak ESP32 32,3 mm (dulu 29,8), board interface z 36,1 (dulu 33), header J6 → J1 pakai header susun
+  1×6 atau header pin ±19 mm. Belum diputuskan: cas di luar robot (charger balance; modul charger + BMS keluar) atau
+  tetap USB-C di robot, harga pack, label 5.000 mAh vs batas 4.000 mAh guidebook, ukuran lubang modul OLED (belum
+  diukur). Model dirakit skrip dari mesh v16 (CadQuery tidak ada di laptop); belum ada STEP/STL.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen
@@ -190,6 +196,9 @@ odejs` ke PATH.
   OLED** (kiri ▲ ▼, kanan ◀ kembali / OK / ▶ lanjut), **TB6612 disolder di bawah ESP32 disetujui**. TB6612 cukup 1 modul
   (2 kanal); diagram blok kendali diperbaiki jadi **2 jalur PWM kiri/kanan** (masukan dosen 27/10). Sisi bawah ESP32
   DevKit (chip CH340 di bawah atau tidak) belum dicek.
+- 14/11: user menolak baterai bertingkat dan opsi 2× 18650 rebah; memilih **pack Li-ion 2S diikat strap, susunan A
+  (pack di belakang motor)**, lalu minta semua PCB "difiksasi" dan **tombol disimetriskan** → board interface rev B +
+  rangka interface 3D print (lihat Konsep v18). RAB belum dihitung ulang (harga pack belum ada).
 - 03/11 (komentar user): **PCB utama trapesium** dipilih: sisi sejajar skid plate, depan 62, belakang 87, panjang 58 mm
   (y robot 24–82), 42,9 cm², 4 lubang M3 di sayap (±38,5; 29) dan (±32,5; 56). J2/J3 = JST XH 6 pin (17,4 mm).
 

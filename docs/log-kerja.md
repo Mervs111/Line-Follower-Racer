@@ -38,6 +38,26 @@ Entri terbaru di atas.
   jam); pilih varian konektor XH 2 pin untuk J1 dan ukur polaritas dulu (J1 pin 1 = BAT+, pin 2 = GND, tanpa proteksi
   polaritas terbalik); **guidebook hal. 8 butir A.e: baterai maksimal 8,2 V 4.000 mAh**, sedangkan label pack
   5.000 mAh → perlu ditanyakan ke panitia. **Menunggu pilihan user** (susunan, cara cas, harga pack).
+- **User memilih susunan A (ransel)** dan minta semua PCB difiksasi serta tombol disimetriskan (tidak suka susunan
+  tombol 2 kiri + 3 kanan).
+  - **Board interface PCB rev B** (`hardware/tools/gen_pcb_interface.py`, skematik tetap): 39 × 45 mm, simetris, OLED
+    di tengah, 5 tombol sebaris di belakangnya dengan jarak 7,62 mm (KEMBALI, ATAS, OK, BAWAH, LANJUT), tangga resistor
+    di bawah OLED, 4 lubang M2 ke rangka di (±17; 62) dan (±17; 76,5), 4 lubang M2 spacer OLED di (±11,75; 49 / 72,8),
+    J1 tetap tepat di atas J6. Routing `sisa.py` (24 sambungan, GND lewat pour), DRC 0 error / 0 warning /
+    0 unconnected / parity 0. Render baru di `hardware/board-interface/`. Jarak lubang OLED (23,5 × 23,8) dari gambar
+    umum modul, belum diukur.
+  - **Koreksi tinggi tumpukan**: model v16/v17 lupa plastik header pin 2,54 mm di antara socket dan ESP32. Puncak
+    kaleng modul ESP32 jadi ±32,3 mm (bukan 29,8), sehingga board interface di z 33 (rev A) akan menyentuhnya lewat
+    kaki solder. Board interface dinaikkan ke z 36,1 (socket J6 + header susun 1×6 + header J1); OLED juga dihitung
+    dengan plastik headernya, puncak robot 51,4 mm.
+  - **Konsep v18 versi 3** (`gen_konsep.py` ditulis ulang untuk satu susunan, artifact yang sama): cara pasang tiap
+    PCB digambar, dengan tombol **Urai** (gambar urai + label). PCB sensor: 2 baut M3 + spacer ke hidung skid plate.
+    PCB utama: 4 baut M3 × 30 kepala benam dari bawah skid plate lewat boss 3 mm. **Rangka interface** (3D print baru,
+    ±6 g): pelat 2,5 mm di bawah tepi board + 4 kaki di 4 baut M3 itu, mur di atas kaki. Board interface: 4 baut M2 ke
+    boss rangka, tepi belakang bertumpu di balok rangka. OLED: socket + 4 spacer M2. Angka: 174 × 115 × 51 mm, ±230 g,
+    berat di roda penggerak 66%. Cek kotak pembatas: 0 masalah. Halaman dicek di lebar desktop dan 500 px (perbaikan:
+    halaman melebar di layar sempit karena tabel).
+  - Belum: STEP/STL skid plate dan rangka, RAB (harga pack, charger balance, header susun, baut), keputusan cara cas.
 
 ## 04/11/2026
 - **Cek PCB utama rev B langsung di KiCad (MCP)**: KiCad lama tidak punya API (dibuka saat pipe API masih dipakai
