@@ -4,6 +4,24 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 14/11/2026
+- **Konsep v18: baterai satu bidang dengan PCB** (permintaan user: baterai jangan bertingkat, boleh lebih lebar, PCB
+  jangan diubah). `mechanical/konsep-v18/gen_konsep.py` → `konsep-v18.html`, artifact
+  https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm. PCB utama rev B dan board interface rev A digambar dari courtyard
+  footprint KiCad. Tiga susunan sebidang dibandingkan dengan v17 (puncak baterai 44 mm):
+  - **A pelana (usulan)**: 2 holder 1 sel melintang di skid plate, satu di depan dan satu di belakang motor. Puncak
+    baterai 31 mm (puncak ESP32 29,8), titik berat turun 4,7 mm, berat di roda penggerak tetap 68%. Yang dibayar:
+    lebar 115 → 120 mm (ban keluar 2,5 mm per sisi, celah holder ke ban 3,5 mm), semua bagian depan maju 7 mm (poros
+    → sensor 131 → 138 mm), ekor +18 mm untuk charger + BMS (panjang 163 → 188 mm), inersia putar +23%, kabel motor
+    lewat kanal di bawah sel depan, holder 2 sel di RAB diganti 2 holder 1 sel (harga belum dicek).
+  - **B ekor**: holder 2 sel rebah di belakang motor. Berat di ball caster tinggal 13%, hidung terangkat pada
+    5,0 m/s² (batas selip 5,1), panjang 202 mm.
+  - **C tengah**: holder 2 sel rebah di antara motor dan PCB. Bagian depan maju 28 mm (poros → sensor 159 mm), ball
+    caster memikul 47%, inersia putar +90%.
+  - Dicoret: sel membujur di kiri-kanan PCB (menutup USB ESP32 dan tuas SW1).
+  Cek kotak 3D keempat susunan: 0 masalah. Angka titik berat/inersia dari massa perkiraan (`perhitungan-motor.md`
+  bagian 4), hanya untuk membandingkan. **Menunggu pilihan user** sebelum model 3D skid plate dibuat.
+
 ## 04/11/2026
 - **Cek PCB utama rev B langsung di KiCad (MCP)**: KiCad lama tidak punya API (dibuka saat pipe API masih dipakai
   KiCad sensor-garis), jadi ditutup (tanpa perubahan) lalu dibuka ulang. Board yang terbuka = rev B (23 footprint,

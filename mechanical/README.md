@@ -1,5 +1,13 @@
 # Mekanik — Robot Line Tracer Micro
 
+## Konsep v18 (14/11/2026, menunggu pilihan user): baterai satu bidang dengan PCB
+
+Gambar to-scale + cek otomatis, belum model 3D: https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm
+(`konsep-v18/gen_konsep.py` → `konsep-v18.html`, jalankan dengan `py`). Baterai turun dari dudukan di atas motor
+(puncak 44 mm) ke skid plate (puncak 31 mm). Usulan **A pelana**: 2 holder 1 sel melintang mengapit motor, lebar
+120 mm, bagian depan maju 7 mm, charger + BMS di ekor. Pembanding: B ekor, C tengah. PCB tidak diubah. Konsep v17
+(PCB ringkas + board interface, skid plate) ada di `konsep-v17/`.
+
 ## Rakitan PCB LFM (24/10/2026): v16 dengan PCB asli dari KiCad
 
 PCB sensor rev B dan PCB utama hasil layout diekspor langsung dari KiCad lalu digabung dengan bagian mekanik v16.

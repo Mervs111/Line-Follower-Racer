@@ -91,6 +91,10 @@ memakai pin map yang sama.
   STEP kedua PCB (sumbu = STEP v16, nol di lantai): `LFM_rakitan_pcb.step` dari `gen_rakitan_step.py`.
 - Body 3D print = opsi B: PCB jadi sasis, 3D print untuk cover, bumper, dudukan motor & baterai, sayap belakang.
   Belum di RAB (tunggu info printer lab). Target dosen: desain mekanik selesai minggu ke-8.
+- **Konsep v18** (`mechanical/konsep-v18/`, 14/11, https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm, **menunggu
+  pilihan user**): baterai satu bidang dengan PCB (permintaan user: tidak bertingkat, boleh lebih lebar, PCB tetap).
+  Usulan A pelana: 2 holder 1 sel melintang mengapit motor di skid plate (puncak baterai 44 → 31 mm), lebar 120 mm,
+  bagian depan maju 7 mm, charger + BMS di ekor, panjang 188 mm. Pembanding: B ekor, C tengah. Belum ada model 3D.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen
