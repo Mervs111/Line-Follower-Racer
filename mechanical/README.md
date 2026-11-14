@@ -1,12 +1,15 @@
 # Mekanik — Robot Line Tracer Micro
 
-## Konsep v18 (14/11/2026, menunggu pilihan user): baterai satu bidang dengan PCB
+## Konsep v18 (14/11/2026, menunggu pilihan user): pack Li-ion 2S diikat strap, sebidang dengan PCB
 
-Gambar to-scale + cek otomatis, belum model 3D: https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm
-(`konsep-v18/gen_konsep.py` → `konsep-v18.html`, jalankan dengan `py`). Baterai turun dari dudukan di atas motor
-(puncak 44 mm) ke skid plate (puncak 31 mm). Usulan **A pelana**: 2 holder 1 sel melintang mengapit motor, lebar
-120 mm, bagian depan maju 7 mm, charger + BMS di ekor. Pembanding: B ekor, C tengah. PCB tidak diubah. Konsep v17
-(PCB ringkas + board interface, skid plate) ada di `konsep-v17/`.
+Model 3D yang bisa diputar + angka: https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm
+(`konsep-v18/gen_konsep.py` → `konsep-v18.html` + `konsep-v18-model.json`, jalankan dengan `py`; untuk melihat lokal,
+sajikan foldernya lewat `py -m http.server` karena halaman mengambil JSON dengan `fetch`). Holder 2× 18650 di atas motor
+(puncak 44 mm) diganti pack Li-ion 14500 7,4 V 50 × 30 × 15 mm, 46 g. Usulan **A ransel**: pack rebah tepat di
+belakang motor, strap velcro 16 mm lewat celah skid plate, puncak baterai 27 mm, panjang 174 mm, lebar 115 mm.
+Pembanding: B bak (pack turun ke bak, puncak 22,5 mm), C tengah (bagian depan maju 22 mm). PCB tidak diubah. Model
+dirakit dari mesh v16 (`viewer/model.json`) + bentuk buatan skrip, tanpa CadQuery. Versi pertama (2× 18650 rebah)
+ditolak user. Konsep v17 (PCB ringkas + board interface, skid plate) ada di `konsep-v17/`.
 
 ## Rakitan PCB LFM (24/10/2026): v16 dengan PCB asli dari KiCad
 

@@ -1,86 +1,77 @@
-"""Konsep v18: baterai satu bidang dengan PCB utama (tidak lagi bertingkat di atas motor). PCB tidak diubah.
+"""Konsep v18: pack Li-ion 2S 14500 (50 x 30 x 15 mm, 46 g) diikat strap, sebidang dengan PCB utama. PCB tidak diubah.
 
-Membandingkan susunan sekarang (v17) dengan 3 cara menaruh baterai di skid plate:
-  pelana  2 holder tunggal melintang, mengapit motor (depan dan belakang poros)      -> usulan
-  ekor    holder 2x18650 rebah di belakang poros
-  tengah  holder 2x18650 rebah di antara poros dan PCB utama
-Menulis konsep-v18.html (tampak atas + tampak samping, to-scale) dan mencetak hasil cek: tabrakan kotak 3D, komponen
-di dalam skid plate, zona kosong USB/saklar, batas ukuran lomba, serta perkiraan titik berat dan inersia putar.
+Versi pertama konsep v18 (2x 18650 rebah: pelana/ekor/tengah) ditolak user 14/11; penggantinya memakai pack siap colok
+tanpa holder. Susunan yang dibandingkan dengan v17 (holder 2x18650 di atas motor):
+  ransel  pack rebah melintang tepat di belakang motor, strap velcro lewat celah skid plate     -> usulan
+  bak     sama, tetapi pack duduk di bak yang turun dari skid plate (puncak rata dengan motor)
+  tengah  pack di antara motor dan PCB utama, semua bagian depan maju
 
-PCB utama rev B dan board interface rev A dibaca sekali dari KiCad (courtyard tiap footprint, 14/11/2026) lalu ditulis
-di tabel MB_PART / IB_PART; kalau layout PCB berubah, tabel itu ikut diperbarui.
+Menulis konsep-v18.html (viewer 3D + angka) dan konsep-v18-model.json (mesh), lalu mencetak hasil cek: tabrakan
+kotak 3D, batas ukuran lomba, perkiraan titik berat. Model 3D dirakit tanpa CadQuery: komponen yang tidak berubah
+diambil dari mesh v16 (mechanical/viewer/model.json) lalu digeser ke posisi PCB utama rev B / board interface rev A,
+sisanya (skid plate, pack, strap, kabel, PCB) dibuat di sini dari kotak, prisma, dan tabung.
 Koordinat robot (mm): x ke kanan, y maju, z naik dari lantai, (0, 0) = tengah poros roda (sama dengan v16/v17).
 
 Jalankan: py mechanical/konsep-v18/gen_konsep.py
 """
+import json
 import math
 import os
-import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.join(HERE, "..", "..")
 
 G, MU = 9.81, 0.6                           # mu ban = asumsi docs/perhitungan-motor.md bagian 3
-R_W, W_T = 17.0, 18.0                       # ban O34 x 18 (velg 3D print, keputusan 03/11)
+R_W, W_T, WX = 17.0, 18.0, 39.5             # ban O34 x 18, sisi dalam ban
+WO, WI = WX + W_T, WX - 1.5                 # sisi luar ban, tepi dalam coakan roda
 CH_Z0, CH_Z1 = 10.0, 12.0                   # skid plate 3D print
-WELL = 20.5                                 # coakan roda: setengah panjang (celah ±4 mm ke ban)
-NOSE_HW, NOSE_Y = 31.0, 93.0                # hidung skid plate v17
-K_SIDE = (57.5 - NOSE_HW) / 125.0           # kemiringan sisi skid plate v17 = sisi PCB utama trapesium
-CASTER_Y = 72.0
+WELL = 20.5                                 # coakan roda: setengah panjang
+NOSE_HW, NOSE_Y = 31.0, 93.0                # hidung skid plate
+K_SIDE = (57.5 - NOSE_HW) / 125.0           # kemiringan sisi skid plate = sisi PCB utama trapesium
+CASTER_Y, SENS_Y1 = 72.0, 131.0
 LIMIT = (250.0, 200.0, 100.0, 350.0)        # guidebook IARC XII SD: p, l, t (mm), massa (g, butir C)
 
-# ------------------------------ PCB (tetap): dari KiCad, posisi pada v17 (dy = 0) ------------------------------
-MB_Y0, MB_Y1, MB_XR, MB_XF = 24.0, 82.0, 43.3, 31.0      # trapesium rev B
-MB_Z0 = 15.0                                # di atas spacer 3 mm
+# PCB (tetap), posisi dari KiCad rev B / interface rev A pada dy = 0
+MB_Y0, MB_Y1, MB_XR, MB_XF = 24.0, 82.0, 43.3, 31.0
+MB_Z0 = 15.0
 MBT = MB_Z0 + 1.6
 SOCK = 8.5
-DK_Z0 = MBT + SOCK                          # sisi bawah PCB DevKit
-EY = 46.15                                  # tengah ESP32 (melintang, USB kiri, antena kanan)
-# (label, x0, x1, y0, y1, tinggi di atas PCB, kelas)
-MB_PART = [
-    ("J2", -34.90, -16.41, 24.66, 31.50, 9.8, "conn"), ("J1", -4.25, 4.25, 24.66, 31.50, 9.8, "conn"),
-    ("J3", 16.41, 34.90, 24.66, 31.50, 9.8, "conn"), ("", -16.29, -6.49, 24.66, 31.15, 2.5, "small"),
-    ("", 4.80, 11.10, 24.95, 31.25, 11.0, "round"), ("SW1", -43.75, -34.25, 32.76, 44.25, 4.4, "small"),
-    ("MP1584", -30.19, -7.60, 61.71, 79.30, 8.1, "module"), ("", -7.40, 5.56, 70.36, 73.65, 2.8, "small"),
-    ("BZ", 18.50, 30.50, 61.50, 73.50, 9.5, "round"), ("J5", -7.50, 16.00, 74.91, 81.75, 9.8, "conn"),
-]
+DK_Z0 = MBT + SOCK
+EY = 46.15
 MB_HOLE = [(-38.5, 29.0), (38.5, 29.0), (-32.5, 56.0), (32.5, 56.0)]
-ESP = (-25.75, 25.75, EY - 14.15, EY + 14.15)
-J6 = (-7.41, 8.91, 65.69, 69.32)            # socket ke board interface
-IB = (-27.05, 19.05, 42.95, 79.05)          # board interface rev A, z 33
+JST = {"J2": (-34.90, -16.41, 24.66, 31.50), "J1": (-4.25, 4.25, 24.66, 31.50), "J3": (16.41, 34.90, 24.66, 31.50),
+       "J5": (-7.50, 16.00, 74.91, 81.75)}
+J6 = (-7.41, 8.91, 65.69, 69.32)
+IB = (-27.05, 19.05, 42.95, 79.05)
 IB_Z0 = 33.0
 IBT = IB_Z0 + 1.6
-OLED = (-17.65, 9.65, 47.4, 75.2)
-OLED_SOCK = (-9.62, 1.62, 71.84, 75.47)
 BTN = [(-22.5, 70.0), (-22.5, 52.0), (14.5, 70.0), (14.5, 61.0), (14.5, 52.0)]
 TOP_Z = IBT + SOCK + 2.6                    # puncak OLED = titik tertinggi robot
 ESP_TOP = DK_Z0 + 4.7
 
+PACK_L, PACK_W, PACK_H, PACK_M = 50.0, 30.0, 15.0, 46.0     # listing: Li-ion 14500 7,4 V 2S, 46 g
+STRAP_W, STRAP_T = 16.0, 1.0
 
-# ------------------------------ susunan yang dibandingkan ------------------------------
-# holder: (x0, x1, y0, y1, z0, z1, jumlah sel). Holder tunggal dimodelkan 77 x 21 x 19 (ukur barangnya).
-# dy = geser semua bagian depan (PCB utama, interface, PCB sensor, ball caster, hidung skid plate) terhadap poros.
+# pack: (y0, z0) = sisi belakang dan dasar pack; dy = geser bagian depan (PCB, sensor, caster, hidung) terhadap poros
 LAYOUT = {
-    "v17": dict(nama="Sekarang (v17)", singkat="bertingkat di atas motor", dy=0.0, wx=39.5,
-                holders=[(-38.0, 38.0, -21.0, 21.0, 24.0, 44.0, 2)], tray=True,
-                charger=(-12.5, 12.5, -28.0, -12.0), bms=None, sk_y0=-32.0, tail_hw=None),
-    "pelana": dict(nama="A · Pelana", singkat="2 holder tunggal mengapit motor", dy=7.0, wx=42.0,
-                   holders=[(-38.5, 38.5, -29.5, -8.5, 12.0, 31.0, 1), (-38.5, 38.5, 8.5, 29.5, 12.0, 31.0, 1)],
-                   tray=False, charger=(-27.0, -2.0, -48.0, -32.0), bms=(4.0, 34.0, -45.5, -34.5),
-                   sk_y0=-50.0, tail_hw=40.0),
-    "ekor": dict(nama="B · Ekor", singkat="holder ganda rebah di belakang poros", dy=0.0, wx=39.5,
-                 holders=[(-38.0, 38.0, -50.5, -8.5, 12.0, 32.0, 2)], tray=False,
-                 charger=(-27.0, -2.0, -69.0, -53.0), bms=(4.0, 34.0, -66.5, -55.5), sk_y0=-71.0, tail_hw=40.0),
-    "tengah": dict(nama="C · Tengah", singkat="holder ganda rebah di antara poros dan PCB", dy=28.0, wx=39.5,
-                   holders=[(-38.0, 38.0, 8.5, 50.5, 12.0, 32.0, 2)], tray=False,
-                   charger=(-27.0, -2.0, -25.0, -9.0), bms=(4.0, 34.0, -22.0, -11.0), sk_y0=-32.0, tail_hw=None),
+    "v17": dict(nama="Sekarang", sub="2× 18650 di atas motor", dy=0.0, pack=None,
+                teks="Susunan yang sekarang: holder 2× 18650 di dudukan di atas motor, charger USB-C dan BMS di "
+                     "bawahnya. Ini yang kamu sebut bertingkat."),
+    "ransel": dict(nama="A · Ransel", sub="pack di belakang motor", dy=0.0, pack=(-41.5, CH_Z1),
+                   teks="Pack rebah melintang tepat di belakang motor, diikat satu strap velcro 16 mm yang lewat celah "
+                        "di skid plate. Kabel pack langsung ke J1. PCB, lebar robot, dan jarak sensor tidak berubah."),
+    "bak": dict(nama="B · Bak", sub="pack turun ke dalam bak", dy=0.0, pack=(-41.5, 7.5),
+                teks="Sama seperti A, tetapi pack duduk di bak yang turun 4,5 mm dari skid plate, jadi puncaknya rata "
+                     "dengan motor. Celah ke lantai di bawah bak tinggal ±4,5 mm dan skid plate lebih rumit dicetak."),
+    "tengah": dict(nama="C · Tengah", sub="pack di antara motor dan PCB", dy=22.0, pack=(11.5, CH_Z1),
+                   teks="Pack di antara motor dan PCB utama, terlindung di tengah. Supaya muat, PCB utama, board "
+                        "interface, PCB sensor, dan ball caster maju 22 mm, dan berat di roda penggerak turun."),
 }
-ORDER = ["v17", "pelana", "ekor", "tengah"]
+ORDER = ["v17", "ransel", "bak", "tengah"]
 
 
-# ------------------------------ geometri ------------------------------
-def fillet_dense(right):
-    pts = list(right) + [(-x, y, r) for x, y, r in reversed(right)]
+# ------------------------------ geometri 2D ------------------------------
+def fillet_dense(right, mirror=True):
+    pts = list(right) + ([(-x, y, r) for x, y, r in reversed(right)] if mirror else [])
     n, out = len(pts), []
     for i in range(n):
         (ax, ay, _), (bx, by, r), (cx, cy, _) = pts[i - 1], pts[i], pts[(i + 1) % n]
@@ -98,13 +89,12 @@ def fillet_dense(right):
     return out
 
 
-def poly_area(p):
-    return abs(sum(p[i][0] * p[i - 1][1] - p[i - 1][0] * p[i][1] for i in range(len(p)))) / 2
+def area2(p):
+    return sum(p[i - 1][0] * p[i][1] - p[i][0] * p[i - 1][1] for i in range(len(p)))
 
 
 def poly_cy(p):
-    """y titik berat poligon"""
-    a = sum(p[i - 1][0] * p[i][1] - p[i][0] * p[i - 1][1] for i in range(len(p))) / 2
+    a = area2(p) / 2
     return sum((p[i - 1][1] + p[i][1]) * (p[i - 1][0] * p[i][1] - p[i][0] * p[i - 1][1]) for i in range(len(p))) / (6 * a)
 
 
@@ -117,106 +107,72 @@ def in_poly(p, poly):
     return c
 
 
-def seg_dist(p, a, b):
-    ax, ay, bx, by = *a, *b
-    L2 = (bx - ax) ** 2 + (by - ay) ** 2
-    u = max(0.0, min(1.0, ((p[0] - ax) * (bx - ax) + (p[1] - ay) * (by - ay)) / L2)) if L2 else 0.0
-    return math.dist(p, (ax + u * (bx - ax), ay + u * (by - ay)))
-
-
 def edge_dist(p, poly):
-    return min(seg_dist(p, poly[i - 1], poly[i]) for i in range(len(poly)))
+    best = 1e9
+    for i in range(len(poly)):
+        (ax, ay), (bx, by) = poly[i - 1], poly[i]
+        L2 = (bx - ax) ** 2 + (by - ay) ** 2
+        u = max(0.0, min(1.0, ((p[0] - ax) * (bx - ax) + (p[1] - ay) * (by - ay)) / L2)) if L2 else 0.0
+        best = min(best, math.dist(p, (ax + u * (bx - ax), ay + u * (by - ay))))
+    return best
 
 
-def sensor_outline():
-    """Edge.Cuts PCB sensor rev B -> poliline koordinat robot (X = 200 + x, Y = 180,55 - y)"""
-    t = open(os.path.join(ROOT, "hardware", "sensor-garis", "sensor-garis.kicad_pcb"), encoding="utf-8").read()
-    segs = []
-    for m in re.finditer(r'\((gr_line|gr_arc)\s+\(start ([\d.\-]+) ([\d.\-]+)\)\s*(?:\(mid ([\d.\-]+) ([\d.\-]+)\)\s*)?'
-                         r'\(end ([\d.\-]+) ([\d.\-]+)\)(?:(?!\(gr_).)*?\(layer "Edge\.Cuts"\)', t, re.S):
-        s = (float(m.group(2)), float(m.group(3)))
-        e = (float(m.group(6)), float(m.group(7)))
-        if m.group(1) == "gr_line":
-            pts = [s, e]
-        else:
-            mid = (float(m.group(4)), float(m.group(5)))
-            ax, ay, bx, by, cx, cy = *s, *mid, *e
-            d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
-            if abs(d) < 1e-9:
-                pts = [s, e]
-            else:
-                ux = ((ax * ax + ay * ay) * (by - cy) + (bx * bx + by * by) * (cy - ay) + (cx * cx + cy * cy) * (ay - by)) / d
-                uy = ((ax * ax + ay * ay) * (cx - bx) + (bx * bx + by * by) * (ax - cx) + (cx * cx + cy * cy) * (bx - ax)) / d
-                r = math.dist((ux, uy), s)
-                a0, am, a1 = (math.atan2(p[1] - uy, p[0] - ux) for p in (s, mid, e))
-                da1 = (am - a0) % (2 * math.pi)
-                da = (a1 - a0) % (2 * math.pi)
-                if da1 > da:
-                    da -= 2 * math.pi
-                pts = [(ux + r * math.cos(a0 + da * k / 12), uy + r * math.sin(a0 + da * k / 12)) for k in range(13)]
-        segs.append(pts)
-    chain = segs.pop(0)
-    while segs:
-        end = chain[-1]
-        j, rev = min(((j, rv) for j in range(len(segs)) for rv in (0, 1)),
-                     key=lambda q: math.dist(end, segs[q[0]][-1 if q[1] else 0]))
-        sg = segs.pop(j)
-        chain += (sg[::-1] if rev else sg)[1:]
-    return [(x - 200.0, 180.55 - y) for x, y in chain]
-
-
-SENSOR = sensor_outline()
-SENS_Y0, SENS_Y1 = min(y for _, y in SENSOR), max(y for _, y in SENSOR)
-SENS_J1 = (-11.0, 12.5, 96.6, 103.4)        # J1 JST XH 8 pin di tangkai PCB sensor (sisi atas)
 TRAP = fillet_dense([(MB_XR, MB_Y0, 4), (MB_XF, MB_Y1, 4)])
 
 
-def skid_poly(L):
-    """trapesium: sisi lurus sejajar sisi PCB utama, dari hidung melebar sampai sisi luar ban; coakan roda; ekor"""
-    dy, wo, wi = L["dy"], L["wx"] + W_T, L["wx"] - 1.5
+def skid_poly(key):
+    """trapesium v17 (sisi sejajar PCB utama, coakan roda); bagian belakang berbeda tiap susunan"""
+    dy = LAYOUT[key]["dy"]
 
     def sx(y):
-        return min(NOSE_HW + (NOSE_Y + dy - y) * K_SIDE, wo)
-    y_hit = NOSE_Y + dy - (wo - NOSE_HW) / K_SIDE          # di sini sisi miring mencapai sisi luar ban
-    pts = [(L["tail_hw"], L["sk_y0"], 4), (wo, min(y_hit, -WELL - 6), 3)] if L["tail_hw"] else [(wo, L["sk_y0"], 4)]
-    pts += [(sx(-WELL), -WELL, 1.5), (wi, -WELL, 1.5), (wi, WELL, 1.5), (sx(WELL), WELL, 1.5)]
-    if y_hit > WELL + 3:
-        pts.append((wo, y_hit, 3))
-    pts.append((NOSE_HW, NOSE_Y + dy, 5))
-    return fillet_dense(pts)
+        return min(NOSE_HW + (NOSE_Y + dy - y) * K_SIDE, WO)
+    front = [(WI, WELL, 1.5), (sx(WELL), WELL, 1.5), (NOSE_HW, NOSE_Y + dy, 5)]
+    wing = [(WO, -32.0, 3), (sx(-WELL), -WELL, 1.5), (WI, -WELL, 1.5)]
+    if key == "v17":
+        rear = [(WO, -32.0, 4)] + wing[1:]
+    elif key == "ransel":                   # ekor meruncing, pack 50 mm + bibir di atasnya
+        rear = [(30.0, -43.0, 4)] + wing
+    elif key == "bak":                      # ekor bercabang: coakan 54 mm untuk bak, terbuka ke bawah
+        rear = [(27.0, -9.5, 0.8), (27.0, -43.5, 0.8), (34.0, -43.5, 3)] + wing
+    else:                                   # tengah: tidak ada apa-apa di belakang motor, plat dipotong di y -12
+        rear = [(WI, -12.0, 1.5)]
+    return fillet_dense(rear + front)
 
 
-for _L in LAYOUT.values():
-    _L["skid"] = skid_poly(_L)
+SKID = {k: skid_poly(k) for k in ORDER}
 
 
 # ------------------------------ kotak 3D + cek ------------------------------
-def boxes(L):
+def pack_box(L):
+    y0, z0 = L["pack"]
+    return (-PACK_L / 2, PACK_L / 2, y0, y0 + PACK_W, z0, z0 + PACK_H)
+
+
+def boxes(key):
     """(nama, x0, x1, y0, y1, z0, z1, jenis)"""
-    dy, wx = L["dy"], L["wx"]
+    L = LAYOUT[key]
+    dy = L["dy"]
     b = []
     for s, sisi in ((-1, "kiri"), (1, "kanan")):
-        x0, x1 = sorted((s * (wx - 34.1), s * (wx - 2.0)))
+        x0, x1 = sorted((s * (WX - 34.1), s * (WX - 2.0)))
         b.append((f"Motor N20 + encoder {sisi}", x0, x1, -6.2, 6.2, CH_Z1, CH_Z1 + 10, "motor"))
-        x0, x1 = sorted((s * wx, s * (wx + W_T)))
+        x0, x1 = sorted((s * WX, s * WO))
         b.append((f"Ban {sisi}", x0, x1, -R_W, R_W, 0, 2 * R_W, "wheel"))
-    for i, h in enumerate(L["holders"]):
-        b.append((f"Holder baterai {i + 1}", *h[:6], "battery"))
-    if L["tray"]:
+    if L["pack"]:
+        p = pack_box(L)
+        b.append(("Pack Li-ion 2S", *p, "battery"))
+        # strap melingkari pack, lewat di bawah plat/bak
+        zlow = (p[4] - 1.5 if key == "bak" else CH_Z0) - 0.45 - STRAP_T
+        b.append(("Strap", -STRAP_W / 2, STRAP_W / 2, p[2] - 1.4, p[3] + 1.4, zlow, p[5] + 1.4, "strap"))
+    else:
+        b.append(("Holder 2x18650", -38, 38, -21, 21, 24, 44, "battery"))
         b.append(("Dudukan baterai (3D print)", -38, 38, -24, 24, 22, 24, "print"))
-    c = L["charger"]
-    b.append(("Charger 2S USB-C", c[0], c[1], c[2], c[3], CH_Z1, CH_Z1 + 5.5, "charger"))
-    cx = (c[0] + c[1]) / 2
-    b.append(("Jalur steker USB-C charger", cx - 4.5, cx + 4.5, c[2] - 20, c[2], CH_Z1 + 0.5, CH_Z1 + 8, "keep"))
-    if L["bms"]:
-        m = L["bms"]
-        b.append(("BMS 2S", m[0], m[1], m[2], m[3], CH_Z1, CH_Z1 + 3.5, "bms"))
-    # PCB utama + komponennya sebagai satu selubung (kaki THT 2 mm di bawah sampai puncak modul ESP32)
+        b.append(("Charger 2S USB-C", -12.5, 12.5, -28, -12, CH_Z1, CH_Z1 + 5.5, "charger"))
     b.append(("PCB utama + komponen", -MB_XR, MB_XR, MB_Y0 + dy, MB_Y1 + dy, MB_Z0 - 2, ESP_TOP, "pcb"))
     b.append(("Board interface + OLED", IB[0], IB[1], IB[2] + dy, IB[3] + dy, IB_Z0 - 2, TOP_Z, "pcb"))
     b.append(("Jalur steker USB ESP32", -48.0, -26.5, EY - 4.5 + dy, EY + 4.5 + dy, DK_Z0 - 0.5, DK_Z0 + 6.5, "keep"))
     b.append(("Jari ke tuas saklar SW1", -52.0, -43.75, 33.0 + dy, 44.0 + dy, MBT, MBT + 8, "keep"))
-    b.append(("PCB sensor rev B", -47.5, 47.5, SENS_Y0 + dy, SENS_Y1 + dy, 3.0, 6.4, "sensor"))
+    b.append(("PCB sensor rev B", -47.5, 47.5, 80.0 + dy, SENS_Y1 + dy, 3.0, 6.4, "sensor"))
     b.append(("Ball caster", -5, 5, CASTER_Y + dy - 5, CASTER_Y + dy + 5, 0, CH_Z0, "caster"))
     return b
 
@@ -226,92 +182,78 @@ def overlap(a, b, eps=0.05):
 
 
 def gap_xy(a, b):
-    """jarak mendatar dua kotak yang rentang z-nya bertumpuk (None kalau tidak setinggi)"""
     if min(a[6], b[6]) - max(a[5], b[5]) <= 0.05:
         return None
-    dx = max(a[1] - b[2], b[1] - a[2], 0.0)
-    dy = max(a[3] - b[4], b[3] - a[4], 0.0)
-    return math.hypot(dx, dy)
+    return math.hypot(max(a[1] - b[2], b[1] - a[2], 0.0), max(a[3] - b[4], b[3] - a[4], 0.0))
 
 
 def check(key):
     L = LAYOUT[key]
-    bx = boxes(L)
+    bx = boxes(key)
     prob = []
     for i, a in enumerate(bx):
         for b in bx[i + 1:]:
-            if overlap(a, b) and not ({a[7], b[7]} == {"pcb"} or {a[7], b[7]} == {"keep", "pcb"}):
+            if overlap(a, b) and {a[7], b[7]} not in ({"pcb"}, {"keep", "pcb"}, {"battery", "strap"}):
                 prob.append(f"tabrakan: {a[0]} × {b[0]}")
-    skid = L["skid"]
-    for a in bx:                                     # yang duduk di skid plate harus di dalam garis luarnya
-        if a[7] in ("battery", "charger", "bms") and abs(a[5] - CH_Z1) < 0.01:
-            for p in ((a[1], a[3]), (a[1], a[4]), (a[2], a[3]), (a[2], a[4])):
-                q = (p[0] * 0.999, p[1])
-                if not in_poly(q, skid) and edge_dist(q, skid) > 0.1:
-                    prob.append(f"keluar skid plate: {a[0]}")
-                    break
+    skid = SKID[key]
+    if L["pack"] and key != "bak":                   # pack duduk di plat: harus di dalam garis luarnya
+        p = pack_box(L)
+        for q in ((p[0], p[2]), (p[0], p[3]), (p[1], p[2]), (p[1], p[3])):
+            if not in_poly(q, skid):
+                prob.append("pack keluar dari skid plate")
+                break
     for x, y in TRAP:                                # PCB utama di dalam skid plate, jarak tepi >= 1,5 mm
-        p = (x, y + L["dy"])
-        if not in_poly(p, skid) or edge_dist(p, skid) < 1.5:
-            prob.append(f"PCB utama terlalu dekat tepi skid plate ({edge_dist(p, skid):.1f} mm)")
+        q = (x, y + L["dy"])
+        if not in_poly(q, skid) or edge_dist(q, skid) < 1.5:
+            prob.append(f"PCB utama terlalu dekat tepi skid plate ({edge_dist(q, skid):.1f} mm)")
             break
-    hw = [gap_xy(a, b) for a in bx for b in bx if a[7] == "battery" and b[7] == "wheel"]
-    hw = min(g for g in hw if g is not None)
-    if hw < 1.0:
-        prob.append(f"celah holder ke ban {hw:.1f} mm")
-    hp = [gap_xy(a, b) for a in bx for b in bx if a[7] == "battery" and b[0].startswith("PCB utama")]
-    hp = min((g for g in hp if g is not None), default=None)
-    p, l, t = SENS_Y1 + L["dy"] - L["sk_y0"], 2 * (L["wx"] + W_T), TOP_Z
+    batt = next(b for b in bx if b[7] == "battery")
+    gaps = {n: min((g for g in (gap_xy(batt, b) for b in bx if b[7] == t) if g is not None), default=None)
+            for n, t in (("ban", "wheel"), ("motor", "motor"))}
+    rear = min(min(y for _, y in skid), -R_W)
+    p, l, t = SENS_Y1 + L["dy"] - rear, 2 * WO, TOP_Z
     for v, lim, n in ((p, LIMIT[0], "panjang"), (l, LIMIT[1], "lebar"), (t, LIMIT[2], "tinggi")):
         if v > lim:
             prob.append(f"{n} {v:.0f} mm melewati batas lomba {lim:.0f} mm")
-    return dict(prob=prob, gap_ban=hw, gap_pcb=hp, p=p, l=l, t=t, batt_top=max(h[5] for h in L["holders"]))
+    low = min(b[5] for b in bx if b[7] in ("strap", "battery"))
+    return dict(prob=prob, gap=gaps, p=p, l=l, t=t, batt_top=batt[6], low=min(low, CH_Z0))
 
 
-# ------------------------------ perkiraan massa, titik berat, inersia putar ------------------------------
 def mass_model(key):
     """massa per bagian dari docs/perhitungan-motor.md bagian 4 (asumsi, belum ditimbang)"""
     L = LAYOUT[key]
-    dy, wx = L["dy"], L["wx"]
-    it = []                                          # (m gram, x, y, z, panjang x, panjang y)
+    dy = L["dy"]
+    it = []                                          # (m gram, y, z)
 
-    def add(m, x, y, z, sx=0.0, sy=0.0, depan=False):
-        it.append((m, x, y + (dy if depan else 0.0), z, sx, sy))
-    for h in L["holders"]:
-        yc, zc, n = (h[2] + h[3]) / 2, (h[4] + h[5]) / 2, h[6]
-        for k in range(n):
-            add(46 + 6, 0, yc + (k - (n - 1) / 2) * 21.0, zc, 65, 18)       # sel 46 g + bagian holder 6 g
-    for s in (-1, 1):
-        add(12, s * (wx - 18), 0, R_W, 32, 12)                              # motor + encoder
-        add(6, s * (wx + W_T / 2), 0, R_W, W_T, 34)                         # roda
-    c = L["charger"]
-    add(3, (c[0] + c[1]) / 2, (c[2] + c[3]) / 2, CH_Z1 + 2.5, 25, 16)
-    m = L["bms"]
-    if m:
-        add(3, (m[0] + m[1]) / 2, (m[2] + m[3]) / 2, CH_Z1 + 1.5, 30, 11)
+    def add(m, y, z, depan=False):
+        it.append((m, y + (dy if depan else 0.0), z))
+    if L["pack"]:
+        p = pack_box(L)
+        add(PACK_M + 4, (p[2] + p[3]) / 2, (p[4] + p[5]) / 2)       # pack + strap dan bibir penahan
     else:
-        add(3, 0, 0, 23, 30, 11)                                            # v17: BMS ditempel di holder
-    if L["tray"]:
-        add(13, 0, 0, 20, 76, 48)                                           # dudukan baterai + 4 tiang
-    add(14, 0, EY, DK_Z0, 51.5, 28.3, True)                                 # ESP32 DevKit + socket
-    add(5, -10.75, 46.0, MBT + 3, 20.5, 20.5, True)                         # TB6612
-    add(4, -18.9, 70.5, MBT + 4, 22, 17, True)                              # MP1584
-    add(poly_area(TRAP) / 100 * 0.36, 0, poly_cy(TRAP), MB_Z0 + 0.8, 74, 58, True)   # PCB utama FR4 1,6 mm
-    add(10, 0, 50, MBT + 4, 60, 50, True)                                   # konektor, saklar, buzzer, elko, dioda
-    add(14, -4, 61, IBT + 3, 46, 36, True)                                  # board interface + OLED + tombol
-    add(10, 0, poly_cy(SENSOR), 5.6, 95, 30, True)                          # PCB sensor + komponen
-    add(8, 0, CASTER_Y, 5, 10, 10, True)                                    # ball caster
-    add(10, 0, 55, 14, 60, 60, True)                                        # baut, mur, spacer
-    add(8, 0, 45, 20, 40, 60, True)                                         # kabel
-    sk = L["skid"]
-    ys = [y for _, y in sk]
-    add(poly_area(sk) / 100 * 0.2 * 1.24 + 12, 0, poly_cy(sk), 11.5, 90, max(ys) - min(ys))   # PLA + dinding/boss
+        add(92 + 12, 0, 34)                                         # 2 sel 18650 + holder
+        add(13, 0, 20)                                              # dudukan baterai + tiang
+        add(3, -20, CH_Z1 + 2.5)                                    # charger
+        add(3, 0, 23)                                               # BMS di holder
+    add(24, 0, R_W)                                                 # 2 motor + encoder
+    add(12, 0, R_W)                                                 # 2 roda
+    add(14, EY, DK_Z0, True)                                        # ESP32 DevKit + socket
+    add(5, 46.0, MBT + 3, True)                                     # TB6612
+    add(4, 70.5, MBT + 4, True)                                     # MP1584
+    add(abs(area2(TRAP)) / 200 * 0.36, poly_cy(TRAP), MB_Z0 + 0.8, True)     # PCB utama FR4 1,6 mm
+    add(10, 50, MBT + 4, True)                                      # konektor, saklar, buzzer, elko, dioda
+    add(14, 61, IBT + 3, True)                                      # board interface + OLED + tombol
+    add(10, 110, 5.6, True)                                         # PCB sensor + komponen
+    add(8, CASTER_Y, 5, True)                                       # ball caster
+    add(10, 55, 14, True)                                           # baut, mur, spacer
+    add(8, 45, 20, True)                                            # kabel
+    sk = SKID[key]
+    add(abs(area2(sk)) / 200 * 0.2 * 1.24 + 12 + (6 if key == "bak" else 0), poly_cy(sk), 11.5)   # PLA + dudukan motor
     M = sum(i[0] for i in it)
-    ycm = sum(i[0] * i[2] for i in it) / M
-    zcm = sum(i[0] * i[3] for i in it) / M
-    izz = sum(i[0] * (i[1] ** 2 + i[2] ** 2 + (i[4] ** 2 + i[5] ** 2) / 12) for i in it) / 1e6     # g·m² terhadap tengah poros
-    share = ycm / (CASTER_Y + dy)                                           # bagian berat di ball caster (diam)
-    return dict(M=M, ycm=ycm, zcm=zcm, izz=izz, caster=share, a_slip=MU * G * (1 - share), a_lift=G * ycm / zcm)
+    ycm = sum(i[0] * i[1] for i in it) / M
+    zcm = sum(i[0] * i[2] for i in it) / M
+    share = ycm / (CASTER_Y + dy)                                   # bagian berat di ball caster (diam)
+    return dict(M=M, ycm=ycm, zcm=zcm, caster=share, a_slip=MU * G * (1 - share), a_lift=G * ycm / zcm)
 
 
 RES = {k: {**check(k), **mass_model(k)} for k in ORDER}
@@ -320,457 +262,681 @@ for k in ORDER:
         RES[k]["prob"].append(f"perkiraan massa {RES[k]['M']:.0f} g melewati batas lomba {LIMIT[3]:.0f} g")
 
 
-# ------------------------------ gambar SVG ------------------------------
-def P(x, y):
-    return f"{x:.2f},{-y:.2f}"
+# ------------------------------ mesh ------------------------------
+V16 = json.load(open(os.path.join(HERE, "..", "viewer", "model.json"), encoding="utf-8"))
+MATS = dict(V16["mats"])
+MATS.update({"skid": ["#aab3bd", 0.78, 0.0], "pack": ["#15161a", 0.38, 0.1], "strap": ["#f08a1c", 0.92, 0.0],
+             "buckle": ["#2a2c31", 0.5, 0.2], "pack_end": ["#2c5fb8", 0.5, 0.0]})
+MESH = []
 
 
-def poly(pts, cls, extra=""):
-    return f'<polygon class="{cls}" points="{" ".join(P(x, y) for x, y in pts)}" {extra}/>'
+def emit(name, mat, group, pi, dbl=True):
+    p, i = pi
+    o = {"n": name, "m": mat, "g": group, "p": [round(v, 2) for v in p], "i": i}
+    if dbl:
+        o["d"] = 1
+    MESH.append(o)
 
 
-def rect(x0, x1, y0, y1, cls, r=0.6, extra=""):
-    return (f'<rect class="{cls}" x="{x0:.2f}" y="{-y1:.2f}" width="{x1 - x0:.2f}" height="{y1 - y0:.2f}" '
-            f'rx="{r}" {extra}/>')
+def reuse(names, group, dx=0.0, dy=0.0, dz=0.0, fx=None, pred=None):
+    """salin mesh v16 (nama persis atau awalan berakhiran *), digeser"""
+    n = 0
+    for o in V16["meshes"]:
+        if not any(o["n"] == s or (s.endswith("*") and o["n"].startswith(s[:-1])) for s in names):
+            continue
+        if pred and not pred(o):
+            continue
+        p = o["p"][:]
+        for k in range(0, len(p), 3):
+            p[k] = (fx(p[k]) if fx else p[k]) + dx
+            p[k + 1] += dy
+            p[k + 2] += dz
+        emit(o["n"], o["m"], group, (p, o["i"]), dbl=False)
+        n += 1
+    assert n, names
 
 
-def label(x, y, s, cls="lbl", size=3.0, anchor="middle"):
-    return f'<text class="{cls}" x="{x:.2f}" y="{-y:.2f}" font-size="{size}" text-anchor="{anchor}">{s}</text>'
+def quad(P, I, a, b, c, d):
+    n = len(P) // 3
+    P += [*a, *b, *c, *d]
+    I += [n, n + 1, n + 2, n, n + 2, n + 3]
 
 
-def dim_v(x, y0, y1, s, cls="dim"):
-    return (f'<g class="{cls}"><line x1="{x}" y1="{-y0}" x2="{x}" y2="{-y1}"/>'
-            f'<line x1="{x - 1.5}" y1="{-y0}" x2="{x + 1.5}" y2="{-y0}"/><line x1="{x - 1.5}" y1="{-y1}" x2="{x + 1.5}" y2="{-y1}"/>'
-            f'<text x="{x + 1.8}" y="{-(y0 + y1) / 2:.2f}" font-size="3" transform="rotate(-90 {x + 1.8} {-(y0 + y1) / 2:.2f})" '
-            f'text-anchor="middle" dy="2.4">{s}</text></g>')
+def box(x0, x1, y0, y1, z0, z1):
+    P, I = [], []
+    quad(P, I, (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1))
+    quad(P, I, (x0, y0, z0), (x0, y1, z0), (x1, y1, z0), (x1, y0, z0))
+    quad(P, I, (x1, y1, z0), (x0, y1, z0), (x0, y1, z1), (x1, y1, z1))
+    quad(P, I, (x0, y0, z0), (x1, y0, z0), (x1, y0, z1), (x0, y0, z1))
+    quad(P, I, (x1, y0, z0), (x1, y1, z0), (x1, y1, z1), (x1, y0, z1))
+    quad(P, I, (x0, y1, z0), (x0, y0, z0), (x0, y0, z1), (x0, y1, z1))
+    return P, I
 
 
-def dim_h(x0, x1, y, s, cls="dim"):
-    return (f'<g class="{cls}"><line x1="{x0}" y1="{-y}" x2="{x1}" y2="{-y}"/>'
-            f'<line x1="{x0}" y1="{-y - 1.5}" x2="{x0}" y2="{-y + 1.5}"/><line x1="{x1}" y1="{-y - 1.5}" x2="{x1}" y2="{-y + 1.5}"/>'
-            f'<text x="{(x0 + x1) / 2:.2f}" y="{-y + 4.2:.2f}" font-size="3" text-anchor="middle">{s}</text></g>')
+def merge(*parts):
+    P, I = [], []
+    for p, i in parts:
+        n = len(P) // 3
+        P += p
+        I += [k + n for k in i]
+    return P, I
 
 
-def top_view(key):
-    L, R = LAYOUT[key], RES[key]
-    dy, wx = L["dy"], L["wx"]
-    wo = wx + W_T
-    g = [poly([(x, y + dy) for x, y in SENSOR], "sensor"), label(0, SENS_Y1 + dy + 2.5, "PCB sensor rev B", "lbl dim", 3.0)]
-    g.append(poly(L["skid"], "skid"))
-    for s in (-1, 1):
-        x0, x1 = sorted((s * wx, s * wo))
-        g.append(rect(x0, x1, -R_W, R_W, "wheel", 2))
-        x0, x1 = sorted((s * (wx - 34.1), s * (wx - 2.0)))
-        g.append(rect(x0, x1, -6, 6, "motor", 1))
-    g.append(f'<line class="axis" x1="-66" y1="0" x2="66" y2="0"/>')
-    g.append(f'<circle class="caster-top" cx="0" cy="{-(CASTER_Y + dy)}" r="5"/>')
-    # PCB utama + komponen
-    g.append(poly([(x, y + dy) for x, y in TRAP], "board"))
-    for hx, hy in MB_HOLE:
-        g.append(f'<circle class="hole" cx="{hx}" cy="{-(hy + dy)}" r="1.6"/>')
-    for lb, x0, x1, y0, y1, _, cls in MB_PART:
-        if cls == "round":
-            g.append(f'<circle class="small" cx="{(x0 + x1) / 2:.2f}" cy="{-((y0 + y1) / 2 + dy):.2f}" r="{(x1 - x0) / 2:.2f}"/>')
+def earclip(poly):
+    """triangulasi poligon sederhana (boleh cekung), titik CCW"""
+    idx = list(range(len(poly)))
+    tris = []
+
+    def cr(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+    guard = 0
+    while len(idx) > 3 and guard < 20000:
+        guard += 1
+        for k in range(len(idx)):
+            i0, i1, i2 = idx[k - 1], idx[k], idx[(k + 1) % len(idx)]
+            a, b, c = poly[i0], poly[i1], poly[i2]
+            if cr(a, b, c) <= 1e-9:
+                continue
+            if any(cr(a, b, poly[j]) >= -1e-9 and cr(b, c, poly[j]) >= -1e-9 and cr(c, a, poly[j]) >= -1e-9
+                   for j in idx if j not in (i0, i1, i2)):
+                continue
+            tris += [i0, i1, i2]
+            idx.pop(k)
+            break
+        else:                                        # tidak ada telinga: buang titik segaris
+            k = min(range(len(idx)), key=lambda q: abs(cr(poly[idx[q - 1]], poly[idx[q]], poly[idx[(q + 1) % len(idx)]])))
+            idx.pop(k)
+    return tris + idx
+
+
+def prism(poly, a0, a1, axis="z"):
+    """poligon (u, v) ditarik dari a0 ke a1. axis z: (x, y) = (u, v); axis x: (y, z) = (u, v)"""
+    pts = [poly[0]]
+    for q in poly[1:]:
+        if math.dist(q, pts[-1]) > 1e-4:
+            pts.append(q)
+    if math.dist(pts[0], pts[-1]) < 1e-4:
+        pts.pop()
+    if area2(pts) < 0:
+        pts.reverse()
+
+    def V(u, v, w):
+        return (u, v, w) if axis == "z" else (w, u, v)
+    P, I = [], []
+    tri = earclip(pts)
+    n = len(pts)
+    for u, v in pts:
+        P += V(u, v, a1)
+    I += tri
+    for u, v in pts:
+        P += V(u, v, a0)
+    I += [n + t for t in reversed(tri)]
+    for k in range(n):
+        (u0, v0), (u1, v1) = pts[k], pts[(k + 1) % n]
+        quad(P, I, V(u0, v0, a0), V(u1, v1, a0), V(u1, v1, a1), V(u0, v0, a1))
+    return P, I
+
+
+def circle(cu, cv, r, n=40):
+    return [(cu + r * math.cos(2 * math.pi * k / n), cv + r * math.sin(2 * math.pi * k / n)) for k in range(n)]
+
+
+def rrect(x0, x1, y0, y1, r):
+    return fillet_dense([(x1, y0, r), (x1, y1, r), (x0, y1, r), (x0, y0, r)], mirror=False)
+
+
+def stadium(y0, y1, z0, z1, n=20):
+    """penampang pack 2 sel berdampingan di bidang (y, z)"""
+    r = (z1 - z0) / 2
+    zc = (z0 + z1) / 2
+    out = [(y1 - r + r * math.cos(-math.pi / 2 + math.pi * k / n), zc + r * math.sin(-math.pi / 2 + math.pi * k / n))
+           for k in range(n + 1)]
+    out += [(y0 + r + r * math.cos(math.pi / 2 + math.pi * k / n), zc + r * math.sin(math.pi / 2 + math.pi * k / n))
+            for k in range(n + 1)]
+    return out
+
+
+def smooth(pts, k=3):
+    for _ in range(k):
+        q = [pts[0]]
+        for a, b in zip(pts, pts[1:]):
+            q += [tuple(a[i] * 0.75 + b[i] * 0.25 for i in range(3)), tuple(a[i] * 0.25 + b[i] * 0.75 for i in range(3))]
+        q.append(pts[-1])
+        pts = q
+    return pts
+
+
+def tube(path, r, n=8):
+    path = smooth(path)
+    P, I, m = [], [], len(path)
+    for k, p in enumerate(path):
+        a, b = path[max(k - 1, 0)], path[min(k + 1, m - 1)]
+        t = [b[i] - a[i] for i in range(3)]
+        lt = math.sqrt(sum(c * c for c in t)) or 1.0
+        t = [c / lt for c in t]
+        ref = (0.0, 0.0, 1.0) if abs(t[2]) < 0.9 else (1.0, 0.0, 0.0)
+        u = [ref[1] * t[2] - ref[2] * t[1], ref[2] * t[0] - ref[0] * t[2], ref[0] * t[1] - ref[1] * t[0]]
+        lu = math.sqrt(sum(c * c for c in u))
+        u = [c / lu for c in u]
+        v = [t[1] * u[2] - t[2] * u[1], t[2] * u[0] - t[0] * u[2], t[0] * u[1] - t[1] * u[0]]
+        for j in range(n):
+            ca, sa = math.cos(2 * math.pi * j / n), math.sin(2 * math.pi * j / n)
+            P += [p[i] + r * (ca * u[i] + sa * v[i]) for i in range(3)]
+    for k in range(m - 1):
+        for j in range(n):
+            a, b, c, d = k * n + j, k * n + (j + 1) % n, (k + 1) * n + (j + 1) % n, (k + 1) * n + j
+            I += [a, b, c, a, c, d]
+    return P, I
+
+
+def band(path, x0, x1, t):
+    """pita tertutup: path (y, z) = sisi dalam, tebal t ke luar, lebar x0..x1"""
+    n = len(path)
+    cy, cz = sum(p[0] for p in path) / n, sum(p[1] for p in path) / n
+    outer = []
+    for k in range(n):
+        (ay, az), (by, bz), (qy, qz) = path[k - 1], path[k], path[(k + 1) % n]
+        ny, nz = (bz - az) + (qz - bz), -(by - ay) - (qy - by)
+        ln = math.hypot(ny, nz) or 1.0
+        ny, nz = ny / ln, nz / ln
+        if ny * (by - cy) + nz * (bz - cz) < 0:
+            ny, nz = -ny, -nz
+        outer.append((by + ny * t, bz + nz * t))
+    P, I = [], []
+    for k in range(n):
+        j = (k + 1) % n
+        i0, i1, o0, o1 = path[k], path[j], outer[k], outer[j]
+        quad(P, I, (x0, *o0), (x1, *o0), (x1, *o1), (x0, *o1))
+        quad(P, I, (x0, *i0), (x0, *i1), (x1, *i1), (x1, *i0))
+        quad(P, I, (x0, *i0), (x0, *o0), (x0, *o1), (x0, *i1))
+        quad(P, I, (x1, *i0), (x1, *i1), (x1, *o1), (x1, *o0))
+    return P, I
+
+
+def sphere(c, r, n=20):
+    P, I = [], []
+    for a in range(n + 1):
+        th = math.pi * a / n
+        for b in range(2 * n):
+            ph = math.pi * b / n
+            P += [c[0] + r * math.sin(th) * math.cos(ph), c[1] + r * math.sin(th) * math.sin(ph), c[2] + r * math.cos(th)]
+    for a in range(n):
+        for b in range(2 * n):
+            p0, p1 = a * 2 * n + b, a * 2 * n + (b + 1) % (2 * n)
+            I += [p0, p0 + 2 * n, p1 + 2 * n, p0, p1 + 2 * n, p1]
+    return P, I
+
+
+# ---------- selalu ada: motor, roda (ban dilebarkan 12 -> 18 mm ke luar) ----------
+reuse(["Gearbox N20", "Motor N20", "Tutup motor", "Encoder PCB", "Magnet encoder", "Konektor encoder", "As roda"], "base")
+reuse(["Ban merah", "Velg"], "base", fx=lambda x: math.copysign(WX + (abs(x) - WX) * W_T / 12.0, x))
+
+# ---------- bagian depan (ikut geser dy): PCB sensor, PCB utama rev B + komponen, ball caster ----------
+reuse(["PCB sensor", "Sensor QRE1113GR x12", "QRE1113GR *", "Resistor SMD sensor", "Silkscreen sensor*",
+       "Pad lubang sensor", "IC mux *", "C 100 nF mux", "Header JST XH J1", "Steker JST XH J1", "Spacer nilon 4 mm",
+       "Mur M3"], "front")
+emit("PCB utama rev B", "pcb", "front", prism(TRAP, MB_Z0, MBT))
+for hx, hy in MB_HOLE:
+    emit("Spacer M3", "nylon", "front", prism(circle(hx, hy, 2.75, 6), CH_Z1, MB_Z0))
+    emit("Baut M3", "chrome", "front", prism(circle(hx, hy, 2.6, 24), MBT, MBT + 1.8))
+for ref, (x0, x1, y0, y1) in JST.items():
+    emit(f"Header JST XH {ref}", "jst", "front", box(x0 + 0.45, x1 - 0.45, y0 + 0.5, y1 - 0.5, MBT, MBT + 7.0))
+    emit(f"Steker JST XH {ref}", "jst_plug", "front", box(x0 + 1.4, x1 - 1.4, y0 + 1.4, y1 - 1.4, MBT + 2.0, MBT + 9.8))
+for y in (26.2, 29.6):
+    emit("Resistor R1/R2", "resistor", "front", prism(circle(y, MBT + 1.3, 1.2, 12), -14.6, -8.2, "x"))
+reuse(["ESP32 *"], "front", dy=7.5, dz=MBT - 12.0)
+reuse(["TB6612 PCB", "TB6612 chip"], "front", dx=-48.9, dy=10.9, dz=-1.4)
+reuse(["Buzzer"], "front", dx=-13.5, dy=16.0, dz=MBT - 12.0)
+reuse(["Saklar", "Saklar tuas"], "front", dx=10.3, dy=8.2, dz=MBT - 12.0)
+reuse(["Elko C1 *"], "front", dx=44.95, dy=-11.9, dz=MBT - 12.0)
+reuse(["MP1584 *"], "front", dx=-33.9, dy=91.5, dz=MBT - 12.0)
+reuse(["Dioda 1N5819*"], "front", dx=-0.9, dy=92.0, dz=MBT - 12.0)
+emit("Socket J6", "black_plastic", "front", box(J6[0] + 0.3, J6[1] - 0.3, J6[2] + 0.5, J6[3] - 0.5, MBT, MBT + SOCK))
+emit("Ball caster rumah", "black_plastic", "front", prism(circle(0, CASTER_Y, 6.5, 32), 4.0, CH_Z0))
+emit("Ball caster bola", "chrome", "front", sphere((0, CASTER_Y, 5.0), 5.0), dbl=False)
+WIRE = ["wire_red", "wire_yel", "wire_blk"] + ["wire_blu"] * 5
+for k in range(8):                                   # kabel J5 -> J1 PCB sensor (urutan pin sama)
+    xa, xb = 13.0 - 2.5 * k, 8.75 - 2.5 * k
+    emit(f"Kabel sensor pin {k + 1}", WIRE[k], "front",
+         tube([(xa, 77.8, MBT + 9.6), (xa, 78.6, MBT + 14.5), ((xa + xb) / 2, 89.0, MBT + 13.5), (xb, 99.6, 23.5),
+               (xb, 100.0, 17.2)], 0.55, 6))
+
+# ---------- board interface rev A (ikut geser): PCB, OLED di socket, 5 tombol 6x6, header ke J6 ----------
+emit("Board interface rev A", "pcb", "front", prism(rrect(IB[0], IB[1], IB[2], IB[3], 3.0), IB_Z0, IBT))
+emit("Header J1 interface", "black_plastic", "front", box(J6[0] + 0.3, J6[1] - 0.3, J6[2] + 0.5, J6[3] - 0.5, MBT + SOCK, IB_Z0))
+reuse(["OLED *"], "front", dx=-4.0, dy=-6.1, dz=IBT - 12.0)
+for bx_, by_ in BTN:
+    reuse(["Tombol", "Tombol tutup"], "front", dx=bx_ + 22.0, dy=by_ - 66.0, dz=IBT - 12.0,
+          pred=lambda o: min(o["p"][0::3]) < 0)
+
+
+# ---------- per susunan: skid plate, baterai, strap, dudukan, kabel ----------
+def build(key):
+    L = LAYOUT[key]
+    g, dy = "opt-" + key, L["dy"]
+    emit("Skid plate 3D print", "skid", g, prism(SKID[key], CH_Z0, CH_Z1))
+    if not L["pack"]:
+        reuse(["Dudukan motor + baterai (3D print)", "Holder 2x18650", "Baterai 18650*"], g)
+        reuse(["Modul charger 2S", "USB-C charger"], g, dz=-2.5)
+        return
+    for s in (-1, 1):                                # klem motor: 2 pelana per motor, menyatu dengan skid plate
+        for xa, xb in ((15.0, 26.0), (29.5, 36.5)):
+            x0, x1 = sorted((s * xa, s * xb))
+            emit("Klem motor", "skid", g, merge(box(x0, x1, -8.2, -6.3, CH_Z1, 23.6), box(x0, x1, 6.3, 8.2, CH_Z1, 23.6),
+                                                box(x0, x1, -8.2, 8.2, 22.15, 23.6)))
+    x0, x1, y0, y1, z0, z1 = pack_box(L)
+    yc, zc = (y0 + y1) / 2, (z0 + z1) / 2
+    emit("Pack Li-ion 14500 2S", "pack", g, prism(stadium(y0, y1, z0, z1), x0 + 1.0, x1 - 1.0, "x"))
+    for xa, xb in ((x0, x0 + 1.0), (x1 - 1.0, x1)):  # tutup ujung (barley paper)
+        emit("Pack ujung", "pack_end", g, prism(stadium(y0 + 0.6, y1 - 0.6, z0 + 0.6, z1 - 0.6), xa, xb, "x"))
+    # strap: naik di belakang pack, melewati atas, turun di depan, kembali lewat bawah plat (atau bawah bak)
+    zb = (z0 - 1.5 if key == "bak" else CH_Z0) - 0.45
+    r, o = PACK_H / 2, 0.35
+    path = [(y0 - o, zb)]
+    path += [(y0 + r + (r + o) * math.cos(math.pi - math.pi / 2 * k / 10), zc + (r + o) * math.sin(math.pi - math.pi / 2 * k / 10))
+             for k in range(11)]
+    path += [(y1 - r + (r + o) * math.cos(math.pi / 2 - math.pi / 2 * k / 10), zc + (r + o) * math.sin(math.pi / 2 - math.pi / 2 * k / 10))
+             for k in range(11)]
+    path += [(y1 + o, zb)]
+    emit("Strap velcro 16 mm", "strap", g, band(path, -STRAP_W / 2, STRAP_W / 2, STRAP_T))
+    emit("Gesper strap", "buckle", g, box(-STRAP_W / 2 - 1.5, STRAP_W / 2 + 1.5, yc + 4.0, yc + 8.5, z1 + o + STRAP_T - 0.2, z1 + o + STRAP_T + 1.6))
+    if key == "bak":                                 # bak: lantai + 4 dinding, menggantung dari skid plate
+        f0, f1 = z0 - 1.5, z0
+        emit("Bak baterai", "skid", g, merge(
+            box(-27.0, 27.0, -43.5, -9.5, f0, f1), box(-27.0, -25.5, -43.5, -9.5, f1, CH_Z1),
+            box(25.5, 27.0, -43.5, -9.5, f1, CH_Z1), box(-25.5, -9.5, -43.5, -42.0, f1, CH_Z1),
+            box(9.5, 25.5, -43.5, -42.0, f1, CH_Z1), box(-25.5, -9.5, -11.0, -9.5, f1, CH_Z1),
+            box(9.5, 25.5, -11.0, -9.5, f1, CH_Z1)))
+    else:                                            # bibir penahan di 4 sudut + penahan ujung kanan
+        lips = [box(sx0, sx1, ya, yb, CH_Z1, CH_Z1 + 4.0) for sx0, sx1 in ((-23.0, -10.5), (10.5, 23.0))
+                for ya, yb in ((y0 - 1.6, y0 - 0.2), (y1 + 0.2, y1 + 1.6))]
+        emit("Bibir penahan pack", "skid", g, merge(*lips, box(x1 + 0.3, x1 + 1.8, y0 + 6.0, y1 - 6.0, CH_Z1, CH_Z1 + 4.0)))
+    # kabel pack (merah/hitam) keluar dari ujung kiri -> steker XH di J1; kabel balancer ke steker XH 3 pin
+    yj = 28.1 + dy
+    for o_, mat, xj in ((0.9, "wire_red", -1.25), (-0.9, "wire_blk", 1.25)):
+        if key == "tengah":
+            mid = [(-30.0, yc + 3, zc + 3), (-30.0, yj - 7.5, 26.0), (-13.0, yj - 5.0, 30.0)]
         else:
-            g.append(rect(x0, x1, y0 + dy, y1 + dy, cls, 0.6))
-        if lb and lb != "MP1584":
-            g.append(label((x0 + x1) / 2, (y0 + y1) / 2 + dy - 0.9, lb, "lbl", 2.3))
-    g.append(rect(ESP[0], ESP[1], ESP[2] + dy, ESP[3] + dy, "esp", 1))
-    g.append(rect(1.25, 19.25, EY - 9 + dy, EY + 9 + dy, "espmod", 0.5))
-    g.append(rect(-26.5, -21.0, EY - 3.8 + dy, EY + 3.8 + dy, "espusb", 0.4))
-    g.append(label(-11, EY + dy - 12.2, "ESP32", "lbl inv", 2.4))
-    g.append(f'<line class="usb" x1="-49" y1="{-(EY + dy):.2f}" x2="-28" y2="{-(EY + dy):.2f}" marker-end="url(#arr)"/>')
-    g.append(label(-50, EY + dy - 0.9, "USB", "lbl dim", 2.4, "end"))
-    # board interface di atasnya
-    g.append(rect(IB[0], IB[1], IB[2] + dy, IB[3] + dy, "iboard", 3))
-    g.append(rect(OLED[0], OLED[1], OLED[2] + dy, OLED[3] + dy, "oled", 1))
-    g.append(label((OLED[0] + OLED[1]) / 2, (OLED[2] + OLED[3]) / 2 + dy - 1, "OLED", "lbl light", 3.0))
-    for x, y in BTN:
-        g.append(rect(x - 3, x + 3, y - 3 + dy, y + 3 + dy, "button", 0.8))
-        g.append(f'<circle class="cap" cx="{x}" cy="{-(y + dy)}" r="1.75"/>')
-    # baterai
-    for h in L["holders"]:
-        x0, x1, y0, y1, z0, _, n = h
-        g.append(rect(x0, x1, y0, y1, "battery", 2))
-        yc = (y0 + y1) / 2
-        for k in range(n):
-            ycell = yc + (k - (n - 1) / 2) * 21.0
-            g.append(rect(-32.5, 32.5, ycell - 9.2, ycell + 9.2, "cell", 2.5))
-            g.append(rect(32.5, 34.0, ycell - 3, ycell + 3, "cellcap", 0.4))
-            g.append(label(0, ycell - 1.0, "sel 18650", "lbl inv", 2.8))
-    # kabel motor: lewat kanal di bawah holder kalau holder ada di antara motor dan PCB utama
-    if any(h[2] > 0 and h[4] < 20 for h in L["holders"]):
-        yb = max(h[3] for h in L["holders"]) - 2.5
-        for s in (-1, 1):
-            g.append(f'<polyline class="cable" points="{P(s * (wx - 31), 5)} {P(s * (wx - 31), yb)} '
-                     f'{P(s * 25.65, MB_Y0 + dy + 0.6)}"/>')
-    c, m = L["charger"], L["bms"]
-    hidden = L["tray"]
-    g.append(rect(c[0], c[1], c[2], c[3], "hidden" if hidden else "module", 0.8))
-    if not hidden:
-        g.append(label((c[0] + c[1]) / 2, (c[2] + c[3]) / 2 - 0.9, "charger", "lbl inv", 2.4))
-    cx = (c[0] + c[1]) / 2
-    g.append(f'<line class="usb" x1="{cx}" y1="{-(c[2] - 11)}" x2="{cx}" y2="{-(c[2] - 1)}" marker-end="url(#arr)"/>')
-    g.append(label(cx + 2, c[2] - 8.5, "USB-C cas", "lbl dim", 2.4, "start"))
-    if m:
-        g.append(rect(m[0], m[1], m[2], m[3], "bms", 0.8))
-        g.append(label((m[0] + m[1]) / 2, (m[2] + m[3]) / 2 - 0.9, "BMS", "lbl", 2.4))
-    g.append(dim_h(-wo, wo, min(L["sk_y0"], c[2] - 11) - 4, f"{R['l']:.0f} mm"))
-    g.append(dim_v(64, L["sk_y0"], SENS_Y1 + dy, f"{R['p']:.0f} mm"))
-    return g
+            mid = [(-30.0, yc + 2, zc + 2), (-31.0, -9.0, 25.6), (-27.0, 6.0, 26.6), (-12.0, 20.0, 29.6)]
+        pts = [(x0, yc + 2 + o_, zc)] + [(a + o_, b, c + o_) for a, b, c in mid] + [(xj, yj - 0.5, 31.0), (xj, yj, MBT + 9.6)]
+        emit("Kabel pack", mat, g, tube(pts, 0.8))
+    py = yc - 6.0
+    emit("Steker balancer XH 3 pin", "jst_plug", g, box(-37.0, -30.0, py - 3.0, py + 3.0, CH_Z1, CH_Z1 + 5.7))
+    for k, mat in enumerate(("wire_blk", "wire_blu", "wire_red")):
+        emit("Kabel balancer", mat, g, tube([(x0, yc - 3 + k * 1.2, zc - 1), (-28.5, yc - 3, zc + 1),
+                                             (-29.5, py - 1.2 + k * 1.2, CH_Z1 + 6.5), (-31.0, py - 1.2 + k * 1.2, CH_Z1 + 3.0)], 0.5, 6))
+    for s in (-1, 1):                                # kabel motor + encoder (6 kawat, digambar satu selubung) ke J2/J3
+        xj = s * 25.65
+        if key == "tengah":                          # memutari ujung pack
+            pts = [(s * 7.2, 0, 19.0), (s * 10.0, 3.0, 25.0), (s * 31.0, 8.0, 25.0), (s * 33.0, yc, 21.0),
+                   (s * 31.0, yj - 8.0, 26.0), (xj, yj - 1.0, 30.5), (xj, yj, MBT + 9.6)]
+        else:
+            pts = [(s * 7.2, 0, 19.0), (s * 8.0, 4.0, 24.5), (s * 16.0, 14.0, 25.5), (xj, yj - 3.0, 30.5), (xj, yj, MBT + 9.6)]
+        emit("Kabel motor + encoder", "ribbon", g, tube(pts, 1.4))
 
 
-def side_view(key):
-    """tampak samping dari kiri: y robot ke kanan, z ke atas"""
-    L, R = LAYOUT[key], RES[key]
-    dy = L["dy"]
-    g = ['<line class="floor" x1="-78" y1="0" x2="170" y2="0"/>']
+for _k in ORDER:
+    build(_k)
 
-    def r(y0, y1, z0, z1, cls, rx=0.4):
-        return f'<rect class="{cls}" x="{y0:.2f}" y="{-z1:.2f}" width="{y1 - y0:.2f}" height="{z1 - z0:.2f}" rx="{rx}"/>'
-
-    def t(y, z, s, anc="middle", cls="lbl dim", size=2.8):
-        return f'<text class="{cls}" x="{y:.2f}" y="{-z:.2f}" font-size="{size}" text-anchor="{anc}">{s}</text>'
-    top = R["batt_top"]
-    x0 = max(-78.0, L["sk_y0"] - 22)
-    g.append(f'<line class="deck" x1="{x0}" y1="{-top}" x2="{SENS_Y1 + dy}" y2="{-top}"/>')
-    g.append(t(x0, top + 1.4, f"puncak baterai {top:.0f} mm", "start", "lbl acc"))
-    g.append(r(SENS_Y0 + dy, SENS_Y1 + dy, 4.8, 6.4, "sensor"))
-    g.append(r(SENS_J1[2] + dy, SENS_J1[3] + dy, 6.4, 16.2, "conn"))
-    g.append(r(L["sk_y0"], NOSE_Y + dy, CH_Z0, CH_Z1, "skid-side"))
-    g.append(f'<circle class="wheel" cx="0" cy="{-R_W}" r="{R_W}"/>')
-    g.append(f'<circle class="axis-dot" cx="0" cy="{-R_W}" r="1.2"/>')
-    g.append(r(-6, 6, CH_Z1, CH_Z1 + 10, "motor"))
-    g.append(f'<circle class="caster" cx="{CASTER_Y + dy}" cy="-5" r="5"/>')
-    if L["tray"]:
-        g.append(r(-24, 24, 22, 24, "print"))
-        for y in (-23, 21):
-            g.append(r(y, y + 2, CH_Z1, 22, "print", 0.2))
-    for h in L["holders"]:
-        _, _, y0, y1, z0, z1, n = h
-        g.append(r(y0, y1, z0, z1, "battery", 1.5))
-        yc = (y0 + y1) / 2
-        for k in range(n):
-            g.append(f'<circle class="cell" cx="{yc + (k - (n - 1) / 2) * 21.0:.2f}" cy="{-(z0 + 9.9):.2f}" r="9.2"/>')
-    c, m = L["charger"], L["bms"]
-    g.append(r(c[2], c[3], CH_Z1, CH_Z1 + 1.6, "module", 0.2))
-    g.append(r(c[2] - 1.0, c[2] + 7.0, CH_Z1 + 1.6, CH_Z1 + 4.8, "espusb", 0.4))
-    if c[2] - 26.5 < -78:                            # tidak muat di kiri charger: tulis di atasnya
-        g.append(t(c[3], CH_Z1 + 7.5, "charger + BMS" if m else "charger", "end"))
-    else:
-        g.append(t(c[2] - 2.5, CH_Z1 + 1.2, "charger + BMS" if m else "charger", "end"))
-    # PCB utama
-    g.append(r(MB_Y0 + dy, MB_Y1 + dy, MB_Z0, MBT, "board", 0.3))
-    for _, _, _, y0, y1, hgt, cls in MB_PART:
-        g.append(r(y0 + dy, y1 + dy, MBT, MBT + hgt, "small" if cls == "round" else cls, 0.3))
-    for yr in (EY - 12.7, EY + 12.7):
-        g.append(r(yr - 1.27 + dy, yr + 1.27 + dy, MBT, DK_Z0, "socket", 0.2))
-    g.append(r(ESP[2] + dy, ESP[3] + dy, DK_Z0, DK_Z0 + 1.6, "esp", 0.3))
-    g.append(r(EY - 9 + dy, EY + 9 + dy, DK_Z0 + 1.6, ESP_TOP, "espmod", 0.3))
-    # board interface
-    g.append(r(J6[2] + dy, J6[3] + dy, MBT, IB_Z0, "conn", 0.2))
-    g.append(r(IB[2] + dy, IB[3] + dy, IB_Z0, IBT, "iboard", 0.3))
-    g.append(r(OLED_SOCK[2] + dy, OLED_SOCK[3] + dy, IBT, IBT + SOCK, "socket", 0.2))
-    g.append(r(OLED[2] + dy, OLED[3] + dy, IBT + SOCK, TOP_Z, "oled", 0.3))
-    g.append(r(49 + dy, 55 + dy, IBT, IBT + 5.0, "button", 0.3))
-    # kabel J5 -> J1 PCB sensor
-    g.append(f'<path class="cable-solid" d="M {78.3 + dy} {-(MBT + 9.8)} C {86 + dy} {-(MBT + 17)}, '
-             f'{97 + dy} -26, {100 + dy} -16.4"/>')
-    for h in L["holders"]:
-        g.append(t((h[2] + h[3]) / 2, h[5] + 3.6 if h[5] > 40 else h[5] + 4.6,
-                   "holder 2×18650" if h[6] == 2 else "sel 18650"))
-    g += [t(61 + dy, TOP_Z + 2.0, "board interface + OLED"), t(SENS_J1[3] + dy + 3, 8.4, "PCB sensor", "start"),
-          t(CASTER_Y + dy + 6.5, 1.3, "ball caster", "start"), t(40 + dy / 2, 6.3, "skid plate 3D print")]
-    xd = SENS_Y1 + dy + 5
-    g.append(f'<g class="dim"><line x1="{xd}" y1="0" x2="{xd}" y2="{-TOP_Z:.1f}"/>'
-             f'<line x1="{xd - 1.5}" y1="{-TOP_Z:.1f}" x2="{xd + 1.5}" y2="{-TOP_Z:.1f}"/>'
-             f'<text x="{xd + 2}" y="{-TOP_Z / 2:.1f}" font-size="3" transform="rotate(-90 {xd + 2} {-TOP_Z / 2:.1f})" '
-             f'text-anchor="middle" dy="2.4">{TOP_Z:.0f} mm</text></g>')
-    return g
+json.dump({"mats": MATS, "meshes": MESH}, open(os.path.join(HERE, "konsep-v18-model.json"), "w", encoding="utf-8"),
+          separators=(",", ":"))
 
 
-def svg(body, vb, aria):
-    return (f'<svg viewBox="{vb}" role="img" aria-label="{aria}" xmlns="http://www.w3.org/2000/svg">'
-            '<defs><marker id="arr" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto">'
-            '<path d="M0,0 L6,3 L0,6 z" class="arrowhead"/></marker></defs>'
-            + "".join(body) + "</svg>")
-
-
+# ------------------------------ halaman ------------------------------
 def fmt(v, n=1):
     return f"{v:.{n}f}".replace(".", ",")
 
 
-VB_TOP1, VB_TOP2, VB_SIDE = "-70 -150 140 220", "-70 -172 140 262", "-80 -56 254 62"
-TOP = {k: svg(top_view(k), VB_TOP1 if k in ("v17", "pelana") else VB_TOP2, f"Tampak atas {LAYOUT[k]['nama']}") for k in ORDER}
-SIDE = {k: svg(side_view(k), VB_SIDE, f"Tampak samping {LAYOUT[k]['nama']}") for k in ORDER}
+B, A = RES["v17"], RES["ransel"]
 
-# ------------------------------ tabel ------------------------------
-B = RES["v17"]
+
+def metrics(k):
+    r, L = RES[k], LAYOUT[k]
+    return [["Puncak baterai", f"{fmt(r['batt_top'], 0 if r['batt_top'] % 1 == 0 else 1)} mm"],
+            ["Ukuran p × l × t", f"{r['p']:.0f} × {r['l']:.0f} × {r['t']:.0f} mm"],
+            ["Perkiraan massa", f"±{r['M']:.0f} g"],
+            ["Berat di roda penggerak", f"{(1 - r['caster']) * 100:.0f}%"],
+            ["Poros → sensor depan", f"{SENS_Y1 + L['dy']:.0f} mm"],
+            ["Celah lantai terendah", f"{fmt(r['low'])} mm"]]
+
+
+META = {k: dict(nama=LAYOUT[k]["nama"], sub=LAYOUT[k]["sub"], teks=LAYOUT[k]["teks"], dy=LAYOUT[k]["dy"],
+                kv=metrics(k), pack=list(pack_box(LAYOUT[k])) if LAYOUT[k]["pack"] else None) for k in ORDER}
 
 
 def row(nama, f):
     return "<tr><td>" + nama + "</td>" + "".join(f"<td>{f(RES[k], LAYOUT[k])}</td>" for k in ORDER) + "</tr>"
 
 
-def d_izz(r, _):
-    return "acuan" if r is B else f"{(r['izz'] / B['izz'] - 1) * 100:+.0f}%"
-
-
 rows = "".join([
-    row("Puncak baterai dari lantai", lambda r, L: f"{r['batt_top']:.0f} mm"),
+    row("Puncak baterai dari lantai", lambda r, L: f"{fmt(r['batt_top'], 0 if r['batt_top'] % 1 == 0 else 1)} mm"),
     row("Ukuran p × l × t", lambda r, L: f"{r['p']:.0f} × {r['l']:.0f} × {r['t']:.0f} mm"),
     row("Jarak poros roda → sensor depan", lambda r, L: f"{SENS_Y1 + L['dy']:.0f} mm"),
+    row("Perkiraan massa", lambda r, L: f"±{r['M']:.0f} g"),
     row("Tinggi titik berat", lambda r, L: f"{fmt(r['zcm'])} mm"),
-    row("Titik berat di depan poros", lambda r, L: f"{fmt(r['ycm'])} mm"),
     row("Berat di roda penggerak / ball caster", lambda r, L: f"{(1 - r['caster']) * 100:.0f}% / {r['caster'] * 100:.0f}%"),
     row("Percepatan maksimum tanpa selip (μ 0,6)", lambda r, L: f"{fmt(r['a_slip'])} m/s²"),
-    row("Hidung mulai terangkat pada percepatan", lambda r, L: f"{fmt(r['a_lift'])} m/s²"),
-    row("Inersia putar terhadap tengah poros", d_izz),
-    row("Celah holder ke ban", lambda r, L: f"{fmt(r['gap_ban'])} mm"),
-    row("Holder", lambda r, L: "2 × holder 1 sel" if len(L["holders"]) == 2 else "1 × holder 2 sel (RAB sekarang)"),
-    row("Perkiraan massa", lambda r, L: f"±{r['M']:.0f} g"),
+    row("Celah lantai terendah (di luar sensor)", lambda r, L: f"{fmt(r['low'])} mm"),
+    row("Yang berubah dari v17", lambda r, L: {
+        "v17": "acuan", "ransel": "ekor skid plate +11 mm, celah strap", "bak": "ekor +11,5 mm, bak di bawah plat",
+        "tengah": "bagian depan maju 22 mm, plat belakang dipotong"}[next(k for k in ORDER if LAYOUT[k] is L)]),
 ])
 head = "".join(f"<th>{LAYOUT[k]['nama']}</th>" for k in ORDER)
-nprob = sum(len(RES[k]["prob"]) for k in ORDER)
 checks = "".join(f"<li><b>{LAYOUT[k]['nama']}:</b> " + ("; ".join(RES[k]["prob"]) or "0 masalah") + "</li>" for k in ORDER)
-A = RES["pelana"]
-OK = not A["prob"]
+tabs = "".join(f'<button type="button" data-opt="{k}" aria-pressed="{"true" if k == "ransel" else "false"}">'
+               f'<b>{LAYOUT[k]["nama"]}</b><span>{LAYOUT[k]["sub"]}</span></button>' for k in ORDER)
+OK = not any(RES[k]["prob"] for k in ORDER)
 
-html = f"""<title>Konsep LFM v18</title>
+PAGE = r"""<title>Konsep LFM v18</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* lembar gambar teknik (sama dengan konsep v17): kertas hijau-abu, tinta gelap, PCB hijau, baterai biru-abu */
-:root {{
+/* lembar konsep (sama dengan konsep v17): kertas hijau-abu, tinta gelap; panggung 3D di tengah, angka di bawahnya */
+:root {
   --bg: #f3f5f2; --paper: #fbfcfa; --ink: #1c2420; --muted: #5d6b63; --line: #c9d2cc;
-  --mask: #2f6b47; --mask-edge: #1f4a31; --iface: #2b5d8a; --accent: #b4521f;
-  --sensor: #3b3f3d; --wheel: #2a2d2c; --motor: #a8b0ac; --print: #e2c98f; --batt: #6f7f99; --cell: #3d4a63;
-  --module: #4a6fa5; --esp: #24262a; --oled: #101418; --oled-hi: #7fd3ff; --small: #d9b84a; --conn: #f1efe8;
-  --bms: #8fbf9b; --on-dark: #eef3f0; --good: #2f7a4f;
+  --accent: #b4521f; --good: #2f7a4f; --pick: #d3202e; --on-pick: #ffffff; --stage: #e6eaee; --floor: #f4f4f1;
   --display: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
-}}
-@media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #121614; --paper: #181d1a; --ink: #e4ebe6; --muted: #98a69e; --line: #2e3833;
-  --mask: #2f7a4f; --mask-edge: #59a87a; --iface: #4f8cc4; --accent: #e08a5a;
-  --sensor: #8a908d; --wheel: #6b706d; --motor: #6d7672; --print: #8a7442; --batt: #7d8db0; --cell: #2c3650;
-  --module: #6b8fc8; --esp: #3a3d43; --oled: #05080a; --small: #c9a73c; --conn: #d8d4c8; --bms: #5f9470; --good: #59a87a;
-  color-scheme: dark; }} }}
-:root[data-theme="dark"] {{
+  --accent: #e08a5a; --good: #59a87a; --pick: #e2414d; --on-pick: #ffffff; --stage: #232a2f; --floor: #3a4046;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
   --bg: #121614; --paper: #181d1a; --ink: #e4ebe6; --muted: #98a69e; --line: #2e3833;
-  --mask: #2f7a4f; --mask-edge: #59a87a; --iface: #4f8cc4; --accent: #e08a5a;
-  --sensor: #8a908d; --wheel: #6b706d; --motor: #6d7672; --print: #8a7442; --batt: #7d8db0; --cell: #2c3650;
-  --module: #6b8fc8; --esp: #3a3d43; --oled: #05080a; --small: #c9a73c; --conn: #d8d4c8; --bms: #5f9470; --good: #59a87a;
-  color-scheme: dark; }}
-body {{ background: var(--bg); color: var(--ink); font-family: var(--display); font-size: 15px; line-height: 1.55;
+  --accent: #e08a5a; --good: #59a87a; --pick: #e2414d; --on-pick: #ffffff; --stage: #232a2f; --floor: #3a4046;
+  color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--display); font-size: 15px; line-height: 1.55;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 28px 48px; }}
-main {{ max-width: 1080px; margin: 0 auto; display: grid; gap: 28px; }}
-h1 {{ font-size: 1.7rem; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }}
-h2 {{ font-size: 0.78rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin: 0 0 10px; }}
-p {{ margin: 0; max-width: 68ch; }}
-.lead {{ color: var(--muted); }}
-.stack {{ display: grid; gap: 14px; }}
-.sheets {{ display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }}
-@media (max-width: 720px) {{ .sheets {{ grid-template-columns: 1fr; }} }}
-figure {{ margin: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 14px; min-width: 0; }}
-figure.pick {{ border-color: var(--good); }}
-figcaption {{ font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin-top: 8px; }}
-figcaption b {{ color: var(--ink); font-weight: 500; }}
-.wide {{ overflow-x: auto; }}
-.wide svg {{ min-width: 720px; }}
-svg {{ width: 100%; height: auto; display: block; }}
-svg text {{ font-family: var(--mono); fill: var(--ink); }}
-svg .lbl.dim {{ fill: var(--muted); }}
-svg .lbl.light {{ fill: var(--oled-hi); }}
-svg .lbl.inv {{ fill: var(--on-dark); }}
-svg .lbl.acc {{ fill: var(--accent); }}
-.board {{ fill: var(--mask); stroke: var(--mask-edge); stroke-width: 0.5; }}
-.iboard {{ fill: var(--iface); fill-opacity: 0.9; stroke: var(--iface); stroke-width: 0.6; }}
-.sensor {{ fill: var(--sensor); fill-opacity: 0.85; }}
-.skid {{ fill: var(--print); fill-opacity: 0.28; stroke: var(--print); stroke-width: 0.5; stroke-dasharray: 2 1.2; }}
-.skid-side {{ fill: var(--print); }}
-.wheel {{ fill: var(--wheel); }}
-.motor {{ fill: var(--motor); }}
-.print {{ fill: var(--print); }}
-.battery {{ fill: var(--batt); }}
-.cell {{ fill: var(--cell); }}
-.cellcap {{ fill: #c3c8cc; }}
-.module {{ fill: var(--module); }}
-.bms {{ fill: var(--bms); }}
-.esp {{ fill: var(--esp); }}
-.espmod {{ fill: #9aa3a8; }}
-.espusb {{ fill: #c3c8cc; }}
-.socket {{ fill: #111; }}
-.oled {{ fill: var(--oled); stroke: #2a3138; stroke-width: 0.4; }}
-.small {{ fill: var(--small); }}
-.conn {{ fill: var(--conn); stroke: #8c8778; stroke-width: 0.35; }}
-.hidden {{ fill: var(--module); fill-opacity: 0.25; stroke: var(--on-dark); stroke-width: 0.5; stroke-dasharray: 1.6 1; }}
-.button {{ fill: #d7dbd9; stroke: #6c736f; stroke-width: 0.3; }}
-.cap {{ fill: #23272a; }}
-.hole {{ fill: var(--paper); stroke: var(--ink); stroke-width: 0.3; }}
-.axis {{ stroke: var(--muted); stroke-width: 0.3; stroke-dasharray: 3 1.5 0.6 1.5; }}
-.axis-dot {{ fill: var(--paper); }}
-.floor {{ stroke: var(--ink); stroke-width: 0.5; }}
-.deck {{ stroke: var(--accent); stroke-width: 0.4; stroke-dasharray: 2.2 1.4; }}
-.caster {{ fill: #c3c8cc; stroke: #6c736f; stroke-width: 0.3; }}
-.caster-top {{ fill: none; stroke: var(--muted); stroke-width: 0.5; stroke-dasharray: 1.2 0.8; }}
-.cable {{ fill: none; stroke: var(--accent); stroke-width: 0.7; stroke-dasharray: 1.6 1; }}
-.cable-solid {{ fill: none; stroke: var(--accent); stroke-width: 0.8; }}
-.usb {{ stroke: var(--muted); stroke-width: 0.5; }}
-.arrowhead {{ fill: var(--muted); }}
-.dim line {{ stroke: var(--accent); stroke-width: 0.35; }}
-.dim text {{ fill: var(--accent); font-family: var(--mono); }}
-.legend {{ display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.85rem; color: var(--muted); }}
-.legend span {{ display: inline-flex; align-items: center; gap: 6px; }}
-.sw {{ width: 14px; height: 10px; border-radius: 2px; display: inline-block; }}
-table {{ border-collapse: collapse; width: 100%; font-size: 0.92rem; min-width: 760px; }}
-.tablewrap {{ overflow-x: auto; }}
-th, td {{ text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }}
-th {{ font-weight: 500; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }}
-td {{ font-variant-numeric: tabular-nums; }}
-td:first-child {{ color: var(--muted); }}
-th:nth-child(3), td:nth-child(3) {{ background: color-mix(in srgb, var(--good) 9%, transparent); }}
-th:nth-child(3) {{ color: var(--good); }}
-.status {{ display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.82rem;
-  padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); justify-self: start; }}
-.dot {{ width: 8px; height: 8px; border-radius: 50%; background: {'#3f9b62' if OK else '#c0432f'}; }}
-ol, ul {{ margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72ch; }}
-.cols {{ display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }}
-@media (max-width: 720px) {{ .cols {{ grid-template-columns: 1fr; }} }}
-.cols > section {{ min-width: 0; }}
-.note {{ font-size: 0.85rem; color: var(--muted); }}
+  padding-block: 28px 48px; }
+main { max-width: 1080px; margin: 0 auto; display: grid; gap: 28px; }
+h1 { font-size: 1.7rem; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 0.78rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin: 0 0 10px; }
+p { margin: 0; max-width: 68ch; }
+.lead { color: var(--muted); }
+.viewer { display: grid; gap: 10px; min-width: 0; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 720px) { .tabs { grid-template-columns: 1fr 1fr; } }
+.tabs button { display: grid; gap: 1px; text-align: left; font: inherit; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line); border-radius: 6px; padding: 9px 12px; cursor: pointer; min-width: 0; }
+.tabs button b { font-weight: 600; }
+.tabs button span { font-size: 0.8rem; color: var(--muted); }
+.tabs button[aria-pressed="true"] { background: var(--pick); border-color: var(--pick); color: var(--on-pick); }
+.tabs button[aria-pressed="true"] span { color: var(--on-pick); opacity: 0.85; }
+.tabs button:focus-visible, .views button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#stage { position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+  aspect-ratio: 16 / 9; max-height: 640px; width: 100%; }
+@media (max-width: 720px) { #stage { aspect-ratio: 4 / 5; } }
+#stage canvas { display: block; width: 100%; height: 100%; outline: none; touch-action: none; }
+.views { position: absolute; top: 10px; right: 10px; display: flex; gap: 2px; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 6px; padding: 3px; }
+.views button { font: 500 0.8rem var(--display); color: var(--ink); background: transparent; border: 0; border-radius: 4px;
+  padding: 6px 9px; cursor: pointer; }
+.views button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.hint { position: absolute; left: 10px; bottom: 10px; font-size: 0.75rem; color: var(--muted); background: var(--paper);
+  border-radius: 4px; padding: 3px 8px; pointer-events: none; }
+#loading { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 0.82rem;
+  color: var(--muted); pointer-events: none; text-align: center; padding: 16px; }
+.info { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+@media (max-width: 720px) { .info { grid-template-columns: 1fr; } }
+.info h3 { margin: 0 0 4px; font-size: 1.05rem; font-weight: 600; }
+.info p { font-size: 0.92rem; }
+.kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 16px; margin: 0; }
+@media (max-width: 480px) { .kv { grid-template-columns: 1fr 1fr; } }
+.kv div { min-width: 0; }
+.kv dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--mono); font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; min-width: 760px; }
+.tablewrap { overflow-x: auto; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+td { font-variant-numeric: tabular-nums; }
+td:first-child { color: var(--muted); }
+th:nth-child(3), td:nth-child(3) { background: color-mix(in srgb, var(--good) 9%, transparent); }
+th:nth-child(3) { color: var(--good); }
+ol, ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72ch; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+@media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
+.cols > section { min-width: 0; }
+.note { font-size: 0.85rem; color: var(--muted); }
 </style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 <main>
   <header style="display:grid;gap:10px">
-    <h1>Konsep LFM v18: baterai satu bidang dengan PCB</h1>
-    <p class="lead">Baterai turun dari atas motor ke skid plate, sejajar dengan PCB utama. Caranya: holder 2 sel diganti
-    2 holder 1 sel yang rebah melintang, satu di depan dan satu di belakang motor, seperti pelana di atas poros roda.
-    PCB utama rev B, board interface, dan PCB sensor tidak diubah. Semua gambar to-scale (mm).</p>
-    <span class="status"><span class="dot"></span>Cek otomatis susunan pelana: {len(A["prob"])} masalah</span>
+    <h1>Konsep LFM v18: pack Li-ion 2S diikat strap</h1>
+    <p class="lead">Holder 2× 18650 di atas motor diganti pack 7,4 V siap colok (50 × 30 × 15 mm, 46 g) yang rebah di skid
+    plate dan diikat strap velcro. Baterai jadi sebidang dengan PCB, tidak bertingkat. PCB utama rev B, board interface,
+    dan PCB sensor tidak diubah. Pilih susunan di bawah, lalu putar modelnya.</p>
   </header>
 
-  <section class="stack">
-    <h2>Tampak samping, skala sama</h2>
-    <figure class="wide">{SIDE["v17"]}<figcaption><b>Sekarang (v17).</b> Holder duduk di dudukan di atas motor:
-    puncak baterai {B["batt_top"]:.0f} mm, ada lantai kedua di belakang.</figcaption></figure>
-    <figure class="wide pick">{SIDE["pelana"]}<figcaption><b>Usulan A · Pelana.</b> Kedua sel duduk di skid plate:
-    puncak baterai {A["batt_top"]:.0f} mm, hampir sama dengan puncak ESP32 ({fmt(ESP_TOP)} mm). Yang lebih tinggi tinggal OLED.</figcaption></figure>
-  </section>
-
-  <section class="stack">
-    <h2>Tampak atas, skala sama</h2>
-    <div class="sheets">
-      <figure>{TOP["v17"]}<figcaption><b>Sekarang (v17).</b> Holder 76 × 42 mm menutupi motor dan charger.</figcaption></figure>
-      <figure class="pick">{TOP["pelana"]}<figcaption><b>Usulan A · Pelana.</b> Sel depan dan belakang mengapit motor;
-      charger dan BMS di ekor; ban digeser ke luar 2,5 mm per sisi.</figcaption></figure>
+  <section class="viewer">
+    <div class="tabs" role="group" aria-label="Susunan baterai">__TABS__</div>
+    <div id="stage" aria-label="Model 3D robot, bisa diputar dengan mouse atau jari">
+      <div id="loading">memuat model 3D…</div>
+      <div class="views" role="group" aria-label="Sudut pandang">
+        <button type="button" data-view="rear" aria-pressed="true">Belakang</button>
+        <button type="button" data-view="front" aria-pressed="false">Depan</button>
+        <button type="button" data-view="side" aria-pressed="false">Samping</button>
+        <button type="button" data-view="top" aria-pressed="false">Atas</button>
+      </div>
+      <div class="hint">seret untuk memutar · scroll atau cubit untuk zoom · garis hitam = lintasan 20 mm</div>
     </div>
-    <div class="legend">
-      <span><i class="sw" style="background:var(--batt)"></i>holder baterai</span>
-      <span><i class="sw" style="background:var(--cell)"></i>sel 18650</span>
-      <span><i class="sw" style="background:var(--mask)"></i>PCB utama (tetap)</span>
-      <span><i class="sw" style="background:var(--iface)"></i>board interface (tetap)</span>
-      <span><i class="sw" style="background:var(--module)"></i>charger 2S, MP1584</span>
-      <span><i class="sw" style="background:var(--bms)"></i>BMS 2S</span>
-      <span><i class="sw" style="background:var(--print);opacity:.6"></i>skid plate 3D print</span>
-      <span><i class="sw" style="border:1px dashed var(--accent)"></i>kabel motor lewat kanal di bawah sel</span>
+    <div class="info">
+      <div><h3 id="o-nama"></h3><p id="o-teks"></p></div>
+      <dl class="kv" id="o-kv"></dl>
     </div>
   </section>
 
   <section>
     <h2>Angka</h2>
-    <div class="tablewrap"><table><thead><tr><th></th>{head}</tr></thead><tbody>{rows}</tbody></table></div>
-    <p class="note" style="margin-top:10px">Titik berat, pembagian berat, dan inersia dihitung dari massa perkiraan tiap bagian
-    (<code>docs/perhitungan-motor.md</code> bagian 4, belum ditimbang). Pakai untuk membandingkan susunan, bukan sebagai angka pasti.</p>
+    <div class="tablewrap"><table><thead><tr><th></th>__HEAD__</tr></thead><tbody>__ROWS__</tbody></table></div>
+    <p class="note" style="margin-top:10px">Massa dan pembagian berat dihitung dari massa perkiraan tiap bagian
+    (<code>docs/perhitungan-motor.md</code> bagian 4, belum ditimbang). Pakai untuk membandingkan susunan, bukan angka pasti.</p>
   </section>
 
   <div class="cols">
     <section>
-      <h2>Kenapa pelana</h2>
-      <ul>
-        <li><b>Tidak bertingkat.</b> Dudukan baterai di atas motor hilang. Puncak baterai turun {B["batt_top"] - A["batt_top"]:.0f} mm
-        dan titik berat robot turun {fmt(B["zcm"] - A["zcm"])} mm, jadi robot lebih tenang saat mengerem dan belok cepat.</li>
-        <li><b>Berat tetap di roda penggerak.</b> Kedua sel simetris terhadap poros, jadi {(1 - A["caster"]) * 100:.0f}% berat
-        tetap di roda penggerak (v17: {(1 - B["caster"]) * 100:.0f}%). Traksi tidak berkurang.</li>
-        <li><b>Hidung lebih menempel.</b> Hidung baru terangkat pada percepatan {fmt(A["a_lift"])} m/s² (v17: {fmt(B["a_lift"])}),
-        jauh di atas batas selip ban {fmt(A["a_slip"])} m/s². Sensor tetap rata dengan lantai saat tancap gas.</li>
-        <li><b>Rakit lebih mudah.</b> Sel masuk dari atas, BMS dapat titik tengah langsung dari kabel antar holder,
-        dan satu klem cetak 3D bisa menahan motor sekaligus kedua holder.</li>
-      </ul>
+      <h2>Kenapa A · Ransel</h2>
+      <ul>__WHY__</ul>
     </section>
     <section>
-      <h2>Yang dibayar</h2>
-      <ul>
-        <li><b>Lebar 115 → {A["l"]:.0f} mm.</b> Holder 1 sel panjangnya 77 mm, jadi ban digeser ke luar 2,5 mm per sisi supaya
-        celah ke ban {fmt(A["gap_ban"])} mm. Jarak tengah ban 97 → 102 mm.</li>
-        <li><b>Jarak poros ke sensor +{LAYOUT["pelana"]["dy"]:.0f} mm.</b> Sel depan butuh tempat di antara motor dan PCB utama, jadi PCB utama,
-        board interface, PCB sensor, dan ball caster maju bersama {LAYOUT["pelana"]["dy"]:.0f} mm. Posisi antar PCB tidak berubah.</li>
-        <li><b>Ekor +18 mm</b> untuk charger dan BMS yang tadinya tersembunyi di bawah dudukan. Panjang robot {B["p"]:.0f} → {A["p"]:.0f} mm
-        (batas lomba 250 mm).</li>
-        <li><b>Inersia putar {(A["izz"] / B["izz"] - 1) * 100:+.0f}%</b> karena bagian depan maju dan ada ekor (ekor
-        {(RES["ekor"]["izz"] / B["izz"] - 1) * 100:+.0f}%, tengah {(RES["tengah"]["izz"] / B["izz"] - 1) * 100:+.0f}%). Belok sedikit lebih
-        berat, PID perlu dituning dengan angka ini.</li>
-        <li><b>Holder diganti.</b> 2 holder 1 sel menggantikan holder 2 sel di RAB. Harga di Tokopedia belum dicek.</li>
-        <li><b>Kabel motor</b> ke J2/J3 lewat kanal di bawah sel depan (garis putus-putus di tampak atas).</li>
-      </ul>
+      <h2>Soal pack-nya</h2>
+      <ul>__PACK__</ul>
     </section>
   </div>
 
-  <section class="stack">
-    <h2>Dua cara lain yang juga sebidang</h2>
-    <div class="sheets">
-      <figure>{TOP["ekor"]}<figcaption><b>B · Ekor.</b> Holder 2 sel yang sama rebah di belakang motor. PCB dan lebar tidak
-      berubah, tetapi berat pindah ke belakang: di ball caster tinggal {RES["ekor"]["caster"] * 100:.0f}%, dan hidung mulai
-      terangkat pada percepatan {fmt(RES["ekor"]["a_lift"])} m/s² (batas selip {fmt(RES["ekor"]["a_slip"])} m/s²). Sensor bisa
-      terangkat saat robot tancap gas.</figcaption></figure>
-      <figure>{TOP["tengah"]}<figcaption><b>C · Tengah.</b> Holder 2 sel yang sama rebah di antara motor dan PCB. Lebar tetap dan
-      charger tetap di belakang motor, tetapi semua bagian depan maju {LAYOUT["tengah"]["dy"]:.0f} mm: sensor jadi {SENS_Y1 + LAYOUT["tengah"]["dy"]:.0f} mm
-      dari poros, ball caster memikul {RES["tengah"]["caster"] * 100:.0f}% berat, dan inersia putar
-      {(RES["tengah"]["izz"] / B["izz"] - 1) * 100:+.0f}%.</figcaption></figure>
-    </div>
-    <figure class="wide">{SIDE["ekor"]}<figcaption>B · Ekor, tampak samping.</figcaption></figure>
-    <figure class="wide">{SIDE["tengah"]}<figcaption>C · Tengah, tampak samping.</figcaption></figure>
-    <p class="note"><b>Dicoret: sel membujur di kiri-kanan PCB (sidepod).</b> Sel kiri menutup colokan USB ESP32 dan tuas saklar SW1
-    di tepi kiri PCB utama, jadi tidak bisa tanpa mengubah PCB. Berat ±100 g juga pindah ke depan dan ke luar.</p>
-  </section>
-
   <div class="cols">
-    <section>
-      <h2>Tidak berubah</h2>
-      <ul>
-        <li>PCB utama rev B, board interface rev A, PCB sensor rev B: file KiCad tidak disentuh.</li>
-        <li>Motor N20 500 RPM + encoder, ban Ø34 × 18 mm, ball caster, 4 baut M3 PCB utama.</li>
-        <li>Tinggi robot {TOP_Z:.0f} mm, karena titik tertinggi tetap OLED di board interface.</li>
-      </ul>
-    </section>
     <section>
       <h2>Perlu diputuskan</h2>
-      <ol>
-        <li>Susunan mana yang dipakai: A pelana, B ekor, atau C tengah.</li>
-        <li>Holder 1 sel dimodelkan 77 × 21 × 19 mm. Ukuran barang di toko bisa beda 1–2 mm; lebar robot ikut ukuran itu.</li>
-        <li>Charger di ekor memakai ukuran model 25 × 16 mm dengan USB-C di sisi panjang. Ukuran modul yang dibeli belum diketahui.</li>
-        <li>Kalau A dipilih: model 3D skid plate v18 (kanal kabel, klem motor + holder, dudukan charger) dibuat sesudah ini.</li>
-      </ol>
+      <ol>__TODO__</ol>
+    </section>
+    <section>
+      <h2>Hasil cek otomatis (kotak 3D tiap bagian)</h2>
+      <ul>__CHECKS__</ul>
+      <p class="note" style="margin-top:10px">Yang dicek: tabrakan antar bagian (pack, strap, motor, ban, PCB, ball caster), pack di
+      dalam skid plate, PCB utama ≥ 1,5 mm dari tepi skid plate, jalur steker USB ESP32, akses tuas SW1, batas ukuran dan massa lomba.</p>
     </section>
   </div>
-
-  <section>
-    <h2>Hasil cek otomatis (kotak 3D tiap bagian)</h2>
-    <ul>{checks}</ul>
-    <p class="note" style="margin-top:10px">Yang dicek: tabrakan antar bagian, holder/charger/BMS di dalam skid plate, PCB utama ≥ 1,5 mm
-    dari tepi skid plate, jalur steker USB ESP32 dan charger, akses tuas SW1, celah holder ke ban ≥ 1 mm, batas ukuran dan massa lomba.</p>
-  </section>
 </main>
+
+<script type="module">
+const META = __META__;
+const ORDER = __ORDER__;
+const $ = (s) => document.querySelector(s);
+let setOpt3d = () => {};
+
+function showOpt(k) {
+  const m = META[k];
+  $('#o-nama').textContent = m.nama + ' · ' + m.sub;
+  $('#o-teks').textContent = m.teks;
+  $('#o-kv').replaceChildren(...m.kv.map(([a, b]) => {
+    const d = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd');
+    dt.textContent = a; dd.textContent = b; d.append(dt, dd); return d;
+  }));
+  document.querySelectorAll('[data-opt]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.opt === k)));
+  setOpt3d(k);
+}
+const q = new URLSearchParams(location.search);
+let current = ORDER.includes(location.hash.slice(1)) ? location.hash.slice(1) : (q.get('opt') || 'ransel');
+document.querySelectorAll('[data-opt]').forEach(b => b.addEventListener('click', () => { current = b.dataset.opt; showOpt(current); }));
+showOpt(current);
+
+try {
+  const THREE = await import('three');
+  const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+  const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+  const stage = $('#stage');
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.prepend(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(30, 1, 1, 5000);
+  camera.up.set(0, 0, 1);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.minDistance = 120; controls.maxDistance = 900;
+
+  const floorMat = new THREE.MeshStandardMaterial({ roughness: 0.95 });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), floorMat);
+  floor.receiveShadow = true; scene.add(floor);
+  const tape = new THREE.Mesh(new THREE.PlaneGeometry(20, 1400), new THREE.MeshStandardMaterial({ color: '#141414', roughness: 0.8 }));
+  tape.position.set(0, 100, 0.05); tape.receiveShadow = true; scene.add(tape);
+  function theme() {
+    const cs = getComputedStyle(document.documentElement);
+    scene.background = new THREE.Color(cs.getPropertyValue('--stage').trim());
+    floorMat.color.set(cs.getPropertyValue('--floor').trim());
+  }
+  theme();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+  new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  const key = new THREE.DirectionalLight('#ffffff', 2.2);
+  key.position.set(160, -200, 420);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  Object.assign(key.shadow.camera, { left: -170, right: 170, top: 190, bottom: -150, near: 50, far: 1200 });
+  key.shadow.bias = -0.0004; key.shadow.radius = 4;
+  key.target.position.set(0, 40, 0); scene.add(key.target, key);
+  scene.add(new THREE.HemisphereLight('#ffffff', '#c9ced6', 0.6));
+
+  const data = await (await fetch('konsep-v18-model.json')).json();
+  const mats = {}, matsD = {};
+  for (const [k, [c, r, m]] of Object.entries(data.mats)) {
+    mats[k] = new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m });
+    matsD[k] = mats[k].clone(); matsD[k].side = THREE.DoubleSide;
+  }
+  mats.screen.emissive = new THREE.Color('#7fc4ff'); mats.screen.emissiveIntensity = 1.4;
+  mats.glass.envMapIntensity = 1.6;
+  const groups = {};
+  const group = (n) => groups[n] || (groups[n] = scene.add(new THREE.Group()).children.at(-1));
+  for (const o of data.meshes) {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(o.p, 3));
+    g.setIndex(o.i);
+    g.computeVertexNormals();
+    const mesh = new THREE.Mesh(g, (o.d ? matsD : mats)[o.m]);
+    mesh.name = o.n; mesh.castShadow = !['screen', 'silk', 'gold'].includes(o.m); mesh.receiveShadow = true;
+    group(o.g).add(mesh);
+  }
+  // label pack: teks di sisi atas, di kanan strap
+  const cv = document.createElement('canvas'); cv.width = 384; cv.height = 256;
+  const cx = cv.getContext('2d');
+  cx.fillStyle = '#f2f2ee'; cx.font = '600 76px "IBM Plex Sans", sans-serif'; cx.textAlign = 'center';
+  cx.fillText('Li-ion 2S', 192, 104); cx.font = '500 64px "IBM Plex Sans", sans-serif'; cx.fillText('7,4 V', 192, 196);
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  const labelMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
+  for (const k of ORDER) {
+    const p = META[k].pack; if (!p) continue;
+    const lb = new THREE.Mesh(new THREE.PlaneGeometry(13.5, 9), labelMat);
+    lb.position.set(16.2, (p[2] + p[3]) / 2, p[5] + 0.06);
+    group('opt-' + k).add(lb);
+  }
+
+  const VIEWS = {
+    rear:  { pos: [125, -205, 125], tgt: [0, 32, 14] },
+    front: { pos: [-150, 255, 140], tgt: [0, 48, 14] },
+    side:  { pos: [-400, 45, 24],   tgt: [0, 45, 20] },
+    top:   { pos: [0, 44.9, 430],   tgt: [0, 45, 0] },
+  };
+  function setView(v) {
+    const s = VIEWS[v]; if (!s) return;
+    camera.position.set(...s.pos); controls.target.set(...s.tgt); controls.update();
+    document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+  }
+  document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+  setOpt3d = (k) => {
+    for (const o of ORDER) group('opt-' + o).visible = o === k;
+    group('front').position.y = META[k].dy;
+  };
+  setOpt3d(current);
+  setView(q.get('view') || 'rear');
+
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+  $('#loading').remove();
+  renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+  window.modelReady = true;
+} catch (e) {
+  $('#loading').textContent = 'Model 3D tidak bisa dimuat di perangkat ini (' + e.message + '). Angka di bawah tetap berlaku.';
+}
+</script>
 """
 
+WHY = [
+    f"<b>Tidak bertingkat.</b> Puncak baterai turun dari {B['batt_top']:.0f} mm ke {A['batt_top']:.0f} mm, di bawah puncak ESP32 "
+    f"({fmt(ESP_TOP)} mm). Dudukan baterai, holder, charger, dan BMS hilang dari robot.",
+    f"<b>Strap saja, seperti idemu.</b> Satu strap velcro 16 mm melingkari pack lewat celah di skid plate; bibir 4 mm di empat "
+    "sudut menahan pack supaya tidak bergeser. Lepas-pasang tanpa alat.",
+    f"<b>Pack di belakang poros menyeimbangkan elektronik di depan.</b> Berat di roda penggerak {(1 - A['caster']) * 100:.0f}% "
+    f"(C · Tengah hanya {(1 - RES['tengah']['caster']) * 100:.0f}%), jadi traksi paling baik di antara susunan pack.",
+    f"<b>Robot jauh lebih ringan:</b> ±{B['M']:.0f} g → ±{A['M']:.0f} g, sehingga motor N20 yang sama berakselerasi lebih cepat. "
+    f"Panjang hanya bertambah {A['p'] - B['p']:.0f} mm ({B['p']:.0f} → {A['p']:.0f} mm), lebar tetap {A['l']:.0f} mm.",
+]
+PACKNOTE = [
+    "<b>Kapasitas 5.000 mAh di listing tidak mungkin benar.</b> Dua sel 14500 seberat 46 g realistisnya 600–1.000 mAh. Dengan "
+    "konsumsi robot dari perhitungan kita, itu kira-kira 1–1,5 jam jalan. Masih jauh di atas kebutuhan match 5 menit, tetapi "
+    "jangan menulis 5.000 mAh di laporan.",
+    "<b>Pilih varian konektor XH 2 pin</b> supaya langsung masuk J1 di PCB utama. Sebelum colok pertama, ukur polaritasnya dengan "
+    "multimeter: di PCB kita pin 1 J1 = BAT+ dan pin 2 = GND, dan tidak ada proteksi polaritas terbalik.",
+    "<b>Cas di luar robot</b> lewat kabel balancer (XH 3 pin) dengan charger balance 2S. Di model ini modul charger USB-C dan BMS "
+    "sudah saya keluarkan.",
+    "<b>Proteksi:</b> tanyakan ke penjual apakah pack punya papan proteksi. Kalau tidak, batas bawah tegangan dijaga firmware lewat "
+    "VBAT_SENSE (GPIO39), yang memang sudah ada di rancangan.",
+    "<b>Aturan lomba (guidebook hal. 8):</b> jenis Li-ion dan maksimum 8,2 V ± 1 V terpenuhi. Tetapi butir A.e menulis "
+    "maksimal 4.000 mAh, sedangkan label pack ini 5.000 mAh. Kapasitas aslinya jauh di bawah itu, tetapi yang dibaca saat "
+    "pemeriksaan adalah labelnya: tanyakan ke panitia, atau cari varian berlabel ≤ 4.000 mAh.",
+    "<b>RAB:</b> yang keluar Rp137.990 (18650 Rp94.990, holder Rp8.000, BMS Rp10.000, charger Rp25.000). Harga pack dan charger "
+    "balance belum saya tahu.",
+]
+TODO = [
+    "Susunan mana yang dipakai: A · Ransel, B · Bak, atau C · Tengah.",
+    "Cas di luar robot dengan charger balance (seperti di model), atau tetap mau cas USB-C di robot? Kalau tetap, charger dan BMS "
+    "perlu tempat lagi.",
+    "Harga pack dan charger balance, supaya RAB bisa dihitung ulang.",
+    "Label 5.000 mAh terhadap batas 4.000 mAh di guidebook: perlu jawaban panitia sebelum pack dibeli.",
+    "Panjang kabel pack: dari posisi A butuh ±8 cm sampai J1. Kalau kabel pack lebih pendek, pack diputar atau J1 diberi kabel sambung.",
+]
+html = (PAGE.replace("__TABS__", tabs).replace("__HEAD__", head).replace("__ROWS__", rows).replace("__CHECKS__", checks)
+        .replace("__WHY__", "".join(f"<li>{s}</li>" for s in WHY)).replace("__PACK__", "".join(f"<li>{s}</li>" for s in PACKNOTE))
+        .replace("__TODO__", "".join(f"<li>{s}</li>" for s in TODO))
+        .replace("__META__", json.dumps(META, ensure_ascii=False)).replace("__ORDER__", json.dumps(ORDER)))
 out = os.path.join(HERE, "konsep-v18.html")
 with open(out, "w", encoding="utf-8") as f:
     f.write(html)
 for k in ORDER:
     r = RES[k]
-    print(f"{k:7s} {r['p']:.0f} x {r['l']:.0f} x {r['t']:.0f} mm  baterai z<={r['batt_top']:.0f}  M {r['M']:.0f} g  "
+    print(f"{k:7s} {r['p']:.1f} x {r['l']:.0f} x {r['t']:.0f} mm  baterai z<={r['batt_top']:.1f}  M {r['M']:.0f} g  "
           f"ycm {r['ycm']:.1f}  zcm {r['zcm']:.1f}  caster {r['caster'] * 100:.0f}%  a_selip {r['a_slip']:.1f}  "
-          f"a_angkat {r['a_lift']:.1f}  Izz {r['izz']:.3f}  celah ban {r['gap_ban']:.1f}  "
-          f"celah PCB {r['gap_pcb'] if r['gap_pcb'] is None else round(r['gap_pcb'], 1)}")
+          f"a_angkat {r['a_lift']:.1f}  celah lantai {r['low']:.1f}  celah {r['gap']}")
     for p in r["prob"]:
         print("   -", p)
-print("tulis", out)
+print(f"mesh {len(MESH)}, json {os.path.getsize(os.path.join(HERE, 'konsep-v18-model.json')) / 1e6:.2f} MB, tulis {out}")

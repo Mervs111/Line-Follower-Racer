@@ -20,7 +20,24 @@ Entri terbaru di atas.
     caster memikul 47%, inersia putar +90%.
   - Dicoret: sel membujur di kiri-kanan PCB (menutup USB ESP32 dan tuas SW1).
   Cek kotak 3D keempat susunan: 0 masalah. Angka titik berat/inersia dari massa perkiraan (`perhitungan-motor.md`
-  bagian 4), hanya untuk membandingkan. **Menunggu pilihan user** sebelum model 3D skid plate dibuat.
+  bagian 4), hanya untuk membandingkan. **Ditolak user** (ketiganya, "jelek, kurang kreatif").
+- **Konsep v18 versi 2: pack Li-ion 2S 14500 + strap** (usulan user: pack BLACK CELL 7,4 V, 50 × 30 × 15 mm, 46 g,
+  tanpa holder, diikat strap). `gen_konsep.py` ditulis ulang: sekarang menghasilkan **model 3D** (viewer three.js,
+  artifact yang sama https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm) + `konsep-v18-model.json`. CadQuery tidak ada
+  di laptop, jadi model dirakit dari mesh v16 (`viewer/model.json`: motor, roda dilebarkan ke 18 mm, PCB sensor, ESP32,
+  OLED, tombol, modul) yang digeser ke posisi PCB utama rev B / interface rev A, ditambah skid plate, pack, strap,
+  kabel, dan PCB yang dibuat skrip. Susunan (pembanding v17: puncak baterai 44 mm, ±294 g):
+  - **A ransel (usulan)**: pack rebah melintang tepat di belakang motor (y −41,5…−11,5), satu strap velcro 16 mm lewat
+    celah skid plate, bibir 4 mm di 4 sudut. Puncak baterai 27 mm (di bawah puncak ESP32 29,8), panjang 163 → 174 mm,
+    lebar tetap 115, massa ±224 g, berat di roda penggerak 66%. PCB dan jarak sensor tidak berubah.
+  - **B bak**: sama, pack di bak yang turun 4,5 mm dari skid plate, puncak 22,5 mm (rata motor), celah lantai 4,5 mm.
+  - **C tengah**: pack di antara motor dan PCB, bagian depan maju 22 mm (poros → sensor 153 mm), roda penggerak 46%.
+  Cek kotak 3D keempat susunan: 0 masalah. Di model, modul charger USB-C + BMS dikeluarkan (cas di luar robot lewat
+  kabel balancer); itu masih pertanyaan ke user.
+- Catatan pack untuk user: 5.000 mAh tidak realistis untuk 2 sel 14500 seberat 46 g (perkiraan 600–1.000 mAh, ±1–1,5
+  jam); pilih varian konektor XH 2 pin untuk J1 dan ukur polaritas dulu (J1 pin 1 = BAT+, pin 2 = GND, tanpa proteksi
+  polaritas terbalik); **guidebook hal. 8 butir A.e: baterai maksimal 8,2 V 4.000 mAh**, sedangkan label pack
+  5.000 mAh → perlu ditanyakan ke panitia. **Menunggu pilihan user** (susunan, cara cas, harga pack).
 
 ## 04/11/2026
 - **Cek PCB utama rev B langsung di KiCad (MCP)**: KiCad lama tidak punya API (dibuka saat pipe API masih dipakai

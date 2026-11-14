@@ -13,7 +13,7 @@ jangan dari ingatan). Arena 4 × 3 m banner FL, **garis hitam 2 cm**, **bentuk t
 pojok (start + 2 lingkaran 10 poin di cabang pendek); di tengah 2 lingkaran biru 30 poin dan 1 hexagon 50 poin (babak
 grup 4 robot sekaligus, jadi objek tengah kemungkinan diperebutkan). Jarak antar simpang ±0,3–0,9 m (perkiraan dari
 gambar, ukuran tidak tertulis). Misi: dorong kubus 4 × 4 × 4 cm keluar zona poin lalu ke finish, 5 menit/match,
-peringkat dari poin. Robot maks 25 × 20 × 10 cm, **350 g** (butir C; butir A menulis 500 g), Li-ion maks 8,2 V ± 1 V.
+peringkat dari poin. Robot maks 25 × 20 × 10 cm, **350 g** (butir C; butir A menulis 500 g), Li-ion maks 8,2 V ± 1 V (butir A.e: 4000 mAh).
 Program onsite pakai **Ardublock** (wajib di Day 2), belum dibahas terhadap rencana Mind+. Spesifikasi kit panitia
 (Nano, TCRT5000 5 ch, motor kuning) tidak wajib. Robot dibuat **serbaguna** (arena lomba + lintasan banyak tikungan).
 
@@ -91,10 +91,13 @@ memakai pin map yang sama.
   STEP kedua PCB (sumbu = STEP v16, nol di lantai): `LFM_rakitan_pcb.step` dari `gen_rakitan_step.py`.
 - Body 3D print = opsi B: PCB jadi sasis, 3D print untuk cover, bumper, dudukan motor & baterai, sayap belakang.
   Belum di RAB (tunggu info printer lab). Target dosen: desain mekanik selesai minggu ke-8.
-- **Konsep v18** (`mechanical/konsep-v18/`, 14/11, https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm, **menunggu
-  pilihan user**): baterai satu bidang dengan PCB (permintaan user: tidak bertingkat, boleh lebih lebar, PCB tetap).
-  Usulan A pelana: 2 holder 1 sel melintang mengapit motor di skid plate (puncak baterai 44 → 31 mm), lebar 120 mm,
-  bagian depan maju 7 mm, charger + BMS di ekor, panjang 188 mm. Pembanding: B ekor, C tengah. Belum ada model 3D.
+- **Konsep v18** (`mechanical/konsep-v18/`, 14/11, model 3D https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm,
+  **menunggu pilihan user**): baterai satu bidang dengan PCB (permintaan user: tidak bertingkat, PCB tetap). Versi
+  2× 18650 rebah ditolak user; sekarang **pack Li-ion 14500 2S siap colok** (usulan user: BLACK CELL 7,4 V, 50 × 30 ×
+  15 mm, 46 g) **diikat strap**. Usulan A ransel: pack tepat di belakang motor, strap velcro lewat celah skid plate,
+  puncak baterai 44 → 27 mm, panjang 174 mm, lebar 115 mm, ±224 g. Pembanding: B bak, C tengah. Belum diputuskan:
+  susunan, cas di luar robot (charger balance; modul charger + BMS keluar) atau tetap USB-C di robot, harga pack,
+  label 5.000 mAh vs batas 4.000 mAh guidebook. Model dirakit skrip dari mesh v16 (CadQuery tidak ada di laptop).
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen
