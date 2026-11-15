@@ -78,5 +78,6 @@ Screenshot dari user untuk side project `hardware/lfm-x2/` (PCB all-in-one full 
 | `tampak-belakang-motor.png` | render tampak belakang: 2 motor melintang dengan gear luar dan encoder, body 3D print |
 | `deskripsi-body-kit-5r.png` | teks toko: body PETG, motor 14.000 RPM, gear 1:4,6, encoder 11 PPR |
 
-Satu screenshot lagi (`Screenshot 2026-11-15 054037.png`) belum masuk: tidak terbaca oleh Claude (izin baca ditolak).
+| `papan-sensor.png` | papan sensor bentuk bulan sabit dengan ujung sayap runcing ke belakang: 12 pasang LED putih + penerima SMD di dalam pelindung cahaya, IC mux dan konektor kabel pipih di leher, leher garpu dengan 2 deret lubang (panjang bisa disetel), baut di tengah depan |
+| `papan-utama-dua-sisi.png` | papan utama lebih dekat: sisi bawah berisi modul ESP32 (antena di puncak), IC SOIC, dan hampir semua komponen SMD; sisi atas hanya konektor (POWER PORT, DATA PORT, socket 2 baris ke papan atas), USB-C, induktor, elko, buzzer |
 
