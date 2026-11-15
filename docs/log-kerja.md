@@ -5,6 +5,17 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 15/11/2026
+- **LFM X2 rev B di KiCad: 4 papan siap routing.** Sensor jadi **PT67-21B** (fototransistor Everlight 3528, lensa
+  hitam 940 nm; photodioda 3528 tidak ketemu, usul user) + **LED IR 940 nm 3528** temuan user (dipakai ±17 mA lewat
+  220 Ω, bukan 100 mA). Footprint baru `PLCC-2_3528_HandSolder` (pad 2,2 × 2,2 untuk solder tangan) dari
+  `gen_lib_x2.py`. `gen_sch_x2.py` ditulis ulang untuk 4 proyek (`utama`, `antarmuka`, `driver`, `sensor` di
+  `hardware/lfm-x2/`), pin konektor antar-papan didefinisikan sekali; `cek_net_x2.py` juga mengecek ketiga pasang
+  konektor. `gen_pcb_x2.py tata` ditulis ulang: outline segitiga / antarmuka sayap tombol / driver bertelinga / sensor
+  bulan sabit berleher garpu (busur = PCB sensor rev B), konektor pasangan diputar otomatis sampai pad bertemu pad,
+  ESP32 di sisi bawah dengan antena menonjol 3 mm (keepout bawaan footprint diganti area aturan karena menutup
+  lubang telinga), plus perintah `peta` (peta rakit PDF). Hasil: ERC 0, DRC 0 error / parity 0 di keempat papan
+  (sisa: celah pad USB-C, footprint diputar), pad konektor dan lubang antar-papan segaris. Rev A diarsipkan ke
+  `arsip/hardware/lfm-x2-rev-a/`; README, gambar susunan, render, BOM baru. Belum: jalur (user), LiPo, rangka 3D print.
 - **LFM X2 dirombak jadi beberapa papan** (jawaban user): 3 papan gaya Ichibot (utama segitiga, antarmuka OLED +
   tombol ditumpuk, driver 4× BTN7971B terpisah), papan sensor baru, baterai di dudukan 3D print. Arahan lanjutan:
   ESP32 dan sebagian besar komponen di **sisi bawah** papan utama (sisi atas untuk konektor), sensor diganti

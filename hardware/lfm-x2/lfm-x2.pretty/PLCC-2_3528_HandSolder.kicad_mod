@@ -1,0 +1,184 @@
+(footprint "PLCC-2_3528_HandSolder"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "PLCC-2 3528 (Everlight 67-21: PT67-21B, IR67-21C), pad usulan datasheet 1,8 x 2,2 diperpanjang 0,4 mm ke luar untuk solder tangan. Pad 1 = katoda LED / emitor fototransistor.")
+	(tags "PLCC-2 3528 TOPLED fototransistor LED IR solder tangan")
+	(property "Reference" "REF**"
+		(at 0 -2.4 0)
+		(layer "F.SilkS")
+		(uuid "81728b17-2dc3-4641-a5c3-44be87ea559f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "PLCC-2_3528_HandSolder"
+		(at 0 2.4 0)
+		(layer "F.Fab")
+		(uuid "ee076349-4d9c-4269-964b-4dbcd5563ca5")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "7efa4e2c-25ad-477a-8990-75256efebc5b")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "1f132794-1944-49c3-b125-670174849de7")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start -3.35 -1.1)
+		(end -3.35 1.1)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "a9877311-40f0-4701-9474-05e132a175be")
+	)
+	(fp_line
+		(start -0.45 -1.45)
+		(end 0.45 -1.45)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "b0c0fe01-f857-402f-a8d0-ad815d4612ee")
+	)
+	(fp_line
+		(start -0.45 1.45)
+		(end 0.45 1.45)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "24184de2-6e7f-4fcc-8fba-68acff56fc26")
+	)
+	(fp_rect
+		(start -3.55 -1.7)
+		(end 3.25 1.7)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "cc83db2c-288d-4788-83bf-c5a2d19ecc4e")
+	)
+	(fp_line
+		(start -1.6 -1.35)
+		(end 1.6 -1.35)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "ea0201a3-714b-4112-b492-3a6cdb7f1f69")
+	)
+	(fp_line
+		(start -1.6 1.35)
+		(end -1.6 -1.35)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "d6874576-fe24-4097-800b-1dcac1286bc5")
+	)
+	(fp_line
+		(start 1 1.35)
+		(end -1.6 1.35)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "7d2ebaa7-708e-4acf-a89d-9a6976200826")
+	)
+	(fp_line
+		(start 1.6 -1.35)
+		(end 1.6 0.75)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "2ecbe80a-10c9-4e3f-8c5f-61407d51c75d")
+	)
+	(fp_line
+		(start 1.6 0.75)
+		(end 1 1.35)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "38f952bc-ecef-4a8e-8f0e-481be9be593b")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "9abe768c-9c05-4de8-a568-68743f3f1e0c")
+		(effects
+			(font
+				(size 0.6 0.6)
+				(thickness 0.09)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -1.9 0)
+		(size 2.2 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.1)
+		(uuid "3337218f-7863-4ccb-9bf1-e50bb0937c43")
+	)
+	(pad "2" smd roundrect
+		(at 1.9 0)
+		(size 2.2 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.1)
+		(uuid "d1469b66-31a2-402b-8ed1-479ce0160796")
+	)
+	(embedded_fonts no)
+	(model "${KICAD10_3DMODEL_DIR}/LED_SMD.3dshapes/LED_PLCC-2_3.4x3.0mm_AK.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 180)
+		)
+	)
+)

@@ -9,6 +9,7 @@ lengkap tetap ada di git.
 | `hardware/ltm-sensor/`, `hardware/ltm-sensor.pdf`, `hardware/render/pcb-sensor-atas-bawah.png`: PCB sensor v2 hasil generator (16 ITR20001 + mux modul + MCP23017, kabel pita) | `hardware/sensor-garis/` (12 QRE1113GR + CD74HC4067, buatan user) |
 | `mechanical/LTM_v11.step`, `LTM_v12.step`, `v13/`, `v14/`, `cadquery/ltm_v11–14.py`, `viewer/v13–14.html`, `render/ltm-v11–14-*.png` | mekanik v15 di `mechanical/` |
 | `mechanical/konsep-ringkas.png`, `mechanical/fusion360/`: konsep ringkas tanpa leher (sebelum v10) | v10 dan seterusnya |
+| `hardware/lfm-x2-rev-a/` (15/11): LFM X2 rev A, 1 PCB all-in-one 94,5 × 177 mm dengan 12 QRE1113GR | `hardware/lfm-x2/` rev B (4 papan gaya Ichibot, PT67-21B + LED IR). Pustaka simbol tetap `hardware/lfm-x2/lfm-x2.kicad_sym` |
 
 Penjelasan tiap versi mekanik: `mechanical/README.md` di folder ini. Proyek KiCad `ltm-sensor` tetap bisa dibuka
 (library `ltm` dirujuk ke `hardware/ltm-lib/`).

@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "lfm-x2")(type "KiCad")(uri "${KIPRJMOD}/../lfm-x2.pretty")(options "")(descr "LFM X2: PLCC-2 3528 solder tangan"))
+)

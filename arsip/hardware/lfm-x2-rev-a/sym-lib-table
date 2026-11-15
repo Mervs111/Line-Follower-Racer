@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "lfm-x2")(type "KiCad")(uri "${KIPRJMOD}/../../../hardware/lfm-x2/lfm-x2.kicad_sym")(options "")(descr "LFM X2: BTN7971B, CH340C catu 3,3 V, MP1584EN (pustaka rev B, dipakai bersama)"))
+)

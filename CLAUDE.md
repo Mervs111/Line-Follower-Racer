@@ -82,20 +82,21 @@ memakai pin map yang sama.
   `gen_pcb.py` masih aturan lama (0,8 mm).
 
 ### LFM X2 (side project, mulai 15/11)
-- `hardware/lfm-x2/` (baca `README.md` di sana): **1 PCB all-in-one full SMD gaya Ichibot Ultimate 5 Max, di luar RAB
-  PjBL, dana sendiri; rancangan utama di atas tidak berubah.** Keputusan user: modul ESP32-WROOM-32E + CH340C + USB-C
-  di papan, **4× BTN7971B** (TO-263-7) disolder langsung, sensor + mux = salinan PCB sensor rev B.
-- Skematik dari `gen_sch_x2.py` + `gen_lib_x2.py` (ERC 0; `cek_net_x2.py` membandingkan net tiap pin). Pin motor beda
-  dari jalur utama: ML_IN1/IN2 = 4/16, MR_IN1/IN2 = 17/18, DRV_EN = 2; tombol START di GPIO35.
-- PCB dari `gen_pcb_x2.py tata`: 94,5 × 177 mm (112 cm²), 132 footprint ditempatkan + net, **tanpa jalur: user
-  routing sendiri**. Jangan jalankan `tata` lagi sesudah ada jalur (membuat ulang papan). DRC 0 error.
-- Terbuka: celah pad USB-C 16 pin 0,2 mm di bawah batas tempat cetak (0,254); jarak lubang bracket N20 dan OLED
-  belum diukur; referensi di `docs/referensi/ichibot-ultimate-5-max/`.
-- **Rombak 15/11 (keputusan user, KiCad belum diubah)**: 3 papan gaya Ichibot (utama segitiga dengan ESP32 + sebagian
-  besar komponen di sisi bawah dan konektor di sisi atas; antarmuka OLED + tombol ditumpuk di atasnya; driver 4×
-  BTN7971B terpisah), papan sensor baru bentuk Ichibot (bulan sabit, leher garpu), **12 sensor LED putih +
-  photodioda bening** (ganti QRE1113), **OLED 0,96"**, **LiPo 2S** kecil di dudukan 3D print (Ichibot memakai 3S, tidak
-  boleh di lomba). Menunggu: pilihan photodioda (3 mm THT atau 3528 SMD toko Ichibot) dan data LiPo dari user.
+- `hardware/lfm-x2/` (baca `README.md` di sana): **full SMD gaya Ichibot Ultimate 5 Max, di luar RAB PjBL, dana
+  sendiri; rancangan utama di atas tidak berubah.** Keputusan user: modul ESP32-WROOM-32E + CH340C + USB-C di papan,
+  **4× BTN7971B** (TO-263-7). Pin motor beda dari jalur utama: ML_IN1/IN2 = 4/16, MR_IN1/IN2 = 17/18, DRV_EN = 2;
+  START di GPIO35.
+- **Rev B (15/11, rombak keputusan user)**: 4 proyek KiCad `utama/` (segitiga, ESP32 + hampir semua komponen di sisi
+  bawah), `antarmuka/` (OLED 0,96" + 7 tombol, ditumpuk 11 mm di atas), `driver/` (4× BTN7971B, 11 mm di bawah
+  bagian belakang), `sensor/` (bulan sabit + leher garpu, 12,5 mm di bawah ujung segitiga, FFC 8 pin tipe B ke utama).
+  Sensor = **12× PT67-21B + LED IR 940 nm 3528** (footprint `lfm-x2.pretty/PLCC-2_3528_HandSolder`), posisi = busur
+  PCB sensor rev B. **LiPo 2S** kecil di dudukan 3D print di atas motor (model + konektor belum dipilih). Pin konektor
+  antar-papan didefinisikan sekali (`KONEKTOR` di `gen_sch_x2.py`) dan dicek `cek_net_x2.py` + cek tumpuk.
+- Generator: `gen_lib_x2.py`, `gen_sch_x2.py [papan]`, `cek_net_x2.py`, `gen_pcb_x2.py tata|peta|pour [papan]`
+  (python KiCad). Semua papan ERC 0, DRC 0 error / parity 0, **tanpa jalur: user routing sendiri**. Jangan jalankan
+  `tata` lagi untuk papan yang sudah ada jalurnya. Rev A (1 PCB 94,5 × 177 mm) di `arsip/hardware/lfm-x2-rev-a/`.
+- Terbuka: celah pad USB-C 0,2 mm < 0,254; polaritas LED IR generik; konektor FFC yang dibeli vs footprint; lubang
+  OLED, spacer 11/12,5 mm, rangka 3D print belum ada. Referensi di `docs/referensi/ichibot-ultimate-5-max/`.
 
 ### Mekanik
 - **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.
@@ -221,6 +222,10 @@ odejs` ke PATH.
   project paralel, 1 PCB all-in-one, modul ESP32-WROOM-32E, driver **4× BTN7971B** (usul Claude MX1508 ditolak).
   Pilihan Claude yang belum dikonfirmasi user: saklar beban AO3401A, 6 tombol 3 + 3, antena ESP32 menonjol 5 mm,
   ekor PCB sebagai alas baterai, cas di luar robot (daftar di `hardware/lfm-x2/README.md`).
+- 15/11 (lanjutan): user merombak X2 jadi **4 papan gaya Ichibot** (ESP32 + komponen di sisi bawah papan utama
+  segitiga, antarmuka ditumpuk, driver terpisah, sensor bulan sabit), **12 sensor**, **OLED 0,96"**, **LiPo 2S** kecil,
+  QRE1113 diganti **PT67-21B + LED IR 940 nm 3528** (photodioda 3528 tidak ketemu). Pilihan Claude yang belum
+  dikonfirmasi: tinggi tumpukan 11 / 12,5 mm, FFC tipe B, OLED diputar 180°, BOOT di sisi bawah, lubang leher 7 mm.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →
