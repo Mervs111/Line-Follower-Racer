@@ -73,17 +73,16 @@ BTN_X, BTN_Y = (-18.0, -6.0, 6.0, 18.0), 25.97     # U6..U9: tab di belakang (de
 RC_Y = 39.2                                        # baris R/C di depan kaki BTN7971B, 0805 tegak
 PLACE = {
     # daya masuk (kiri): J1 -> Q1 (saklar beban) -> VBAT; SW1 di tepi kiri, tuas keluar ke kiri (depan = hidup)
-    "J1": (-29.5, 16.22, 0), "Q1": (-26.5, 22.0, 0), "R1": (-30.6, 20.7, 0), "C1": (-30.6, 22.8, 0),
-    "R2": (-30.6, 24.9, 0), "SW1": (-35.5, 33.0, -90),
-    "R3": (-28.3, 27.6, 0), "R4": (-28.3, 29.8, 0), "C3": (-28.3, 32.0, 0), "R9": (-28.3, 34.4, 0),
-    "LED1": (-28.3, 36.7, 0),
+    "J1": (-29.5, 16.22, 0), "Q1": (-26.5, 22.0, 0), "R1": (-30.6, 20.7, 180), "C1": (-30.6, 22.8, 0),
+    "R2": (-30.6, 24.9, 180), "SW1": (-35.5, 33.0, -90),
+    "R3": (-28.3, 27.6, 180), "R4": (-28.3, 29.8, 0), "R9": (-28.3, 34.4, 180), "LED1": (-28.3, 36.7, 180),
     # konektor motor tepat di belakang tab BTN7971B (pin 1 = M+ di kiri, pin 6 = M- di kanan)
     "J2": (-16.3, 16.22, 0), "J3": (3.8, 16.22, 0),
     "U6": (BTN_X[0], BTN_Y, -90), "U7": (BTN_X[1], BTN_Y, -90), "U8": (BTN_X[2], BTN_Y, -90),
     "U9": (BTN_X[3], BTN_Y, -90),
     # kanan: elko VBAT, buzzer + transistornya
     "C2": (30.6, 25.0, 0), "BZ1": (26.8, 36.2, 0), "Q4": (29.6, 46.6, 0), "R64": (29.6, 49.9, 0),
-    "R65": (29.6, 52.0, 0),
+    "R65": (29.6, 52.0, 180),
     # tombol menu: kiri ATAS / OK / BAWAH, kanan KEMBALI / START / LANJUT (depan ke belakang)
     "SW2": (-20.5, 64.0, 0), "SW5": (-20.5, 56.0, 0), "SW3": (-20.5, 48.0, 0),
     "SW4": (20.5, 64.0, 0), "SW7": (20.5, 56.0, 0), "SW6": (20.5, 48.0, 0),
@@ -93,21 +92,24 @@ PLACE = {
     "R62": (-11.9, 52.0, 90), "C21": (-11.9, 56.2, 90),
     # di bawah OLED, belakang: buck MP1584 (VBAT masuk dari belakang, L1/D1 di kanan)
     "C5": (-7.2, 43.6, 0), "R32": (4.5, 43.6, 0), "C6": (-3.3, 45.6, 0), "U4": (-3.3, 49.6, 180),
-    "C4": (-8.4, 49.6, 90), "R5": (-7.0, 53.6, 0), "D1": (3.0, 49.0, 90), "L1": (9.0, 51.0, 90),
-    "C7": (9.0, 56.8, 180), "R7": (-2.6, 53.7, 180), "R6": (-2.6, 55.9, 180), "R8": (2.2, 53.7, 0),
+    "C4": (-8.4, 49.6, 90), "R5": (-7.0, 53.6, 180), "D1": (3.0, 49.0, 90), "L1": (9.0, 51.0, 90),
+    "C7": (9.0, 56.8, 0), "R7": (-2.6, 53.7, 180), "R6": (-2.6, 55.9, 180), "R8": (2.2, 53.7, 0),
     "C8": (2.2, 55.9, 180),
-    # di bawah OLED, depan: dioda-OR 5 V dan LDO 3,3 V
-    "D2": (8.0, 60.0, 0), "D3": (8.0, 63.8, 0), "C9": (3.0, 61.8, -90), "U3": (-3.0, 61.8, 180),
+    # di bawah OLED, depan: dioda 5 V dari buck dan LDO 3,3 V (dioda VBUS D3 di dekat USB)
+    "D2": (8.0, 60.0, 0), "D3": (-11.0, 70.6, 180), "C9": (3.0, 61.8, -90), "U3": (-3.0, 61.8, 180),
     "C10": (-9.0, 61.8, 90), "C11": (-11.9, 61.2, 90),
     "J5": (-3.81, 68.65, 90),                      # socket OLED, pin 1 (GND) di kiri
     # MCU: ESP32 melintang, bagian antena (6,2 mm) menonjol 5 mm keluar tepi kanan supaya daerah larangan tembaga di
     # footprint (15 mm kiri-kanan antena, x > 25,8) tidak mengenai tombol kanan dan sayap sensor. USB-C di tepi kiri,
     # CH340C + auto-reset di antaranya.
-    "U1": (19.25, 82.5, -90), "J4": (-23.8, 78.0, -90), "R11": (-17.3, 73.6, 90), "R10": (-17.3, 82.4, 90),
-    "U2": (-9.0, 78.0, 0), "C12": (-9.0, 84.4, 0), "R15": (0.8, 73.2, 0), "R13": (0.8, 75.5, 0),
+    "U1": (19.25, 82.5, -90), "J4": (-23.8, 78.0, -90), "R11": (-17.3, 73.6, -90), "R10": (-17.3, 82.4, 90),
+    "U2": (-9.0, 78.0, 0), "C12": (-9.0, 84.4, 180), "R15": (0.8, 73.2, 0), "R13": (0.8, 75.5, 0),
     "Q3": (0.8, 78.4, 0), "Q2": (0.8, 82.4, 0), "R12": (0.8, 85.3, 0),
-    "SW9": (-21.0, 89.5, 0), "SW8": (-10.2, 89.9, 0),
-    "C15": (21.5, 94.4, 0), "C14": (16.5, 94.6, 0), "R14": (16.9, 96.9, 0), "C13": (12.6, 96.9, 0),
+    # RST di depan Q2 (net EN pendek), BOOT di kirinya. Di depan ESP32: C15 (3V3), C3 (VBAT_SENSE, tepat di GPIO39),
+    # C13 + R14 (EN), C14 (3V3)
+    "SW8": (0.3, 90.0, 0), "SW9": (-10.2, 89.9, 0),
+    "C15": (21.5, 94.4, 0), "C3": (17.6, 94.4, 180), "C13": (13.5, 94.4, 0), "C14": (17.5, 96.8, 0),
+    "R14": (13.0, 96.6, 0),
     # leher: mux dan kapasitornya di posisi yang sama dengan PCB sensor rev B (U13, C1)
     "U5": (0.0, 113.985, 0), "C20": (7.2, 120.97, 90),
 }
@@ -130,8 +132,8 @@ PAD_FIX = {"SW1": {"": (2.0, 3.3)}}
 LBL_BTN = {"SW2": "ATAS", "SW5": "OK", "SW3": "BAWAH", "SW4": "KEMBALI", "SW7": "START", "SW6": "LANJUT"}
 SILK = [  # (teks, x, y, ukuran, rotasi)
     ("BAT", -34.6, 16.2, 1.0, 90), ("+  -", -28.25, 10.6, 1.0, 0), ("MOTOR KIRI", -10.0, 10.6, 1.0, 0),
-    ("MOTOR KANAN", 10.0, 10.6, 1.0, 0), ("ON", -34.6, 38.0, 1.0, 0), ("BOOT", -21.0, 94.2, 1.0, 0),
-    ("RST", -10.2, 94.6, 1.0, 0), ("LFM X2 rev A", 0.0, -29.0, 2.0, 0),
+    ("MOTOR KANAN", 10.0, 10.6, 1.0, 0), ("ON", -34.6, 38.0, 1.0, 0), ("BOOT", -10.2, 94.6, 1.0, 0),
+    ("RST", 0.3, 94.6, 1.0, 0), ("LFM X2 rev A", 0.0, -29.0, 2.0, 0),
 ]
 SILK_B = [("LFM X2 rev A", 0.0, 0.0, 2.0), ("PCB all-in-one, side project LFM 2026", 0.0, -3.5, 1.2)]
 # referensi di silkscreen hanya untuk komponen yang punya tempat kosong di sebelahnya; sisanya di lapisan Fab

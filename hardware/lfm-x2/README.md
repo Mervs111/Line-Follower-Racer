@@ -27,7 +27,7 @@ user sendiri di KiCad. Buka `lfm-x2.kicad_pro` (KiCad 10).
 | `lfm-x2.kicad_dru` | jarak ke pour 0,5 mm + 2 pengecualian (lihat "Hasil cek") |
 | `lfm-x2-peta-rakit-atas.pdf`, `-bawah.pdf` | lapisan Fab (referensi + nilai tiap komponen) untuk menyolder |
 | `net-harapan.json` | net tiap pin menurut generator, dipakai `cek_net_x2.py` |
-| `gambar/` | render 3D atas/bawah dan gambar tata letak |
+| `gambar/` | render 3D atas/bawah, gambar tata letak, `x2-ratsnest-sinyal.png` (sambungan terpendek tiap net sinyal) |
 
 Skrip (di `hardware/tools/`):
 ```
@@ -57,14 +57,15 @@ menolak kalau papan sudah berisi jalur (kecuali `--paksa`). Kalau skematik diuba
 ### Pin ESP32 (beda dari jalur utama hanya di motor)
 | Fungsi | GPIO | | Fungsi | GPIO |
 |---|---|---|---|---|
-| MUX_SIG | 36 | | **ML_IN1 / ML_IN2** | **18 / 17** |
-| VBAT_SENSE | 39 | | **MR_IN1 / MR_IN2** | **16 / 4** |
+| MUX_SIG | 36 | | **ML_IN1 / ML_IN2** | **4 / 16** |
+| VBAT_SENSE | 39 | | **MR_IN1 / MR_IN2** | **17 / 18** |
 | MUX_S0 / S1 / S2 / S3 | 26 / 25 / 33 / 32 | | **DRV_EN** (INH 4 chip) | **2** |
 | BTN (tangga 5 tombol) / BTN2 (START) | 34 / 35 | | ENC_L A / B | 13 / 14 |
 | Buzzer | 12 | | ENC_R A / B | 23 / 19 |
 | I2C SDA / SCL | 21 / 22 | | UART0 ke CH340C | 1 / 3 |
 
-GPIO5, 15, 27 kosong. Jalur utama memakai TB6612 (PWMA/AIN1/AIN2 ...), jadi `Pins.h` X2 nanti berbeda di bagian motor:
+GPIO5, 15, 27 kosong. Urutan GPIO4/16/17/18 di baris kaki belakang ESP32 sama dengan urutan chip U6–U9 dari kiri
+ke kanan, jadi keempat jalur IN bisa ditarik sejajar tanpa bersilangan. Jalur utama memakai TB6612 (PWMA/AIN1/AIN2 ...), jadi `Pins.h` X2 nanti berbeda di bagian motor:
 4 kanal PWM (20 kHz masih di bawah batas 25 kHz BTN7971B) + 1 pin enable.
 
 ## Tata letak
@@ -77,8 +78,8 @@ proyek PCB lain). Papan **94,5 × 177,1 mm, 112 cm²**; roda di luar papan (leba
 | motor | −12 … 12 | 2 motor N20 di atas PCB, 4 lubang M2 bracket di (±32; ±9). Tidak ada komponen |
 | konektor | 12 … 19 | J1 baterai (kiri), J2 motor kiri, J3 motor kanan |
 | driver | 19 … 41 | U6–U9 berjajar, tab ke belakang tepat di depan J2/J3, kaki ke depan; R/C tiap chip sebaris di depan kakinya. Kiri: Q1, SW1 (tuas keluar tepi kiri, ke depan = hidup), pembagi VBAT, LED daya. Kanan: C2, buzzer |
-| antarmuka | 42 … 70 | OLED di socket J5 (tengah di y 56); di bawahnya buck (belakang) dan dioda-OR + LDO (depan). Tombol kiri: ATAS, OK, BAWAH. Kanan: KEMBALI, START, LANJUT |
-| MCU | 70 … 97 | ESP32 melintang, antena menonjol 5 mm keluar tepi kanan. USB-C di tepi kiri, CH340C dan auto-reset di antaranya, BOOT dan RST di depan USB |
+| antarmuka | 42 … 70 | OLED di socket J5 (tengah di y 56); di bawahnya buck (belakang) dan dioda 5 V + LDO (depan). Tombol kiri: ATAS, OK, BAWAH. Kanan: KEMBALI, START, LANJUT |
+| MCU | 70 … 97 | ESP32 melintang, antena menonjol 5 mm keluar tepi kanan. USB-C di tepi kiri (dioda VBUS D3 di belakangnya), CH340C dan auto-reset di antaranya, BOOT dan RST di depannya, C3 (filter VBAT_SENSE) tepat di kaki GPIO39 |
 | leher | 97 … 114 | 2 lubang M3 skid (±4,75; 99,5), mux U5 |
 | sensor | 103 … 131 | 12 QRE1113GR + 24 resistor di **sisi bawah**, nomor 1–12 di silkscreen atas |
 
@@ -96,6 +97,9 @@ sisi belakang (GPIO4/16/17/18/19/21/22/23, RX/TX) ke driver, OLED, CH340C.
 - **Antena**: footprint U1 membawa daerah larangan sendiri (x > 25,8; y 58 … 107): tidak boleh ada jalur, via, pour.
   Tombol kanan berhenti di x 25,6, jadi tidak kena.
 - **USB**: D+ dan D− dari J4 langsung ke U2 kaki 5 dan 6 (sisi kiri U2), sejajar dan pendek.
+- **Jalur panjang** (wajar lewat sisi bawah): encoder J2/J3 → ESP32 (58–77 mm, lewat bawah deretan BTN7971B),
+  BTN (131 mm, dua kolom tombol), VBAT_SENSE dari R3/R4 di kiri belakang ke GPIO39 (84 mm), BUZ (46 mm),
+  TX/RX dari sisi kiri U2 memutar ke baris kaki belakang ESP32 (33 mm).
 - **Busur sensor**: posisi dan net 122 pad (12 sensor, 24 resistor, mux, C20) sudah dicek sama dengan
   `hardware/sensor-garis` rev B. Pola jalur rev B bisa ditiru persis; nama net anoda berbeda (rev B `Net-(Un-A)`, X2
   `A1`…`A12`).

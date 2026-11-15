@@ -11,7 +11,7 @@ Entri terbaru di atas.
   `hardware/lfm-x2/`, penjelasan di `README.md` di sana.
   - **Skematik** (`gen_lib_x2.py`, `gen_sch_x2.py`): 132 komponen, 124 net, 5 blok. Daya: saklar beban AO3401A, buck
     MP1584EN 5,31 V, dioda-OR dengan VBUS, AMS1117-3.3. Sensor + mux sama dengan PCB sensor rev B. 5 tombol di tangga
-    resistor GPIO34 + START di GPIO35. Pin motor baru: ML 18/17, MR 16/4, DRV_EN 2. ERC 0;
+    resistor GPIO34 + START di GPIO35. Pin motor baru: ML 4/16, MR 17/18, DRV_EN 2. ERC 0;
     `cek_net_x2.py`: 398 pin cocok dengan daftar net generator.
   - **Tata letak** (`gen_pcb_x2.py tata`): papan 94,5 × 177,1 mm (112 cm²), dari belakang: alas pack + celah strap,
     2 motor N20 di atas papan, J1/J2/J3, 4 BTN7971B berjajar (tab menghadap konektor motor), OLED diapit 3 + 3 tombol
@@ -26,6 +26,10 @@ Entri terbaru di atas.
     baterai, roda). Induktor 15 µH CD75 satuan belum ketemu.
   - 5 screenshot Ichibot Ultimate 5 Max dari user disalin ke `docs/referensi/ichibot-ultimate-5-max/`; satu file
     (`…054037.png`) tidak terbaca (izin baca ditolak).
+  - **Perapian sesudah cek ratsnest** (permintaan user "lanjutkan"): pin motor diurutkan ulang (semula ML 18/17,
+    MR 16/4) supaya 4 jalur IN tidak bersilangan menuju U6–U9; RST dipindah ke depan Q2 dan BOOT ke sebelahnya
+    (net EN 51 → 39 mm); dioda VBUS D3 ke belakang USB; C3 (filter VBAT_SENSE) ke kaki GPIO39; 11 komponen 2 kaki
+    dibalik 180°. Total sambungan terpendek 2.950 → 2.883 mm. ERC 0, net cocok, DRC tetap 0 error.
   - Belum diukur: jarak lubang bracket N20, lubang modul OLED, tinggi skid depan. Pilihan yang diambil Claude sendiri
     (saklar beban, 6 tombol, ekor alas baterai, cas di luar robot) didaftar di README untuk dikonfirmasi user.
 

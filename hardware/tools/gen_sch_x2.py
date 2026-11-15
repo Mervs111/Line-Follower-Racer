@@ -142,7 +142,7 @@ part("U1", "RF_Module:ESP32-WROOM-32E", "ESP32-WROOM-32E", "RF_Module:ESP32-WROO
      {"2": "+3V3", "[1,15,38,39]": "GND", "3": "EN", "4": "MUX_SIG", "5": "VBAT_SENSE", "6": "BTN", "7": "BTN2",
       "8": "MUX_S3", "9": "MUX_S2", "10": "MUX_S1", "11": "MUX_S0", "12": "NC", "13": "ENC_L_B", "14": "BUZ",
       "16": "ENC_L_A", "17": "NC", "18": "NC", "19": "NC", "20": "NC", "21": "NC", "22": "NC", "23": "NC",
-      "24": "DRV_EN", "25": "IO0", "26": "MR_IN2", "27": "MR_IN1", "28": "ML_IN2", "29": "NC", "30": "ML_IN1",
+      "24": "DRV_EN", "25": "IO0", "26": "ML_IN1", "27": "ML_IN2", "28": "MR_IN1", "29": "NC", "30": "MR_IN2",
       "31": "ENC_R_B", "32": "NC", "33": "SDA", "34": "ESP_RX", "35": "ESP_TX", "36": "SCL", "37": "ENC_R_A"},
      fields={"ref": (-15.24, -34.29), "val": (2.54, -34.29)})
 R("10k", "+3V3", "EN", 254.0, 180.34)                                                     # R14
@@ -247,7 +247,7 @@ BLOCKS = [
         (238.76, 388.62, "R pull-down menjaga GPIO12\nLOW saat boot"),
     ]),
     (297.18, 363.22, 398.78, 406.4, "PIN ESP32 (beda dari jalur utama: motor)", [
-        (299.72, 388.62, "ML_IN1 18, ML_IN2 17, MR_IN1 16, MR_IN2 4, DRV_EN 2\n"
+        (299.72, 388.62, "ML_IN1 4, ML_IN2 16, MR_IN1 17, MR_IN2 18, DRV_EN 2\n"
                          "MUX_SIG 36, S0-S3 26/25/33/32, VBAT_SENSE 39\n"
                          "BTN 34, BTN2 35, BUZ 12, SDA 21, SCL 22\n"
                          "ENC_L A/B 13/14, ENC_R A/B 23/19"),

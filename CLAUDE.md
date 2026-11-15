@@ -86,7 +86,7 @@ memakai pin map yang sama.
   PjBL, dana sendiri; rancangan utama di atas tidak berubah.** Keputusan user: modul ESP32-WROOM-32E + CH340C + USB-C
   di papan, **4× BTN7971B** (TO-263-7) disolder langsung, sensor + mux = salinan PCB sensor rev B.
 - Skematik dari `gen_sch_x2.py` + `gen_lib_x2.py` (ERC 0; `cek_net_x2.py` membandingkan net tiap pin). Pin motor beda
-  dari jalur utama: ML_IN1/IN2 = 18/17, MR_IN1/IN2 = 16/4, DRV_EN = 2; tombol START di GPIO35.
+  dari jalur utama: ML_IN1/IN2 = 4/16, MR_IN1/IN2 = 17/18, DRV_EN = 2; tombol START di GPIO35.
 - PCB dari `gen_pcb_x2.py tata`: 94,5 × 177 mm (112 cm²), 132 footprint ditempatkan + net, **tanpa jalur: user
   routing sendiri**. Jangan jalankan `tata` lagi sesudah ada jalur (membuat ulang papan). DRC 0 error.
 - Terbuka: celah pad USB-C 16 pin 0,2 mm di bawah batas tempat cetak (0,254); jarak lubang bracket N20 dan OLED
