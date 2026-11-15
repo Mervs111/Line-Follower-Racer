@@ -91,6 +91,11 @@ memakai pin map yang sama.
   routing sendiri**. Jangan jalankan `tata` lagi sesudah ada jalur (membuat ulang papan). DRC 0 error.
 - Terbuka: celah pad USB-C 16 pin 0,2 mm di bawah batas tempat cetak (0,254); jarak lubang bracket N20 dan OLED
   belum diukur; referensi di `docs/referensi/ichibot-ultimate-5-max/`.
+- **Rombak 15/11 (keputusan user, KiCad belum diubah)**: 3 papan gaya Ichibot (utama segitiga dengan ESP32 + sebagian
+  besar komponen di sisi bawah dan konektor di sisi atas; antarmuka OLED + tombol ditumpuk di atasnya; driver 4×
+  BTN7971B terpisah), papan sensor baru bentuk Ichibot (bulan sabit, leher garpu), **12 sensor LED putih +
+  photodioda bening** (ganti QRE1113), **OLED 0,96"**, **LiPo 2S** kecil di dudukan 3D print (Ichibot memakai 3S, tidak
+  boleh di lomba). Menunggu: pilihan photodioda (3 mm THT atau 3528 SMD toko Ichibot) dan data LiPo dari user.
 
 ### Mekanik
 - **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.
