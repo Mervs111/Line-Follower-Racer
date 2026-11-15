@@ -1,0 +1,9 @@
+#VRML V2.0 utf8
+# XT30PW-M sederhana (dibuat gen_lib_x2.py)
+Transform { translation -0.9843 3.3858 0.9843 children Shape { appearance Appearance { material Material { diffuseColor 0.95 0.75 0.1 } } geometry Box { size 3.8976 3.5433 1.9685 } } }
+Transform { translation -3.0709 3.9370 0.2362 children Shape { appearance Appearance { material Material { diffuseColor 0.95 0.75 0.1 } } geometry Box { size 0.2756 0.7874 0.4724 } } }
+Transform { translation 1.1024 3.9370 0.2362 children Shape { appearance Appearance { material Material { diffuseColor 0.95 0.75 0.1 } } geometry Box { size 0.2756 0.7874 0.4724 } } }
+Transform { translation 0.0000 0.6496 0.9843 children Shape { appearance Appearance { material Material { diffuseColor 0.85 0.7 0.3 } } geometry Box { size 0.6299 1.9291 0.6299 } } }
+Transform { translation 0.0000 -0.0000 0.1575 children Shape { appearance Appearance { material Material { diffuseColor 0.85 0.7 0.3 } } geometry Box { size 0.6299 0.6299 2.2835 } } }
+Transform { translation -1.9685 0.6496 0.9843 children Shape { appearance Appearance { material Material { diffuseColor 0.85 0.7 0.3 } } geometry Box { size 0.6299 1.9291 0.6299 } } }
+Transform { translation -1.9685 -0.0000 0.1575 children Shape { appearance Appearance { material Material { diffuseColor 0.85 0.7 0.3 } } geometry Box { size 0.6299 0.6299 2.2835 } } }

@@ -22,6 +22,7 @@ Jalur digambar user sendiri di KiCad 10. Tiap papan = proyek KiCad sendiri (liha
 | 15/11 | Susunan | gaya Ichibot: papan utama segitiga + antarmuka + driver terpisah + sensor bulan sabit, LiPo 2S kecil |
 | 15/11 | Sensor | **12 sensor**, fototransistor **Everlight PT67-21B** (3528 PLCC, lensa hitam, 940 nm) + **LED IR 940 nm 3528** (8 mW/sr @100 mA, temuan user); photodioda 3528 tidak ketemu |
 | 15/11 | OLED | 0,96" I2C |
+| 15/11 | Konektor baterai | **XT30**: jantan siku XT30PW-M di papan utama, pack LiPo memakai XT30 betina |
 
 ## Isi folder
 | Path | Isi |
@@ -35,6 +36,7 @@ Jalur digambar user sendiri di KiCad 10. Tiap papan = proyek KiCad sendiri (liha
 | `<papan>/net-harapan.json` | net tiap pin menurut generator, dipakai `cek_net_x2.py` |
 | `lfm-x2.kicad_sym` | simbol bersama: `BTN7971B`, `CH340C_3V3` (pin V3 pasif), `MP1584EN` |
 | `lfm-x2.pretty/` | footprint bersama: `PLCC-2_3528_HandSolder` (LED IR dan PT67-21B) |
+| `lfm-x2.3dshapes/` | model 3D kotak XT30PW-M (STEP pustaka KiCad tidak terpasang di laptop) |
 | `gambar/` | `x2b-susunan.png` (tampak atas bertumpuk + tampak samping), render 3D tiap papan |
 
 Tiap proyek: net class Default 0,3 mm, Daya 0,5 mm, Daya besar 1,2 mm; jarak 0,3 mm; via 1,3/0,6; `.kicad_dru` jarak
@@ -42,7 +44,7 @@ ke pour 0,5 mm (aturan tempat cetak).
 
 Skrip (di `hardware/tools/`, jalankan dari folder repo; `KPY="C:/Program Files/KiCad/10.0/bin/python.exe"`):
 ```
-py hardware/tools/gen_lib_x2.py                          # simbol + footprint bersama
+py hardware/tools/gen_lib_x2.py [xt30]                   # simbol + footprint bersama (xt30: model 3D XT30 saja)
 py hardware/tools/gen_sch_x2.py [papan ...] [--paksa]    # skematik (menimpa; UUID simbol dipertahankan)
 py hardware/tools/cek_net_x2.py [papan ...]              # ERC + net tiap pin + konektor antar-papan
 "$KPY" hardware/tools/gen_pcb_x2.py tata [papan ...]     # tata letak awal (papan utama dulu)
@@ -74,7 +76,8 @@ Jarak 11 mm = socket 8,5 mm + plastik header 2,54 mm. Leher sensor punya 4 luban
 | utama J5 (bawah, socket 2×7) ↔ driver J1 (atas, header 2×7) | 1–2 VBAT, 3–4 GND, 5 ML_IN1, 6 ML_IN2, 7 MR_IN1, 8 MR_IN2, 9 DRV_EN, 10 +3V3, 11–14 ENC_L_A/B, ENC_R_A/B | posisi pin + net dicek sama |
 
 ## Rangkaian
-1. **Daya (utama)**: J1 LiPo 2S → Q1 AO3401A (saklar beban sisi atas, SW1 hanya dialiri arus gate) → VBAT → J5 ke
+1. **Daya (utama)**: J1 XT30 LiPo 2S (pin 1 = GND di sisi bersudut miring, pin 2 = BAT+ di sisi rata; tanda +/− di
+   silkscreen) → Q1 AO3401A (saklar beban sisi atas, SW1 hanya dialiri arus gate) → VBAT → J5 ke
    driver + C3/C4 + U4. U4 MP1584EN membuat 5,31 V (R6/R7 220k/39k, ±900 kHz, L1 15 µH), lewat D2 SS14 ke +5V; USB
    (VBUS) lewat D3 ke +5V juga, jadi papan hidup dari USB tanpa baterai (motor tidak). U3 AMS1117-3.3 → +3V3.
    VBAT_SENSE = VBAT × 33/133 ke GPIO39 (C2 100 nF).
@@ -109,7 +112,8 @@ enable.
 - **Utama**: ESP32 di sisi bawah, melintang di bahu kiri, antena menonjol 3 mm keluar tepi kiri. Baris kaki 1–14
   (MUX, VBAT, BTN, BUZ, ENC_L) menghadap depan ke J3/J4; baris 25–38 (IN motor, SDA/SCL, ENC_R, RX/TX) menghadap
   belakang ke J5 dan CH340C. Bahu kanan: USB-C dan SW1 (tuas keluar tepi kanan) di sisi atas, CH340C + R CC + D3 di
-  bawahnya. Kanan depan: buck. Tengah: LDO + D2. Kanan belakang: J1 baterai + LED daya (atas), Q1 (bawah). Ujung
+  bawahnya. Kanan depan: buck. Tengah: LDO + D2. Kanan belakang: J1 XT30 siku (atas, mulut menghadap baterai di belakang, 0,55 mm
+  melewati tepi supaya steker tidak menabrak papan) + LED daya, Q1 (bawah) di antara kaki dan pasak XT30. Ujung
   segitiga: J3 FFC (bawah) dengan mulut ke depan, tepat di tepi.
 - **Antarmuka**: OLED di tengah, tombol 3 + 3 mengapitnya, RST di tab depan, buzzer di tab belakang (tidak di bawah
   OLED karena tinggi 9,5 mm). J1 di sisi bawah, tepat di atas J4 papan utama.
@@ -133,8 +137,8 @@ enable.
   `S1`…`S12`.
 - **GND pour** dua sisi sesudah routing: `gen_pcb_x2.py pour <papan>` atau gambar zone sendiri.
 - **Jangan "Update Footprints from Library"** untuk utama U1 (via termal bor 0,2 mm, keepout, dan courtyard antena
-  dibuang), SW1 (pad pemasang dikecilkan ke 2,0 × 3,3 supaya jarak ke kaki ≥ 0,3 mm) dan J2 (garis silk dipindah ke
-  Fab). Peringatan "footprint beda dari pustaka" di papan sensor hanya pembulatan rotasi miring, aman.
+  dibuang), SW1 (pad pemasang dikecilkan ke 2,0 × 3,3 supaya jarak ke kaki ≥ 0,3 mm), J2 (garis silk dipindah ke
+  Fab) dan J1 (garis silk badan ke Fab, model 3D kotak). Peringatan "footprint beda dari pustaka" di papan sensor hanya pembulatan rotasi miring, aman.
 
 ## Daftar komponen (keempat papan)
 Harga dari pencarian Tokopedia 15/11/2026 (bisa berubah; harga rev B dari cuplikan hasil pencarian karena halaman
@@ -168,7 +172,8 @@ pencarian: link listing temuan user belum dicatat.
 | Resistor 0805: 220 / 1k / 3,9k / 4,7k / 5,1k / 8,2k / 10k / 18k / 33k / 39k / 100k / 220k | | 12 / 11 / 1 / 8 / 2 / 1 / 22 / 1 / 1 / 2 / 4 / 1 | ± Rp100 | 66 buah |
 | LED 0805 hijau | utama: LED1 | 1 | ± Rp200 | |
 | Saklar geser SPDT siku OS102011MA1Q | utama: SW1 | 1 | ± Rp1.500 | THT, jarak kaki 2,0 mm |
-| JST XH 2 pin / 6 pin (header + housing) | utama: J1 / driver: J2, J3 | 1 / 2 | Rp5.000 / set | THT; konektor LiPo belum pasti (lihat bawah) |
+| XT30PW-M (XT30 jantan, PCB siku) | utama: J1 | 1 | ± Rp7.500–10.000 | pencarian "XT30PW male tanam pcb" ([Tokopedia](https://www.tokopedia.com/find/konektor-xt30)); pastikan **PW-M siku**, bukan steker kabel atau versi tegak (UPB) |
+| JST XH 6 pin (header + housing) | driver: J2, J3 | 2 | Rp5.000 / set | THT |
 | Buzzer aktif 5 V 12 × 9,5 mm | antarmuka: BZ1 | 1 | Rp3.000 | THT |
 | OLED 0,96" I2C | | 1 | Rp36.500 | sama dengan jalur utama |
 | Motor N20 6 V 500 RPM + encoder | | 2 | Rp55.000 | sama dengan jalur utama |
@@ -190,8 +195,8 @@ Belum termasuk PT67-21B, LED IR, konektor/kabel FFC, header, spacer, LiPo, cetak
 ## Belum dicek / perlu diukur sebelum cetak
 1. **USB-C 16 pin tidak lolos aturan tempat cetak**: celah pad 0,2 mm < 0,254 mm (19 peringatan DRC). Tanyakan ke
    tempat cetak, atau ganti konektor.
-2. **LiPo 2S**: model dan konektornya belum dipilih (J1 digambar JST XH 2 pin). Calon dari pencarian Tokopedia 15/11
-   (cuplikan hasil, belum dicek di halaman produk):
+2. **LiPo 2S**: konektor **XT30** (keputusan user 15/11), packnya belum dipilih. Calon dari pencarian Tokopedia
+   15/11 (cuplikan hasil, belum dicek di halaman produk):
 
    | Pack | Harga | Data | Konektor |
    |---|---|---|---|
@@ -203,9 +208,11 @@ Belum termasuk PT67-21B, LED IR, konektor/kabel FFC, header, spacer, LiPo, cetak
 
    Kebutuhan: arus rata-rata ±0,5 A (3–4 W, `docs/perhitungan-motor.md`), jadi 300 mAh ±35 menit, cukup untuk match
    5 menit. Dudukan di atas motor menyediakan ±55 × 30 mm. LiHV penuh 8,7 V masih di bawah 9,2 V (8,2 V + 1 V
-   guidebook) tapi butuh charger mode LiHV; bisa juga dicas biasa sampai 8,4 V. Konektor: XT30 di papan (footprint
-   AMASS XT30PW-M / -F ada di pustaka KiCad; pilih pasangan konektor pack), atau J1 tetap JST XH dengan kabel adaptor. Cek juga istilah baterai di
-   guidebook (butir A.e menulis Li-ion).
+   guidebook) tapi butuh charger mode LiHV; bisa juga dicas biasa sampai 8,4 V. Pack harus ber-XT30 **betina** (umum di pack
+   drone); pack ber-JST perlu disolder ulang ke XT30. Polaritas XT30 dikunci bentuk rumah (sisi rata = +), tapi tetap
+   cek kabel merah pack ke + sebelum dicolok pertama kali (papan tanpa proteksi polaritas terbalik). Steker + kabel
+   butuh ±15 mm di belakang tepi papan utama (sampai y ≈ 4, tinggi z 20–26): dudukan baterai jangan menutup ruang
+   itu. Cek juga istilah baterai di guidebook (butir A.e menulis Li-ion).
 3. **Polaritas LED IR generik**: tanda katoda listing bisa terbalik dari Everlight. Cek dengan multimeter mode dioda
    (probe merah di anoda → LED menyala, terlihat lewat kamera HP) sebelum menyolder 12 buah. PT67-21B: kaki 1 = emitor.
 4. **Konektor FFC** yang dibeli harus cocok dengan footprint JUSHUO AFA07-S08FCA-00 (jarak pad pemasang, sisi kontak
@@ -221,8 +228,8 @@ Belum termasuk PT67-21B, LED IR, konektor/kabel FFC, header, spacer, LiPo, cetak
 - `cek_net_x2.py`: keempat papan ERC 0, net tiap pin cocok dengan `net-harapan.json`, 3 pasang konektor antar-papan
   membawa net yang sama per pin.
 - DRC `kicad-cli pcb drc --schematic-parity` tiap papan: **0 error, parity 0**. Sambungan belum dirouting (memang
-  belum ada jalur): utama 147, antarmuka 53, driver 68, sensor 96 pad. Peringatan: utama 19 celah pad USB-C + 3
-  footprint beda dari pustaka (U1, SW1, J2, disengaja); sensor 10 footprint beda dari pustaka (pembulatan rotasi);
+  belum ada jalur): utama 147, antarmuka 53, driver 68, sensor 96 pad. Peringatan: utama 19 celah pad USB-C + 4
+  footprint beda dari pustaka (U1, SW1, J2, J1, disengaja); sensor 10 footprint beda dari pustaka (pembulatan rotasi);
   antarmuka dan driver 0.
 - Cek tumpuk (koordinat robot): pad J4 utama = pad J1 antarmuka dan pad J5 utama = pad J1 driver (posisi + net),
   pin FFC utama J3 dan sensor J1 segaris di x, lubang M3 pasangan segaris.

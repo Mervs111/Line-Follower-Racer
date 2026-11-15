@@ -400,8 +400,10 @@ def utama():
     b = Skematik("utama", "papan utama (ESP32, USB, daya)", "A2",
                  {"Daya": ["+5V", "+3V3", "GND", "+5V_BUCK", "VBUS"], "Daya besar": ["VBAT", "BAT+", "BUCK_SW"]})
     # ---- 1. DAYA ----
-    b.part("J1", "Connector_Generic:Conn_01x02", "LiPo 2S", "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical",
-           38.1, 43.18, {"1": "BAT+", "2": "GND"})
+    # XT30PW-M (jantan, pack XT30 betina): pin 1 = sisi bersudut miring = negatif, pin 2 = sisi rata = positif
+    # (gambar AMASS + tanda +/- footprint KiCad)
+    b.part("J1", "Connector_Generic:Conn_01x02", "LiPo 2S XT30",
+           "Connector_AMASS:AMASS_XT30PW-M_1x02_P2.50mm_Horizontal", 38.1, 43.18, {"1": "GND", "2": "BAT+"})
     # saklar daya: SW1 hanya mengalirkan arus gate Q1 (AO3401A, P-MOSFET sisi atas). R1 menahan gate di BAT+ (mati),
     # R2 menariknya ke GND saat SW1 hidup: Vgs = -VBAT x 100/110 = -7,6 V pada 8,4 V (batas Vgs AO3401A 12 V, jadi
     # hanya untuk 2S). C1 x R2 = 1 ms memperlambat nyala.
@@ -504,8 +506,8 @@ def utama():
 
     b.blocks = [
         (12.7, 12.7, 292.1, 152.4, "1. DAYA", [
-            (15.24, 22.86, "J1: LiPo 2S (6,0-8,4 V). Pin 1 = BAT+, tanpa proteksi polaritas terbalik.\n"
-                           "Cocokkan konektor dengan kabel LiPo (JST XH digambar; LiPo kecil sering JST PH)."),
+            (15.24, 22.86, "J1: LiPo 2S (6,0-8,4 V) lewat XT30PW-M (pack XT30 betina). Pin 1 = GND (sudut miring),\n"
+                           "pin 2 = BAT+ (sisi rata). Tanpa proteksi polaritas terbalik: cek tanda + pada pack."),
             (60.96, 60.96, "Q1 + SW1: saklar daya. SW1 ke GND = hidup (Vgs = -0,91 x VBAT).\n"
                            "SW1 hanya dialiri arus gate, arus motor lewat Q1 (maks kontinu +-2 A)."),
             (236.22, 64.77, "VBAT_SENSE ke GPIO39:\nVBAT x 33/133 (8,4 V -> 2,08 V)"),

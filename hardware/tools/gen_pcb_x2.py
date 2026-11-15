@@ -189,15 +189,16 @@ def outline(p):
 # Konektor pasangan dan sensor ditempatkan oleh kode (lihat tata()).
 PLACE = {
     "utama": {
-        # sisi atas: daya masuk kanan belakang, saklar + USB-C di bahu kanan, socket antarmuka
-        "J1": (21.75, 24.0, 0, "F"), "LED1": (31.0, 23.5, 0, "F"), "R9": (34.9, 23.5, 0, "F"),
+        # sisi atas: XT30 kanan belakang (mulut ke belakang, 0,55 mm melewati tepi papan supaya steker LiPo tidak
+        # menabrak papan), saklar + USB-C di bahu kanan, socket antarmuka
+        "J1": (20.75, 32.6, 180, "F"), "LED1": (32.25, 23.5, 0, "F"), "R9": (36.15, 23.5, 0, "F"),
         "SW1": (35.5, 31.5, 90, "F"), "J2": (34.8, 45.0, 90, "F"),
-        # sisi bawah, kanan belakang: saklar beban
-        "Q1": (25.5, 29.5, 0, "B"), "R1": (29.5, 26.5, 90, "B"), "C1": (31.8, 26.5, 90, "B"),
+        # sisi bawah, kanan belakang: saklar beban (di antara kaki XT30 dan pasak)
+        "Q1": (25.5, 28.0, 0, "B"), "R1": (29.5, 26.5, 90, "B"), "C1": (31.8, 26.5, 90, "B"),
         "R2": (34.1, 26.5, 90, "B"),
         # bahu kanan: CH340C + CC USB + dioda VBUS
         "U2": (22.5, 42.5, 90, "B"), "C11": (15.5, 44.5, 90, "B"), "R10": (29.6, 37.0, 90, "B"),
-        "R11": (31.9, 37.0, 90, "B"), "D3": (25.0, 33.5, 0, "B"),
+        "R11": (31.9, 37.0, 90, "B"), "D3": (25.0, 37.0, 0, "B"),
         # kanan depan: buck MP1584 (kalang C3 - U4 - D1 pendek)
         "U4": (15.5, 57.0, 0, "B"), "C3": (10.4, 56.5, 90, "B"), "C4": (7.9, 56.5, 90, "B"),
         "R5": (13.0, 61.8, 90, "B"), "C5": (21.3, 58.8, 90, "B"), "D1": (19.5, 50.5, 90, "B"),
@@ -256,8 +257,8 @@ REF_SILK = {"utama": {"U1", "U2", "U3", "U4", "J2", "J3", "J4", "J5", "L1", "SW1
             "antarmuka": {"J1", "J2"}, "driver": {"J1"}, "sensor": {"U1"}}
 SILK = {    # (teks, x, y, ukuran, rotasi, sisi)
     "utama": [("LFM X2", 0.0, 47.0, 3.0, 0, "F"), ("rev B - papan utama", 0.0, 43.8, 1.0, 0, "F"),
-              ("BAT +  -", 23.0, 28.6, 0.9, 0, "F"), ("SAKLAR", 34.0, 26.9, 0.9, 0, "F"), ("USB", 31.5, 50.8, 0.9, 0, "F"),
-              ("KE ANTARMUKA", 0.0, 64.2, 0.9, 0, "F"), ("PWR", 31.0, 21.5, 0.8, 0, "F"),
+              ("LIPO 2S", 23.25, 36.2, 0.9, 0, "F"), ("SAKLAR", 34.0, 26.9, 0.9, 0, "F"), ("USB", 31.5, 50.8, 0.9, 0, "F"),
+              ("KE ANTARMUKA", 0.0, 64.2, 0.9, 0, "F"), ("PWR", 32.25, 21.5, 0.8, 0, "F"),
               ("KE DRIVER", 0.0, 36.3, 0.9, 0, "B"), ("KE SENSOR", 0.0, 66.5, 0.9, 0, "B"),
               ("BOOT", -26.5, 29.5, 0.9, 0, "B"), ("LFM X2 rev B", 0.0, 24.0, 1.2, 0, "B")],
     "antarmuka": [("ATAS", -24.5, 63.3, 0.9, 0, "F"), ("BAWAH", -24.5, 36.7, 0.9, 0, "F"),
@@ -427,9 +428,15 @@ def tata(p, comps, nets, loaded, lubang, paksa, target):
         fab = pcbnew.B_Fab if fp.IsFlipped() else pcbnew.F_Fab
         if ref not in REF_SILK[p]:
             fp.Reference().SetLayer(fab)
-        if (p, ref) in (("utama", "SW1"), ("utama", "J2")):   # badan menonjol keluar tepi: garis silk pindah ke Fab
-            for g in fp.GraphicalItems():
-                if g.GetLayer() == pcbnew.F_SilkS and g.GetClass() != "PCB_FIELD":
+        if (p, ref) == ("utama", "J1"):            # STEP XT30 tidak terpasang: model kotak dari gen_lib_x2.py xt30
+            fp.Models().clear()
+            m = pcbnew.FP_3DMODEL()
+            m.m_Filename = "${KIPRJMOD}/../lfm-x2.3dshapes/AMASS_XT30PW-M_sederhana.wrl"
+            fp.Models().push_back(m)
+        if (p, ref) in (("utama", "SW1"), ("utama", "J2"), ("utama", "J1")):   # badan menonjol keluar tepi: garis silk
+            for g in fp.GraphicalItems():                                       # pindah ke Fab (tanda +/- XT30 tetap)
+                if g.GetLayer() == pcbnew.F_SilkS and g.GetClass() != "PCB_FIELD" and \
+                        not (ref == "J1" and g.GetClass() == "PCB_TEXT"):
                     g.SetLayer(pcbnew.F_Fab)
         for q in fp.Pads():
             if q.GetNumber() in PAD_FIX.get((p, ref), {}):

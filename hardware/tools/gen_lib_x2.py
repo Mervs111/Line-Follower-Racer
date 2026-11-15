@@ -16,7 +16,10 @@ Footprint:
                0,4 mm ke luar (2,2 x 2,2) untuk solder tangan, celah tetap 1,6. Pad 1 = katoda LED / emitor PT,
                pad 2 = anoda / kolektor (datasheet Everlight: sudut terpotong di sisi pad 2).
 
-Jalankan dari folder repo: py hardware/tools/gen_lib_x2.py
+Model 3D:
+- lfm-x2.3dshapes/AMASS_XT30PW-M_sederhana.wrl: kotak pengganti STEP XT30PW-M yang tidak terpasang (lihat xt30_wrl).
+
+Jalankan dari folder repo: py hardware/tools/gen_lib_x2.py   (atau ... gen_lib_x2.py xt30 untuk model XT30 saja)
 """
 import os
 import re
@@ -133,7 +136,36 @@ def plcc2():
     print(f"ditulis {out}")
 
 
+def xt30_wrl():
+    """Model 3D kotak sederhana XT30PW-M: STEP bawaan footprint KiCad tidak terpasang di laptop (folder
+    Connector_AMASS.3dshapes tidak memuat XT30). Ukuran dari gambar AMASS: badan 9,9 x 9,0 x 5,0 mm, mulut 13,15 mm di
+    depan kaki, kaki 1,6 mm (dibuat kotak). Koordinat lokal footprint (pin 1 di 0,0, mulut ke -y KiCad); VRML KiCad:
+    1 satuan = 2,54 mm, sumbu y ke atas (= -y KiCad)."""
+    kuning, emas = (0.95, 0.75, 0.1), (0.85, 0.7, 0.3)
+    kotak = [((-7.45, 2.45), (-13.1, -4.1), (0.0, 5.0), kuning),          # badan
+             ((-8.15, -7.45), (-11.0, -9.0), (0.0, 1.2), kuning),         # telinga pasak
+             ((2.45, 3.15), (-11.0, -9.0), (0.0, 1.2), kuning)]
+    for x in (0.0, -5.0):                                                # kaki: keluar belakang badan lalu turun
+        kotak += [((x - 0.8, x + 0.8), (-4.1, 0.8), (1.7, 3.3), emas),
+                  ((x - 0.8, x + 0.8), (-0.8, 0.8), (-2.5, 3.3), emas)]
+    s = ["#VRML V2.0 utf8", "# XT30PW-M sederhana (dibuat gen_lib_x2.py)"]
+    for (x0, x1), (y0, y1), (z0, z1), (r, g, b) in kotak:
+        t = [((x0 + x1) / 2) / 2.54, -((y0 + y1) / 2) / 2.54, ((z0 + z1) / 2) / 2.54]
+        u = [(x1 - x0) / 2.54, (y1 - y0) / 2.54, (z1 - z0) / 2.54]
+        s.append(f"Transform {{ translation {t[0]:.4f} {t[1]:.4f} {t[2]:.4f} children Shape {{ appearance Appearance "
+                 f"{{ material Material {{ diffuseColor {r} {g} {b} }} }} geometry Box {{ size {u[0]:.4f} {u[1]:.4f} "
+                 f"{u[2]:.4f} }} }} }}")
+    d = os.path.join(ROOT, "hardware", "lfm-x2", "lfm-x2.3dshapes")
+    os.makedirs(d, exist_ok=True)
+    out = os.path.join(d, "AMASS_XT30PW-M_sederhana.wrl")
+    open(out, "w", encoding="utf8", newline="\n").write("\n".join(s) + "\n")
+    print(f"ditulis {out}")
+
+
 def main():
+    if sys.argv[1:] == ["xt30"]:                  # hanya model XT30 (pustaka lain tidak ditulis ulang)
+        return xt30_wrl()
+    xt30_wrl()
     plcc2()
     btn = turunan("Power_Management:BTN8982TA", "BTN7971B", [
         (r'\(property "Value" "BTN8982TA"', '(property "Value" "BTN7971B"'),

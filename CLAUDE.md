@@ -90,7 +90,8 @@ memakai pin map yang sama.
   bawah), `antarmuka/` (OLED 0,96" + 7 tombol, ditumpuk 11 mm di atas), `driver/` (4× BTN7971B, 11 mm di bawah
   bagian belakang), `sensor/` (bulan sabit + leher garpu, 12,5 mm di bawah ujung segitiga, FFC 8 pin tipe B ke utama).
   Sensor = **12× PT67-21B + LED IR 940 nm 3528** (footprint `lfm-x2.pretty/PLCC-2_3528_HandSolder`), posisi = busur
-  PCB sensor rev B. **LiPo 2S** kecil di dudukan 3D print di atas motor (model + konektor belum dipilih). Pin konektor
+  PCB sensor rev B. **LiPo 2S** kecil di dudukan 3D print di atas motor, konektor **XT30** (J1 XT30PW-M siku di kanan
+  belakang papan utama, pin 1 = GND, pin 2 = BAT+; pack belum dipilih). Pin konektor
   antar-papan didefinisikan sekali (`KONEKTOR` di `gen_sch_x2.py`) dan dicek `cek_net_x2.py` + cek tumpuk.
 - Generator: `gen_lib_x2.py`, `gen_sch_x2.py [papan]`, `cek_net_x2.py`, `gen_pcb_x2.py tata|peta|pour [papan]`
   (python KiCad). Semua papan ERC 0, DRC 0 error / parity 0, **tanpa jalur: user routing sendiri**. Jangan jalankan
@@ -226,6 +227,7 @@ odejs` ke PATH.
   segitiga, antarmuka ditumpuk, driver terpisah, sensor bulan sabit), **12 sensor**, **OLED 0,96"**, **LiPo 2S** kecil,
   QRE1113 diganti **PT67-21B + LED IR 940 nm 3528** (photodioda 3528 tidak ketemu). Pilihan Claude yang belum
   dikonfirmasi: tinggi tumpukan 11 / 12,5 mm, FFC tipe B, OLED diputar 180°, BOOT di sisi bawah, lubang leher 7 mm.
+- 15/11: konektor LiPo X2 = **XT30** (keputusan user); J1 JST XH diganti XT30PW-M jantan siku.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

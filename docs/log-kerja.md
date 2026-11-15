@@ -5,6 +5,12 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 15/11/2026
+- **LFM X2: konektor LiPo jadi XT30 (keputusan user).** J1 papan utama JST XH → XT30PW-M jantan siku (pack XT30
+  betina). Polaritas dari gambar AMASS + konvensi XT (sisi rata = +): pin 1 = GND, pin 2 = BAT+, sama dengan tanda
+  +/− footprint KiCad. XT30 di kanan belakang atas, mulut ke baterai 0,55 mm melewati tepi; Q1 digeser ke y 28, D3
+  ke y 37, LED1/R9 ke kanan. Garis silk badan ke Fab (tanda +/− tetap), model 3D kotak sendiri
+  (`lfm-x2.3dshapes/`, STEP XT30 tidak terpasang). Skematik utama ERC 0, `cek_net_x2.py` cocok, DRC 0 error
+  (selain belum dirouting), cek tumpuk tetap segaris. Render, gambar susunan, peta rakit utama diperbarui.
 - **LFM X2: sisa proyek rev A dibersihkan + cek harga komponen baru.** Sesudah user menutup proyek lama, KiCad
   menulis ulang `lfm-x2.kicad_pro` + `lfm-x2-backups/` di folder X2 (isi backup = file rev B sekarang, tanpa
   jalur); keduanya dihapus supaya folder tidak terbuka sebagai proyek lama. Cek LCSC: JUSHUO AFA07-S08FCA-00 =
