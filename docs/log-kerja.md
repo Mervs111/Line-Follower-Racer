@@ -5,6 +5,14 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 15/11/2026
+- **LFM X2: sisa proyek rev A dibersihkan + cek harga komponen baru.** Sesudah user menutup proyek lama, KiCad
+  menulis ulang `lfm-x2.kicad_pro` + `lfm-x2-backups/` di folder X2 (isi backup = file rev B sekarang, tanpa
+  jalur); keduanya dihapus supaya folder tidak terbuka sebagai proyek lama. Cek LCSC: JUSHUO AFA07-S08FCA-00 =
+  drawer bottom contact horizontal, sama tipe dengan soket FFC 8 pin Mediatama (Rp12.000), jadi kabel harus
+  bolak-balik (Mediatama 20 cm Rp14.000; panjang 5–6 cm perlu ditanyakan). Spacer nilon M3 11 mm Rp1.320. Calon
+  LiPo 2S 300–520 mAh (Rp65.000–165.000, kebanyakan XT30, sebagian LiHV) dicatat di README X2; pilihan + konektor
+  J1 menunggu user. PT67-21B dan LED IR 3528 tidak muncul di pencarian (link temuan user belum ada). Halaman
+  produk Tokopedia tidak bisa dibuka dari laptop (timeout), jadi harga dari cuplikan hasil pencarian.
 - **LFM X2 rev B di KiCad: 4 papan siap routing.** Sensor jadi **PT67-21B** (fototransistor Everlight 3528, lensa
   hitam 940 nm; photodioda 3528 tidak ketemu, usul user) + **LED IR 940 nm 3528** temuan user (dipakai ±17 mA lewat
   220 Ω, bukan 100 mA). Footprint baru `PLCC-2_3528_HandSolder` (pad 2,2 × 2,2 untuk solder tangan) dari

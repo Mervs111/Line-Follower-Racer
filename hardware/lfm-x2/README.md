@@ -137,7 +137,9 @@ enable.
   Fab). Peringatan "footprint beda dari pustaka" di papan sensor hanya pembulatan rotasi miring, aman.
 
 ## Daftar komponen (keempat papan)
-Harga dari pencarian Tokopedia 15/11/2026 untuk rev A (bisa berubah); "belum dicari" = harga belum ada.
+Harga dari pencarian Tokopedia 15/11/2026 (bisa berubah; harga rev B dari cuplikan hasil pencarian karena halaman
+produk tidak bisa dibuka dari laptop); "belum dicari" = harga belum ada. PT67-21B dan LED IR 3528 tidak muncul di
+pencarian: link listing temuan user belum dicatat.
 
 | Komponen | Papan: ref | Jml | Harga satuan | Toko / catatan |
 |---|---|---|---|---|
@@ -151,11 +153,11 @@ Harga dari pencarian Tokopedia 15/11/2026 untuk rev A (bisa berubah); "belum dic
 | MP1584EN SOP-8 (pad bawah) | utama: U4 | 1 | Rp7.500 | [Central Electronics](https://www.tokopedia.com/celectro/ic-smd-mp1584-mp1584en-3a-1-5mhz-28v-step-down-converter-sop8-ic-bc00) |
 | AO3401A SOT-23 | utama: Q1 | 1 | Rp1.650 | [Lisu Instruments](https://www.tokopedia.com/lisuinstrument/ao3401a-ao3401-30v-4a-p-channel-mosfets-sot-23-alpha-omega-original) |
 | Tombol tactile SMD 6×6, 4 kaki | antarmuka: SW1–SW7, utama: SW2 | 8 | Rp8.000 / 10 pcs | [ichibot](https://www.tokopedia.com/ichibot/push-button-tact-switch-micro-switch-6x6x5-smd-4p-4-pin-6-6-5-tombol) |
-| Konektor FFC/FPC 1,0 mm 8 pin SMD horizontal | utama: J3, sensor: J1 | 2 | belum dicari | footprint JUSHUO AFA07-S08FCA-00; cocokkan jarak pad pemasang sebelum cetak |
-| Kabel FFC 1,0 mm 8 pin **tipe B**, ±5 cm | | 1 | belum dicari | |
+| Konektor FFC/FPC 1,0 mm 8 pin SMD horizontal, **drawer bottom contact** | utama: J3, sensor: J1 | 2 | Rp12.000 | [Mediatama](https://www.tokopedia.com/mcsum/soket-konektor-flexible-ffc-fpc-pitch-1-0mm-drawer-bottom-contact-type-8-pin); footprint JUSHUO AFA07-S08FCA-00 = tipe yang sama menurut [LCSC C262714](https://www.lcsc.com/product-detail/C262714.html); cocokkan ukuran pad dengan barang sebelum cetak |
+| Kabel FFC 1,0 mm 8 pin **bolak-balik (AB / tipe B)**, ±5 cm | | 1 | Rp14.000 (20 cm) | [Mediatama](https://www.tokopedia.com/mcsum/kabel-flexible-ffc-fpc-1-0mm-8-pin-lebar-9mm-20cm-bolak-balik) hanya terlihat 20 cm: tanyakan panjang 5–6 cm. Searah (AA) hanya cocok kalau salah satu konektor top contact |
 | Pin header 2×5 / 2×7, 2,54 mm | antarmuka: J1 / driver: J1 | 1 / 1 | belum dicari | |
 | Socket female 2×5 / 2×7 (tinggi 8,5 mm) / 1×4 | utama: J4 / J5, antarmuka: J2 | 1 / 1 / 1 | belum dicari | |
-| Spacer M3 11 mm / 12,5 mm (atau 12 mm + ring) | | 6 / 2 | belum dicari | antarmuka 4, driver 2 / leher sensor 2; H2 telinga kiri dekat antena: pakai nilon |
+| Spacer M3 11 mm / 12,5 mm (atau 12 mm + ring) | | 6 / 2 | Rp1.320 (nilon 11 mm) | antarmuka 4, driver 2 / leher sensor 2. Nilon M3 6/11/15 mm di Unique-Electronics; kit kuningan M3 180 pcs (ada 10 dan 12 mm) Rp58.000 di [TacTic Tools](https://www.tokopedia.com/tactic/baut-stand-off-spacer-kit-pcb-motherboard-kuningan-m3-set-180-pcs). H2 telinga kiri dekat antena: pakai nilon |
 | Induktor daya SMD 15 µH ≥ 2 A, CD75 | utama: L1 | 1 | ± Rp3.000 | 10–22 µH juga bisa |
 | AMS1117-3.3 SOT-223 | utama: U3 | 1 | ± Rp1.500 | |
 | SS34 / SS14 (SMA) | utama: D1 / D2, D3 | 1 / 2 | ± Rp500 | |
@@ -188,8 +190,22 @@ Belum termasuk PT67-21B, LED IR, konektor/kabel FFC, header, spacer, LiPo, cetak
 ## Belum dicek / perlu diukur sebelum cetak
 1. **USB-C 16 pin tidak lolos aturan tempat cetak**: celah pad 0,2 mm < 0,254 mm (19 peringatan DRC). Tanyakan ke
    tempat cetak, atau ganti konektor.
-2. **LiPo 2S**: model dan konektornya belum dipilih (J1 digambar JST XH 2 pin; LiPo kecil biasanya JST PH 2.0 atau
-   JST-SYP). Cek juga istilah baterai di guidebook (butir A.e menulis Li-ion).
+2. **LiPo 2S**: model dan konektornya belum dipilih (J1 digambar JST XH 2 pin). Calon dari pencarian Tokopedia 15/11
+   (cuplikan hasil, belum dicek di halaman produk):
+
+   | Pack | Harga | Data | Konektor |
+   |---|---|---|---|
+   | [Tattu 2S 300 mAh 75C HV](https://www.tokopedia.com/alladinshop/baterai-battery-lipo-tattu-7-4v-300mah-2s-75c-hv-4-35v-xt30-drone-rc) (My Aladin) | Rp165.000 | 47 × 17 × 13 mm, 17 g, LiHV 4,35 V/sel | XT30 |
+   | GAONENG GNB LiHV 2S 300 mAh 60C (CRtoys) | Rp120.750 | LiHV | JST (jenis belum pasti) |
+   | CNHL MiniStar 2S 350 mAh 70C | Rp64.900 | | belum terlihat |
+   | Gens Ace 2S 520 mAh 30C | Rp125.000 | | belum terlihat |
+   | CODDAR 2S 500 mAh 100C LiHV (Cinegriptools) | Rp130.095 | LiHV | XT30 |
+
+   Kebutuhan: arus rata-rata ±0,5 A (3–4 W, `docs/perhitungan-motor.md`), jadi 300 mAh ±35 menit, cukup untuk match
+   5 menit. Dudukan di atas motor menyediakan ±55 × 30 mm. LiHV penuh 8,7 V masih di bawah 9,2 V (8,2 V + 1 V
+   guidebook) tapi butuh charger mode LiHV; bisa juga dicas biasa sampai 8,4 V. Konektor: XT30 di papan (footprint
+   AMASS XT30PW-M / -F ada di pustaka KiCad; pilih pasangan konektor pack), atau J1 tetap JST XH dengan kabel adaptor. Cek juga istilah baterai di
+   guidebook (butir A.e menulis Li-ion).
 3. **Polaritas LED IR generik**: tanda katoda listing bisa terbalik dari Everlight. Cek dengan multimeter mode dioda
    (probe merah di anoda → LED menyala, terlihat lewat kamera HP) sebelum menyolder 12 buah. PT67-21B: kaki 1 = emitor.
 4. **Konektor FFC** yang dibeli harus cocok dengan footprint JUSHUO AFA07-S08FCA-00 (jarak pad pemasang, sisi kontak
