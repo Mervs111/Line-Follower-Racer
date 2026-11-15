@@ -64,3 +64,19 @@ Dipilih kelompok 20/10/2026 sebagai acuan **bentuk PCB sensor** (model 3D v15). 
 
 Yang dipakai di v15: bentuk dan susunan (12 QRE1113GR: 6 di tengah, 3 per sayap 30°, jarak 9,5 mm), warna hitam
 (bukan putih), tanpa sensor ke-16.
+
+## Ichibot Ultimate 5 Max (referensi LFM X2, 15/11/2026)
+
+Screenshot dari user untuk side project `hardware/lfm-x2/` (PCB all-in-one full SMD), di folder
+`ichibot-ultimate-5-max/`:
+
+| File | Yang terlihat |
+|---|---|
+| `papan-utama-oled.png` | papan utama segitiga: modul ESP32 di puncak, OLED di socket diapit 3 + 3 tombol, USB-C, induktor + elko, header POWER PORT / DATA PORT ke papan lain |
+| `papan-driver-4-btn.png` | papan driver: 4 chip TO-263-7 berjajar, resistor 330 / 10k / 4k7 di depan kakinya, terminal MOTOR 1 / MOTOR 2 di ujung, papan hub kecil |
+| `papan-tombol.png` | papan tombol kiri/kanan (UPL, OKL, DWNL, UPR, OKR, DWNR), RST, buzzer |
+| `tampak-belakang-motor.png` | render tampak belakang: 2 motor melintang dengan gear luar dan encoder, body 3D print |
+| `deskripsi-body-kit-5r.png` | teks toko: body PETG, motor 14.000 RPM, gear 1:4,6, encoder 11 PPR |
+
+Satu screenshot lagi (`Screenshot 2026-11-15 054037.png`) belum masuk: tidak terbaca oleh Claude (izin baca ditolak).
+

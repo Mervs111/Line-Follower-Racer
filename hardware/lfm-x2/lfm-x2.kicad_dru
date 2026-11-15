@@ -1,0 +1,19 @@
+(version 1)
+
+# Aturan tempat cetak (21/10/2026): jarak tembaga ke ground pour minimal 0,5 mm
+(rule "jarak_ke_pour"
+  (condition "A.Type == 'Zone'")
+  (constraint clearance (min 0.5mm)))
+
+# U4 MP1584EN (SOIC-8 dengan pad bawah): pad bawah ke kaki 0,295 mm. Di atas batas tempat cetak (0,254), hanya di
+# bawah angka proyek (0,3).
+(rule "u4_pad_bawah"
+  (condition "A.Type == 'Pad' && B.Type == 'Pad' && A.intersectsCourtyard('U4') && B.intersectsCourtyard('U4')")
+  (constraint clearance (min 0.254mm)))
+
+# J4 USB-C 16 pin: pad 0,3 mm jarak 0,5 mm, jadi celah antar pad 0,2 mm, DI BAWAH batas tempat cetak (0,254).
+# Sengaja dibiarkan muncul sebagai peringatan sampai tempat cetak memastikan sanggup, atau konektor diganti.
+(rule "usb_c_celah_pad_0,2"
+  (severity warning)
+  (condition "A.Type == 'Pad' && B.Type == 'Pad' && A.intersectsCourtyard('J4') && B.intersectsCourtyard('J4')")
+  (constraint clearance (min 0.3mm)))

@@ -4,6 +4,31 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 15/11/2026
+- **LFM X2 dimulai** (permintaan user: full SMD, minimalis, mirip Ichibot; disiapkan sampai siap routing, jalur
+  digambar user sendiri). Jawaban user: side project paralel di luar RAB (rancangan utama tidak berubah), 1 PCB
+  all-in-one, modul ESP32-WROOM-32E + CH340C + USB-C di papan, driver **4× BTN7971B** disolder langsung. Semua di
+  `hardware/lfm-x2/`, penjelasan di `README.md` di sana.
+  - **Skematik** (`gen_lib_x2.py`, `gen_sch_x2.py`): 132 komponen, 124 net, 5 blok. Daya: saklar beban AO3401A, buck
+    MP1584EN 5,31 V, dioda-OR dengan VBUS, AMS1117-3.3. Sensor + mux sama dengan PCB sensor rev B. 5 tombol di tangga
+    resistor GPIO34 + START di GPIO35. Pin motor baru: ML 18/17, MR 16/4, DRV_EN 2. ERC 0;
+    `cek_net_x2.py`: 398 pin cocok dengan daftar net generator.
+  - **Tata letak** (`gen_pcb_x2.py tata`): papan 94,5 × 177,1 mm (112 cm²), dari belakang: alas pack + celah strap,
+    2 motor N20 di atas papan, J1/J2/J3, 4 BTN7971B berjajar (tab menghadap konektor motor), OLED diapit 3 + 3 tombol
+    dengan buck dan LDO di bawahnya, ESP32 melintang (antena menonjol 5 mm keluar tepi kanan) + CH340C + USB-C, mux,
+    busur 12 sensor di sisi bawah. 132 footprint sudah diberi net, 0 jalur. 122 pad busur sensor + mux dicek sama
+    posisi dan net-nya dengan rev B. DRC: 0 error, parity 0, 323 sambungan belum dirouting.
+  - **Temuan**: (1) USB-C 16 pin punya celah pad 0,2 mm, di bawah batas tempat cetak 0,254 mm, dibiarkan sebagai
+    19 peringatan DRC sampai ada jawaban tempat cetak; (2) footprint ESP32-WROOM-32E membawa daerah larangan tembaga
+    15 mm di kiri-kanan antena, karena itu modul digeser sampai antenanya di luar papan; (3) 12 via termal bor 0,2 mm
+    di pad bawah ESP32 dibuang (bor minimum 0,6 mm).
+  - Daftar komponen dengan harga Tokopedia (± Rp618.000 untuk yang sudah ada harganya, belum termasuk cetak PCB,
+    baterai, roda). Induktor 15 µH CD75 satuan belum ketemu.
+  - 5 screenshot Ichibot Ultimate 5 Max dari user disalin ke `docs/referensi/ichibot-ultimate-5-max/`; satu file
+    (`…054037.png`) tidak terbaca (izin baca ditolak).
+  - Belum diukur: jarak lubang bracket N20, lubang modul OLED, tinggi skid depan. Pilihan yang diambil Claude sendiri
+    (saklar beban, 6 tombol, ekor alas baterai, cas di luar robot) didaftar di README untuk dikonfirmasi user.
+
 ## 14/11/2026
 - **Konsep v18: baterai satu bidang dengan PCB** (permintaan user: baterai jangan bertingkat, boleh lebih lebar, PCB
   jangan diubah). `mechanical/konsep-v18/gen_konsep.py` → `konsep-v18.html`, artifact

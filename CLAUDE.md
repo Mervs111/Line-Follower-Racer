@@ -81,6 +81,17 @@ memakai pin map yang sama.
   KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. Konstanta `FAB` di
   `gen_pcb.py` masih aturan lama (0,8 mm).
 
+### LFM X2 (side project, mulai 15/11)
+- `hardware/lfm-x2/` (baca `README.md` di sana): **1 PCB all-in-one full SMD gaya Ichibot Ultimate 5 Max, di luar RAB
+  PjBL, dana sendiri; rancangan utama di atas tidak berubah.** Keputusan user: modul ESP32-WROOM-32E + CH340C + USB-C
+  di papan, **4× BTN7971B** (TO-263-7) disolder langsung, sensor + mux = salinan PCB sensor rev B.
+- Skematik dari `gen_sch_x2.py` + `gen_lib_x2.py` (ERC 0; `cek_net_x2.py` membandingkan net tiap pin). Pin motor beda
+  dari jalur utama: ML_IN1/IN2 = 18/17, MR_IN1/IN2 = 16/4, DRV_EN = 2; tombol START di GPIO35.
+- PCB dari `gen_pcb_x2.py tata`: 94,5 × 177 mm (112 cm²), 132 footprint ditempatkan + net, **tanpa jalur: user
+  routing sendiri**. Jangan jalankan `tata` lagi sesudah ada jalur (membuat ulang papan). DRC 0 error.
+- Terbuka: celah pad USB-C 16 pin 0,2 mm di bawah batas tempat cetak (0,254); jarak lubang bracket N20 dan OLED
+  belum diukur; referensi di `docs/referensi/ichibot-ultimate-5-max/`.
+
 ### Mekanik
 - **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.
   Bentuk rendah gaya Ichiduino: PCB sensor + PCB utama sejajar dekat lantai, semua komponen + baterai di atas.
@@ -201,6 +212,10 @@ odejs` ke PATH.
   rangka interface 3D print (lihat Konsep v18). RAB belum dihitung ulang (harga pack belum ada).
 - 03/11 (komentar user): **PCB utama trapesium** dipilih: sisi sejajar skid plate, depan 62, belakang 87, panjang 58 mm
   (y robot 24–82), 42,9 cm², 4 lubang M3 di sayap (±38,5; 29) dan (±32,5; 56). J2/J3 = JST XH 6 pin (17,4 mm).
+- 15/11: user memulai **LFM X2** (full SMD, minimalis, mirip Ichibot; user routing sendiri). Jawaban user: side
+  project paralel, 1 PCB all-in-one, modul ESP32-WROOM-32E, driver **4× BTN7971B** (usul Claude MX1508 ditolak).
+  Pilihan Claude yang belum dikonfirmasi user: saklar beban AO3401A, 6 tombol 3 + 3, antena ESP32 menonjol 5 mm,
+  ekor PCB sebagai alas baterai, cas di luar robot (daftar di `hardware/lfm-x2/README.md`).
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →
@@ -259,7 +274,8 @@ Line-Follower-Racer/
 ├── CLAUDE.md
 ├── firmware/        proyek PlatformIO (lib/LineFollower/src/{LineFollower.h,.cpp, Pins.h}, src/main.cpp)
 ├── mindplus-ext/    extension Mind+ (belum dimulai)
-├── hardware/        KiCad: sensor-garis/ (PCB sensor), pcb-utama/ (PCB utama baru), ltm-main/ (v2 lama), tools/
+├── hardware/        KiCad: sensor-garis/ (PCB sensor), pcb-utama/ (PCB utama baru), board-interface/, lfm-x2/ (side
+│                    project all-in-one), ltm-main/ (v2 lama), tools/
 ├── mechanical/      model 3D v16 (CadQuery, STEP, DXF, STL, render)
 ├── simulasi/        logika kendali + uji 2D + CoppeliaSim (lihat simulasi/README.md)
 ├── docs/            charter, skematik, wiring diagram, logbook, referensi
