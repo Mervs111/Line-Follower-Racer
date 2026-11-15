@@ -5,6 +5,9 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 15/11/2026
+- **LFM X2: saklar daya tetap saklar geser** (keputusan user). Opsi tombol tactile ber-LED butuh soft latch lewat
+  ESP32 (GPIO27 + dioda, bisa mati otomatis saat LiPo lemah) atau tombol self-lock panel 12 mm; tidak dipakai.
+  Papan tidak berubah, hanya dicatat di README X2.
 - **LFM X2: konektor LiPo jadi XT30 (keputusan user).** J1 papan utama JST XH → XT30PW-M jantan siku (pack XT30
   betina). Polaritas dari gambar AMASS + konvensi XT (sisi rata = +): pin 1 = GND, pin 2 = BAT+, sama dengan tanda
   +/− footprint KiCad. XT30 di kanan belakang atas, mulut ke baterai 0,55 mm melewati tepi; Q1 digeser ke y 28, D3

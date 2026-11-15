@@ -23,6 +23,7 @@ Jalur digambar user sendiri di KiCad 10. Tiap papan = proyek KiCad sendiri (liha
 | 15/11 | Sensor | **12 sensor**, fototransistor **Everlight PT67-21B** (3528 PLCC, lensa hitam, 940 nm) + **LED IR 940 nm 3528** (8 mW/sr @100 mA, temuan user); photodioda 3528 tidak ketemu |
 | 15/11 | OLED | 0,96" I2C |
 | 15/11 | Konektor baterai | **XT30**: jantan siku XT30PW-M di papan utama, pack LiPo memakai XT30 betina |
+| 15/11 | Saklar daya | **tetap saklar geser SW1** (tombol tactile ber-LED + soft latch ESP32 dipertimbangkan, tidak dipakai) |
 
 ## Isi folder
 | Path | Isi |
