@@ -94,8 +94,11 @@ memakai pin map yang sama.
   belakang papan utama, pin 1 = GND, pin 2 = BAT+; pack belum dipilih). Pin konektor
   antar-papan didefinisikan sekali (`KONEKTOR` di `gen_sch_x2.py`) dan dicek `cek_net_x2.py` + cek tumpuk.
 - Generator: `gen_lib_x2.py`, `gen_sch_x2.py [papan]`, `cek_net_x2.py`, `gen_pcb_x2.py tata|peta|pour [papan]`
-  (python KiCad). Semua papan ERC 0, DRC 0 error / parity 0, **tanpa jalur: user routing sendiri**. Jangan jalankan
-  `tata` lagi untuk papan yang sudah ada jalurnya. Rev A (1 PCB 94,5 × 177 mm) di `arsip/hardware/lfm-x2-rev-a/`.
+  (python KiCad). Semua papan ERC 0, DRC 0 error / parity 0. **Papan utama dirouting Claude 16/11** (permintaan user:
+  simpel, jarak aman) dengan router sendiri `hardware/tools/autoroute/x2_router.py` + `x2_cari.py` (FreeRouting gagal):
+  jarak ≥ 0,3 (utamakan 0,4), 111 via, GND pour 2 sisi + jalur GND, DRC 0 error / 0 unconnected / parity 0.
+  Antarmuka, driver, sensor: **tanpa jalur, user routing sendiri**. Jangan jalankan `tata` lagi untuk papan yang
+  sudah ada jalurnya (utama). Rev A (1 PCB 94,5 × 177 mm) di `arsip/hardware/lfm-x2-rev-a/`.
 - Terbuka: celah pad USB-C 0,2 mm < 0,254; polaritas LED IR generik; konektor FFC yang dibeli vs footprint; lubang
   OLED, spacer 11/12,5 mm, rangka 3D print belum ada. Referensi di `docs/referensi/ichibot-ultimate-5-max/`.
 

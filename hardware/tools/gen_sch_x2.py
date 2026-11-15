@@ -392,6 +392,19 @@ DRU["utama"] = DRU["dasar"] + """
   (severity warning)
   (condition "A.Type == 'Pad' && B.Type == 'Pad' && A.intersectsCourtyard('J2') && B.intersectsCourtyard('J2')")
   (constraint clearance (min 0.3mm)))
+
+# Jalur fanout J2 (x2_router.py fanout): jalur 0,3 mm keluar lurus dari ujung pad, jadi celah ke pad/jalur tetangga
+# 0,2-0,25 mm sepanjang +-0,6 mm pertama, sama dengan celah antar pad konektor. Peringatan, alasan sama.
+(rule "usb_c_fanout_0,2"
+  (severity warning)
+  (condition "A.Type == 'Track' && A.intersectsCourtyard('J2') && B.intersectsCourtyard('J2')")
+  (constraint clearance (min 0.3mm)))
+
+# SW1 dan kaki pelindung J2 (pad THT GND di tepi kanan yang padat): satu jari thermal ke pour sudah cukup, GND juga
+# sampai lewat jalur
+(rule "thermal_satu_jari"
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole' && (A.intersectsCourtyard('SW1') || A.intersectsCourtyard('J2'))")
+  (constraint min_resolved_spokes 1))
 """
 
 

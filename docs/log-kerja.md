@@ -4,6 +4,18 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 16/11/2026
+- **LFM X2: papan utama selesai dirouting** (permintaan user: hasil routing user jelek, minta dilanjutkan "se simpel
+  dan se safe spacing mungkin"). FreeRouting 2.1 tidak pernah menulis SES di papan ini, jadi dibuat router sendiri
+  di `hardware/tools/autoroute/`: `x2_router.py` (python KiCad: fanout USB-C, ekspor, pasang, pour, via jahit, cari
+  GND terpisah) + `x2_cari.py` (python sistem: grid 0,1 mm dua layer, A* + PathFinder, bongkar lokal). Jarak ≥ 0,3 mm
+  (diutamakan 0,4), pour 0,5 mm; VBAT 1,0, BUCK_SW 0,8, +5V/VBUS 0,6, +3V3/GND 0,5, sinyal 0,3 mm. Hasil: 769 segmen,
+  111 via, GND pour dua sisi (SMD penuh, THT thermal) + jalur GND untuk pulau yang terputus. DRC dengan parity:
+  **0 error, 0 unconnected, parity 0**; peringatan hanya celah USB-C J2 (30) dan 4 footprint beda pustaka (disengaja).
+  Untuk memberi ruang: R10/R11 pindah ke sisi atas, C3/C4, deret 0805 depan ESP32, R15 digeser; rule area
+  "Bawah ESP32" + aturan `usb_c_fanout_0,2` dan `thermal_satu_jari`. Render 3D dan peta rakit utama diperbarui;
+  README X2, README autoroute, CLAUDE.md ikut. Antarmuka, driver, sensor tetap dirouting user.
+
 ## 15/11/2026
 - **LFM X2: saklar daya tetap saklar geser** (keputusan user). Opsi tombol tactile ber-LED butuh soft latch lewat
   ESP32 (GPIO27 + dioda, bisa mati otomatis saat LiPo lemah) atau tombol self-lock panel 12 mm; tidak dipakai.

@@ -196,11 +196,13 @@ PLACE = {
         # sisi bawah, kanan belakang: saklar beban (di antara kaki XT30 dan pasak)
         "Q1": (25.5, 28.0, 0, "B"), "R1": (29.5, 26.5, 90, "B"), "C1": (31.8, 26.5, 90, "B"),
         "R2": (34.1, 26.5, 90, "B"),
-        # bahu kanan: CH340C + CC USB + dioda VBUS
-        "U2": (22.5, 42.5, 90, "B"), "C11": (15.5, 44.5, 90, "B"), "R10": (29.6, 37.0, 90, "B"),
-        "R11": (31.9, 37.0, 90, "B"), "D3": (25.0, 37.0, 0, "B"),
-        # kanan depan: buck MP1584 (kalang C3 - U4 - D1 pendek)
-        "U4": (15.5, 57.0, 0, "B"), "C3": (10.4, 56.5, 90, "B"), "C4": (7.9, 56.5, 90, "B"),
+        # bahu kanan: CH340C + dioda VBUS; resistor CC di sisi atas tepat di ujung jalur fanout USB-C (CC1/CC2 tidak
+        # perlu menyeberangi D+/D-, lihat autoroute/x2_router.py fanout)
+        "U2": (22.5, 42.5, 90, "B"), "C11": (15.5, 44.5, 90, "B"), "R10": (25.9, 42.95, 180, "F"),
+        "R11": (25.9, 47.55, 180, "F"), "D3": (25.0, 37.0, 0, "B"),
+        # kanan depan: buck MP1584 (kalang C3 - U4 - D1 pendek; C3/C4 1,45 mm dari ujung kaki U4 supaya jalur
+        # COMP/FB bisa lewat)
+        "U4": (15.5, 57.0, 0, "B"), "C3": (9.7, 56.5, 90, "B"), "C4": (7.2, 56.5, 90, "B"),
         "R5": (13.0, 61.8, 90, "B"), "C5": (21.3, 58.8, 90, "B"), "D1": (19.5, 50.5, 90, "B"),
         "L1": (26.0, 52.5, 0, "B"), "C6": (24.0, 59.5, 90, "B"), "R6": (18.3, 65.5, 90, "B"),
         "R7": (16.0, 65.5, 90, "B"), "R8": (16.5, 61.8, 0, "B"), "C7": (20.6, 63.0, 90, "B"),
@@ -209,12 +211,13 @@ PLACE = {
         "C9": (-10.7, 49.5, 90, "B"), "C10": (-13.2, 49.5, 90, "B"),
         # tengah belakang: auto-reset, pull-up IO0, tombol BOOT, pull-down DRV_EN
         "Q2": (-3.5, 29.0, 0, "B"), "R12": (-0.5, 29.0, 90, "B"), "Q3": (-3.5, 33.5, 0, "B"),
-        "R13": (-0.5, 33.5, 90, "B"), "R15": (-18.0, 28.5, 90, "B"), "SW2": (-26.5, 25.0, 0, "B"),
+        "R13": (-0.5, 33.5, 90, "B"), "R15": (-18.0, 28.0, 90, "B"), "SW2": (-26.5, 25.0, 0, "B"),
         "R16": (-11.5, 36.5, 90, "B"),
-        # depan ESP32: kapasitor 3V3, R/C EN, pembagi VBAT, pull-down BUZ
-        "C13": (-29.0, 54.0, 90, "B"), "C14": (-26.5, 54.0, 90, "B"), "R14": (-24.0, 54.0, 90, "B"),
-        "C12": (-21.5, 54.0, 90, "B"), "C2": (-19.0, 54.0, 90, "B"), "R3": (-16.5, 54.0, 90, "B"),
-        "R4": (-14.0, 54.0, 90, "B"), "R17": (-11.5, 54.0, 90, "B"),
+        # depan ESP32: kapasitor 3V3, R/C EN, pembagi VBAT, pull-down BUZ (3,85 mm dari ujung pin ESP32: cukup untuk
+        # satu baris via jalur keluar pin)
+        "C13": (-28.5, 55.5, 90, "B"), "C14": (-26.0, 55.5, 90, "B"), "R14": (-23.5, 55.5, 90, "B"),
+        "C12": (-21.0, 55.5, 90, "B"), "C2": (-18.5, 55.5, 90, "B"), "R3": (-16.0, 55.5, 90, "B"),
+        "R4": (-13.5, 55.5, 90, "B"), "R17": (-11.0, 55.5, 90, "B"),
     },
     "antarmuka": {
         # tombol: kiri ATAS / OK / BAWAH, kanan KEMBALI / START / LANJUT, RST di tab depan (gaya Ichibot)
@@ -250,6 +253,9 @@ HOLES = {   # (x, y, footprint, nama); dicerminkan ke x negatif
 }
 SKID = (0.0, 134.3)                                # sensor: baut skid nilon di tonjolan depan
 ANTENA = (-42.0, -33.8, 30.5, 50.5)                # utama: daerah antena ESP32 (x0, x1, y0, y1), menonjol 3 mm
+# utama: sisi bawah di bawah badan ESP32 (antara baris pad 1-14 / 25-38 dan kolom 15-24, 0,45 mm dari pad): tanpa
+# jalur dan via (tembaga terbuka tertindih modul), GND pour boleh (menyambung pad termal pin 39)
+BAWAH_ESP32 = (-42.0, -16.95, 32.95, 48.05)
 OLED = (0.0, 48.0, 27.3, 27.8)                     # antarmuka: modul OLED 0,96" (tengah x, y, lebar, panjang)
 # pad pemasang SW1 bawaan KiCad (oval 2,2 x 3,5) hanya 0,25 mm dari kaki 1/3: dikecilkan (lubang 1,5 tetap).
 PAD_FIX = {("utama", "SW1"): {"": (2.0, 3.3)}}
@@ -464,6 +470,16 @@ def tata(p, comps, nets, loaded, lubang, paksa, target):
         x0, x1, y0, y1 = ANTENA
         gu.zone_poly(z, [(x0, y0), (x1, y0), (x1, y1), (x0, y1)])
         b.Add(z)
+        z = pcbnew.ZONE(b)
+        z.SetIsRuleArea(True)
+        z.SetZoneName("Bawah ESP32")
+        z.SetLayer(pcbnew.B_Cu)
+        z.SetDoNotAllowTracks(True); z.SetDoNotAllowVias(True); z.SetDoNotAllowPads(False)
+        z.SetDoNotAllowFootprints(False)
+        (z.SetDoNotAllowZoneFills if hasattr(z, "SetDoNotAllowZoneFills") else z.SetDoNotAllowCopperPour)(False)
+        x0, x1, y0, y1 = BAWAH_ESP32
+        gu.zone_poly(z, [(x0, y0), (x1, y0), (x1, y1), (x0, y1)])
+        b.Add(z)
     hiasan(b, p, jalur, arah)
     pcbnew.SaveBoard(brd(p), b)
     n_bawah = sum(1 for f in b.GetFootprints() if f.IsFlipped())
@@ -649,6 +665,8 @@ def pour(p):
         z.SetMinThickness(pcbnew.FromMM(0.35))
         z.SetThermalReliefGap(pcbnew.FromMM(0.5))
         z.SetThermalReliefSpokeWidth(pcbnew.FromMM(0.5))
+        if p == "utama":    # sama dengan autoroute/x2_router.py pour: pad SMD menempel penuh, THT thermal
+            z.SetPadConnection(pcbnew.ZONE_CONNECTION_THT_THERMAL)
         gu.zone_poly(z, [(-60, 0), (60, 0), (60, 145), (-60, 145)])
         b.Add(z)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())

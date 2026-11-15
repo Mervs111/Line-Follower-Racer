@@ -8,8 +8,10 @@ di sisi bawah), papan antarmuka (OLED + tombol) ditumpuk di atasnya, papan drive
 belakangnya, papan sensor bulan sabit di depan, baterai LiPo 2S kecil di dudukan 3D print di atas motor. Rev A (satu
 PCB memanjang) dipindah ke `arsip/hardware/lfm-x2-rev-a/`.
 
-**Status: skematik keempat papan selesai (ERC 0), semua footprint sudah ditempatkan dan diberi net, JALUR BELUM ADA.**
-Jalur digambar user sendiri di KiCad 10. Tiap papan = proyek KiCad sendiri (lihat "Isi folder").
+**Status: skematik keempat papan selesai (ERC 0), semua footprint sudah ditempatkan dan diberi net. Papan utama
+sudah dirouting (16/11, router Claude atas permintaan user: DRC 0 error, 0 belum tersambung, parity 0; lihat
+"Routing papan utama").** Antarmuka, driver, dan sensor belum ada jalur, digambar user sendiri di KiCad 10. Tiap papan
+= proyek KiCad sendiri (lihat "Isi folder").
 
 ![susunan](gambar/x2b-susunan.png)
 
@@ -52,6 +54,7 @@ py hardware/tools/cek_net_x2.py [papan ...]              # ERC + net tiap pin + 
 "$KPY" hardware/tools/gen_pcb_x2.py peta [papan ...]     # peta rakit PDF
 "$KPY" hardware/tools/gen_pcb_x2.py pour papan           # GND pour dua sisi sesudah routing
 ```
+Router papan utama (`x2_router.py` + `x2_cari.py`) ada di `hardware/tools/autoroute/`, cara pakai di README sana.
 **Sesudah mulai menggambar jalur, jangan jalankan `tata` lagi** untuk papan itu: perintah itu membuat ulang papan dari
 nol (skrip menolak kalau papan sudah berisi jalur, kecuali `--paksa`). Kalau skematik diubah sesudah routing, pakai F8
 di KiCad.
@@ -112,8 +115,8 @@ enable.
 ## Tata letak (ringkas)
 - **Utama**: ESP32 di sisi bawah, melintang di bahu kiri, antena menonjol 3 mm keluar tepi kiri. Baris kaki 1–14
   (MUX, VBAT, BTN, BUZ, ENC_L) menghadap depan ke J3/J4; baris 25–38 (IN motor, SDA/SCL, ENC_R, RX/TX) menghadap
-  belakang ke J5 dan CH340C. Bahu kanan: USB-C dan SW1 (tuas keluar tepi kanan) di sisi atas, CH340C + R CC + D3 di
-  bawahnya. Kanan depan: buck. Tengah: LDO + D2. Kanan belakang: J1 XT30 siku (atas, mulut menghadap baterai di belakang, 0,55 mm
+  belakang ke J5 dan CH340C. Bahu kanan: USB-C dan SW1 (tuas keluar tepi kanan) di sisi atas, R CC (R10/R11) juga di
+  sisi atas tepat di ujung jalur fanout USB-C, CH340C + D3 di bawahnya. Kanan depan: buck. Tengah: LDO + D2. Kanan belakang: J1 XT30 siku (atas, mulut menghadap baterai di belakang, 0,55 mm
   melewati tepi supaya steker tidak menabrak papan) + LED daya, Q1 (bawah) di antara kaki dan pasak XT30. Ujung
   segitiga: J3 FFC (bawah) dengan mulut ke depan, tepat di tepi.
 - **Antarmuka**: OLED di tengah, tombol 3 + 3 mengapitnya, RST di tab depan, buzzer di tab belakang (tidak di bawah
@@ -126,7 +129,27 @@ enable.
 ![antarmuka](gambar/x2b-antarmuka-atas.png) ![driver](gambar/x2b-driver-atas.png)
 ![sensor atas](gambar/x2b-sensor-atas.png) ![sensor bawah](gambar/x2b-sensor-bawah.png)
 
-## Catatan untuk routing
+## Routing papan utama (16/11)
+Dirouting Claude dengan router sendiri (`hardware/tools/autoroute/x2_router.py` + `x2_cari.py`; FreeRouting 2.1
+tidak mau menulis hasil di papan ini). Permintaan user: "se simpel dan se safe spacing mungkin".
+- **Jarak**: minimal 0,3 mm ke tembaga net lain (aturan proyek; tempat cetak 0,254), router mengambil 0,4 mm kalau
+  ada ruang. Pour GND berjarak 0,5 mm (aturan tempat cetak), tebal minimum 0,35 mm.
+- **Lebar**: VBAT/BAT+ 1,0 mm, BUCK_SW 0,8, +5V/+5V_BUCK/VBUS 0,6, +3V3 dan GND 0,5, sinyal 0,3 mm; jalur balik GND
+  J1 (XT30) → J5 (driver) 1,0 mm ditambah pour. Lebih kecil dari net class "Daya besar" 1,2 mm: cukup untuk arus
+  rata-rata ±0,5 A, motor macet (±3 A sesaat) masih aman untuk jalur pendek 1 oz.
+- **Hasil**: 769 segmen (±1,97 m: 1,12 m sisi atas, 0,86 m sisi bawah), 111 via 1,3/0,6 (12 di antaranya via GND /
+  jahit), GND pour dua sisi: pad SMD menempel penuh, pad THT thermal relief.
+- **Perubahan tata letak untuk routing** (di `gen_pcb_x2.py`): R10/R11 (CC USB) pindah ke sisi atas di ujung fanout
+  USB-C; C3/C4 digeser 0,7 mm dari U4 supaya COMP/FB bisa lewat; deret 0805 di depan ESP32 (C13…R17) mundur ke
+  y 55,5 untuk satu baris via; R15 ke y 28.
+- **Aturan tambahan** (`.kicad_dru`, dari `gen_sch_x2.py`): rule area "Bawah ESP32" (sisi bawah di bawah badan
+  modul: tanpa jalur dan via, pour boleh); `usb_c_fanout_0,2` (peringatan untuk celah jalur fanout USB-C 0,2–0,25 mm
+  sepanjang ±0,6 mm dari ujung pad, sama dengan celah antar pad konektor); `thermal_satu_jari` (pad THT SW1 dan kaki
+  pelindung J2 cukup 1 jari thermal).
+- **Kalau mengubah papan utama**: buka di KiCad, ubah, lalu `x2_router.py pour` (bukan pour bawaan KiCad dengan
+  setelan lain) dan DRC. Routing ulang dari nol: langkah di README autoroute (menghapus jalur yang ada).
+
+## Catatan untuk routing (antarmuka, driver, sensor)
 - **Lebar**: net class sudah terpasang. VBAT, BAT+, ML_P/N, MR_P/N, BUCK_SW minimal 1,2 mm; di driver lebih enak
   pakai isian tembaga (zone) dari tab BTN7971B ke pin J2/J3. +5V, +3V3, GND, VBUS 0,5 mm.
 - **Buck**: kalang C3 → U4 kaki 7 → kaki 1 (SW) → D1 → GND sependek mungkin; BUCK_FB (R6/R7) jauhkan dari L1 dan D1.
@@ -222,8 +245,13 @@ Belum termasuk PT67-21B, LED IR, konektor/kabel FFC, header, spacer, LiPo, cetak
    header yang dibeli, ketersediaan spacer 11 / 12,5 mm, bracket N20.
 6. **Rangka 3D print** (dudukan motor + baterai + telinga) belum digambar; tinggi sensor ke lantai (dirancang ±2,7 mm
    dari bawah komponen) ditentukan rangka + skid depan.
-7. Pad bawah ESP32 (pin 39, GND) tidak punya via; GND juga ada di pin 1, 15, 38.
+7. Pad bawah ESP32 (pin 39, GND) tersambung ke pour sisi bawah, tanpa via termal; GND juga ada di pin 1, 15, 38.
 8. Belum ada firmware, simulasi, atau uji apa pun untuk X2.
+
+## Hasil cek papan utama sesudah routing (16/11)
+- DRC `kicad-cli pcb drc --schematic-parity`: **0 error, 0 belum tersambung, parity 0**. Peringatan 34, semuanya
+  disengaja: 30 celah di USB-C J2 (19 celah pad konektor + 11 jalur fanout) dan 4 footprint beda dari pustaka (U1,
+  SW1, J2, J1).
 
 ## Hasil cek (15/11)
 - `cek_net_x2.py`: keempat papan ERC 0, net tiap pin cocok dengan `net-harapan.json`, 3 pasang konektor antar-papan
