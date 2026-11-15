@@ -9,8 +9,10 @@ Entri terbaru di atas.
   tombol ditumpuk, driver 4× BTN7971B terpisah), papan sensor baru, baterai di dudukan 3D print. Arahan lanjutan:
   ESP32 dan sebagian besar komponen di **sisi bawah** papan utama (sisi atas untuk konektor), sensor diganti
   **LED + photodioda** (QRE1113 dinilai rawan saat disolder), baterai **LiPo kecil**. Referensi `papan-sensor.png`
-  dan `papan-utama-dua-sisi.png` masuk `docs/referensi/ichibot-ultimate-5-max/`. KiCad belum diubah: menunggu 3
-  gambar dari user yang tidak ikut terkirim dan jenis photodioda.
+  dan `papan-utama-dua-sisi.png` masuk `docs/referensi/ichibot-ultimate-5-max/`, lalu `spesifikasi.png` dan
+  `rakitan-atas-lipo.png` (Ichibot memakai LiPo **3S** 400 mAh; lomba membatasi 8,2 V ± 1 V, jadi X2 tetap 2S).
+  Usulan photodioda: 3 mm bening THT + LED putih 3 mm (pembanding: photodioda SMD 3528 yang dijual toko Ichibot).
+  KiCad belum diubah: menunggu pilihan photodioda dari user.
 - **LFM X2 dimulai** (permintaan user: full SMD, minimalis, mirip Ichibot; disiapkan sampai siap routing, jalur
   digambar user sendiri). Jawaban user: side project paralel di luar RAB (rancangan utama tidak berubah), 1 PCB
   all-in-one, modul ESP32-WROOM-32E + CH340C + USB-C di papan, driver **4× BTN7971B** disolder langsung. Semua di

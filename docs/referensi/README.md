@@ -80,4 +80,9 @@ Screenshot dari user untuk side project `hardware/lfm-x2/` (PCB all-in-one full 
 
 | `papan-sensor.png` | papan sensor bentuk bulan sabit dengan ujung sayap runcing ke belakang: 12 pasang LED putih + penerima SMD di dalam pelindung cahaya, IC mux dan konektor kabel pipih di leher, leher garpu dengan 2 deret lubang (panjang bisa disetel), baut di tengah depan |
 | `papan-utama-dua-sisi.png` | papan utama lebih dekat: sisi bawah berisi modul ESP32 (antena di puncak), IC SOIC, dan hampir semua komponen SMD; sisi atas hanya konektor (POWER PORT, DATA PORT, socket 2 baris ke papan atas), USB-C, induktor, elko, buzzer |
+| `spesifikasi.png` | spesifikasi toko: ESP32, OLED 1,3", 14 sensor optik, LiPo 400 mAh, motor DC 25 mm 2500 RPM, encoder, MPU-6050, pengisi daya magnet, 18 × 19,5 × 5,7 cm |
+| `rakitan-atas-lipo.png` | robot utuh dari atas: papan sensor di leher garpu, papan utama segitiga (OLED + 3 + 3 tombol), papan kecil DRIVER HUB, **LiPo 3S 11,1 V 400 mAh 30C** rebah di antara dua motor |
+
+`pilihan-photodioda-tokopedia.png`: hasil cari photodioda di Tokopedia yang dikirim user 15/11 (photodioda 3 mm bening
+iSeeRobot, photodioda SMD 3528 dari toko Ichibot, BPW34, modul, dan dioda Schottky yang ikut muncul).
 
