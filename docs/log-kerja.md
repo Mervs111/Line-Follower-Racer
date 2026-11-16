@@ -5,6 +5,13 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 16/11/2026
+- **LFM X2: viewer rakitan + usulan bagian cetak 3D** (permintaan user: visualisasi X2 sekaligus bagian yang akan
+  dicetak). `mechanical/lfm-x2/gen_rakitan_x2.py` mengekspor keempat papan dari KiCad, menumpuknya di tinggi README
+  X2, menambah motor/roda v16, OLED, LiPo contoh, baut, kabel FFC/encoder, dan merancang 3 bagian cetak (belum
+  disetujui): **rangka motor** (klem gearbox + tiang 11 mm di telinga, 9,8 g padat), **dudukan baterai** (sekaligus
+  tutup klem, strap velcro, 9,5 g), **skid depan** (kubah 4,5 mm, 0,2 g). STL tertutup rapat di `stl/`, tanpa
+  support. Cek: bagian cetak tidak menabrak apa pun; temuan lain: J2/J3 driver versi siku (file 09:40) menumpuk
+  dengan motor N20 + PCB encoder. Viewer https://claude.ai/artifact/NV6wvHKBGvuGv3AQEQm5ZU (rakitan, urai, alas cetak).
 - **LFM X2: papan utama selesai dirouting** (permintaan user: hasil routing user jelek, minta dilanjutkan "se simpel
   dan se safe spacing mungkin"). FreeRouting 2.1 tidak pernah menulis SES di papan ini, jadi dibuat router sendiri
   di `hardware/tools/autoroute/`: `x2_router.py` (python KiCad: fanout USB-C, ekspor, pasang, pour, via jahit, cari

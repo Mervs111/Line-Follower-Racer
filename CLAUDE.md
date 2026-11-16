@@ -99,8 +99,13 @@ memakai pin map yang sama.
   jarak ≥ 0,3 (utamakan 0,4), 111 via, GND pour 2 sisi + jalur GND, DRC 0 error / 0 unconnected / parity 0.
   Antarmuka, driver, sensor: **tanpa jalur, user routing sendiri**. Jangan jalankan `tata` lagi untuk papan yang
   sudah ada jalurnya (utama). Rev A (1 PCB 94,5 × 177 mm) di `arsip/hardware/lfm-x2-rev-a/`.
+- **Rakitan + usulan rangka cetak (16/11)**: `mechanical/lfm-x2/` (`gen_rakitan_x2.py`, STL, viewer
+  https://claude.ai/artifact/NV6wvHKBGvuGv3AQEQm5ZU). Rangka motor (klem gearbox + tiang 11 mm di telinga ±44; 23,5),
+  dudukan baterai (tutup klem + strap), skid depan 4,5 mm; **belum disetujui user**. Generator mengekspor papan dari
+  KiCad tiap jalan: jalankan ulang + publish ulang sesudah papan berubah. Temuan 16/11: J2/J3 driver versi JST XH siku
+  menumpuk dengan motor N20 + PCB encoder.
 - Terbuka: celah pad USB-C 0,2 mm < 0,254; polaritas LED IR generik; konektor FFC yang dibeli vs footprint; lubang
-  OLED, spacer 11/12,5 mm, rangka 3D print belum ada. Referensi di `docs/referensi/ichibot-ultimate-5-max/`.
+  OLED, spacer 12,5 mm. Referensi di `docs/referensi/ichibot-ultimate-5-max/`.
 
 ### Mekanik
 - **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.

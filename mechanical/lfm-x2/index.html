@@ -1,0 +1,632 @@
+<title>Rakitan LFM X2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: panggung 3D satu layar penuh, bar kontrol di atas, lembar info di kanan bawah. Satu tema studio terang yang
+   sengaja dipakai (sama dengan viewer rakitan PCB dan v11-v16), jadi tanpa varian gelap. Oranye = bagian cetak 3D. */
+:root {
+  --stage: #E9EDF1; --panel: #FFFFFF; --panel-2: #F3F6F8; --ink: #14202E; --muted: #536274; --line: #CDD6DF;
+  --accent: #D3202E; --accent-ink: #FFFFFF; --dim: #1D3F6E; --print: #E8742A; --print-soft: #FCEBDD;
+  --ok: #1E7A45; --ok-soft: #E2F3E8; --warn: #A45A00; --warn-soft: #FFF1D6;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--stage); color: var(--ink); font-family: var(--f-body); overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; outline: none; touch-action: none; }
+.labels { position: absolute; inset: 0; pointer-events: none; }
+.bar { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+  top: calc(env(safe-area-inset-top, 0px) + 14px); display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-start;
+  justify-content: space-between; pointer-events: none; }
+.title { display: grid; gap: 2px; pointer-events: auto; min-width: 0; }
+.title b { font-size: 18px; letter-spacing: .01em; }
+.title span { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.title em { font-style: normal; font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--print); }
+.ctrls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; pointer-events: auto; min-width: 0; max-width: 100%; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; padding: 5px; min-width: 0; max-width: 100%; }
+.ctrl button { font: 600 13px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 5px;
+  padding: 7px 10px; cursor: pointer; min-height: 32px; }
+.ctrl button:hover { background: var(--panel-2); }
+.ctrl button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.ctrl button:disabled { opacity: .35; cursor: default; background: transparent; }
+.ctrl.mode button[aria-pressed="true"] { background: var(--ink); }
+#btn-glow[aria-pressed="true"] { background: var(--print); }
+.ctrl button:focus-visible, .ctrl input:focus-visible, summary:focus-visible, .card button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ctrl label { display: flex; gap: 6px; align-items: center; font-size: 13px; padding: 0 6px; cursor: pointer; min-height: 32px; }
+.ctrl input { accent-color: var(--accent); margin: 0; }
+.note { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  max-width: min(560px, calc(100% - 424px)); font-size: 12px; color: var(--muted); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; pointer-events: none; }
+.note b { color: var(--accent); font-family: var(--f-mono); }
+.sheet { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  width: min(370px, calc(100% - 32px)); max-height: calc(100% - 190px); overflow: auto; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; }
+.sheet summary { font: 600 13px var(--f-body); padding: 9px 12px; cursor: pointer; list-style: none; display: flex;
+  justify-content: space-between; gap: 8px; position: sticky; top: 0; background: var(--panel); z-index: 1;
+  border-bottom: 1px solid var(--panel-2); }
+.sheet summary::-webkit-details-marker { display: none; }
+.sheet summary::after { content: "tampilkan"; font: 500 11px var(--f-mono); color: var(--muted); }
+.sheet[open] summary::after { content: "sembunyikan"; }
+.sheet h3 { margin: 0; font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  padding: 12px 12px 6px; }
+.lede { margin: 0; padding: 0 12px 8px; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.lede b { color: var(--ink); }
+.cards { display: grid; gap: 8px; padding: 0 12px 4px; }
+.card { border: 1px solid var(--line); border-radius: 7px; padding: 9px 10px 8px; display: grid; gap: 5px; }
+.card.sel { border-color: var(--print); box-shadow: 0 0 0 2px var(--print-soft); }
+.card header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.card header b { font-size: 13.5px; display: flex; align-items: center; gap: 7px; }
+.card header b::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--print); flex: none; }
+.card button { font: 600 11.5px var(--f-body); color: var(--print); background: var(--print-soft); border: 0; border-radius: 4px;
+  padding: 4px 8px; cursor: pointer; white-space: nowrap; }
+.spec { font: 500 11.5px var(--f-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.spec span { color: var(--muted); }
+.card ul { margin: 0; padding-left: 16px; font-size: 11.8px; color: var(--muted); line-height: 1.45; }
+.card ul b { color: var(--ink); font-weight: 600; }
+.sheet table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.sheet td { padding: 4px 12px; border-top: 1px solid var(--panel-2); vertical-align: top; }
+.sheet td:last-child { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sheet td small { display: block; color: var(--muted); font-size: 11px; }
+.chip { display: inline-block; font: 600 10.5px var(--f-mono); border-radius: 3px; padding: 1px 5px; margin-left: 4px; }
+.chip.ok { color: var(--ok); background: var(--ok-soft); }
+.chip.warn { color: var(--warn); background: var(--warn-soft); }
+.checks { list-style: none; margin: 0; padding: 0 12px 6px; display: grid; gap: 6px; font-size: 12px; line-height: 1.4; }
+.checks li { border-radius: 6px; padding: 6px 8px; }
+.checks li.ok { background: var(--ok-soft); color: var(--ok); }
+.checks li.warn { background: var(--warn-soft); color: var(--warn); }
+.checks li b { color: var(--ink); }
+.checks li small { display: block; color: var(--muted); font-family: var(--f-mono); font-size: 10.8px; margin-top: 2px; }
+.foot { margin: 6px 0 0; padding: 8px 12px 10px; font-size: 11.5px; color: var(--muted); border-top: 1px solid var(--line); line-height: 1.45; }
+.foot code { font-family: var(--f-mono); font-size: 10.8px; }
+.dim { font: 600 11.5px var(--f-mono); color: var(--dim); background: var(--panel); border: 1px solid var(--dim);
+  border-radius: 4px; padding: 1px 5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.dim span { font-weight: 500; color: var(--muted); margin-inline-start: 5px; font-family: var(--f-body); font-size: 11px; }
+.dim.v { writing-mode: vertical-rl; padding: 5px 1px; }
+.dim i { font-style: normal; }
+.dim.v i { display: inline-block; transform: rotate(180deg); }
+.tag { font: 600 12px var(--f-body); color: var(--ink); background: var(--panel); border: 1.5px solid var(--print);
+  border-radius: 5px; padding: 3px 7px; white-space: nowrap; text-align: center; line-height: 1.3; }
+.tag span { display: block; font: 500 11px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bedtag { font: 600 11px var(--f-mono); color: #AEB8C4; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.meas { font: 600 12px var(--f-mono); color: var(--accent-ink); background: var(--accent); border-radius: 4px;
+  padding: 2px 7px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.meas span { font-weight: 500; opacity: .85; margin-left: 6px; }
+#loading { position: fixed; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px;
+  color: var(--muted); pointer-events: none; }
+@media (max-width: 720px) {
+  .title span { font-size: 11px; }
+  .ctrls { justify-content: flex-start; gap: 6px; }
+  .ctrl { gap: 2px; padding: 3px; }
+  .ctrl button { padding: 6px 8px; font-size: 12.5px; min-height: 30px; }
+  .ctrl label { padding: 0 4px; font-size: 12.5px; gap: 4px; min-height: 30px; }
+  .sheet { max-height: 42%; }
+  .note { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+
+<div id="stage" aria-label="Model 3D rakitan robot LFM X2 dan bagian cetak 3D, bisa diputar dengan mouse atau jari"></div>
+<div id="loading">memuat model…</div>
+<div class="bar">
+  <div class="title"><em>Side project · usulan bagian cetak</em><b>Rakitan LFM X2</b><span id="sub">4 papan rev B dari KiCad + rangka cetak 3D</span></div>
+  <div class="ctrls">
+    <div class="ctrl mode" role="group" aria-label="Mode tampilan">
+      <button type="button" data-mode="rakit" aria-pressed="true">Rakitan</button>
+      <button type="button" data-mode="urai" aria-pressed="false">Urai</button>
+      <button type="button" data-mode="cetak" aria-pressed="false">Bagian cetak</button>
+    </div>
+    <div class="ctrl" role="group" aria-label="Sudut pandang">
+      <button type="button" data-view="iso" aria-pressed="true">Iso</button>
+      <button type="button" data-view="top" aria-pressed="false">Atas</button>
+      <button type="button" data-view="side" aria-pressed="false">Samping</button>
+      <button type="button" data-view="front" aria-pressed="false">Depan</button>
+      <button type="button" data-view="bottom" aria-pressed="false">Bawah</button>
+    </div>
+    <div class="ctrl" role="group" aria-label="Bagian yang ditampilkan" id="layers">
+      <label><input type="checkbox" id="tg-papan" checked> Papan</label>
+      <label><input type="checkbox" id="tg-penggerak" checked> Motor</label>
+      <label><input type="checkbox" id="tg-cetak" checked> Cetak 3D</label>
+      <label><input type="checkbox" id="tg-pack" checked> Baterai</label>
+      <label><input type="checkbox" id="tg-baut" checked> Baut</label>
+      <label><input type="checkbox" id="tg-kabel" checked> Kabel</label>
+      <label><input type="checkbox" id="tg-dim" checked> Ukuran</label>
+    </div>
+    <div class="ctrl" role="group" aria-label="Alat">
+      <button type="button" id="btn-glow" aria-pressed="false">Sorot cetak</button>
+      <button type="button" id="btn-measure" aria-pressed="false">Ukur</button>
+    </div>
+  </div>
+</div>
+<div class="note" id="note">Seret untuk memutar · scroll / cubit untuk zoom · klik kanan / dua jari untuk geser · klik bagian oranye untuk detailnya · <b>Ukur</b>: klik dua titik</div>
+<details class="sheet" id="sheet">
+  <summary>Bagian cetak dan hasil cek</summary>
+  <h3>Bagian cetak 3D (usulan, belum disetujui)</h3>
+  <p class="lede">Rangka X2 belum pernah digambar. Tiga bagian ini dirancang dari posisi lubang dan komponen di file KiCad:
+    <b>tanpa support</b>, alas datar, total <b id="tot-g">–</b> PETG padat.</p>
+  <div class="cards" id="cards"></div>
+  <h3>Setelan cetak saran</h3>
+  <p class="lede">PETG (bahan body kit Ichibot 5R) · lapisan 0,2 mm · 4 dinding · infill 40 % gyroid · tanpa support.
+    Massa di atas = padat 100 %; massa cetak sebenarnya lebih ringan, lihat angka slicer.</p>
+  <h3>Hasil cek dari model</h3>
+  <ul class="checks" id="checks"></ul>
+  <h3>Ukuran robot</h3>
+  <table id="tbl"></table>
+  <p class="foot">Papan: <code>hardware/lfm-x2/*/lfm-x2-*.kicad_pcb</code> (diekspor ulang tiap kali generator jalan).
+    Motor N20 dan roda dari model v16 (ban 18 mm), LiPo = contoh Tattu 2S 300 mAh karena pack belum dipilih.
+    Sumber: <code>mechanical/lfm-x2/gen_rakitan_x2.py</code>, STL di <code>mechanical/lfm-x2/stl/</code>.</p>
+</details>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+const $ = s => document.querySelector(s);
+const fmt = (v, d = 1) => (Math.round(v * 10 ** d) / 10 ** d).toFixed(d).replace('.', ',');
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+
+// ---------- panggung (Z ke atas, mm, 0,0,0 = lantai di bawah tengah poros roda) ----------
+const stage = $('#stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(stage.clientWidth, stage.clientHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+const labels = new CSS2DRenderer();
+labels.setSize(stage.clientWidth, stage.clientHeight);
+labels.domElement.className = 'labels';
+stage.appendChild(labels.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(css('--stage'));
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const persp = new THREE.PerspectiveCamera(30, 1, 5, 5000);
+const ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, -3000, 3000);
+persp.up.set(0, 0, 1); ortho.up.set(0, 0, 1);
+let cam = persp;
+const controls = new OrbitControls(persp, renderer.domElement);
+controls.enableDamping = true;
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), new THREE.MeshStandardMaterial({ color: '#F4F4F1', roughness: 0.95 }));
+floor.receiveShadow = true;
+scene.add(floor);
+const tape = new THREE.MeshStandardMaterial({ color: '#141414', roughness: 0.8 });
+const tapes = new THREE.Group(); scene.add(tapes);
+function strip(x0, x1, y0, y1) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, y1 - y0), tape);
+  m.position.set((x0 + x1) / 2, (y0 + y1) / 2, 0.05); m.receiveShadow = true; tapes.add(m);
+}
+strip(-10, 10, -600, 520);         // garis 20 mm (guidebook IARC XII)
+strip(-600, 600, 300, 320);        // simpang T 90 derajat
+
+const key = new THREE.DirectionalLight('#ffffff', 2.2);
+key.position.set(-180, 160, 420);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -170, right: 170, top: 170, bottom: -170, near: 50, far: 1200 });
+key.shadow.bias = -0.0004; key.shadow.radius = 4;
+key.target.position.set(0, 50, 0); scene.add(key.target, key);
+scene.add(new THREE.HemisphereLight('#ffffff', '#c9ced6', 0.6));
+
+// ---------- model: GLB meshopt di dalam JSON; kalau WebAssembly diblokir pakai dekoder JS ----------
+const MESHOPT = 'https://cdn.jsdelivr.net/npm/meshoptimizer@1.2.0/';
+async function meshoptDecoder() {
+  try {
+    const { MeshoptDecoder } = await import(MESHOPT + 'meshopt_decoder.mjs');
+    await MeshoptDecoder.ready;
+    return MeshoptDecoder;
+  } catch (e) {
+    const { MeshoptDecoder } = await import(MESHOPT + 'meshopt_decoder_reference.js');
+    return { supported: true, ready: Promise.resolve(), decodeGltfBuffer: MeshoptDecoder.decodeGltfBuffer };
+  }
+}
+async function loadModel() {
+  const [{ glb }, decoder] = await Promise.all([fetch('LFM_X2_web.json').then(r => r.json()), meshoptDecoder()]);
+  const bin = Uint8Array.from(atob(glb), c => c.charCodeAt(0));
+  const loader = new GLTFLoader();
+  loader.setMeshoptDecoder(decoder);
+  return await loader.parseAsync(bin.buffer, '');
+}
+let gltf;
+try { gltf = await loadModel(); }
+catch (e) { $('#loading').textContent = 'Model gagal dimuat. Muat ulang halaman.'; throw e; }
+const root = gltf.scene.getObjectByName('LFM_rakitan');
+root.rotation.set(0, 0, 0); root.scale.setScalar(1);       // isi GLB sudah mm, Z ke atas
+scene.add(gltf.scene);
+const E = root.userData;
+const G = {};
+for (const n of ['sensor', 'driver', 'utama', 'antarmuka', 'oled', 'penggerak', 'cetak_rangka', 'cetak_tray', 'cetak_skid',
+  'pack', 'baut', 'kabel']) G[n] = root.getObjectByName(n) || new THREE.Group();
+const LAYER = {
+  papan: ['sensor', 'driver', 'utama', 'antarmuka', 'oled'], penggerak: ['penggerak'],
+  cetak: ['cetak_rangka', 'cetak_tray', 'cetak_skid'], pack: ['pack'], baut: ['baut'], kabel: ['kabel'],
+};
+const PRINT = { rangka: G.cetak_rangka, tray: G.cetak_tray, skid: G.cetak_skid };
+const pickables = [floor];
+const ghostable = [];
+root.traverse(o => {
+  if (!o.isMesh) return;
+  o.castShadow = true; o.receiveShadow = true; pickables.push(o);
+  const m = o.material;
+  if (m.transparent && m.opacity >= 0.88) { m.transparent = false; m.opacity = 1; }   // badan FR4, silkscreen
+  else if (m.transparent) m.depthWrite = false;                                       // solder mask tembus pandang
+  if (m.emissive && m.emissive.getHex()) m.emissiveIntensity = 1.4;                   // layar OLED
+});
+// tiap bagian cetak diberi material sendiri supaya bisa disorot satu per satu
+for (const [k, g] of Object.entries(PRINT)) g.traverse(o => {
+  if (!o.isMesh) return;
+  o.material = o.material.clone(); o.material.emissive = new THREE.Color(css('--print')); o.material.emissiveIntensity = 0;
+  o.userData.part = k;
+});
+const printMeshes = new Set();
+Object.values(PRINT).forEach(g => g.traverse(o => o.isMesh && printMeshes.add(o)));
+root.traverse(o => { if (o.isMesh && !printMeshes.has(o)) ghostable.push(o); });
+$('#loading').remove();
+
+// ---------- lembar info ----------
+const C = Object.fromEntries(E.cetak.map(c => [c.key, c]));
+const NOTES = {
+  rangka: ['<b>Cetak</b> alas datar ke bawah, persis seperti terpasang (alas = muka atas papan driver, z 7,6).',
+    '<b>Menjepit</b> gearbox kedua N20 dari bawah (alur 12,3 × 10,1 mm, terbuka ke atas).',
+    '<b>Tiang 11 mm</b> di telinga (±44; 23,5) menggantikan 2 spacer driver ↔ papan utama: baut M3 × 16 dari bawah telinga driver, mur di atas papan utama.',
+    '4 mur M3 ditanam di kantong heksagon bawah untuk baut dudukan baterai. Tengah alas dikosongkan untuk konektor J2/J3 driver.'],
+  tray: ['<b>Cetak</b> alas ke bawah; kantong PCB encoder di bawahnya tercetak sebagai jembatan 3,5 mm.',
+    '<b>Tutup klem</b>: 4 baut M3 × 18 dari atas ke mur di rangka motor, sekaligus menekan kedua gearbox.',
+    '<b>Ruang pack</b> 56 × 31 mm, siku di 4 pojok, pack diikat strap velcro 16 mm melingkari pack + alas.',
+    'Tab kanan mulai x 30 supaya steker XT30 dan kabelnya lewat di depan alas.'],
+  skid: ['<b>Cetak</b> terbalik: muka datar di alas, kubah ke atas.',
+    'Mur M3 ditekan ke kantong heksagon, baut M3 × 5 (atau M3 × 6 + ring) dari atas papan sensor.',
+    '<b>Tinggi 4,5 mm</b> = sisi bawah papan sensor ke lantai; muka LED/PT jadi 2,6 mm dari lantai.'],
+};
+const totalG = E.cetak.reduce((a, c) => a + c.massa_padat_g, 0);
+$('#tot-g').textContent = `±${fmt(totalG, 0)} g`;
+$('#cards').innerHTML = E.cetak.map(c => `
+  <article class="card" id="card-${c.key}">
+    <header><b>${c.nama}</b><button type="button" data-pick="${c.key}">Sorot</button></header>
+    <div class="spec">${c.ukuran.map(v => fmt(v)).join(' × ')} mm <span>· ${fmt(c.volume_cm3, 2)} cm³ · ${fmt(c.massa_padat_g)} g padat</span></div>
+    <ul>${NOTES[c.key].map(t => `<li>${t}</li>`).join('')}</ul>
+  </article>`).join('');
+
+const R = E.robot, P = E.papan, sens = E.sensor;
+const len = R[4] - R[1], wid = R[3] - R[0], hgt = R[5];
+const lim = [250, 200, 100];
+const okc = (v, l) => `<span class="chip ${v <= l ? 'ok' : 'warn'}">${v <= l ? '≤' : '>'} ${l}</span>`;
+const wheel = E.roda[0], track = (E.roda[1][0] + E.roda[1][3]) / 2 - (wheel[0] + wheel[3]) / 2;
+const ysens = Math.max(...sens.map(s => s[1]));
+const rows = [
+  ['Panjang', fmt(len) + okc(len, lim[0]), 'strap baterai di belakang → ujung papan sensor'],
+  ['Lebar', fmt(wid) + okc(wid, lim[1]), 'sisi luar velg kiri → kanan'],
+  ['Tinggi', fmt(hgt) + okc(hgt, lim[2]), 'puncak kaca OLED'],
+  ['Poros roda → sensor 6/7', fmt(ysens), `busur 12 sensor ${fmt(sens[11][0] - sens[0][0])} lebar`],
+  ['Jarak roda', fmt(track), `tengah ban, roda Ø${fmt(wheel[5] - wheel[2], 0)} × ${fmt(wheel[3] - wheel[0], 0)}`],
+  ['Muka LED/PT sensor', fmt(E.terendah['LED/PT sensor']), 'titik terendah selain roda + skid'],
+  ['Kepala baut leher / telinga', `${fmt(E.terendah['kepala baut leher sensor'])} / ${fmt(E.terendah['kepala baut telinga'])}`, 'dari lantai'],
+  ['Alas rangka motor', fmt(E.rangka_z), 'dari lantai'],
+  ['Sisi bawah papan', ['sensor', 'driver', 'utama', 'antarmuka'].map(b => fmt(P[b].z[0])).join(' · '), 'sensor · driver · utama · antarmuka'],
+];
+$('#tbl').innerHTML = rows.map(([a, b, c]) => `<tr><td>${a}<small>${c}</small></td><td>${b}</td></tr>`).join('');
+$('#sub').textContent = `4 papan rev B dari KiCad + rangka cetak · ${fmt(len, 0)} × ${fmt(wid, 0)} × ${fmt(hgt, 0)} mm`;
+
+const J = E.jarak, checks = [];
+checks.push(E.tabrakan.length
+  ? `<li class="warn"><b>Bagian cetak menabrak:</b> ${E.tabrakan.join('; ')}</li>`
+  : `<li class="ok"><b>Bagian cetak tidak menabrak</b> komponen KiCad, motor, roda, atau steker.<small>celah terkecil: ban ${fmt(J['rangka - ban (mendatar)'])} · steker XT30 ${fmt(J['dudukan baterai - steker XT30'])} · konektor J2/J3 ${fmt(J['rangka - konektor driver J2/J3'])} · skid–LED D6/D7 ${fmt(J['skid - LED D6/D7'], 2)} mm</small></li>`);
+const other = E.tabrakan_lain || [];
+const byConn = {};
+for (const t of other) {
+  const [a, b] = t.split(' <-> '); const k = a.replace('driver:', 'konektor ').replace('steker motor', 'steker');
+  (byConn[k] = byConn[k] || []).push(b.replace(/ \(.*/, ''));
+}
+if (other.length) checks.push(`<li class="warn"><b>Di luar bagian cetak:</b> ${Object.entries(byConn).map(([k, v]) =>
+  `${k} menumpuk dengan ${[...new Set(v)].join(', ')}`).join('; ')}.<small>Papan driver di file sekarang memakai JST XH siku (S6B-XH-A) yang menonjol sampai y 3,9 di bawah motor (y ±6, z ≥ 12).</small></li>`);
+$('#checks').innerHTML = checks.join('');
+try { if (matchMedia('(min-width: 900px)').matches) $('#sheet').open = true; } catch (e) {}
+
+// ---------- garis ukuran ----------
+const dimRoot = new THREE.Group(); scene.add(dimRoot);
+const dimMat = new THREE.LineBasicMaterial({ color: css('--dim'), depthTest: false, transparent: true });
+function dim(p0, p1, q0, q1, value, cap) {
+  const seg = [], n = q0.clone().sub(p0).normalize(), u = q1.clone().sub(q0).normalize();
+  for (const [p, q] of [[p0, q0], [p1, q1]]) {
+    const d = q.clone().sub(p); const l = d.length(); d.normalize();
+    if (l > 0.5) seg.push(p.clone().addScaledVector(d, Math.min(1.5, l / 3)), q.clone().addScaledVector(d, 2.5));
+  }
+  seg.push(q0, q1);
+  const A = Math.min(2.6, q0.distanceTo(q1) / 3), W = A * 0.38;
+  for (const [q, s] of [[q0, 1], [q1, -1]]) {
+    const b = q.clone().addScaledVector(u, A * s);
+    seg.push(q, b.clone().addScaledVector(n, W), q, b.clone().addScaledVector(n, -W));
+  }
+  const line = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(seg), dimMat);
+  line.renderOrder = 30; dimRoot.add(line);
+  const vert = (view === 'top' || view === 'bottom') ? Math.abs(u.y) > 0.9 : (view === 'side' || view === 'front') ? Math.abs(u.z) > 0.9 : false;
+  const el = document.createElement('div'); el.className = vert ? 'dim v' : 'dim';
+  el.innerHTML = `<i>${value}${cap ? `<span>${cap}</span>` : ''}</i>`;
+  const o = new CSS2DObject(el); o.position.copy(q0.clone().add(q1).multiplyScalar(0.5)); dimRoot.add(o);
+}
+function clearDims() { dimRoot.children.slice().forEach(c => { dimRoot.remove(c); c.geometry?.dispose(); }); }
+function buildDims() {
+  clearDims();
+  if (!$('#tg-dim').checked || mode !== 'rakit') return;
+  const [x0, y0, , x1, y1, z1] = R;
+  const yS = P.sensor.y[1];
+  if (view === 'top' || view === 'bottom') {
+    const z = 0.3;
+    dim(V(0, y0, z), V(0, y1, z), V(x0 - 14, y0, z), V(x0 - 14, y1, z), fmt(y1 - y0), 'panjang');
+    dim(V(sens[5][0], 0, z), V(sens[5][0], ysens, z), V(x1 + 12, 0, z), V(x1 + 12, ysens, z), fmt(ysens), 'poros → sensor');
+    dim(V(x0, 0, z), V(x1, 0, z), V(x0, y0 - 12, z), V(x1, y0 - 12, z), fmt(x1 - x0), 'lebar');
+    dim(V(P.sensor.x[0], 112, z), V(P.sensor.x[1], 112, z), V(P.sensor.x[0], yS + 12, z), V(P.sensor.x[1], yS + 12, z), fmt(P.sensor.x[1] - P.sensor.x[0]), 'papan sensor');
+  } else if (view === 'side') {
+    const x = x0 - 5;
+    dim(V(x, y0, z1), V(x, y0, 0), V(x, y0 - 12, z1), V(x, y0 - 12, 0), fmt(z1), 'tinggi');
+    dim(V(x, y0, z1), V(x, y1, 6), V(x, y0, z1 + 10), V(x, y1, z1 + 10), fmt(y1 - y0), 'panjang');
+    dim(V(x, -4, E.rangka_z), V(x, -4, 0), V(x, y0 - 26, E.rangka_z), V(x, y0 - 26, 0), fmt(E.rangka_z), 'rangka');
+    dim(V(x, ysens, E.terendah['LED/PT sensor']), V(x, ysens, 0), V(x, y1 + 12, E.terendah['LED/PT sensor']), V(x, y1 + 12, 0), fmt(E.terendah['LED/PT sensor']), 'LED/PT');
+  } else if (view === 'front') {
+    const y = y1 + 5;
+    dim(V(x1, y, z1), V(x1, y, 0), V(x1 + 10, y, z1), V(x1 + 10, y, 0), fmt(z1), 'tinggi');
+    dim(V(x0, y, 17), V(x1, y, 17), V(x0, y, -10), V(x1, y, -10), fmt(x1 - x0), 'lebar');
+  }
+}
+
+// ---------- mode: rakitan / urai / bagian cetak ----------
+// naik tiap lapisan saat diurai (mm); semua positif supaya tidak tenggelam di bawah lantai
+const OFFS = { cetak_skid: 2, sensor: 12, driver: 20, cetak_rangka: 28, penggerak: 39, utama: 48, cetak_tray: 54,
+  antarmuka: 64, oled: 76, pack: 72 };
+let mode = 'rakit', exK = 0, exTarget = 0, exFrom = 0, exT0 = 0;
+// alas cetak contoh (printer lab belum diketahui): 180 x 180 mm, kisi 10 mm
+const BED = 180;
+const bed = new THREE.Group(); bed.visible = false; scene.add(bed);
+const bedTags = [];
+{
+  const c = document.createElement('canvas'); c.width = c.height = 720;
+  const g = c.getContext('2d'); g.fillStyle = '#2B3138'; g.fillRect(0, 0, 720, 720);
+  for (let i = 0; i <= 18; i++) {
+    g.strokeStyle = i % 5 === 0 ? '#5B6673' : '#3A424B'; g.lineWidth = i % 5 === 0 ? 3 : 2;
+    g.beginPath(); g.moveTo(i * 40, 0); g.lineTo(i * 40, 720); g.moveTo(0, i * 40); g.lineTo(720, i * 40); g.stroke();
+  }
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  const plate = new THREE.Mesh(new THREE.BoxGeometry(BED, BED, 3), [0, 0, 0, 0, 1, 0].map(i => i
+    ? new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.2 })
+    : new THREE.MeshStandardMaterial({ color: '#1E2328', roughness: 0.6 })));
+  plate.position.z = -1.5; plate.receiveShadow = true; bed.add(plate);
+  const el = document.createElement('div'); el.className = 'bedtag'; el.textContent = `contoh alas ${BED} × ${BED} mm · kisi 10 mm`;
+  const t = new CSS2DObject(el); t.position.set(0, -BED / 2 + 6, 0.2); bed.add(t); bedTags.push(t);
+}
+const SLOT = { rangka: [0, 40], tray: [-12, -34], skid: [58, -34] };
+for (const c of E.cetak) {
+  const holder = new THREE.Group();
+  const clone = PRINT[c.key].clone(true);
+  clone.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material = o.material.clone(); o.material.emissiveIntensity = 0; } });
+  if (c.pose.flip) { clone.rotation.x = Math.PI; clone.position.set(0, 2 * c.pose.cy, 4.5); }
+  else clone.position.z = c.pose.dz;
+  holder.add(clone); bed.add(holder);
+  holder.updateMatrixWorld(true);
+  const b = new THREE.Box3().setFromObject(holder), ctr = b.getCenter(new THREE.Vector3());
+  holder.position.set(SLOT[c.key][0] - ctr.x, SLOT[c.key][1] - ctr.y, -b.min.z);
+  const el = document.createElement('div'); el.className = 'tag';
+  el.innerHTML = `${c.nama}<span>${c.ukuran.map(v => fmt(v)).join(' × ')} mm · ${fmt(c.massa_padat_g)} g</span>`;
+  const t = new CSS2DObject(el);
+  t.position.set(SLOT[c.key][0], SLOT[c.key][1] + (b.max.y - b.min.y) / 2 + 9, c.ukuran[2] + 2);
+  bed.add(t); bedTags.push(t);
+}
+
+function applyLayers() {
+  for (const [k, names] of Object.entries(LAYER)) {
+    const on = $('#tg-' + k).checked;
+    for (const n of names) G[n].visible = on && !(mode === 'urai' && (n === 'baut' || n === 'kabel'));
+  }
+}
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  const isBed = m === 'cetak';
+  root.visible = !isBed; bed.visible = isBed; bedTags.forEach(t => t.visible = isBed);
+  floor.visible = tapes.visible = !isBed && view !== 'bottom';
+  exFrom = exK; exT0 = performance.now(); exTarget = m === 'urai' ? 1 : 0;
+  document.querySelectorAll('#layers input').forEach(i => { i.disabled = isBed; });
+  document.querySelectorAll('[data-view]').forEach(b => { b.disabled = isBed && !['iso', 'top'].includes(b.dataset.view); });
+  $('#btn-glow').disabled = isBed;
+  if (isBed && !['iso', 'top'].includes(view)) view = 'iso';
+  applyLayers();
+  setView(view);
+}
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+for (const k of Object.keys(LAYER)) $('#tg-' + k).addEventListener('change', () => { applyLayers(); buildDims(); });
+$('#tg-dim').addEventListener('change', buildDims);
+
+// sorot bagian cetak: bagian lain dibuat tembus pandang
+let glow = false;
+function setGlow(on) {
+  glow = on; $('#btn-glow').setAttribute('aria-pressed', String(on));
+  for (const o of ghostable) {
+    const m = o.material;
+    if (!m.userData.orig) m.userData.orig = { t: m.transparent, o: m.opacity, d: m.depthWrite };
+    const g = m.userData.orig;
+    m.transparent = on ? true : g.t; m.opacity = on ? Math.min(g.o, 0.16) : g.o; m.depthWrite = on ? false : g.d;
+    m.needsUpdate = true; o.castShadow = !on;
+  }
+}
+$('#btn-glow').addEventListener('click', () => setGlow(!glow));
+
+// pilih satu bagian cetak (tombol di kartu atau klik di model)
+let selected = null, pulseT = 0;
+function select(k) {
+  selected = k; pulseT = performance.now();
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('sel', c.id === 'card-' + k));
+  const card = $('#card-' + k);
+  if (card) { $('#sheet').open = true; card.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+}
+document.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => {
+  if (mode === 'cetak') setMode('rakit');
+  if (!$('#tg-cetak').checked) { $('#tg-cetak').checked = true; applyLayers(); }
+  select(b.dataset.pick);
+}));
+
+// ---------- sudut pandang ----------
+let view = 'iso', W = 1, H = 1, free = { w: 1, h: 1 }, pxmm = 4;
+function layout() {
+  const w = stage.clientWidth, h = stage.clientHeight, sh = $('#sheet');
+  const offX = sh.open && innerWidth >= 900 ? Math.round((sh.offsetWidth + 16) / 2) : 0;
+  const top = $('.bar').getBoundingClientRect().bottom + 8, bottom = 52;
+  const offY = Math.max(0, Math.round((top - bottom) / 2));
+  W = w + 2 * offX; H = h + 2 * offY;
+  free = { w: Math.max(160, w - 2 * offX - 24), h: Math.max(160, h - top - bottom) };
+  renderer.setSize(w, h); labels.setSize(w, h);
+  persp.aspect = W / H;
+  persp.setViewOffset(W, H, 2 * offX, 0, w, h);
+  ortho.setViewOffset(W, H, 2 * offX, 0, w, h);
+}
+function contentBox() {
+  if (mode === 'cetak') return [-BED / 2, -BED / 2, 0, BED / 2, BED / 2, 20];
+  const b = [...R];
+  if (mode === 'urai') b[5] = R[5] + 76;
+  return b;
+}
+// Iso dari serong belakang-kiri: rangka motor, dudukan baterai, dan motor ada di bagian belakang robot
+const ISO_DIR = V(-240, -215, 225).normalize(), BED_DIR = V(-120, -260, 250).normalize();
+function frame() {
+  const [x0, y0, z0, x1, y1, z1] = contentBox();
+  if (view === 'iso') {
+    const c = V((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), r = Math.hypot(x1 - x0, y1 - y0, z1 - z0) / 2;
+    const k = (free.w < free.h ? 1.05 : 0.8) * (mode === 'cetak' ? 0.82 : 1);
+    const d = k * r * H / (Math.tan(THREE.MathUtils.degToRad(persp.fov / 2)) * Math.min(free.w, free.h));
+    persp.position.copy(c).addScaledVector(mode === 'cetak' ? BED_DIR : ISO_DIR, d); controls.target.copy(c);
+    return;
+  }
+  let h0, h1, v0, v1, pos, tgt;
+  if (view === 'side') { h0 = y0 - 30; h1 = y1 + 30; v0 = z0 - 6; v1 = z1 + 18; }
+  else if (view === 'front') { h0 = x0 - 12; h1 = x1 + 24; v0 = Math.min(z0, 0) - 18; v1 = z1 + 10; }
+  else { h0 = x0 - 26; h1 = x1 + 26; v0 = y0 - 26; v1 = y1 + 22; }
+  const ch = (h0 + h1) / 2, cv = (v0 + v1) / 2;
+  const s = pxmm = Math.min((free.w - 36) / (h1 - h0), (free.h - 28) / (v1 - v0));
+  ortho.left = -W / 2 / s; ortho.right = W / 2 / s; ortho.top = H / 2 / s; ortho.bottom = -H / 2 / s;
+  ortho.zoom = 1; ortho.updateProjectionMatrix();
+  if (view === 'side') { pos = [-800, ch, cv]; tgt = [0, ch, cv]; }
+  else if (view === 'front') { pos = [ch, 800, cv]; tgt = [ch, 0, cv]; }
+  else if (view === 'top') { pos = [ch, cv - 1, 800]; tgt = [ch, cv, 0]; }
+  else { pos = [ch, cv + 1, -800]; tgt = [ch, cv, 0]; }
+  ortho.position.set(...pos); controls.target.set(...tgt);
+}
+function setView(v) {
+  view = v;
+  cam = v === 'iso' ? persp : ortho;
+  controls.object = cam;
+  frame(); controls.update();
+  floor.visible = tapes.visible = mode !== 'cetak' && v !== 'bottom';
+  key.position.set(-180, 160, v === 'bottom' ? -420 : 420);
+  buildDims();
+  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+// ---------- alat ukur + klik bagian cetak ----------
+const measRoot = new THREE.Group(); scene.add(measRoot);
+const accent = css('--accent');
+const dotTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 32;
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.beginPath(); g.arc(16, 16, 13, 0, Math.PI * 2); g.fill();
+  return new THREE.CanvasTexture(c);
+})();
+const dotMat = new THREE.PointsMaterial({ color: accent, size: 11, sizeAttenuation: false, map: dotTex, alphaTest: 0.5, depthTest: false, transparent: true });
+const measLine = new THREE.LineBasicMaterial({ color: accent, depthTest: false, transparent: true });
+let measuring = false, mPts = [];
+const note = $('#note'), noteIdle = note.innerHTML;
+function clearMeasure() { measRoot.children.slice().forEach(c => { measRoot.remove(c); c.geometry?.dispose(); }); mPts = []; }
+function setMeasuring(on) {
+  measuring = on;
+  $('#btn-measure').setAttribute('aria-pressed', String(on));
+  renderer.domElement.style.cursor = on ? 'crosshair' : '';
+  if (!on) { clearMeasure(); note.innerHTML = noteIdle; }
+  else note.innerHTML = 'Mode ukur: klik titik pertama (Esc untuk keluar)';
+}
+$('#btn-measure').addEventListener('click', () => setMeasuring(!measuring));
+addEventListener('keydown', e => { if (e.key === 'Escape' && measuring) setMeasuring(false); });
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+const shown = o => { for (; o; o = o.parent) if (!o.visible) return false; return true; };
+function hitAt(ev, list) {
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set((ev.clientX - r.left) / r.width * 2 - 1, -(ev.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ndc, cam);
+  return ray.intersectObjects(list, true).find(h => shown(h.object));
+}
+function measure(ev) {
+  const hit = hitAt(ev, mode === 'cetak' ? [bed] : pickables);
+  if (!hit) return;
+  let p = hit.point.clone(), best = 1.0;
+  if (hit.face && hit.object !== floor) {
+    const pos = hit.object.geometry.attributes.position;
+    for (const i of [hit.face.a, hit.face.b, hit.face.c]) {
+      const v = new THREE.Vector3().fromBufferAttribute(pos, i).applyMatrix4(hit.object.matrixWorld);
+      const d = v.distanceTo(hit.point); if (d < best) { best = d; p = v; }
+    }
+  }
+  if (mPts.length >= 2) clearMeasure();
+  mPts.push(p);
+  const dot = new THREE.Points(new THREE.BufferGeometry().setFromPoints([p]), dotMat);
+  dot.renderOrder = 32; measRoot.add(dot);
+  if (mPts.length === 1) { note.innerHTML = 'Mode ukur: klik titik kedua'; return; }
+  const [a, b] = mPts, d = b.clone().sub(a);
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), measLine);
+  line.renderOrder = 31; measRoot.add(line);
+  const el = document.createElement('div'); el.className = 'meas';
+  const txt = `${fmt(a.distanceTo(b))} mm`, det = `Δx ${fmt(Math.abs(d.x))} · Δy ${fmt(Math.abs(d.y))} · Δz ${fmt(Math.abs(d.z))}`;
+  el.innerHTML = `${txt}<span>${det}</span>`;
+  const o = new CSS2DObject(el); o.position.copy(a).add(b).multiplyScalar(0.5); measRoot.add(o);
+  note.innerHTML = `<b>${txt}</b> (${det}). Klik lagi untuk ukuran baru, Esc untuk keluar`;
+}
+let down = null;
+renderer.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerup', e => {
+  const click = down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 5;
+  down = null;
+  if (!click) return;
+  if (measuring) return measure(e);
+  const list = mode === 'cetak' ? [bed] : [...printMeshes];
+  const hit = hitAt(e, list);
+  let k = null;                                 // klon di alas ikut membawa userData.part
+  if (hit) for (let o = hit.object; o && !k; o = o.parent) k = o.userData.part || null;
+  if (k) select(k);
+});
+
+// ---------- jalan ----------
+function relayout() { layout(); persp.updateProjectionMatrix(); frame(); controls.update(); buildDims(); }
+addEventListener('resize', relayout);
+$('#sheet').addEventListener('toggle', relayout);
+layout();
+const hash = location.hash.slice(1);
+if (['top', 'side', 'front', 'bottom'].includes(hash)) view = hash;
+setMode(['urai', 'cetak'].includes(hash) ? hash : 'rakit');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+renderer.setAnimationLoop(now => {
+  if (exK !== exTarget) {
+    const u = reduce ? 1 : Math.min(1, Math.max(0, (now - exT0) / 650));      // 0,65 detik, berbasis waktu
+    exK = exFrom + (exTarget - exFrom) * u;
+    const e = exK < 0.5 ? 2 * exK * exK : 1 - (-2 * exK + 2) ** 2 / 2;
+    for (const [n, dz] of Object.entries(OFFS)) G[n].position.z = dz * e;
+  }
+  for (const [k, g] of Object.entries(PRINT)) {         // denyut oranye pada bagian yang dipilih (3 detik)
+    const t = (now - pulseT) / 1000;
+    const on = k === selected && t < 3 ? 0.55 * (0.5 + 0.5 * Math.cos(t * 6)) * (1 - t / 3) : 0;
+    g.traverse(o => { if (o.isMesh) o.material.emissiveIntensity = on; });
+  }
+  controls.update(); renderer.render(scene, cam); labels.render(scene, cam);
+});
+window.setView = setView; window.setMode = setMode; window.setGlow = setGlow;
+window.modelReady = true;
+</script>
