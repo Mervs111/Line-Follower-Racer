@@ -244,7 +244,8 @@ Belum termasuk header siku JST XH 8, header/socket 2,54 mm, spacer, LiPo, cetak 
   utama. Sensor ke papan utama lewat kabel **JST XH 8 pin** (16/11, keputusan user; dulu FFC seperti Ichibot).
 - **Leher sensor** 4 lubang berjarak 7 mm untuk menggeser busur maju/mundur.
 - **OLED diputar 180°** (deret pin di belakang) supaya socket tidak menabrak J1 di depan; tampilan dibalik di firmware.
-- **Tombol BOOT di sisi bawah papan utama** (jarang dipakai karena ada auto-reset), RST di tab depan papan antarmuka.
+- **Tombol BOOT di sisi atas papan utama**, kiri belakang di luar papan antarmuka (17/11, permintaan user; dulu sisi
+  bawah), RST di tab depan papan antarmuka.
 - **R LED 220 Ω, R fototransistor 10k**: sama dengan PCB sensor jalur utama.
 - **QRE di sisi bawah, resistornya di sisi atas** (via di tiap titik), supaya muka sensor rata dan dekat lantai.
 - Saklar beban AO3401A, R seri 4,7k di IN/INH, pembagi 100k/33k, buck 5,31 V, cas di luar robot: sama dengan rev A.

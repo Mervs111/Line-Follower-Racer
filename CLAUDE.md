@@ -242,7 +242,7 @@ odejs` ke PATH.
 - 15/11 (lanjutan): user merombak X2 jadi **4 papan gaya Ichibot** (ESP32 + komponen di sisi bawah papan utama
   segitiga, antarmuka ditumpuk, driver terpisah, sensor bulan sabit), **12 sensor**, **OLED 0,96"**, **LiPo 2S** kecil,
   QRE1113 diganti **PT67-21B + LED IR 940 nm 3528** (photodioda 3528 tidak ketemu). Pilihan Claude yang belum
-  dikonfirmasi: tinggi tumpukan 11 / 12,5 mm, FFC tipe B, OLED diputar 180°, BOOT di sisi bawah, lubang leher 7 mm.
+  dikonfirmasi: tinggi tumpukan 11 / 12,5 mm, FFC tipe B, OLED diputar 180°, lubang leher 7 mm (BOOT pindah ke sisi atas 17/11, permintaan user).
 - 15/11: konektor LiPo X2 = **XT30** (keputusan user); J1 JST XH diganti XT30PW-M jantan siku.
 - 16/11: user memindah file X2 sendiri (driver J2/J3 siku) dan menilai routing papan utama jelek → **ESP32 di tengah,
   antena depan**, Claude merouting ulang, kabel sensor **JST XH 8** (jawaban AskUserQuestion). Lalu: "WES PAKE QRE AJA
