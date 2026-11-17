@@ -250,8 +250,10 @@ Belum termasuk header siku JST XH 8, header/socket 2,54 mm, spacer, LiPo, cetak 
 - Saklar beban AO3401A, R seri 4,7k di IN/INH, pembagi 100k/33k, buck 5,31 V, cas di luar robot: sama dengan rev A.
 
 ## Belum dicek / perlu diukur sebelum cetak
-1. **USB-C 16 pin tidak lolos aturan tempat cetak**: celah pad 0,2 mm < 0,254 mm (19 peringatan DRC). Tanyakan ke
-   tempat cetak, atau ganti konektor.
+1. **USB-C 16 pin di bawah aturan tempat cetak**: celah pad 0,2 mm < 0,3 mm. SPECTRA pcb (17/11): boleh dicetak,
+   risiko pemesan; **keputusan user: tetap dipakai**. Sebelum menyolder, cek short antar pad dengan kaca pembesar /
+   multimeter, kerik pakai cutter kalau nyambung; solder pakai flux + drag. Lubang sudah ikut aturan SPECTRA (via bor
+   0,7, slot kaki pelindung 1,0, pasak 0,7; `docs/aturan-cetak-pcb.md`).
 2. **LiPo 2S**: konektor **XT30** (keputusan user 15/11), packnya belum dipilih. Calon dari pencarian Tokopedia
    15/11 (cuplikan hasil, belum dicek di halaman produk):
 

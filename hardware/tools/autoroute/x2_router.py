@@ -18,7 +18,7 @@ import sys
 
 import pcbnew
 
-VIA_D, VIA_DRILL = 1.3, 0.6
+VIA_D, VIA_DRILL = 1.3, 0.7     # bor 0,7: lubang minimal SPECTRA pcb (17/11)
 _SIMPAN = []                              # referensi objek SWIG yang dibuang (lihat gen_pcb_utama_v17.py)
 
 

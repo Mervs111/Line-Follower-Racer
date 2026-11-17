@@ -19,6 +19,24 @@ perubahan dari mereka: **tebal jalur minimal 0,3 mm, jarak ke ground minimal 0,5
 
 Tempat cetak tidak memberi garansi kalau desain di bawah batas ini (short / jalur putus).
 
+## SPECTRA pcb (WhatsApp 0877-2211-2221, jawaban chat 17/11/2026)
+
+Ditanyakan user untuk LFM X2 (konektor USB-C 16 pin). Katalog WhatsApp mereka ("Spesifikasi Pcb", "Standar Pembuatan
+PCB", "Price List & Cara Hitung Harga PCB") belum terbaca di sini (perlu login WhatsApp).
+
+| Item | Jawaban SPECTRA |
+|---|---|
+| Pad lubang (via / PTH) | pad min **1,2 mm**, lubang min **0,7 mm** (lebih besar dari angka 21/10: 0,6) |
+| Slot | lebar min **1 mm** |
+| Jarak jalur ke jalur, jalur ke lubang | **0,3 mm** aman; 0,254 mm batas mentok dan kadang tetap short |
+| Di bawah 0,3 mm | boleh dicetak, risiko pemesan ("kalau short dikerik pakai cutter") |
+| Cek desain + hitung harga | hanya 1 kali; kirim file kalau desain sudah final |
+
+Dipakai di LFM X2 (17/11): semua via bor 0,7 / pad 1,3, kaki pelindung USB-C slot 1,0 / pad 1,5, pasak USB-C 0,7,
+DRC `min_through_hole_diameter` 0,7 dan `min_via_diameter` 1,2 di keempat `.kicad_pro`. Celah pad USB-C 0,2 mm
+dibiarkan (keputusan user: terima risiko). PCB jalur utama PjBL (`pcb-utama` 17 via, `sensor-garis` 52 via) masih
+via bor 0,6, belum diubah.
+
 ## Cara cepat: impor template
 
 Semua isian di bawah sudah disimpan di `hardware/aturan-cetak-template/` (`aturan-cetak.kicad_pcb`, `.kicad_pro`,

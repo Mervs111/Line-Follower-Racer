@@ -281,7 +281,27 @@ ANTENA = (-9.6, 9.6, 53.4, 61.0)                   # utama: daerah antena ESP32 
 BAWAH_ESP32 = (-7.55, 7.55, 36.15, 53.4)
 OLED = (0.0, 48.0, 27.3, 27.8)                     # antarmuka: modul OLED 0,96" (tengah x, y, lebar, panjang)
 # pad pemasang SW1 bawaan KiCad (oval 2,2 x 3,5) hanya 0,25 mm dari kaki 1/3: dikecilkan (lubang 1,5 tetap).
+def bor_min(q, lebar):
+    """lubang pad `q` diperlebar sampai sisi pendeknya `lebar` mm; pad PTH ikut supaya cincin >= 0,25 mm"""
+    d, z = q.GetDrillSize(), q.GetSize(pcbnew.F_Cu)
+    L, cincin = pcbnew.FromMM(lebar), pcbnew.FromMM(0.5)
+    if d.x == d.y:
+        nd = pcbnew.VECTOR2I(max(d.x, L), max(d.y, L))
+    elif d.x < d.y:
+        nd = pcbnew.VECTOR2I(max(d.x, L), d.y)
+    else:
+        nd = pcbnew.VECTOR2I(d.x, max(d.y, L))
+    q.SetDrillSize(nd)
+    if q.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH:
+        q.SetSize(pcbnew.F_Cu, nd)
+    else:
+        q.SetSize(pcbnew.F_Cu, pcbnew.VECTOR2I(max(z.x, nd.x + cincin), max(z.y, nd.y + cincin)))
+
+
 PAD_FIX = {("utama", "SW1"): {"": (2.0, 3.3)}}
+# Aturan SPECTRA pcb (17/11): lubang minimal 0,7 mm, slot minimal lebar 1 mm. Kaki pelindung USB-C (slot 0,6) dilebarkan
+# jadi slot 1,0 dengan pad 1,5 (cincin 0,25); pasak plastik (NPTH 0,65) jadi 0,7. Nilai = lebar slot / diameter lubang.
+BOR_FIX = {("utama", "J2"): {"SH": 1.0, "": 0.7}}
 REF_SILK = {"utama": {"U1", "U2", "U3", "U4", "J2", "J3", "J4", "J5", "L1", "SW1", "SW2"},
             "antarmuka": {"J1", "J2"}, "driver": {"J1"}, "sensor": {"U13"}}
 SILK = {    # (teks, x, y, ukuran, rotasi, sisi)
@@ -474,6 +494,8 @@ def tata(p, comps, nets, loaded, lubang, paksa, target):
             if q.GetNumber() in PAD_FIX.get((p, ref), {}):
                 w, h = PAD_FIX[(p, ref)][q.GetNumber()]
                 q.SetSize(pcbnew.F_Cu, pcbnew.VECTOR2I(pcbnew.FromMM(w), pcbnew.FromMM(h)))
+            if q.GetNumber() in BOR_FIX.get((p, ref), {}):
+                bor_min(q, BOR_FIX[(p, ref)][q.GetNumber()])
             name = nets.get((ref, q.GetNumber()))
             if name:
                 q.SetNet(net(name))

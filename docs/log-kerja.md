@@ -5,6 +5,10 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 17/11/2026
+- **LFM X2 ikut aturan SPECTRA pcb** (jawaban chat user ke tempat cetak): lubang min 0,7 / pad 1,2, slot min 1 mm,
+  jarak aman 0,3. Semua via keempat papan bor 0,6 → 0,7 (pad 1,3 tetap), slot kaki pelindung USB-C 0,6 → 1,0 (pad
+  1,5), pasak USB-C 0,65 → 0,7; aturan DRC di `.kicad_pro`, generator, dan router ikut. DRC keempat papan tetap 0
+  error / 0 unconnected / parity 0. Celah pad USB-C 0,2 mm dibiarkan (keputusan user: terima risiko).
 - **LFM X2: keempat papan selesai dirouting** (permintaan user 16/11: "PAKE QRE ... ROUTING SEMUA PCB SEKARANG").
   Sensor X2 = 12× QRE1113GR, ESP32 membujur di tengah (antena depan), kabel sensor JST XH 8. Router sendiri
   (`hardware/tools/autoroute/x2_router.py` + `x2_cari.py`). Hasil: **utama, antarmuka, driver, sensor ERC 0, DRC 0

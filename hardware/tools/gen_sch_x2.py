@@ -364,7 +364,12 @@ class Skematik:
         ns["netclass_patterns"] = [{"netclass": k, "pattern": n} for k, nets in self.kelas.items() for n in nets]
         ds = pro["board"]["design_settings"]
         ds["track_widths"] = [0.0, 0.3, 0.5, 1.2, 2.0]
-        ds["via_dimensions"] = [{"diameter": 0.0, "drill": 0.0}, {"diameter": 1.3, "drill": 0.6}]
+        ds["via_dimensions"] = [{"diameter": 0.0, "drill": 0.0}, {"diameter": 1.3, "drill": 0.7}]
+        # aturan SPECTRA pcb (17/11): lubang minimal 0,7 mm, pad lubang minimal 1,2 mm
+        ds["rules"]["min_through_hole_diameter"] = 0.7
+        ds["rules"]["min_via_diameter"] = 1.2
+        for c in ns["classes"]:
+            c["via_drill"] = 0.7
         pro["sheets"] = [[root_uuid, "Root"]]
         pro["schematic"]["top_level_sheets"] = [{"filename": self.project + ".kicad_sch", "name": "Root",
                                                  "uuid": root_uuid}]

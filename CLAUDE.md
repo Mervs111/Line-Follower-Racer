@@ -78,7 +78,9 @@ memakai pin map yang sama.
   interface di PCB utama masih rev A). `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
   via 0,6/1,0 (2 layer 1,27), slot 1/1,5, silkscreen 0,2, mask expansion 0,1. SOIC aman, SSOP 0,65 tidak. Isian
-  KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. Konstanta `FAB` di
+  KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. **SPECTRA pcb (17/11, chat)**: lubang
+  min 0,7 / pad 1,2, slot min 1, jarak aman 0,3 (0,254 mentok, di bawah 0,3 risiko pemesan), cek desain hanya 1x;
+  LFM X2 sudah ikut (via 0,7), PCB PjBL masih via 0,6. Konstanta `FAB` di
   `gen_pcb.py` masih aturan lama (0,8 mm).
 
 ### LFM X2 (side project, mulai 15/11)
