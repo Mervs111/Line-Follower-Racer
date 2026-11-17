@@ -5,6 +5,10 @@ logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi k
 Entri terbaru di atas.
 
 ## 17/11/2026
+- **LFM X2: tombol BOOT (SW2) pindah ke sisi atas papan utama** (permintaan user), posisi sama (kiri belakang, di luar
+  papan antarmuka). IO0/+5V dirouting ulang; GND J5 (jalur balik motor) sempat terkurung jalur VBAT/EN/+3V3, jadi diberi
+  jalur tetap 1,0 mm + 2 via ke pour kiri belakang (`x2_vbat_utama.json`). DRC utama 0 error / 0 unconnected / parity
+  0, GND 1 kelompok, rakitan tanpa tabrakan baru.
 - **LFM X2 ikut aturan SPECTRA pcb** (jawaban chat user ke tempat cetak): lubang min 0,7 / pad 1,2, slot min 1 mm,
   jarak aman 0,3. Semua via keempat papan bor 0,6 → 0,7 (pad 1,3 tetap), slot kaki pelindung USB-C 0,6 → 1,0 (pad
   1,5), pasak USB-C 0,65 → 0,7; aturan DRC di `.kicad_pro`, generator, dan router ikut. DRC keempat papan tetap 0

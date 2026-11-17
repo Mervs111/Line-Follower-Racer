@@ -232,9 +232,10 @@ PLACE = {
         # kiri depan: LDO 3,3 V (tab ke arah ESP32) + kapasitor +5V / +3V3
         "U3": (-27.0, 47.8, 0, "B"), "C8": (-33.5, 47.8, 90, "B"), "C9": (-20.2, 47.8, 90, "B"),
         "C10": (-20.2, 53.0, 90, "B"),
-        # tengah belakang: auto-reset; kiri belakang: pull-up IO0, tombol BOOT, pull-down DRV_EN
+        # tengah belakang: auto-reset; kiri belakang: pull-up IO0, tombol BOOT (sisi atas, 17/11 permintaan user: di
+        # luar papan antarmuka yang hanya x +-16 di belakang, jadi bisa ditekan dari atas), pull-down DRV_EN
         "Q2": (-3.5, 27.0, 0, "B"), "R12": (-0.5, 27.0, 90, "B"), "Q3": (-3.5, 31.0, 0, "B"),
-        "R13": (-0.5, 31.0, 90, "B"), "R15": (-18.0, 28.0, 90, "B"), "SW2": (-26.5, 25.0, 0, "B"),
+        "R13": (-0.5, 31.0, 90, "B"), "R15": (-18.0, 28.0, 90, "B"), "SW2": (-26.5, 25.0, 0, "F"),
         "R16": (-13.5, 33.0, 90, "B"),
     },
     "antarmuka": {
@@ -302,14 +303,14 @@ PAD_FIX = {("utama", "SW1"): {"": (2.0, 3.3)}}
 # Aturan SPECTRA pcb (17/11): lubang minimal 0,7 mm, slot minimal lebar 1 mm. Kaki pelindung USB-C (slot 0,6) dilebarkan
 # jadi slot 1,0 dengan pad 1,5 (cincin 0,25); pasak plastik (NPTH 0,65) jadi 0,7. Nilai = lebar slot / diameter lubang.
 BOR_FIX = {("utama", "J2"): {"SH": 1.0, "": 0.7}}
-REF_SILK = {"utama": {"U1", "U2", "U3", "U4", "J2", "J3", "J4", "J5", "L1", "SW1", "SW2"},
+REF_SILK = {"utama": {"U1", "U2", "U3", "U4", "J2", "J3", "J4", "J5", "L1", "SW1"},     # SW2: cukup tulisan BOOT
             "antarmuka": {"J1", "J2"}, "driver": {"J1"}, "sensor": {"U13"}}
 SILK = {    # (teks, x, y, ukuran, rotasi, sisi)
     "utama": [("LFM X2", 0.0, 47.0, 3.0, 0, "F"), ("rev B - papan utama", 0.0, 43.8, 1.0, 0, "F"),
               ("LIPO 2S", 23.25, 36.2, 0.9, 0, "F"), ("SAKLAR", 34.0, 26.9, 0.9, 0, "F"), ("USB", 31.5, 50.8, 0.9, 0, "F"),
               ("KE ANTARMUKA", -14.5, 61.2, 0.9, 0, "F"), ("PWR", 32.25, 21.5, 0.8, 0, "F"),
               ("KE DRIVER", -19.2, 35.4, 0.9, 0, "B"), ("KE SENSOR", 0.0, 66.5, 0.9, 0, "B"),
-              ("BOOT", -26.5, 29.5, 0.9, 0, "B"), ("LFM X2 rev B", 0.0, 24.0, 1.2, 0, "B"),
+              ("BOOT", -26.5, 29.5, 0.9, 0, "F"), ("LFM X2 rev B", 0.0, 24.0, 1.2, 0, "B"),
               ("ANTENA", 0.0, 57.0, 0.9, 0, "F")],
     "antarmuka": [("ATAS", -24.5, 63.3, 0.9, 0, "F"), ("BAWAH", -24.5, 36.7, 0.9, 0, "F"),
                   ("OK", -32.5, 55.0, 0.9, 0, "F"), ("KEMBALI", 24.5, 63.3, 0.9, 0, "F"),

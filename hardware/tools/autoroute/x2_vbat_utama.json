@@ -1,5 +1,5 @@
 {
- "keterangan": "LFM X2 papan utama: jalur VBAT 1,0 mm tetap di sisi bawah dari drain Q1 (26,44; 28), di atas pasak XT30 (17,75; 22,6), lewat tepi belakang (y 22,4) di bawah lubang H3/H4, naik di x -19,5 ke J5 pin 2 (-26,82; 38,73). Supaya router tidak membawa VBAT lewat depan ESP32 (lorong jalur MUX). Dipasang sesudah fanout, sebelum ekspor (x2_router.py pasang). Koordinat KiCad. GND baterai (17/11): jalur 1,0 mm sisi atas dari kaki GND XT30 (J1.1) lurus ke belakang, 2 via ke pour tepi belakang di belakang jalur VBAT. Lewat pour saja kaki GND XT30 bisa terkurung jalur sinyal (ESP_RX, +3V3, +5V) dan lepas dari GND utama.",
+ "keterangan": "LFM X2 papan utama: jalur VBAT 1,0 mm tetap di sisi bawah dari drain Q1 (26,44; 28), di atas pasak XT30 (17,75; 22,6), lewat tepi belakang (y 22,4) di bawah lubang H3/H4, naik di x -19,5 ke J5 pin 2 (-26,82; 38,73). Supaya router tidak membawa VBAT lewat depan ESP32 (lorong jalur MUX). Dipasang sesudah fanout, sebelum ekspor (x2_router.py pasang). Koordinat KiCad. GND baterai (17/11): jalur 1,0 mm sisi atas dari kaki GND XT30 (J1.1) lurus ke belakang, 2 via ke pour tepi belakang di belakang jalur VBAT. Lewat pour saja kaki GND XT30 bisa terkurung jalur sinyal (ESP_RX, +3V3, +5V) dan lepas dari GND utama. GND driver (17/11): J5.4 -> J5.3 -> turun di sisi atas, 2 via, sisi bawah sampai pour kiri belakang, 1,0 mm (jalur balik arus motor). J5.3/J5.4 dikurung jalur VBAT (bawah) dan EN/+3V3 (atas).",
  "tracks": [
   [
    "VBAT",
@@ -108,6 +108,24 @@
    221.9,
    157.15,
    1.0
+  ],
+  [
+   "GND",
+   "F",
+   175.72,
+   139.28,
+   175.72,
+   147.75,
+   1.0
+  ],
+  [
+   "GND",
+   "B",
+   175.72,
+   146.25,
+   175.72,
+   156.55,
+   1.0
   ]
  ],
  "vias": [
@@ -120,6 +138,16 @@
    "GND",
    221.9,
    157.15
+  ],
+  [
+   "GND",
+   175.72,
+   146.25
+  ],
+  [
+   "GND",
+   175.72,
+   147.75
   ]
  ]
 }

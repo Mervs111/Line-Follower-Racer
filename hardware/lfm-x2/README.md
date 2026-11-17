@@ -144,7 +144,7 @@ enable.
   kaki 1, pembagi VBAT di sisi atas (ketiga pad VBAT_SENSE sebaris di belakang), C11 (100 nF CH340C) di belakang U2. Buck MP1584 (U4 diputar 90°, C5 di antara kaki SW dan BST, D1/L1 di kanan
   belakang, C3/R5 di depan, R7/R8/C7 di belakang; C4, C6, R6 di sisi atas) dan CH340C di sisi bawah; USB-C J2 dan SW1
   di bahu kanan (atas), R CC di ujung fanout USB-C. Kanan belakang: J1 XT30 siku (atas, mulut ke baterai, 0,55 mm melewati tepi) + LED daya, Q1 (bawah). Tengah
-  belakang: auto-reset Q2/Q3; kiri belakang: BOOT SW2. Ujung segitiga: J3 JST XH 8 siku (bawah), mulut ke depan
+  belakang: auto-reset Q2/Q3; kiri belakang: BOOT SW2 **di sisi atas** (17/11, permintaan user; di luar papan antarmuka, jadi bisa ditekan dari atas), GND J5 (driver) jalur tetap 1,0 mm ke pour kiri belakang. Ujung segitiga: J3 JST XH 8 siku (bawah), mulut ke depan
   menonjol 3,3 mm. Lubang H5/H6 (±11; 67) di samping antena: **pakai spacer/baut nilon**.
 - **Antarmuka**: OLED di tengah, tombol 3 + 3 mengapitnya, RST di tab depan, buzzer di tab belakang (tidak di bawah
   OLED karena tinggi 9,5 mm). J1 di sisi bawah kiri, tepat di atas J4 papan utama.
