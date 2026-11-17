@@ -84,28 +84,34 @@ memakai pin map yang sama.
 ### LFM X2 (side project, mulai 15/11)
 - `hardware/lfm-x2/` (baca `README.md` di sana): **full SMD gaya Ichibot Ultimate 5 Max, di luar RAB PjBL, dana
   sendiri; rancangan utama di atas tidak berubah.** Keputusan user: modul ESP32-WROOM-32E + CH340C + USB-C di papan,
-  **4× BTN7971B** (TO-263-7). Pin motor beda dari jalur utama: ML_IN1/IN2 = 4/16, MR_IN1/IN2 = 17/18, DRV_EN = 2;
-  START di GPIO35.
+  **4× BTN7971B** (TO-263-7). Pin X2 beda dari jalur utama, **disusun ulang 16/11 untuk routing** (tabel di README
+  X2): ML_IN1/IN2 = 13/21, MR_IN1/IN2 = 15/19, DRV_EN = 2, ENC_L 4/18, ENC_R 16/5, BUZ 27, SDA/SCL 22/23; START di
+  GPIO35, MUX/VBAT/BTN sama dengan jalur utama.
 - **Rev B (15/11, rombak keputusan user)**: 4 proyek KiCad `utama/` (segitiga, ESP32 + hampir semua komponen di sisi
   bawah), `antarmuka/` (OLED 0,96" + 7 tombol, ditumpuk 11 mm di atas), `driver/` (4× BTN7971B, 11 mm di bawah
-  bagian belakang), `sensor/` (bulan sabit + leher garpu, 12,5 mm di bawah ujung segitiga, FFC 8 pin tipe B ke utama).
-  Sensor = **12× PT67-21B + LED IR 940 nm 3528** (footprint `lfm-x2.pretty/PLCC-2_3528_HandSolder`), posisi = busur
-  PCB sensor rev B. **LiPo 2S** kecil di dudukan 3D print di atas motor, konektor **XT30** (J1 XT30PW-M siku di kanan
+  bagian belakang), `sensor/` (bulan sabit + leher garpu, 12,5 mm di bawah ujung segitiga, **kabel JST XH 8 pin** ke
+  utama: J3 siku di sisi bawah utama, J1 tegak di sensor). Sensor = **12× QRE1113GR** (16/11, ganti PT67-21B + LED IR
+  3528), posisi = busur PCB sensor rev B. **ESP32 membujur di tengah papan utama, antena ke depan** (16/11; modul
+  y 34,7–60,2, larangan antena y 53,4–61,0; J4 socket antarmuka di kiri ESP32, J5 driver di kiri belakang). **LiPo 2S** kecil di dudukan 3D print di atas motor, konektor **XT30** (J1 XT30PW-M siku di kanan
   belakang papan utama, pin 1 = GND, pin 2 = BAT+; pack belum dipilih). Pin konektor
   antar-papan didefinisikan sekali (`KONEKTOR` di `gen_sch_x2.py`) dan dicek `cek_net_x2.py` + cek tumpuk.
 - Generator: `gen_lib_x2.py`, `gen_sch_x2.py [papan]`, `cek_net_x2.py`, `gen_pcb_x2.py tata|peta|pour [papan]`
-  (python KiCad). Semua papan ERC 0, DRC 0 error / parity 0. **Papan utama dirouting Claude 16/11** (permintaan user:
-  simpel, jarak aman) dengan router sendiri `hardware/tools/autoroute/x2_router.py` + `x2_cari.py` (FreeRouting gagal):
-  jarak ≥ 0,3 (utamakan 0,4), 111 via, GND pour 2 sisi + jalur GND, DRC 0 error / 0 unconnected / parity 0.
-  Antarmuka, driver, sensor: **tanpa jalur, user routing sendiri**. Jangan jalankan `tata` lagi untuk papan yang
-  sudah ada jalurnya (utama). Rev A (1 PCB 94,5 × 177 mm) di `arsip/hardware/lfm-x2-rev-a/`.
+  (python KiCad). **Keempat papan dirouting Claude 16–17/11** (permintaan user "ROUTING SEMUA PCB SEKARANG", sesudah
+  rombak tata letak) dengan router sendiri `hardware/tools/autoroute/x2_router.py` + `x2_cari.py` (FreeRouting
+  gagal): jarak ≥ 0,3 (utamakan 0,4), GND pour 2 sisi + jalur GND; **semua papan ERC 0, DRC 0 error / 0 unconnected /
+  parity 0** (17/11), hasil per papan di README X2. Papan utama memakai jalur tetap sebelum router:
+  `x2_vbat_utama.json` (VBAT + GND XT30), `x2_fanout_utama.json` (dibuat `x2_fanout_utama.py`: fanout deret kanan
+  ESP32, MUX ke J3, GND USB-C/R CC/CH340C), `x2_sambungan_utama.json` (`ekspor --ganti`). Pelajaran: pad GND di titik
+  sempit diberi jalur tetap, jangan diandalkan ke pour (router tidak melihat pour). Jangan jalankan `tata` lagi untuk
+  papan yang sudah ada jalurnya (perlu `--paksa`, menghapus jalur). Rev A (1 PCB 94,5 × 177 mm) di
+  `arsip/hardware/lfm-x2-rev-a/`.
 - **Rakitan + usulan rangka cetak (16/11)**: `mechanical/lfm-x2/` (`gen_rakitan_x2.py`, STL, viewer
   https://claude.ai/artifact/NV6wvHKBGvuGv3AQEQm5ZU). Rangka motor (klem gearbox + tiang 11 mm di telinga ±44; 23,5),
   dudukan baterai (tutup klem + strap), skid depan 4,5 mm; **belum disetujui user**. Generator mengekspor papan dari
   KiCad tiap jalan: jalankan ulang + publish ulang sesudah papan berubah. Temuan 16/11: J2/J3 driver versi JST XH siku
   menumpuk dengan motor N20 + PCB encoder.
-- Terbuka: celah pad USB-C 0,2 mm < 0,254; polaritas LED IR generik; konektor FFC yang dibeli vs footprint; lubang
-  OLED, spacer 12,5 mm. Referensi di `docs/referensi/ichibot-ultimate-5-max/`.
+- Terbuka: celah pad USB-C 0,2 mm < 0,254; header JST XH 8 siku belum dicari; jangkauan Wi-Fi (antena di tengah,
+  belum diuji); driver J2/J3 siku vs motor (versi tegak B6B pad sama); lubang OLED, spacer 12,5 mm. Referensi di `docs/referensi/ichibot-ultimate-5-max/`.
 
 ### Mekanik
 - **v16** (`mechanical/`, 22/10): model https://claude.ai/artifact/C6BMXLgUPLJN5Aubm8uyx3, ±116 × 165 × 62 mm.
@@ -236,6 +242,9 @@ odejs` ke PATH.
   QRE1113 diganti **PT67-21B + LED IR 940 nm 3528** (photodioda 3528 tidak ketemu). Pilihan Claude yang belum
   dikonfirmasi: tinggi tumpukan 11 / 12,5 mm, FFC tipe B, OLED diputar 180°, BOOT di sisi bawah, lubang leher 7 mm.
 - 15/11: konektor LiPo X2 = **XT30** (keputusan user); J1 JST XH diganti XT30PW-M jantan siku.
+- 16/11: user memindah file X2 sendiri (driver J2/J3 siku) dan menilai routing papan utama jelek → **ESP32 di tengah,
+  antena depan**, Claude merouting ulang, kabel sensor **JST XH 8** (jawaban AskUserQuestion). Lalu: "WES PAKE QRE AJA
+  ... ROUTING SEMUA PCB SEKARANG" → sensor X2 = **12× QRE1113GR**, keempat papan dirouting Claude.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →

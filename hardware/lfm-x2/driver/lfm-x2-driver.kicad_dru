@@ -4,3 +4,15 @@
 (rule "jarak_ke_pour"
   (condition "A.Type == 'Zone'")
   (constraint clearance (min 0.5mm)))
+
+# J2/J3 JST XH siku (pilihan user 16/11): badan plastik 0,35 mm dari pad tab BTN7971B, courtyard keduanya bertumpuk.
+# Peringatan saja (badan tidak bertabrakan); versi tegak B6B-XH-A (pad sama) tidak bertumpuk.
+(rule "jst_siku_vs_btn7971b"
+  (severity warning)
+  (condition "A.Reference == 'J2' || A.Reference == 'J3'")
+  (constraint courtyard_clearance (min 0mm)))
+
+# Kaki GND J2/J3 (THT, dikelilingi jalur motor dan encoder): satu jari thermal ke pour sudah cukup
+(rule "thermal_satu_jari"
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole' && (A.intersectsCourtyard('J2') || A.intersectsCourtyard('J3'))")
+  (constraint min_resolved_spokes 1))

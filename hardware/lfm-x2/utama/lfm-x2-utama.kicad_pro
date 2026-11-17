@@ -261,7 +261,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": "A"
+      "sch_revision": "B"
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -535,25 +535,25 @@
       },
       {
         "clearance": 0.3,
+        "name": "Daya",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 0,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.5,
         "tuning_profile": "",
         "via_diameter": 1.3,
-        "via_drill": 0.6,
-        "name": "Daya",
-        "track_width": 0.5
+        "via_drill": 0.6
       },
       {
         "clearance": 0.3,
+        "name": "Daya besar",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 0,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 1.2,
         "tuning_profile": "",
         "via_diameter": 1.3,
-        "via_drill": 0.6,
-        "name": "Daya besar",
-        "track_width": 1.2
+        "via_drill": 0.6
       }
     ],
     "meta": {
@@ -737,6 +737,7 @@
         "uuid": "9e6c8a4c-27bd-44dc-9203-15ec6145b63b"
       }
     ],
+    "used_designators": "",
     "variants": []
   },
   "sheets": [

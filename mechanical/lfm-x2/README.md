@@ -30,16 +30,15 @@ Cara membangun tanpa CadQuery: tiap bagian = tumpukan ekstrusi 2D (shapely). Tia
 berlubang (tambah − potong); dinding dari cincin poligon, tutup dari selisih poligon selang bawah dan atas, lalu
 dinding dipecah di titik tutup supaya tidak ada sambungan-T. Skid = benda putar dengan kantong heksagon.
 
-## Hasil cek (16/11, file KiCad saat itu)
+## Hasil cek (17/11, keempat papan sudah dirouting, sensor QRE1113GR)
 
 - Bagian cetak tidak menabrak komponen KiCad (kotak pembatas tiap referensi + poligon tepi papan), motor, ban, atau
-  steker. Celah terkecil: ban 1,9 · steker XT30 1,9 · konektor J2/J3 driver 1,05 · skid ke LED D6/D7 0,69 mm.
-- **Di luar bagian cetak**: papan driver di file 16/11 09:40 memakai JST XH **siku** (S6B-XH-A) untuk J2/J3. Badannya
-  menonjol ke y 3,9 dan menumpuk dengan kaleng motor N20 (±9,5 × 2,1 × 1,7 mm), tutup motor, dan PCB encoder
-  (±1,6 × 2,3 × 2,9 mm); steker yang masuk dari belakang juga jatuh di bawah motor. Versi tegak (B6B-XH-A, y 8,1…13,85)
-  sebelumnya tidak menabrak. Alas rangka sudah dikosongkan di tengah (x ±24, y > −4) untuk konektor + kabel.
+  steker. Celah terkecil: ban 1,9 · steker XT30 1,9 · konektor J2/J3 driver 1,05 · skid ke sensor tengah U6/U7 2,0 mm.
+- **Di luar bagian cetak**: J2/J3 driver JST XH **siku** (S6B-XH-A, pilihan user) masih menumpuk dengan kaleng motor
+  N20, tutup motor, dan PCB encoder; steker yang masuk dari belakang juga jatuh di bawah motor. Versi tegak (B6B-XH-A)
+  punya posisi pad yang sama, jadi bisa ditukar tanpa routing ulang.
 - Ukuran robot 171,1 × 117,7 × 46,5 mm (batas guidebook 250 × 200 × 100). Titik terendah selain roda + skid: muka
-  LED/PT sensor 2,6 mm, kepala baut leher sensor 2,8, kepala baut telinga 3,0, alas rangka 7,6.
+  sensor QRE1113GR 2,8 mm, kepala baut leher sensor 2,8, kepala baut telinga 3,0, alas rangka 7,6.
 
 ## Belum diputuskan
 - Rancangan rangka ini sendiri (usulan Claude), warna/bahan, printer lab.

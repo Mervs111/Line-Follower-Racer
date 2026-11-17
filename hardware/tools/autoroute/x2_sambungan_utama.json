@@ -1,0 +1,9 @@
+{
+ "keterangan": "LFM X2 papan utama (17/11): sambungan ratsnest yang pasti bersilang diganti pasangan lain yang menyambung kelompok tembaga yang sama (x2_router.py ekspor ... --ganti). Koordinat KiCad (x robot = X - 200, y robot = 180,55 - Y). Kaki 2 (+3V3) dan kaki 3 (EN) ESP32 terkurung jalur tetap MUX_SIG/MUX_S di kanan, jadi hanya bisa ke kiri di atas modul atau lewat depan daerah antena; sambungan dari keduanya ke kanan belakang (C11) dan ke auto-reset (tengah belakang) harus memotong berkas BTN/BTN2/BUZ/ESP_TX/ESP_RX.",
+ "ganti": [
+  {"net": "+3V3", "catatan": "C11 (kanan belakang) ke kaki 2 ESP32 -> C11 ke J5.10 +3V3 (kiri belakang), lewat belakang modul",
+   "dari": [[217.46, 143.75], [210.45, 129.11]], "ke": [[217.46, 143.75], [183.34, 139.28]]},
+  {"net": "EN", "catatan": "kaki 3 ESP32 ke Q2 auto-reset -> C12 (RC EN, kiri J4) ke Q2, lewat sisi kiri",
+   "dari": [[208.75, 130.38], [197.44, 153.55]], "ke": [[181.0, 127.99], [197.44, 153.55]]}
+ ]
+}

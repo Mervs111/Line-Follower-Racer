@@ -38,7 +38,8 @@ BIAYA_B = 1.5                             # sisi bawah penuh komponen: jalan di 
                                           # cenderung lewat sisi atas yang kosong, B dipakai untuk keluar dari pad
 JENDELA = 12.0                            # heuristik dihitung di kotak sambungan + 12 mm dulu, lalu seluruh papan
 PRES0, PRES_NAIK, RIWAYAT = 0.5, 1.7, 0.5  # PathFinder: faktor tabrakan awal, kenaikan per iterasi, tambahan riwayat
-LEBAR = {"VBAT": 1.0, "BAT+": 1.0, "BUCK_SW": 0.8, "+5V": 0.6, "+5V_BUCK": 0.6, "VBUS": 0.6, "+3V3": 0.5, "GND": 0.5}
+LEBAR = {"VBAT": 1.0, "BAT+": 1.0, "BUCK_SW": 0.8, "+5V": 0.6, "+5V_BUCK": 0.6, "VBUS": 0.6, "+3V3": 0.5, "GND": 0.5,
+         "ML_P": 1.0, "ML_N": 1.0, "MR_P": 1.0, "MR_N": 1.0}            # driver: keluaran motor (16/11)
 USB = ("USB_DP", "USB_DM", "CC1", "CC2")
 DIRS = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 R2 = math.sqrt(2)
@@ -553,7 +554,10 @@ if __name__ == "__main__":
     a = [x for x in sys.argv[1:] if "=" not in x]
     for kv in [x for x in sys.argv[1:] if "=" in x]:    # setelan coba-coba, mis. PRES_NAIK=1.3 RIWAYAT=1.0
         k, v = kv.split("=")
-        globals()[k] = float(v)
+        if k.startswith("LEBAR_"):                     # lebar per net, mis. LEBAR_VBAT=0.6
+            LEBAR[k[6:]] = float(v)
+        else:
+            globals()[k] = float(v)
     if a[0] == "perbaiki":
         perbaiki(a[1], a[2], a[3], *(int(x) for x in a[4:5]))
     elif a[0] == "bongkar":

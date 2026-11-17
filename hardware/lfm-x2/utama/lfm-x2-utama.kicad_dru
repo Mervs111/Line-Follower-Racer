@@ -25,8 +25,8 @@
   (condition "A.Type == 'Track' && A.intersectsCourtyard('J2') && B.intersectsCourtyard('J2')")
   (constraint clearance (min 0.3mm)))
 
-# SW1 dan kaki pelindung J2 (pad THT GND di tepi kanan yang padat): satu jari thermal ke pour sudah cukup, GND juga
-# sampai lewat jalur
+# SW1, kaki pelindung J2, kaki GND header J3/J4, dan kaki GND XT30 J1 (pad THT GND yang diapit jalur): satu jari
+# thermal ke pour sudah cukup, GND juga sampai lewat jalur (J1.1: sisi atas penuh + jalur tetap 1,0 mm ke tepi belakang)
 (rule "thermal_satu_jari"
-  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole' && (A.intersectsCourtyard('SW1') || A.intersectsCourtyard('J2'))")
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole' && (A.intersectsCourtyard('SW1') || A.intersectsCourtyard('J2') || A.intersectsCourtyard('J3') || A.intersectsCourtyard('J4') || A.intersectsCourtyard('J1'))")
   (constraint min_resolved_spokes 1))

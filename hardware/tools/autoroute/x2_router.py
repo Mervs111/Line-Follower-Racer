@@ -3,7 +3,7 @@ batas pass di freerouting.json diabaikan). Bagian KiCad (python KiCad, modul pcb
 x2_cari.py (python sistem: numpy + scikit-image).
 
   "$KPY" x2_router.py fanout <board>                    jalur tetap USB-C J2 (lihat fanout_usb)
-  "$KPY" x2_router.py ekspor <board> <drc.json> <out.json> [net dilewati]
+  "$KPY" x2_router.py ekspor <board> <drc.json> <out.json> [net dilewati] [--ganti <sambungan.json>]
                                                         rintangan + pasangan "unconnected" dari laporan DRC
   py     x2_cari.py <out.json> <jalur.json>             cari jalur (python sistem)
   "$KPY" x2_router.py pasang <board> <jalur.json>       tulis jalur + via ke board
@@ -69,10 +69,16 @@ def pulau(b, it):
 
 
 def ujung(b, it):
-    """item ujung sambungan: pad, atau pulau jalur/via (sel awal mencakup seluruh pulau)"""
+    """item ujung sambungan: pad, atau pulau jalur/via (sel awal mencakup seluruh pulau). Pad yang sudah punya jalur
+    tetap dari net yang sama (fanout) diganti pulau jalur itu: DRC sering melaporkan pad-nya, padahal pad deret kaki
+    ESP32 terkurung (kiri modul, kanan-kiri pad lain) dan hanya bisa dicapai lewat via fanout-nya."""
     if isinstance(it, pcbnew.PAD):
-        c = it.GetPosition()
-        return {"jenis": "pad", "lay": lapis(it), "box": kotak(it), "anchor": [mm(c.x), mm(c.y)]}
+        nempel = [t for t in b.GetTracks() if t.GetNetname() == it.GetNetname() and t.GetClass() != "PCB_VIA"
+                  and (it.HitTest(t.GetStart()) or it.HitTest(t.GetEnd()))]
+        if not nempel:
+            c = it.GetPosition()
+            return {"jenis": "pad", "lay": lapis(it), "box": kotak(it), "anchor": [mm(c.x), mm(c.y)]}
+        it = nempel[0]
     segs, vias = [], []
     for t in pulau(b, it):
         n, lay, kind, data = data_jalur(t)
@@ -107,7 +113,48 @@ def dasar(b, byid):
     return {"outline": outline, "items": items, "jalur": jalur, "area": area}
 
 
+def item_di(b, net, xy):
+    """pad, jalur, atau via net `net` di titik `xy` (mm KiCad)"""
+    p = pcbnew.VECTOR2I(pcbnew.FromMM(xy[0]), pcbnew.FromMM(xy[1]))
+    for fp in b.GetFootprints():
+        for q in fp.Pads():
+            if q.GetNetname() == net and q.HitTest(p):
+                return q
+    for t in b.GetTracks():
+        if t.GetNetname() == net and t.HitTest(p):
+            return t
+    raise SystemExit(f"tidak ada item {net} di {xy}")
+
+
+def kena(u, xy, tol=0.3):
+    """titik `xy` ada di ujung sambungan `u` (pad: di dalam kotaknya; pulau: dekat titik jalur/via)"""
+    x, y = xy
+    if u["jenis"] == "pad":
+        x0, y0, x1, y1 = u["box"]
+        return x0 - tol <= x <= x1 + tol and y0 - tol <= y <= y1 + tol
+    pts = [q for s in u["segs"] for q in s[1:3]] + [v[1:3] for v in u["vias"]]
+    return any(math.hypot(q[0] - x, q[1] - y) <= tol for q in pts)
+
+
+def ganti_sambungan(b, pasang, file):
+    """ganti sambungan ratsnest yang pasti bersilang (mis. ujungnya terkurung jalur tetap) dengan pasangan lain yang
+    menyambung kelompok yang sama. Isi file: {"ganti": [{"net", "dari": [p, q], "ke": [p, q]}]}, mm KiCad."""
+    for g in json.load(open(file, encoding="utf8"))["ganti"]:
+        cocok = [k for k, s in enumerate(pasang) if s["net"] == g["net"] and
+                 ((kena(s["A"], g["dari"][0]) and kena(s["B"], g["dari"][1])) or
+                  (kena(s["A"], g["dari"][1]) and kena(s["B"], g["dari"][0])))]
+        if len(cocok) != 1:
+            raise SystemExit(f"ganti {g['net']} {g['dari']}: {len(cocok)} sambungan cocok")
+        A, B = (item_di(b, g["net"], xy) for xy in g["ke"])
+        (xa, ya), (xb, yb) = g["ke"]
+        pasang[cocok[0]] = {"net": g["net"], "A": ujung(b, A), "B": ujung(b, B), "jarak": math.hypot(xa - xb, ya - yb)}
+        print(f"  sambungan {g['net']} {g['dari']} -> {g['ke']}")
+
+
 def ekspor(brd, drcfile, out, skip=()):
+    skip = list(skip)
+    ganti = skip.pop(skip.index("--ganti") + 1) if "--ganti" in skip else None
+    skip = [n for n in skip if n != "--ganti"]
     b = pcbnew.LoadBoard(brd)
     rep = json.load(open(drcfile, encoding="utf-8"))
     byid = {}
@@ -123,6 +170,8 @@ def ekspor(brd, drcfile, out, skip=()):
         pa, pb = A.GetPosition(), B.GetPosition()
         pasang.append({"net": A.GetNetname(), "A": ujung(b, A), "B": ujung(b, B),
                        "jarak": math.hypot(mm(pa.x) - mm(pb.x), mm(pa.y) - mm(pb.y))})
+    if ganti:
+        ganti_sambungan(b, pasang, ganti)
     d["pasang"] = pasang
     json.dump(d, open(out, "w", encoding="utf8"))
     print(f"{len(d['items'])} pad/lubang, {len(d['jalur'])} jalur, {len(d['area'])} rule area, {len(pasang)} sambungan")
@@ -214,8 +263,9 @@ def pasang(brd, jfile):
         if any(n == net and math.hypot(px - x, py - y) < r for n, px, py, r in tht):
             continue
         # dua sambungan satu net bisa memilih titik via yang sama atau berdempetan: via kedua tidak dipasang, ujung
-        # jalurnya (masih di dalam tembaga via pertama) disambung dengan jalur pendek di kedua sisi
-        dekat = [(vx, vy) for n, vx, vy in ada if n == net and math.hypot(vx - x, vy - y) < 0.65]
+        # jalurnya disambung dengan jalur pendek di kedua sisi. Batas 1,0 mm: lubang 0,6 mm yang lebih dekat dari ini
+        # berjarak < 0,4 mm (peringatan hole_to_hole, 16/11 di papan sensor 0,7 mm)
+        dekat = [(vx, vy) for n, vx, vy in ada if n == net and math.hypot(vx - x, vy - y) < 1.0]
         if dekat:
             vx, vy = dekat[0]
             if math.hypot(vx - x, vy - y) > 0.01:

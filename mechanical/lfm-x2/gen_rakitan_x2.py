@@ -455,8 +455,14 @@ def footprints(board, pat):
 
 
 def sensor_parts():
-    """footprint PLCC-2 3528 buatan sendiri tidak punya model 3D: badan 3,5 x 2,8 x 1,9 di sisi bawah papan sensor"""
+    """sensor di sisi bawah papan sensor sebagai rintangan cek jarak. QRE1113GR (OnSemi CASE100CY, 16/11): model 3D
+    ikut ekspor GLB, di sini hanya kotak badan 2,9 x 3,6 x 1,7. PLCC-2 3528 buatan sendiri (versi PT67 + LED IR, sebelum
+    16/11) tidak punya model 3D: badan 3,5 x 2,8 x 1,9 digambar di sini."""
     zb = BOARDS["sensor"]
+    for ref, fp, layer, x, y, rot in footprints("sensor", r"U\d+"):
+        if "CASE100CY" in fp:
+            g = shapely.affinity.rotate(sbox(x - 1.45, y - 1.8, x + 1.45, y + 1.8), rot, origin=(x, y))
+            OBST.append((f"sensor:{ref}", *g.bounds[::2], *g.bounds[1::2], zb - 1.7, zb))
     for ref, fp, layer, x, y, rot in footprints("sensor", r"[DQ]\d+"):
         if "3528" not in fp:
             continue
@@ -468,10 +474,9 @@ def sensor_parts():
 
 
 def sensor_points():
-    """titik baca tiap sensor = tengah LED dan PT bernomor sama, urut 1..12 (kiri ke kanan)"""
-    fp = {ref: (x, y) for ref, _, _, x, y, _ in footprints("sensor", r"[DQ]\d+")}
-    return [[round((fp[f"D{i}"][0] + fp[f"Q{i}"][0]) / 2, 2), round((fp[f"D{i}"][1] + fp[f"Q{i}"][1]) / 2, 2)]
-            for i in range(1, 13)]
+    """titik baca tiap sensor = tengah QRE1113GR U1..U12 (16/11, kiri ke kanan)"""
+    fp = {ref: (x, y) for ref, _, _, x, y, _ in footprints("sensor", r"U\d+")}
+    return [[round(fp[f"U{i}"][0], 2), round(fp[f"U{i}"][1], 2)] for i in range(1, 13)]
 
 
 def mech_v16():
@@ -625,9 +630,14 @@ if __name__ == "__main__":
                                  (21.0 + d, -3.0, TZ0 + 7.0), (21.0 + d, 4.5, TZ0 + 4.5),
                                  (pxc + d, plug[2] - 2.0, ut + 2.7), (pxc + d, plug[2] + 0.5, ut + 2.7)], 1.0, 10))
 
-    # ---- kabel: FFC sensor <-> utama, kabel encoder motor <-> driver J2/J3 ----
-    emit("kabel", M["ffc"], ribbon([(76.6, ub - 1.2), (82.0, ub - 1.6), (88.0, 9.5), (91.0, 7.6), (95.6, BOARDS["sensor"] + T + 1.2)],
-                                   -4.5, 4.5, 0.25))
+    # ---- kabel: JST XH 8 sensor <-> utama (16/11, ganti FFC), kabel encoder motor <-> driver J2/J3 ----
+    # utama J3 siku di sisi bawah, mulut ke depan (badan sampai y 81,3); sensor J1 tegak, steker dari atas
+    st_u = (-10.6, 10.6, 78.6, 85.0, ub - 5.6, ub - 0.6)
+    st_s = (-10.6, 10.6, 94.7, 99.3, BOARDS["sensor"] + T + 6.5, BOARDS["sensor"] + T + 11.6)
+    for box in (st_u, st_s):
+        emit("kabel", M["jst"], boxm(*box))
+    emit("kabel", M["ffc_blue"], ribbon([(85.0, ub - 3.1), (89.5, ub - 2.0), (93.5, ub + 0.4), (97.0, ub - 0.4),
+                                         (97.0, st_s[5])], -9.5, 9.5, 1.2))
     dz = BOARDS["driver"] + T
     cols = ["wire_red", "wire_blk", "wire_yel", "wire_grn", "wire_blu", "wire_wht"]
     for ref in ("J2", "J3"):                    # JST XH 6 pin motor + encoder: tegak (steker dari atas) atau siku
@@ -678,8 +688,8 @@ if __name__ == "__main__":
         "dudukan baterai - steker XT30": gap(slabs_of["tray"], *plug),
         "rangka - konektor driver J2/J3": min(gap(slabs_of["rangka"], n[1], n[2], n[3], n[4], n[5], n[6])
                                               for n in OBST if n[0] in ("driver:J2", "driver:J3")),
-        "skid - LED D6/D7": min(gap(slabs_of["skid"], n[1], n[2], n[3], n[4], 0.0, 4.5) for n in OBST
-                                if n[0] in ("sensor:D6", "sensor:D7")),
+        "skid - sensor tengah U6/U7": min(gap(slabs_of["skid"], n[1], n[2], n[3], n[4], 0.0, 4.5) for n in OBST
+                                          if n[0] in ("sensor:U6", "sensor:U7")),
     }
     print("\ncek tabrakan bagian cetak:", "tidak ada" if not hits else "")
     for h in hits:
@@ -690,7 +700,7 @@ if __name__ == "__main__":
     # ---- ukuran ----
     allp = np.concatenate([p for g in GROUPS.values() for e in g.values() for p in e[1]])
     lo, hi = allp.min(0), allp.max(0)
-    low = {"LED/PT sensor": BOARDS["sensor"] - 1.9, "kepala baut leher sensor": BOARDS["sensor"] - 1.7,
+    low = {"QRE1113GR sensor": BOARDS["sensor"] - 1.7, "kepala baut leher sensor": BOARDS["sensor"] - 1.7,
            "kepala baut telinga": BOARDS["driver"] - 3.0, "alas rangka motor": RZ0}
     extras = {
         "papan": {b: {k: v for k, v in d.items() if k != "poly"} for b, d in info.items()},

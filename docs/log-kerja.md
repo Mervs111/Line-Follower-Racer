@@ -4,6 +4,21 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 17/11/2026
+- **LFM X2: keempat papan selesai dirouting** (permintaan user 16/11: "PAKE QRE ... ROUTING SEMUA PCB SEKARANG").
+  Sensor X2 = 12× QRE1113GR, ESP32 membujur di tengah (antena depan), kabel sensor JST XH 8. Router sendiri
+  (`hardware/tools/autoroute/x2_router.py` + `x2_cari.py`). Hasil: **utama, antarmuka, driver, sensor ERC 0, DRC 0
+  error / 0 unconnected / parity 0**, GND tiap papan 1 kelompok, `cek_net_x2.py` semua cocok. Utama 601 segmen / 83
+  via, antarmuka 155 / 13, driver 306 / 38, sensor 361 / 51.
+- Pin X2 disusun ulang untuk routing (BUZ ke IO27, urutan J4 berubah, R17 dihapus; tabel di README X2).
+- Papan utama: jalur tetap sebelum router (`x2_vbat_utama.json`: VBAT + GND XT30 1,0 mm; `x2_fanout_utama.json` dari
+  `x2_fanout_utama.py`: fanout deret kanan ESP32, lajur MUX ke J3, GND USB-C/R CC/CH340C; `x2_sambungan_utama.json`:
+  2 sambungan ratsnest diganti). `ekspor` memakai pulau jalur tetap sebagai ujung sambungan. Tata letak diubah demi
+  routing: buck dirapikan, C11 ke belakang U2, R3 dan C14 diputar, MUX_SIG belok di y 64,6, R10/R11 tegak dengan GND
+  ke kaki SH USB-C.
+- Rakitan X2 dibuat ulang dari papan baru (cek skid ke QRE U6/U7 2,0 mm), viewer dipublikasi ulang
+  (https://claude.ai/artifact/NV6wvHKBGvuGv3AQEQm5ZU). Driver J2/J3 siku masih menumpuk motor (saran: B6B tegak).
+
 ## 16/11/2026
 - **LFM X2: viewer rakitan + usulan bagian cetak 3D** (permintaan user: visualisasi X2 sekaligus bagian yang akan
   dicetak). `mechanical/lfm-x2/gen_rakitan_x2.py` mengekspor keempat papan dari KiCad, menumpuknya di tinggi README

@@ -5,7 +5,7 @@ LFM X2 = side project di luar RAB PjBL. Rev B (keputusan user 15/11/2026) memeca
                                          konektor ke tiga papan lain. Sebagian besar komponen di sisi bawah.
   antarmuka  hardware/lfm-x2/antarmuka/  ditumpuk di atas papan utama: OLED 0,96" di socket, 6 tombol menu, RST, buzzer
   driver     hardware/lfm-x2/driver/     di bawah papan utama: 4x BTN7971B, konektor motor + encoder
-  sensor     hardware/lfm-x2/sensor/     bulan sabit + leher garpu: 12 pasang LED IR + fototransistor PT67-21B, mux
+  sensor     hardware/lfm-x2/sensor/     bulan sabit + leher garpu: 12x QRE1113GR (16/11, ganti PT67-21B + LED IR), mux
 Urutan pin konektor antar-papan ditulis sekali (KONEKTOR) dan dipakai kedua sisi.
 
 Gaya gambar sama dengan rev A (mesin gambar dari gen_sch_utama.py): tiap pin diberi kabel pendek lalu label global
@@ -37,23 +37,26 @@ FP_SOT23 = "Package_TO_SOT_SMD:SOT-23"
 FP_SMA = "Diode_SMD:D_SMA"
 FP_BTN = "Button_Switch_SMD:SW_SPST_PTS645Sx43SMTR92"
 FP_TO263 = "Package_TO_SOT_SMD:TO-263-7_TabPin8"
-FP_PLCC2 = "lfm-x2:PLCC-2_3528_HandSolder"
+FP_QRE = "OptoDevice:OnSemi_CASE100CY"           # QRE1113GR (sama dengan PCB sensor jalur utama)
 
 # ============================== KONEKTOR ANTAR-PAPAN ==============================
 # nomor pin -> net. Papan utama memakai socket (betina), papan lain header (jantan), urutan sama.
 KONEKTOR = {
-    # FFC 1,0 mm 8 pin, urutan = J1 PCB sensor rev B jalur utama
+    # JST XH 2,5 mm 8 pin (16/11, ganti FFC), urutan = J1 PCB sensor rev B jalur utama
     "sensor": {"1": "+5V", "2": "+3V3", "3": "GND", "4": "MUX_S3", "5": "MUX_S2", "6": "MUX_S1", "7": "MUX_S0",
-               "8": "MUX_SIG", "MP": "GND"},
-    # 2x5 2,54 mm: socket di sisi atas papan utama, header di sisi bawah papan antarmuka
-    "antarmuka": {"1": "+5V", "2": "+3V3", "3": "GND", "4": "GND", "5": "SDA", "6": "SCL", "7": "BTN", "8": "BTN2",
-                  "9": "BUZ", "10": "EN"},
+               "8": "MUX_SIG"},
+    # 2x5 2,54 mm: socket di sisi atas papan utama, header di sisi bawah papan antarmuka. Urutan 16/11 mengikuti
+    # arah jalur dari ESP32: SDA/SCL di kolom genap (langsung dari deret pin kiri), EN/BUZ/BTN/BTN2 di ujung depan
+    "antarmuka": {"1": "+5V", "2": "+3V3", "3": "GND", "4": "SDA", "5": "GND", "6": "SCL", "7": "EN", "8": "BUZ",
+                  "9": "BTN", "10": "BTN2"},
     # 2x7 2,54 mm: socket di sisi bawah papan utama, header di sisi atas papan driver. VBAT 2 pin + GND 2 pin (3 A/pin)
     "driver": {"1": "VBAT", "2": "VBAT", "3": "GND", "4": "GND", "5": "ML_IN1", "6": "ML_IN2", "7": "MR_IN1",
                "8": "MR_IN2", "9": "DRV_EN", "10": "+3V3", "11": "ENC_L_A", "12": "ENC_L_B", "13": "ENC_R_A",
                "14": "ENC_R_B"},
 }
-FP_FFC = "Connector_FFC-FPC:JUSHUO_AFA07-S08FCA-00_1x8-1MP_P1.0mm_Horizontal"
+# kabel sensor JST XH 8 pin: siku di sisi bawah ujung papan utama (mulut ke depan), tegak di sisi atas papan sensor
+FP_JST8_UTAMA = "Connector_JST:JST_XH_S8B-XH-A-1_1x08_P2.50mm_Horizontal"
+FP_JST8_SENSOR = "Connector_JST:JST_XH_B8B-XH-A_1x08_P2.50mm_Vertical"
 
 
 def uid():
@@ -379,6 +382,19 @@ DRU = {
   (constraint clearance (min 0.5mm)))
 """,
 }
+DRU["driver"] = DRU["dasar"] + """
+# J2/J3 JST XH siku (pilihan user 16/11): badan plastik 0,35 mm dari pad tab BTN7971B, courtyard keduanya bertumpuk.
+# Peringatan saja (badan tidak bertabrakan); versi tegak B6B-XH-A (pad sama) tidak bertumpuk.
+(rule "jst_siku_vs_btn7971b"
+  (severity warning)
+  (condition "A.Reference == 'J2' || A.Reference == 'J3'")
+  (constraint courtyard_clearance (min 0mm)))
+
+# Kaki GND J2/J3 (THT, dikelilingi jalur motor dan encoder): satu jari thermal ke pour sudah cukup
+(rule "thermal_satu_jari"
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole' && (A.intersectsCourtyard('J2') || A.intersectsCourtyard('J3'))")
+  (constraint min_resolved_spokes 1))
+"""
 DRU["utama"] = DRU["dasar"] + """
 # U4 MP1584EN (SOIC-8 dengan pad bawah): pad bawah ke kaki 0,295 mm. Di atas batas tempat cetak (0,254), hanya di
 # bawah angka proyek (0,3).
@@ -495,10 +511,10 @@ def utama():
            fields="right_far")
     b.part("U1", "RF_Module:ESP32-WROOM-32E", "ESP32-WROOM-32E", "RF_Module:ESP32-WROOM-32E", 210.82, 228.6,
            {"2": "+3V3", "[1,15,38,39]": "GND", "3": "EN", "4": "MUX_SIG", "5": "VBAT_SENSE", "6": "BTN", "7": "BTN2",
-            "8": "MUX_S3", "9": "MUX_S2", "10": "MUX_S1", "11": "MUX_S0", "12": "NC", "13": "ENC_L_B", "14": "BUZ",
-            "16": "ENC_L_A", "17": "NC", "18": "NC", "19": "NC", "20": "NC", "21": "NC", "22": "NC", "23": "NC",
-            "24": "DRV_EN", "25": "IO0", "26": "ML_IN1", "27": "ML_IN2", "28": "MR_IN1", "29": "NC", "30": "MR_IN2",
-            "31": "ENC_R_B", "32": "NC", "33": "SDA", "34": "ESP_RX", "35": "ESP_TX", "36": "SCL", "37": "ENC_R_A"},
+            "8": "MUX_S3", "9": "MUX_S2", "10": "MUX_S1", "11": "MUX_S0", "12": "BUZ", "13": "NC", "14": "NC",
+            "16": "ML_IN1", "17": "NC", "18": "NC", "19": "NC", "20": "NC", "21": "NC", "22": "NC", "23": "MR_IN1",
+            "24": "DRV_EN", "25": "IO0", "26": "ENC_L_A", "27": "ENC_R_A", "28": "NC", "29": "ENC_R_B", "30": "ENC_L_B",
+            "31": "MR_IN2", "32": "NC", "33": "ML_IN2", "34": "ESP_RX", "35": "ESP_TX", "36": "SDA", "37": "SCL"},
            fields={"ref": (-15.24, -34.29), "val": (2.54, -34.29)})
     b.R("10k", "+3V3", "EN", 254.0, 180.34)
     b.C("1uF", "EN", "GND", 274.32, 180.34)
@@ -508,14 +524,16 @@ def utama():
     b.C("100nF", "+3V3", "GND", 274.32, 276.86)
 
     # ---- 3. KONEKTOR KE PAPAN LAIN ----
-    b.part("J3", "Connector_Generic_MountingPin:Conn_01x08_MountingPin", "FFC ke sensor", FP_FFC, 325.12, 50.8,
+    b.part("J3", "Connector_Generic:Conn_01x08", "Ke sensor", FP_JST8_UTAMA, 325.12, 50.8,
            KONEKTOR["sensor"], fields={"ref": (-2.54, -13.97), "val": (1.27, -13.97)})
     b.part("J4", "Connector_Generic:Conn_02x05_Odd_Even", "Ke antarmuka",
            "Connector_PinSocket_2.54mm:PinSocket_2x05_P2.54mm_Vertical", 431.8, 50.8, KONEKTOR["antarmuka"])
     b.part("J5", "Connector_Generic:Conn_02x07_Odd_Even", "Ke driver",
            "Connector_PinSocket_2.54mm:PinSocket_2x07_P2.54mm_Vertical", 330.2, 116.84, KONEKTOR["driver"])
     b.R("10k", "DRV_EN", "GND", 457.2, 116.84)                 # tahan driver tidur saat boot (IO2 = pin strapping)
-    b.R("10k", "BUZ", "GND", 482.6, 116.84)                    # IO12 LOW saat boot (HIGH = flash 1,8 V, gagal boot)
+    # 16/11: BUZ pindah dari IO12 ke IO27 (bukan pin strapping, deret kanan: jalurnya ikut berkas EN/BTN/BTN2 ke J4)
+    # -> R pull-down BUZ di papan utama dihapus; buzzer tetap mati saat boot oleh R 10k basis Q1 di papan antarmuka.
+    # IO12 lepas: pull-down internal = flash 3,3 V.
 
     b.blocks = [
         (12.7, 12.7, 292.1, 152.4, "1. DAYA", [
@@ -534,23 +552,23 @@ def utama():
             (15.24, 284.48, "J2: R 5,1k di CC = perangkat USB (dapat 5 V dari laptop/charger).\n"
                             "U2 dicatu 3,3 V: V3 disambung ke VCC (datasheet CH340)."),
             (132.08, 255.27, "Q2/Q3: auto-reset saat upload\n(DTR, RTS -> EN, IO0)"),
-            (132.08, 274.32, "Tombol RST ada di papan antarmuka (EN lewat J4).\nIO5, IO15, IO27 kosong."),
+            (132.08, 274.32, "Tombol RST ada di papan antarmuka (EN lewat J4).\nIO12, IO14, IO17 kosong."),
             (246.38, 289.56, "C 10 uF/100 nF dekat pin 3V3 U1"),
         ]),
         (297.18, 12.7, 581.66, 160.02, "3. KONEKTOR KE PAPAN LAIN", [
-            (299.72, 78.74, "J3: FFC 1,0 mm 8 pin ke papan sensor, urutan sama dengan J1 PCB sensor rev B.\n"
-                            "Pasang di sisi bawah, di ujung segitiga. MP (kaki pemasang) ke GND."),
+            (299.72, 78.74, "J3: JST XH 8 pin siku ke papan sensor, urutan sama dengan J1 PCB sensor rev B.\n"
+                            "Pasang di sisi bawah, di ujung segitiga, mulut ke depan."),
             (406.4, 78.74, "J4: socket 2x5 di sisi atas, papan antarmuka ditumpuk di atasnya\n"
                            "(header 2x5 di sisi bawah papan antarmuka)."),
             (299.72, 142.24, "J5: socket 2x7 di sisi bawah, papan driver di bawahnya (header 2x7 di sisi atasnya).\n"
-                             "VBAT 2 pin + GND 2 pin (arus motor). R pull-down: IO2 (DRV_EN) dan IO12 (BUZ) LOW saat "
+                             "VBAT 2 pin + GND 2 pin (arus motor). R pull-down IO2 (DRV_EN): driver tidur saat "
                              "boot."),
         ]),
         (297.18, 165.1, 398.78, 208.28, "PIN ESP32 (beda dari jalur utama: motor)", [
-            (299.72, 190.5, "ML_IN1 4, ML_IN2 16, MR_IN1 17, MR_IN2 18, DRV_EN 2\n"
+            (299.72, 190.5, "ML_IN1 13, ML_IN2 21, MR_IN1 15, MR_IN2 19, DRV_EN 2\n"
                              "MUX_SIG 36, S0-S3 26/25/33/32, VBAT_SENSE 39\n"
-                             "BTN 34, BTN2 35, BUZ 12, SDA 21, SCL 22\n"
-                             "ENC_L A/B 13/14, ENC_R A/B 23/19"),
+                             "BTN 34, BTN2 35, BUZ 27, SDA 22, SCL 23\n"
+                             "ENC_L A/B 4/18, ENC_R A/B 16/5 (16/11: urutan J5)"),
         ]),
     ]
     return b
@@ -591,7 +609,7 @@ def antarmuka():
                            "LANJUT 2,63 V, lepas 3,3 V"),
             (60.96, 76.2, "START: tombol ke-6, sendiri di GPIO35"),
             (17.78, 104.14, "RST: menarik EN ke GND\n(R/C EN di papan utama)"),
-            (198.12, 109.22, "Q1 + buzzer aktif 5 V. R pull-down IO12\njuga ada di papan utama (syarat boot)."),
+            (198.12, 109.22, "Q1 + buzzer aktif 5 V (BUZ = GPIO27).\nR 10k basis menahan buzzer mati saat boot."),
             (76.2, 137.16, "J1: header 2x5 di sisi bawah, masuk ke socket J4 papan utama (ditumpuk, jarak antar-papan "
                            "+-11 mm).\nTombol tinggi 7-8 mm atau diberi tutup supaya tidak tenggelam di bawah OLED."),
         ]),
@@ -616,7 +634,7 @@ def driver():
         b.R("1k", f"{ref}_IS", "GND", cx + 40.64, cy)
         b.C("470nF", "VBAT", "GND", cx + 55.88, cy)
     b.C("100uF 16V", "VBAT", "GND", 129.54, 182.88, "Capacitor_SMD:CP_Elec_6.3x5.4", "Device:C_Polarized")
-    motor = "Connector_JST:JST_XH_B6B-XH-A_1x06_P2.50mm_Vertical"
+    motor = "Connector_JST:JST_XH_S6B-XH-A-1_1x06_P2.50mm_Horizontal"   # siku (pilihan user 16/11); pad = versi tegak
     b.part("J2", "Connector_Generic:Conn_01x06", "Motor kiri + encoder", motor, 96.52, 139.7,
            {"1": "ML_P", "2": "+3V3", "3": "ENC_L_A", "4": "ENC_L_B", "5": "GND", "6": "ML_N"})
     b.part("J3", "Connector_Generic:Conn_01x06", "Motor kanan + encoder", motor, 185.42, 139.7,
@@ -638,35 +656,35 @@ def driver():
 
 # ============================== PAPAN SENSOR ==============================
 def sensor():
-    b = Skematik("sensor", "papan sensor (12 LED IR + fototransistor, mux)", "A3", {"Daya": ["+5V", "+3V3", "GND"]})
-    # tiap kanal: D = LED IR 3528 (selalu nyala, 220 ohm dari +5V), Q = fototransistor PT67-21B (kolektor ditarik 10k
-    # ke +3V3 = sinyal Sn, emitor ke GND). Referensi: Dn, Qn, R(2n-1) = 220, R(2n) = 10k.
+    b = Skematik("sensor", "papan sensor (12x QRE1113GR, mux)", "A3", {"Daya": ["+5V", "+3V3", "GND"]})
+    # tiap kanal: Un = QRE1113GR (16/11, sama dengan PCB sensor jalur utama). LED IR selalu nyala, 220 ohm dari +5V ke
+    # anoda (1), katoda (2) ke GND; fototransistor: kolektor (3) ditarik 10k ke +3V3 = sinyal Sn, emitor (4) ke GND.
+    # Referensi: Un, R(2n-1) = 220, R(2n) = 10k. U13 = mux.
     for i in range(12):
         sx, sy, n = 17.78 + (i % 6) * 45.72, 38.1 + (i // 6) * 48.26, i + 1
-        b.part(f"D{n}", "Device:LED", "LED IR 940nm", FP_PLCC2, sx + 10.16, sy, {"1": "GND", "2": f"A{n}"})
-        b.part(f"Q{n}", "Device:Q_Photo_NPN_EC", "PT67-21B", FP_PLCC2, sx + 30.48, sy, {"1": "GND", "2": f"S{n}"},
-               fields="right_far")
+        b.part(f"U{n}", "Sensor_Proximity:QRE1113GR", "QRE1113GR", FP_QRE, sx + 20.32, sy,
+               {"1": f"A{n}", "2": "GND", "3": f"S{n}", "4": "GND"})
         b.R("220", "+5V", f"A{n}", sx + 7.62, sy + 20.32)
         b.R("10k", "+3V3", f"S{n}", sx + 38.1, sy + 22.86)
     mux = {"1": "MUX_SIG", "10": "MUX_S0", "11": "MUX_S1", "14": "MUX_S2", "13": "MUX_S3", "15": "GND", "24": "+3V3",
            "12": "GND", "9": "NC", "8": "NC", "17": "NC", "16": "NC"}
     for n, p in enumerate(["7", "6", "5", "4", "3", "2", "23", "22", "21", "20", "19", "18"], 1):   # I2..I13
         mux[p] = f"S{n}"
-    b.part("U1", "74xx:CD74HC4067M", "CD74HC4067M", "Package_SO:SOIC-24W_7.5x15.4mm_P1.27mm", 58.42, 185.42, mux)
+    b.part("U13", "74xx:CD74HC4067M", "CD74HC4067M", "Package_SO:SOIC-24W_7.5x15.4mm_P1.27mm", 58.42, 185.42, mux)
     b.C("100nF", "+3V3", "GND", 106.68, 185.42)
-    b.part("J1", "Connector_Generic_MountingPin:Conn_01x08_MountingPin", "FFC ke papan utama", FP_FFC, 147.32, 185.42,
+    b.part("J1", "Connector_Generic:Conn_01x08", "Ke papan utama", FP_JST8_SENSOR, 147.32, 185.42,
            KONEKTOR["sensor"], fields={"ref": (-2.54, -13.97), "val": (1.27, -13.97)})
     b.flag(["+3V3", "+5V", "GND"], 205.74, 175.26)
     b.blocks = [
-        (12.7, 12.7, 292.1, 233.68, "PAPAN SENSOR: 12x LED IR + FOTOTRANSISTOR PT67-21B, CD74HC4067M", [
-            (15.24, 124.46, "LED IR selalu nyala: 220 ohm dari +5V (+-17 mA; LED Everlight IR67-21C: VF 1,3 V, maks 65 mA).\n"
-                            "PT67-21B lensa hitam (700-1100 nm, puncak 940 nm): kolektor ditarik 10k ke +3V3 = Sn, "
-                            "makin terang makin rendah.\n10k titik awal: cek di breadboard di atas banner (4,7k-22k)."),
-            (15.24, 139.7, "Pad 1 = katoda LED / emitor PT, pad 2 = anoda / kolektor. Sudut terpotong Everlight di sisi "
-                            "pad 2;\nLED IR lain bisa terbalik: cek dengan multimeter mode dioda sebelum disolder."),
+        (12.7, 12.7, 292.1, 233.68, "PAPAN SENSOR: 12x QRE1113GR, CD74HC4067M", [
+            (15.24, 124.46, "QRE1113GR: LED IR selalu nyala, 220 ohm dari +5V (+-17 mA, sama dengan jalur utama).\n"
+                            "Fototransistor: kolektor ditarik 10k ke +3V3 = Sn, makin terang pantulan makin rendah.\n"
+                            "10k titik awal: cek di breadboard di atas banner (4,7k-22k)."),
+            (15.24, 139.7, "Pin QRE1113GR: 1 anoda, 2 katoda, 3 kolektor, 4 emitor (OnSemi CASE 100CY).\n"
+                            "Dipasang di sisi bawah, LED di depan, fototransistor di belakang."),
             (127.0, 210.82, "S1..S12 = I2..I13 (sama dengan rev B). I0, I1, I14, I15 kosong.\n"
                             "Kanal 1 = paling kiri dilihat dari atas, robot menghadap depan.\n"
-                            "J1 FFC 1,0 mm 8 pin, urutan = J1 PCB sensor rev B. Kabel FFC tipe B (kontak berlawanan)."),
+                            "J1 JST XH 8 pin tegak, urutan = J1 PCB sensor rev B, kabel lurus ke J3 papan utama."),
         ]),
     ]
     return b

@@ -291,7 +291,7 @@ const NOTES = {
     'Tab kanan mulai x 30 supaya steker XT30 dan kabelnya lewat di depan alas.'],
   skid: ['<b>Cetak</b> terbalik: muka datar di alas, kubah ke atas.',
     'Mur M3 ditekan ke kantong heksagon, baut M3 × 5 (atau M3 × 6 + ring) dari atas papan sensor.',
-    '<b>Tinggi 4,5 mm</b> = sisi bawah papan sensor ke lantai; muka LED/PT jadi 2,6 mm dari lantai.'],
+    '<b>Tinggi 4,5 mm</b> = sisi bawah papan sensor ke lantai; muka sensor QRE1113GR jadi 2,8 mm dari lantai.'],
 };
 const totalG = E.cetak.reduce((a, c) => a + c.massa_padat_g, 0);
 $('#tot-g').textContent = `±${fmt(totalG, 0)} g`;
@@ -314,7 +314,7 @@ const rows = [
   ['Tinggi', fmt(hgt) + okc(hgt, lim[2]), 'puncak kaca OLED'],
   ['Poros roda → sensor 6/7', fmt(ysens), `busur 12 sensor ${fmt(sens[11][0] - sens[0][0])} lebar`],
   ['Jarak roda', fmt(track), `tengah ban, roda Ø${fmt(wheel[5] - wheel[2], 0)} × ${fmt(wheel[3] - wheel[0], 0)}`],
-  ['Muka LED/PT sensor', fmt(E.terendah['LED/PT sensor']), 'titik terendah selain roda + skid'],
+  ['Muka sensor QRE1113GR', fmt(E.terendah['QRE1113GR sensor']), 'titik terendah selain roda + skid'],
   ['Kepala baut leher / telinga', `${fmt(E.terendah['kepala baut leher sensor'])} / ${fmt(E.terendah['kepala baut telinga'])}`, 'dari lantai'],
   ['Alas rangka motor', fmt(E.rangka_z), 'dari lantai'],
   ['Sisi bawah papan', ['sensor', 'driver', 'utama', 'antarmuka'].map(b => fmt(P[b].z[0])).join(' · '), 'sensor · driver · utama · antarmuka'],
@@ -325,7 +325,7 @@ $('#sub').textContent = `4 papan rev B dari KiCad + rangka cetak · ${fmt(len, 0
 const J = E.jarak, checks = [];
 checks.push(E.tabrakan.length
   ? `<li class="warn"><b>Bagian cetak menabrak:</b> ${E.tabrakan.join('; ')}</li>`
-  : `<li class="ok"><b>Bagian cetak tidak menabrak</b> komponen KiCad, motor, roda, atau steker.<small>celah terkecil: ban ${fmt(J['rangka - ban (mendatar)'])} · steker XT30 ${fmt(J['dudukan baterai - steker XT30'])} · konektor J2/J3 ${fmt(J['rangka - konektor driver J2/J3'])} · skid–LED D6/D7 ${fmt(J['skid - LED D6/D7'], 2)} mm</small></li>`);
+  : `<li class="ok"><b>Bagian cetak tidak menabrak</b> komponen KiCad, motor, roda, atau steker.<small>celah terkecil: ban ${fmt(J['rangka - ban (mendatar)'])} · steker XT30 ${fmt(J['dudukan baterai - steker XT30'])} · konektor J2/J3 ${fmt(J['rangka - konektor driver J2/J3'])} · skid–sensor tengah U6/U7 ${fmt(J['skid - sensor tengah U6/U7'], 2)} mm</small></li>`);
 const other = E.tabrakan_lain || [];
 const byConn = {};
 for (const t of other) {
@@ -376,7 +376,7 @@ function buildDims() {
     dim(V(x, y0, z1), V(x, y0, 0), V(x, y0 - 12, z1), V(x, y0 - 12, 0), fmt(z1), 'tinggi');
     dim(V(x, y0, z1), V(x, y1, 6), V(x, y0, z1 + 10), V(x, y1, z1 + 10), fmt(y1 - y0), 'panjang');
     dim(V(x, -4, E.rangka_z), V(x, -4, 0), V(x, y0 - 26, E.rangka_z), V(x, y0 - 26, 0), fmt(E.rangka_z), 'rangka');
-    dim(V(x, ysens, E.terendah['LED/PT sensor']), V(x, ysens, 0), V(x, y1 + 12, E.terendah['LED/PT sensor']), V(x, y1 + 12, 0), fmt(E.terendah['LED/PT sensor']), 'LED/PT');
+    dim(V(x, ysens, E.terendah['QRE1113GR sensor']), V(x, ysens, 0), V(x, y1 + 12, E.terendah['QRE1113GR sensor']), V(x, y1 + 12, 0), fmt(E.terendah['QRE1113GR sensor']), 'QRE');
   } else if (view === 'front') {
     const y = y1 + 5;
     dim(V(x1, y, z1), V(x1, y, 0), V(x1 + 10, y, z1), V(x1 + 10, y, 0), fmt(z1), 'tinggi');

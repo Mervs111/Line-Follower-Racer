@@ -1,5 +1,5 @@
 """Tata letak awal 4 PCB LFM X2 rev B (gaya Ichibot Ultimate 5 Max, 15/11/2026): outline, lubang, semua footprint +
-net. TANPA jalur dan tanpa pour: jalur digambar user sendiri di KiCad.
+net. TANPA jalur dan tanpa pour (16/11: keempat papan dirouting dengan hardware/tools/autoroute/x2_router.py).
 
 Dijalankan dengan python KiCad (modul pcbnew), bukan py biasa, dari folder repo:
   KPY="C:/Program Files/KiCad/10.0/bin/python.exe"
@@ -16,7 +16,10 @@ dipakai untuk susunan: sensor 4,5-6,1; driver 6,0-7,6; utama 18,6-20,2; antarmuk
 8,5 mm = jarak antar-papan 11 mm). Motor N20 di y -6..6, baterai LiPo 2S di dudukan 3D print di atas motor (y -22..8).
 
 Konektor pasangan dicari orientasinya otomatis supaya pin bertemu pin: utama J4 (atas) - antarmuka J1 (bawah),
-utama J5 (bawah) - driver J1 (atas), utama J3 (FFC, bawah) - sensor J1 (FFC, atas; pin sejajar sumbu x, kabel lurus).
+utama J5 (bawah) - driver J1 (atas), utama J3 (JST XH siku, bawah) - sensor J1 (JST XH tegak, atas; pin sejajar sumbu
+x, kabel lurus).
+Rombak 16/11 (permintaan user): ESP32 membujur di tengah papan utama, antena ke depan (gaya Ichibot); socket J4 pindah
+ke kiri (membujur), J5 ke kiri; papan driver dilebarkan ke x +-30 supaya J1-nya ikut; sensor = 12x QRE1113GR.
 Papan utama dibuat dulu; kalau tidak ikut dibuat, posisi pad-nya dibaca dari file.
 """
 import math
@@ -108,8 +111,8 @@ UTAMA = cermin([(0, 20, 0), (46, 20, 3), (48.5, 23.5, 3), (46, 28, 2), (38, 31, 
 ANTARMUKA = cermin([(0, 21, 0), (16, 21, 3), (16.5, 34, 2), (29, 35, 3), (39, 45, 3), (39, 55, 3), (29, 65, 3),
                     (15, 65, 2), (15, 70, 3), (8, 79, 3), (0, 79, 0)])
 # ---------------------------------------------------------------- driver: badan + 2 telinga lubang M3
-DRIVER = cermin([(0, 7, 0), (25, 7, 3), (27, 19, 1.5), (45, 19, 3), (48.5, 23.5, 3), (45, 28, 3), (27, 28, 1.5),
-                 (27, 44.5, 3), (0, 44.5, 0)])
+DRIVER = cermin([(0, 7, 0), (25, 7, 3), (27, 19, 1.5), (45, 19, 3), (48.5, 23.5, 3), (45, 28, 3), (30, 28, 1.5),
+                 (30, 44.5, 3), (0, 44.5, 0)])
 # ---------------------------------------------------------------- sensor: busur rev B + bulan sabit + leher garpu
 # titik sensor = posisi PCB sensor rev B (hardware/sensor-garis), sensor 1 = paling kiri dilihat dari atas
 SENSOR_C = [(-41.393, 114.719), (-35.265, 119.861), (-28.014, 123.242), (-20.189, 124.906), (-12.22, 125.603),
@@ -189,42 +192,57 @@ def outline(p):
 # Konektor pasangan dan sensor ditempatkan oleh kode (lihat tata()).
 PLACE = {
     "utama": {
+        # Rombak 16/11: ESP32 membujur di tengah (antena ke depan), J4 membujur di kiri, J5 melintang di kiri belakang
+        # (keduanya ditempatkan kode, lihat tempatkan()).
         # sisi atas: XT30 kanan belakang (mulut ke belakang, 0,55 mm melewati tepi papan supaya steker LiPo tidak
-        # menabrak papan), saklar + USB-C di bahu kanan, socket antarmuka
+        # menabrak papan), saklar + USB-C di bahu kanan
         "J1": (20.75, 32.6, 180, "F"), "LED1": (32.25, 23.5, 0, "F"), "R9": (36.15, 23.5, 0, "F"),
         "SW1": (35.5, 31.5, 90, "F"), "J2": (34.8, 45.0, 90, "F"),
+        # Fanout deret kanan ESP32 tetap (autoroute/x2_fanout_utama.json, 16/11): via kaki 2-7 dan 12 berselang dua
+        # kolom (x 10,45 / 11,45), EN/BTN/BTN2/BUZ/+3V3 ke kiri lewat sisi atas di atas modul, MUX_SIG di sisi atas ke
+        # depan, 4 MUX_S di sisi bawah (x 12,6-14,4) ke J3. Karena itu pasif kaki 2/3 tidak lagi di kanan deret pin:
+        # C14 (100 nF 3V3) di sisi bawah tepat di depan kaki 1 (diputar: pad GND ke belakang, langsung ke kaki 1 GND,
+        # karena kantong di depan kaki 1-2 tertutup daerah antena dan jalur MUX), C13 (10 uF) di dekat LDO, R14/C12
+        # (RC EN) di kiri J4.
+        # Sisi atas kanan tinggal pembagi VBAT + C (kaki 5); R3 diputar supaya ketiga pad VBAT_SENSE sebaris di
+        # belakang dan VBAT masuk R3 dari depan.
+        "C14": (10.85, 55.0, -90, "B"), "C13": (-24.0, 54.2, 90, "B"), "R14": (-19.0, 57.6, -90, "F"),
+        "C12": (-19.0, 53.6, 90, "F"), "C2": (14.0, 44.1, 90, "F"), "R3": (16.7, 44.1, -90, "F"),
+        "R4": (19.4, 44.1, 90, "F"),
         # sisi bawah, kanan belakang: saklar beban (di antara kaki XT30 dan pasak)
         "Q1": (25.5, 28.0, 0, "B"), "R1": (29.5, 26.5, 90, "B"), "C1": (31.8, 26.5, 90, "B"),
         "R2": (34.1, 26.5, 90, "B"),
         # bahu kanan: CH340C + dioda VBUS; resistor CC di sisi atas tepat di ujung jalur fanout USB-C (CC1/CC2 tidak
-        # perlu menyeberangi D+/D-, lihat autoroute/x2_router.py fanout)
-        "U2": (22.5, 42.5, 90, "B"), "C11": (15.5, 44.5, 90, "B"), "R10": (25.9, 42.95, 180, "F"),
-        "R11": (25.9, 47.55, 180, "F"), "D3": (25.0, 37.0, 0, "B"),
-        # kanan depan: buck MP1584 (kalang C3 - U4 - D1 pendek; C3/C4 1,45 mm dari ujung kaki U4 supaya jalur
-        # COMP/FB bisa lewat)
-        "U4": (15.5, 57.0, 0, "B"), "C3": (9.7, 56.5, 90, "B"), "C4": (7.2, 56.5, 90, "B"),
-        "R5": (13.0, 61.8, 90, "B"), "C5": (21.3, 58.8, 90, "B"), "D1": (19.5, 50.5, 90, "B"),
-        "L1": (26.0, 52.5, 0, "B"), "C6": (24.0, 59.5, 90, "B"), "R6": (18.3, 65.5, 90, "B"),
-        "R7": (16.0, 65.5, 90, "B"), "R8": (16.5, 61.8, 0, "B"), "C7": (20.6, 63.0, 90, "B"),
-        # tengah: dioda +5V dari buck, LDO 3,3 V
-        "U3": (-5.0, 50.0, 0, "B"), "D2": (6.5, 46.5, 0, "B"), "C8": (6.5, 51.0, 0, "B"),
-        "C9": (-10.7, 49.5, 90, "B"), "C10": (-13.2, 49.5, 90, "B"),
-        # tengah belakang: auto-reset, pull-up IO0, tombol BOOT, pull-down DRV_EN
-        "Q2": (-3.5, 29.0, 0, "B"), "R12": (-0.5, 29.0, 90, "B"), "Q3": (-3.5, 33.5, 0, "B"),
-        "R13": (-0.5, 33.5, 90, "B"), "R15": (-18.0, 28.0, 90, "B"), "SW2": (-26.5, 25.0, 0, "B"),
-        "R16": (-11.5, 36.5, 90, "B"),
-        # depan ESP32: kapasitor 3V3, R/C EN, pembagi VBAT, pull-down BUZ (3,85 mm dari ujung pin ESP32: cukup untuk
-        # satu baris via jalur keluar pin)
-        "C13": (-28.5, 55.5, 90, "B"), "C14": (-26.0, 55.5, 90, "B"), "R14": (-23.5, 55.5, 90, "B"),
-        "C12": (-21.0, 55.5, 90, "B"), "C2": (-18.5, 55.5, 90, "B"), "R3": (-16.0, 55.5, 90, "B"),
-        "R4": (-13.5, 55.5, 90, "B"), "R17": (-11.0, 55.5, 90, "B"),
+        # perlu menyeberangi D+/D-, lihat autoroute/x2_router.py fanout); dioda +5V dari buck di belakangnya. C11
+        # (100 nF CH340C) di belakang U2: lajur sisi bawah x 14,9-17,2 di antara jalur MUX_S0 dan U2 dibiarkan kosong
+        # untuk +5V_BUCK ke D2, yang harus menyeberangi jalur VBAT_SENSE (sisi atas) ke pembagi. R10/R11 tegak (17/11):
+        # pad CC menghadap D+/D-, pad GND menghadap kaki pelindung J2 di belakang/depannya dan disambung jalur tetap
+        # (autoroute/x2_fanout_utama.json); mendatar, pad GND R10 terkurung jalur D+/D-/CC1/VBUS dan lepas dari pour.
+        "U2": (22.5, 42.5, 90, "B"), "C11": (18.5, 36.8, 0, "B"), "R10": (26.6, 42.2, -90, "F"),
+        "R11": (26.6, 47.75, 90, "F"), "D3": (25.0, 35.8, 0, "B"), "D2": (14.6, 35.9, 90, "B"),
+        # kanan depan: buck MP1584, U4 diputar 90 (16/11): kaki SW (1) dan BST (8) di sisi kanan, C5 tepat di antaranya,
+        # D1 + L1 (di depan via VBUS dan kaki pelindung J2) di kanan belakang, C3 (VIN) + R5 (FREQ, lewat sela pad C3) di
+        # depan, C4 (VIN), C6 (keluaran) dan R6 (FB atas) di sisi atas, R7 (FB) + R8/C7 (COMP) di belakang U4. Lajur
+        # sisi bawah x 9,6-14 di kanan deret pin ESP32 bebas komponen untuk 4 jalur MUX_S ke J3 (D2 ikut mundur supaya
+        # jalur MUX_S0 dari kaki 11 lewat).
+        "U4": (19.0, 57.8, 90, "B"), "C5": (23.0, 59.4, -90, "B"), "D1": (20.75, 50.6, -90, "B"),
+        "L1": (26.85, 53.63, 0, "B"), "C6": (25.6, 58.6, 90, "F"), "C3": (18.2, 62.7, 180, "B"),
+        "C4": (20.2, 63.0, 0, "F"), "R5": (18.37, 65.8, 90, "B"), "R6": (16.6, 57.6, 180, "F"),
+        "R7": (15.95, 52.1, -90, "B"), "R8": (17.95, 52.1, -90, "B"), "C7": (17.95, 48.3, -90, "B"),
+        # kiri depan: LDO 3,3 V (tab ke arah ESP32) + kapasitor +5V / +3V3
+        "U3": (-27.0, 47.8, 0, "B"), "C8": (-33.5, 47.8, 90, "B"), "C9": (-20.2, 47.8, 90, "B"),
+        "C10": (-20.2, 53.0, 90, "B"),
+        # tengah belakang: auto-reset; kiri belakang: pull-up IO0, tombol BOOT, pull-down DRV_EN
+        "Q2": (-3.5, 27.0, 0, "B"), "R12": (-0.5, 27.0, 90, "B"), "Q3": (-3.5, 31.0, 0, "B"),
+        "R13": (-0.5, 31.0, 90, "B"), "R15": (-18.0, 28.0, 90, "B"), "SW2": (-26.5, 25.0, 0, "B"),
+        "R16": (-13.5, 33.0, 90, "B"),
     },
     "antarmuka": {
         # tombol: kiri ATAS / OK / BAWAH, kanan KEMBALI / START / LANJUT, RST di tab depan (gaya Ichibot)
         "SW1": (-24.5, 58.5, 0, "F"), "SW4": (-32.5, 50.0, 0, "F"), "SW2": (-24.5, 41.5, 0, "F"),
         "SW3": (24.5, 58.5, 0, "F"), "SW6": (32.5, 50.0, 0, "F"), "SW5": (24.5, 41.5, 0, "F"),
         "SW7": (0.0, 73.5, 0, "F"),
-        "R1": (-17.5, 58.5, 90, "F"), "R2": (-17.5, 41.5, 90, "F"), "R4": (-24.0, 50.0, 0, "F"),
+        "R1": (-17.5, 61.6, 90, "F"), "R2": (-17.5, 41.5, 90, "F"), "R4": (-24.0, 50.0, 0, "F"),
         "R3": (17.5, 58.5, 90, "F"), "R5": (17.5, 41.5, 90, "F"),
         "R7": (24.0, 50.0, 0, "F"), "C2": (24.0, 52.5, 0, "F"), "R6": (-6.0, 44.0, 90, "F"), "C1": (-3.5, 44.0, 90, "F"),
         # buzzer di tab belakang (tidak di bawah OLED: tinggi 9,5 mm), transistornya di bawah OLED
@@ -232,13 +250,13 @@ PLACE = {
     },
     "driver": {
         # konektor motor di tepi belakang (dekat motor), tab BTN7971B ke belakang, kaki ke depan
-        "J2": (-20.5, 11.5, 0, "F"), "J3": (8.0, 11.5, 0, "F"),
+        "J2": (-20.5, 10.8, 0, "F"), "J3": (8.0, 10.8, 0, "F"),   # JST XH siku: badan 0,6 mm dari BTN7971B
         "U1": (-18.0, 21.25, -90, "F"), "U2": (-6.0, 21.25, -90, "F"), "U3": (6.0, 21.25, -90, "F"),
         "U4": (18.0, 21.25, -90, "F"),
-        "C5": (-17.0, 40.3, 0, "F"),
+        "C5": (0.0, 40.7, 0, "F"),                   # elko VBAT di tengah (J1 pindah ke kiri, 16/11)
     },
     "sensor": {
-        "U1": (0.0, 111.0, 0, "F"), "C1": (9.5, 117.0, 90, "F"),
+        "U13": (0.0, 111.0, 0, "F"), "C1": (9.5, 117.0, 90, "F"),
     },
 }
 RC_Y = 34.48                                       # driver: baris R/C di depan kaki BTN7971B (tegak)
@@ -252,28 +270,34 @@ HOLES = {   # (x, y, footprint, nama); dicerminkan ke x negatif
     "sensor": [(11.0, y, M3, "leher") for y in LUBANG_LEHER],
 }
 SKID = (0.0, 134.3)                                # sensor: baut skid nilon di tonjolan depan
-ANTENA = (-42.0, -33.8, 30.5, 50.5)                # utama: daerah antena ESP32 (x0, x1, y0, y1), menonjol 3 mm
+# utama: ESP32 membujur di tengah, antena ke depan (16/11). Badan modul y 34,7-60,2, pin 1 di y 52,71 (deret 1-14 di
+# kanan, x +8,75), deret 15-24 di belakang (y 34,95). Tanpa jalur/via/pour di bawah antena sampai 0,8 mm di depan
+# modul. Dulu modul 3 mm lebih maju dan larangan sampai badan J3: bersama lubang H5/H6 (+-11; 67) menutup jalan
+# jalur MUX dari J3, router macet (+-50 tabrakan); sekarang ada lorong +-5 mm antara modul dan lubang.
+U1_POS = (0.0, 47.45)
+ANTENA = (-9.6, 9.6, 53.4, 61.0)                   # utama: daerah antena ESP32 (x0, x1, y0, y1)
 # utama: sisi bawah di bawah badan ESP32 (antara baris pad 1-14 / 25-38 dan kolom 15-24, 0,45 mm dari pad): tanpa
 # jalur dan via (tembaga terbuka tertindih modul), GND pour boleh (menyambung pad termal pin 39)
-BAWAH_ESP32 = (-42.0, -16.95, 32.95, 48.05)
+BAWAH_ESP32 = (-7.55, 7.55, 36.15, 53.4)
 OLED = (0.0, 48.0, 27.3, 27.8)                     # antarmuka: modul OLED 0,96" (tengah x, y, lebar, panjang)
 # pad pemasang SW1 bawaan KiCad (oval 2,2 x 3,5) hanya 0,25 mm dari kaki 1/3: dikecilkan (lubang 1,5 tetap).
 PAD_FIX = {("utama", "SW1"): {"": (2.0, 3.3)}}
 REF_SILK = {"utama": {"U1", "U2", "U3", "U4", "J2", "J3", "J4", "J5", "L1", "SW1", "SW2"},
-            "antarmuka": {"J1", "J2"}, "driver": {"J1"}, "sensor": {"U1"}}
+            "antarmuka": {"J1", "J2"}, "driver": {"J1"}, "sensor": {"U13"}}
 SILK = {    # (teks, x, y, ukuran, rotasi, sisi)
     "utama": [("LFM X2", 0.0, 47.0, 3.0, 0, "F"), ("rev B - papan utama", 0.0, 43.8, 1.0, 0, "F"),
               ("LIPO 2S", 23.25, 36.2, 0.9, 0, "F"), ("SAKLAR", 34.0, 26.9, 0.9, 0, "F"), ("USB", 31.5, 50.8, 0.9, 0, "F"),
-              ("KE ANTARMUKA", 0.0, 64.2, 0.9, 0, "F"), ("PWR", 32.25, 21.5, 0.8, 0, "F"),
-              ("KE DRIVER", 0.0, 36.3, 0.9, 0, "B"), ("KE SENSOR", 0.0, 66.5, 0.9, 0, "B"),
-              ("BOOT", -26.5, 29.5, 0.9, 0, "B"), ("LFM X2 rev B", 0.0, 24.0, 1.2, 0, "B")],
+              ("KE ANTARMUKA", -14.5, 61.2, 0.9, 0, "F"), ("PWR", 32.25, 21.5, 0.8, 0, "F"),
+              ("KE DRIVER", -19.2, 35.4, 0.9, 0, "B"), ("KE SENSOR", 0.0, 66.5, 0.9, 0, "B"),
+              ("BOOT", -26.5, 29.5, 0.9, 0, "B"), ("LFM X2 rev B", 0.0, 24.0, 1.2, 0, "B"),
+              ("ANTENA", 0.0, 57.0, 0.9, 0, "F")],
     "antarmuka": [("ATAS", -24.5, 63.3, 0.9, 0, "F"), ("BAWAH", -24.5, 36.7, 0.9, 0, "F"),
                   ("OK", -32.5, 55.0, 0.9, 0, "F"), ("KEMBALI", 24.5, 63.3, 0.9, 0, "F"),
                   ("LANJUT", 24.5, 36.7, 0.9, 0, "F"), ("START", 32.5, 55.0, 0.9, 0, "F"),
                   ("RST", 0.0, 68.3, 0.9, 0, "F"), ("LFM X2 antarmuka rev B", 0.0, 50.0, 1.2, 0, "B")],
     "driver": [("MOTOR KIRI", -14.25, 16.0, 0.9, 0, "B"), ("MOTOR KANAN", 14.25, 16.0, 0.9, 0, "B"),
                ("LFM X2 driver rev B", 17.0, 40.5, 0.9, 0, "F")],
-    "sensor": [("LFM X2 sensor rev B", -10.5, 105.0, 1.0, 90, "F")],
+    "sensor": [("LFM X2 sensor rev B", 0.0, 104.5, 1.0, 0, "B")],          # sisi bawah: di atas ada badan J1 (16/11)
 }
 JUDUL = {"utama": "papan utama", "antarmuka": "papan antarmuka", "driver": "papan driver", "sensor": "papan sensor"}
 
@@ -321,11 +345,13 @@ def dekat(v, w, tol=0.02):
     return abs(v[0] - w[0]) < tol and abs(v[1] - w[1]) < tol
 
 
-def ffc_buka(fp):
-    """arah mulut konektor FFC (+1 = ke +y robot, -1 = ke -y): kaki pemasang MP ada di sisi mulut"""
-    mp = pads(fp)["MP"]
-    sig = [pads(fp)[str(i)][0] for i in range(1, 9)]
-    return 1 if sum(p[1] for p in mp) / len(mp) > sum(p[1] for p in sig) / len(sig) else -1
+def badan_y(fp):
+    """y robot tengah kotak badan footprint (untuk arah mulut konektor siku)"""
+    bx = fp.GetBoundingBox(False)
+    return gu.R(bx.GetCenter())[1]
+
+
+SISI_QRE = {}                                      # sensor: kanal -> [sisi anoda, sisi kolektor] sepanjang busur
 
 
 def netlist(p):
@@ -386,13 +412,13 @@ def tata(p, comps, nets, loaded, lubang, paksa, target):
                 place[ref] = (cx + dx, RC_Y, 90 if pin == "1" else -90, "F")
     jalur, arah, _, _ = sensor_geo() if p == "sensor" else (None, None, None, None)
     khusus = {"utama": {"U1", "J3", "J4", "J5"}, "antarmuka": {"J1", "J2"}, "driver": {"J1"},
-              "sensor": {"J1"} | {f"D{i}" for i in range(1, 13)} | {f"Q{i}" for i in range(1, 13)}
-              | {f"R{i}" for i in range(1, 25)}}[p]
+              "sensor": {"J1"} | {f"U{i}" for i in range(1, 13)} | {f"R{i}" for i in range(1, 25)}}[p]
     kurang = sorted(set(comps) - set(place) - khusus)
     if kurang:
         raise SystemExit(f"{p}: belum punya posisi: {kurang}")
 
-    for ref, c in sorted(comps.items()):
+    # sensor: QRE (U1-U12) dulu, resistornya mengikuti sisi pad QRE (SISI_QRE)
+    for ref, c in sorted(comps.items(), key=lambda kv: (p == "sensor" and kv[0][0] != "U", kv[0])):
         fp = loaded[ref]
         fp.SetReference(ref)
         fp.SetValue(c["value"])
@@ -404,7 +430,7 @@ def tata(p, comps, nets, loaded, lubang, paksa, target):
             sisi = "B"
         if p == "antarmuka" and ref == "J1":
             sisi = "B"
-        if p == "sensor" and ref[0] in "DQ":
+        if p == "sensor" and ref[0] == "U" and ref != "U13":            # QRE1113GR di sisi bawah
             sisi = "B"
         fp.SetPosition(gu.K(x, y))
         fp.SetOrientationDegrees(rot)
@@ -491,27 +517,23 @@ def tata(p, comps, nets, loaded, lubang, paksa, target):
 def tempatkan(p, ref, fp, target, jalur, arah, nets):
     """penempatan yang dihitung: konektor pasangan, ESP32, sensor"""
     if p == "utama" and ref == "U1":
-        # ESP32 di sisi bawah, antena ke kiri menonjol 3 mm keluar bahu kiri (x -38), deret pin 1-14 menghadap depan
-        arahkan(fp, lambda f: dekat(selisih(f, "1", "14"), (16.51, 0.0)) and pads(f)["15"][0][0] > pads(f)["1"][0][0],
+        # ESP32 di sisi bawah, membujur di tengah, antena ke depan: deret 1-14 dari depan ke belakang, deret 15-24 di
+        # belakang (16/11; dulu melintang di bahu kiri)
+        arahkan(fp, lambda f: dekat(selisih(f, "1", "14"), (0.0, -16.51)) and pads(f)["15"][0][1] < pads(f)["1"][0][1],
                 ref)
-        fp.SetPosition(gu.K(-28.25, 40.5))
-    elif p == "utama" and ref in ("J4", "J5"):
-        # socket 2 baris memanjang sumbu x, pin 1 di kiri depan, pin genap di baris belakang
-        akhir = "9" if ref == "J4" else "13"
-        panjang = 10.16 if ref == "J4" else 15.24
-        arahkan(fp, lambda f: dekat(selisih(f, "1", akhir), (panjang, 0.0)) and abs(selisih(f, "1", "2")[0]) < 0.02,
-                ref)
-        if ref == "J4":
-            taruh_pad(fp, "1", -5.08, 60.77 if selisih(fp, "1", "2")[1] < 0 else 58.23)
-        else:
-            taruh_pad(fp, "1", -7.62, 41.54 if selisih(fp, "1", "2")[1] < 0 else 39.0)
+        fp.SetPosition(gu.K(*U1_POS))
+    elif p == "utama" and ref == "J4":
+        # socket 2x5 membujur di kiri ESP32 (16/11): pin 1 di belakang kiri, pin genap di kolom kanan
+        arahkan(fp, lambda f: dekat(selisih(f, "1", "9"), (0.0, 10.16)) and dekat(selisih(f, "1", "2"), (2.54, 0.0)), ref)
+        taruh_pad(fp, "1", -15.77, 46.5)    # 5,2 mm di depan baris atas J5 (lorong jalur), pin 10 3,6 mm dari lubang OLED
+    elif p == "utama" and ref == "J5":
+        # socket 2x7 melintang di kiri belakang ESP32, pin 1 di kiri depan, pin genap di baris belakang
+        arahkan(fp, lambda f: dekat(selisih(f, "1", "13"), (15.24, 0.0)) and abs(selisih(f, "1", "2")[0]) < 0.02, ref)
+        taruh_pad(fp, "1", -26.82, 41.27 if selisih(fp, "1", "2")[1] < 0 else 38.73)
     elif p == "utama" and ref == "J3":
-        # FFC di sisi bawah, mulut ke depan (+y) tepat di tepi ujung segitiga (y 78)
-        arahkan(fp, lambda f: ffc_buka(f) == 1 and abs(selisih(f, "1", "8")[1]) < 0.02, ref)
-        sig = [pads(fp)[str(i)][0] for i in range(1, 9)]
-        cx = sum(q[0] for q in sig) / 8
-        fx, fy = gu.R(fp.GetPosition())
-        fp.SetPosition(gu.K(fx - cx, fy - sig[0][1] + 69.85))
+        # JST XH 8 siku di sisi bawah, mulut ke depan (+y) menonjol 3,3 mm dari ujung segitiga (posisi user 16/11)
+        arahkan(fp, lambda f: dekat(selisih(f, "1", "8"), (17.5, 0.0)) and badan_y(f) > pads(f)["1"][0][1], ref)
+        taruh_pad(fp, "1", -8.75, 73.2)
     elif p in ("antarmuka", "driver") and ref == "J1":
         mate = target["J4" if p == "antarmuka" else "J5"]
         n = len(mate)
@@ -525,31 +547,45 @@ def tempatkan(p, ref, fp, target, jalur, arah, nets):
         arahkan(fp, lambda f: dekat(selisih(f, "1", "4"), (-7.62, 0.0)), ref)
         taruh_pad(fp, "1", 3.81, OLED[1] - OLED[3] / 2 + 2.4)
     elif p == "sensor" and ref == "J1":
-        # FFC di sisi atas, mulut ke belakang (-y) ke celah leher, pin sejajar pin J3 papan utama (kabel lurus)
+        # JST XH 8 tegak di sisi atas, tepat di depan celah leher, pin sejajar pin J3 papan utama (kabel lurus)
         mate = target["J3"]
-        arahkan(fp, lambda f: ffc_buka(f) == -1 and abs(selisih(f, "1", "8")[1]) < 0.02, ref)
-        sig = [pads(fp)[str(i)][0] for i in range(1, 9)]
-        fx, fy = gu.R(fp.GetPosition())
-        fp.SetPosition(gu.K(fx + mate["1"][0] - sig[0][0], fy - sig[0][1] + CELAH_Y + 0.5 + 7.85))
+        arahkan(fp, lambda f: dekat(selisih(f, "1", "8"), (17.5, 0.0)), ref)
+        taruh_pad(fp, "1", mate["1"][0], 97.5)
         for i in range(1, 9):
             if abs(pads(fp)[str(i)][0][0] - mate[str(i)][0]) > 0.02:
                 raise SystemExit("sensor J1: pin tidak sejajar dengan J3 papan utama")
-    elif p == "sensor" and ref[0] in "DQR":
+    elif p == "sensor" and ref[0] in "UR" and ref != "U13":
         n = int(ref[1:])
         if ref[0] == "R":
-            i, k = (n - 1) // 2, (n - 1) % 2       # R ganjil = 220 (LED), genap = 10k (fototransistor)
+            i, k = (n - 1) // 2, (n - 1) % 2       # R ganjil = 220 (anoda LED), genap = 10k (kolektor)
         else:
             i, k = n - 1, None
         cx, cy = SENSOR_C[i]
         (tx, ty), (nx, ny) = arah[i]
-        if ref[0] == "D":                          # LED di depan, fototransistor di belakang (sisi bawah)
-            x, y, sumbu = cx + 2.0 * nx, cy + 2.0 * ny, (tx, ty)
-        elif ref[0] == "Q":
-            x, y, sumbu = cx - 2.0 * nx, cy - 2.0 * ny, (tx, ty)
-        else:                                      # resistor di sisi atas, tegak lurus busur
-            s = -1 if k == 0 else 1
-            x, y = cx + s * 2.1 * tx, cy + s * 2.1 * ty
-            sumbu = (nx, ny) if k == 0 else (-nx, -ny)   # pad 2 (A / S) menghadap LED / fototransistor
+        if ref[0] == "U":
+            # QRE1113GR di sisi bawah, tengah kemasan di titik sensor: LED (pad 1/2) di depan, fototransistor (3/4) di
+            # belakang, sumbu panjang (pad 1-2) sepanjang busur
+            fp.SetPosition(gu.K(cx, cy))
+            sudut = math.degrees(math.atan2(ty, tx))
+            terbaik = None
+            for r in [sgn * sudut + d for sgn in (1, -1) for d in (0, 90, 180, 270)]:
+                fp.SetOrientationDegrees(r)
+                pd = pads(fp)
+                led = [(pd["1"][0][j] + pd["2"][0][j]) / 2 for j in (0, 1)]
+                pt = [(pd["3"][0][j] + pd["4"][0][j]) / 2 for j in (0, 1)]
+                d12 = (pd["2"][0][0] - pd["1"][0][0], pd["2"][0][1] - pd["1"][0][1])
+                skor = (led[0] - pt[0]) * nx + (led[1] - pt[1]) * ny + abs(d12[0] * tx + d12[1] * ty) / 4
+                if terbaik is None or skor > terbaik[0]:
+                    terbaik = (skor, r)
+            fp.SetOrientationDegrees(terbaik[1])
+            pd = pads(fp)                          # sisi busur (+1 = arah singgung) tempat anoda dan kolektor
+            SISI_QRE[i] = [1 if (pd[q][0][0] - cx) * tx + (pd[q][0][1] - cy) * ty > 0 else -1 for q in ("1", "3")]
+            return
+        # resistor di sisi atas, di sisi busur tempat pad QRE pasangannya (220 -> anoda pad 1, 10k -> kolektor pad 3),
+        # tegak lurus busur, pad 2 menghadap pad QRE itu (QRE U1..U12 ditempatkan lebih dulu: urutan nama)
+        sisi_pad = SISI_QRE[i][0 if k == 0 else 1]
+        x, y = cx + sisi_pad * 2.1 * tx, cy + sisi_pad * 2.1 * ty
+        sumbu = (nx, ny) if k == 0 else (-nx, -ny)
         fp.SetPosition(gu.K(x, y))
         sudut = math.degrees(math.atan2(sumbu[1], sumbu[0]))
         terbaik = None
@@ -597,7 +633,7 @@ def hiasan(b, p, jalur, arah):
 
 def peta(pilih):
     """peta rakit PDF tiap papan: lapisan Fab (referensi + nilai) + outline, diperbesar, sisi bawah dicermin.
-    Papan sensor tanpa nilai (terlalu rapat): D = LED IR (depan), Q = PT67-21B (belakang), R ganjil 220, genap 10k.
+    Papan sensor tanpa nilai (terlalu rapat): U1-U12 = QRE1113GR (LED di depan), R ganjil 220, genap 10k, U13 mux.
     KiCad memusatkan gambar berskala memakai kotak SEMUA item, jadi dicetak dari salinan tanpa gambar bantu Dwgs.User."""
     for p in pilih:
         b = pcbnew.LoadBoard(brd(p))
