@@ -6,7 +6,15 @@
   (condition "A.Reference == 'U1' || B.Reference == 'U1'"))
 
 # Pad GND yang terkepung jalur: 1 spoke per layer (tersambung di F.Cu dan B.Cu), cukup untuk arus kecil
-# (emitor S8050 buzzer ±30 mA, GND header board interface).
-(rule "Spoke GND Q1 dan J6"
+# (emitor S8050 buzzer ±30 mA, GND header board interface; 20/11: GND encoder J2 dan kabel sensor J5, keduanya juga
+# disambung jalur GND 0,5 mm). GND baterai J1 tidak di sini: pad-nya disambung penuh ke pour.
+(rule "Spoke GND Q1, J2, J5, J6"
   (constraint min_resolved_spokes 1)
-  (condition "A.Type == 'Pad' && (A.memberOfFootprint('Q1') || A.memberOfFootprint('J6'))"))
+  (condition "A.Type == 'Pad' && (A.memberOfFootprint('Q1') || A.memberOfFootprint('J2') || A.memberOfFootprint('J5') || A.memberOfFootprint('J6'))"))
+
+# Aturan cetak 20/11 (jarak 0,7 lewat net class): pad pemasang SW1 tanpa net, jaraknya ke kaki SW1 ditentukan bentuk
+# saklar (kaki 1-3 disempitkan jadi 1,3 mm supaya BAT+/VBAT tetap berjarak 0,7). Sentuhan ke pad tanpa net tidak
+# berbahaya. Minimum clearance papan 0,3 supaya aturan ini berlaku; nilai wajib bersatuan (0.3mm).
+(rule "Pad pemasang SW1"
+  (constraint clearance (min 0.3mm))
+  (condition "A.memberOfFootprint('SW1') && B.memberOfFootprint('SW1')"))

@@ -4,6 +4,22 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 20/11/2026
+- **LFM X1 dirouting ulang untuk aturan cetak baru: jalur min 0,5 mm, clearance 0,7 mm** (info user; permintaan "reroute
+  semua pcb untuk lfm X1"). Router sendiri `hardware/tools/autoroute/` (setelan `W_MIN`, `GESER`, `POUR_CLR` baru;
+  `x2_benih.py` memindah hasil lama ke ekspor baru). Hasil, semua DRC 0 error / 0 unconnected:
+  - **Board interface**: rute ulang penuh, parity 0.
+  - **PCB utama**: outline dan tata letak tetap, GND dirouting sebagai jalur (pour saja pecah jadi 7 pulau),
+    VBAT/BAT+ 0,8 mm, motor 0,6 mm, pad SW1 kaki 1–3 dipersempit 1,3 mm, pad GND J1 baterai penuh ke pour, satu via GND
+    yang bertumpuk dengan lubang U3 dibuang. 644 segmen, 57 via. Parity 10 = nama net otomatis sesudah skematik
+    diedit user 19/11 (netlist sama persis), hilang dengan F8.
+  - **PCB sensor rev C**: pita busur ditebalkan ke belakang (izin user: bentuk boleh diubah asal tetap jangkar),
+    U13/C1/J1 mundur 2,5 mm, 24 resistor ke F.Cu, pad U13 0,5 mm, GND dirouting sebagai jalur (pour saja 16 kelompok),
+    pad GND J1 penuh ke pour, H1/H2 "board only". 725 segmen, 72 via, parity 0. Riwayat di `sensor-garis/REVISI.md`.
+  - Gerber + drill tiap papan diekspor ulang (folder proyek, `hardware/Gerber PCB X1/<papan>/` + zip; zip lama hanya
+    berisi `.gbrjob`), PDF cetak multipage di `hardware/PDF CETAK/` + zip. `docs/aturan-cetak-pcb.md` diberi bagian
+    aturan 20/11.
+
 ## 17/11/2026
 - **LFM X2: tombol BOOT (SW2) pindah ke sisi atas papan utama** (permintaan user), posisi sama (kiri belakang, di luar
   papan antarmuka). IO0/+5V dirouting ulang; GND J5 (jalur balik motor) sempat terkurung jalur VBAT/EN/+3V3, jadi diberi

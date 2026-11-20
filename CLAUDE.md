@@ -55,7 +55,9 @@ memakai pin map yang sama.
 - **PCB sensor**: `hardware/sensor-garis/` (KiCad 10, buatan user; asli di `C:\ITS\LineFollowerRacer\PCB_LFM_FIX\` →
   sekarang salinannya di `LineFollowerRacer/` dalam repo, di-gitignore). **Rev B (disetujui)**: bentuk jangkar, lebar
   95 mm, 12 QRE jarak 8 mm di busur (tengah ±4,25, segmen 5/5/12/25/40°), DRC 0. Koordinat sensor untuk firmware
-  dan riwayat revisi di `hardware/sensor-garis/REVISI.md`.
+  dan riwayat revisi di `hardware/sensor-garis/REVISI.md`. **Rev C (20/11, aturan 0,5/0,7)**: posisi QRE sama, pita
+  busur lebih tebal ke belakang, U13/C1/J1 mundur 2,5 mm, 24 resistor di F.Cu, GND dirouting sebagai jalur; DRC 0 /
+  0 unconnected / parity 0.
 - **PCB utama baru**: `hardware/pcb-utama/` (KiCad 10, dibuat 22/10 oleh `hardware/tools/gen_pcb_utama_awal.py`;
   nama folder boleh diganti user). Isi awal: outline **"mobil F1"** 100 × 127 (pilihan user 22/10, `MAIN_R` di
   `ltm_v16.py`; perbandingan opsi https://claude.ai/artifact/PYASQTHgLPKjVaxw33yyMZ), lubang, gambar bantu penempatan
@@ -71,16 +73,22 @@ memakai pin map yang sama.
   file: `hardware/tools/gen_pcb_utama_v17.py` + FreeRouting `-mp 8` (SES di `pcb-utama/routing/`), trapesium
   86,6/62 × 58, ESP32 melintang di tengah, TB6612 di bawahnya, SW1 di tepi kiri; DRC 0 error / 0 unconnected / parity
   0 (warning SW1 pad dikecilkan, jangan Update from Library). Butir "tertunda" rev A di atas sudah tidak berlaku.
+  **Routing ulang 20/11 (aturan 0,5/0,7)**: router sendiri, GND dirouting sebagai jalur, VBAT/BAT+ 0,8, motor 0,6,
+  pad SW1 1–3 lebar 1,3, pad GND J1 baterai penuh ke pour; outline tetap. DRC 0 error / 0 unconnected; parity 10 =
+  beda nama net otomatis sesudah skematik diedit user 19/11 (netlist sama), hilang dengan F8.
   **Board interface**: `hardware/board-interface/` (skematik rev A dari `gen_sch_interface.py`; **PCB rev B 14/11**
   dari `gen_pcb_interface.py` + `autoroute/sisa.py`: **39 × 45 mm simetris**, OLED di tengah, 5 tombol sebaris di
   belakangnya (KEMBALI, ATAS, OK, BAWAH, LANJUT; permintaan user), 4 lubang M2 ke rangka + 4 lubang M2 spacer OLED
-  (jarak lubang OLED belum diukur dari modul asli), J1 di sisi bawah tepat di atas J6, DRC 0. Gambar bantu outline
+  (jarak lubang OLED belum diukur dari modul asli), J1 di sisi bawah tepat di atas J6, DRC 0; dirouting ulang 20/11
+  untuk aturan 0,5/0,7. Gambar bantu outline
   interface di PCB utama masih rev A). `hardware/ltm-main/` = PCB utama v2 lama (13/10, kabel pita IDC), tidak dipakai.
+- **Aturan cetak terbaru (20/11, info user) untuk LFM X1: jalur min 0,5 mm, clearance 0,7 mm**, via 1,3/0,7; ketiga
+  PCB X1 sudah ikut (gerber + PDF cetak di `hardware/Gerber PCB X1/` + zip dan `hardware/PDF CETAK/`). LFM X2 belum.
 - **Aturan cetak (tempat cetak user, 21/10)**: jalur min **0,3 mm**, jarak beda net 0,254, ke ground pour **0,5**,
   via 0,6/1,0 (2 layer 1,27), slot 1/1,5, silkscreen 0,2, mask expansion 0,1. SOIC aman, SSOP 0,65 tidak. Isian
   KiCad di `docs/aturan-cetak-pcb.md`, template impor di `hardware/aturan-cetak-template/`. **SPECTRA pcb (17/11, chat)**: lubang
   min 0,7 / pad 1,2, slot min 1, jarak aman 0,3 (0,254 mentok, di bawah 0,3 risiko pemesan), cek desain hanya 1x;
-  LFM X2 sudah ikut (via 0,7), PCB PjBL masih via 0,6. Konstanta `FAB` di
+  LFM X2 sudah ikut (via 0,7), PCB PjBL juga sejak 20/11. Konstanta `FAB` di
   `gen_pcb.py` masih aturan lama (0,8 mm).
 
 ### LFM X2 (side project, mulai 15/11)

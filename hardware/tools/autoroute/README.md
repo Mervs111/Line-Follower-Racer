@@ -168,3 +168,28 @@ Catatan dari GND papan utama (17/11):
   lewat jalur atau sisi lain.
 
 `dsnfix_x2.py` = pengubah DSN untuk percobaan FreeRouting yang gagal, disimpan sebagai catatan.
+
+## LFM X1 dengan aturan cetak 20/11/2026 (jalur 0,5, jarak 0,7)
+Ketiga PCB jalur utama (PCB utama, sensor, board interface) dirouting ulang dengan `x2_router.py` + `x2_cari.py`.
+Setelan baru (bawaan tetap aturan X2 0,3 mm):
+- `x2_cari.py`: `W_MIN=0.5 CLR=0.7 CLR_AMAN=0.8 MARGIN=0.02 GESER=0.005`. `GESER` menggeser asal grid 0,005 mm:
+  tanpa itu pad SOIC pitch 1,27 jatuh tepat di batas sel dan dianggap tidak bisa dicapai.
+- `x2_router.py`: env `W_MIN=0.5 POUR_CLR=0.7` (lebar stub/jalur GND tambahan dan jarak pour).
+- PCB utama: `LEBAR_VBAT=0.8 LEBAR_BAT+=0.8 LEBAR_ML_P=0.6 LEBAR_ML_N=0.6 LEBAR_MR_P=0.6 LEBAR_MR_N=0.6`
+  (1,0 mm tidak muat di lorong TB6612/ESP32), `PRES_NAIK=1.4 RIWAYAT=1.0 BIAYA_B=1.0 VIA_COST=1.0`.
+- Sensor: `PRES_NAIK=1.25 RIWAYAT=1.5 BIAYA_B=1.0 VIA_COST=1.5`.
+
+Pelajaran:
+- Dengan jarak 0,7, jalur 0,5 butuh celah 1,9 mm di antara dua rintangan. **GND harus ikut dirouting sebagai jalur**
+  (`ekspor` tanpa melewati GND): pour saja pecah (PCB utama 7 pulau, sensor 16 kelompok) karena pad GND terkurung
+  jalur sinyal, dan menambal per pulau dengan `bongkar --gnd` bolak-balik.
+- Jangan mulai dari nol: `x2_benih.py` memindah hasil lama (mis. sinyal yang sudah bersih) ke ekspor baru yang
+  memuat GND, lalu `perbaiki` hanya membongkar sekitar tabrakan dan pad sambungan baru. PCB utama bersih dengan cara ini
+  (benih: sinyal bersih tanpa GND); sensor bersih sesudah tata letak diubah (lihat `sensor-garis/REVISI.md` rev C).
+- Kalau tabrakan menumpuk di satu tempat, ubah tata letak di situ (sensor: mux mundur 2,5 mm, pita busur ditebalkan),
+  jangan menambah iterasi. Beberapa varian setelan bisa jalan paralel, tapi hentikan yang tertinggal.
+- Sesudah `pasang`/`pour`/`jahit`: cek peringatan `hole_to_hole`. Via GND yang jatuh dekat kaki THT GND (PCB utama:
+  U3.4) dibuang dan jalurnya diteruskan ke tengah pad. Pad GND konektor daya (J1 baterai PCB utama, J1 sensor) disambung
+  penuh ke pour; pad GND lain yang sudah tersambung jalur cukup 1 jari (`min_resolved_spokes 1` di `.kicad_dru`).
+- Tebal minimum pour tetap 0,5: dinaikkan ke 0,55 malah memutus satu leher GND. Sisa peringatan `connection_width`
+  (leher pour 0,475 mm) dibiarkan.

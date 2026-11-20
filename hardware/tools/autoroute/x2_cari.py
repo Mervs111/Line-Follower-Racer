@@ -31,6 +31,8 @@ from skimage.graph import MCP_Geometric
 G = 0.1                                   # langkah grid (mm)
 EDGE, HOLE, MARGIN = 0.5, 0.5, 0.05       # ke tepi papan, ke lubang tanpa tembaga, cadangan galat grid
 CLR, CLR_AMAN = 0.3, 0.4                  # jarak minimum (proyek; tempat cetak 0,254) dan jarak yang diutamakan
+W_MIN = 0.3                               # lebar jalur minimum (X1 aturan 20/11: W_MIN=0.5 CLR=0.7 CLR_AMAN=0.8)
+GESER = 0.0                               # geser asal grid (mm); 0.005 supaya pad SOIC 1,27 tidak jatuh tepat di batas
 BIAYA_DEKAT = 0.6                         # tambahan biaya (x panjang) untuk sel di antara 0,3 dan 0,4 mm
 VIA_D = 1.3
 VIA_COST, BEND45, BEND90 = 2.5, 0.25, 1.0  # biaya dalam mm panjang jalur
@@ -49,7 +51,7 @@ LI = {"F": 0, "B": 1}
 class Grid:
     def __init__(self, outline):
         xs, ys = [p[0] for p in outline], [p[1] for p in outline]
-        self.x0, self.y0 = min(xs) - 1, min(ys) - 1
+        self.x0, self.y0 = min(xs) - 1 + GESER, min(ys) - 1 + GESER
         self.nx, self.ny = int((max(xs) - min(xs) + 2) / G) + 1, int((max(ys) - min(ys) + 2) / G) + 1
         self.X, self.Y = np.meshgrid(self.x0 + np.arange(self.nx) * G, self.y0 + np.arange(self.ny) * G, indexing="ij")
 
@@ -153,9 +155,10 @@ def tembaga(g, path, w):
     return out
 
 
-def sel_ujung(g, u, w=0.3):
+def sel_ujung(g, u, w=None):
     """sel awal/akhir: pad = sel yang membuat jalur selebar w tetap di dalam pad (keluar lewat tengah pad, tidak
     menyerempet pad tetangga); pulau jalur + via = sel di dalam tembaganya"""
+    w = W_MIN if w is None else w
     bagian = []                                # (layer, slice, mask)
     if u["jenis"] == "pulau":
         for lay, a, c, hw in u["segs"]:
@@ -309,7 +312,7 @@ def jadi_segmen(g, path):
 
 def urutan(p):
     net = p["net"]
-    w = p.get("w", LEBAR.get(net, 0.3))
+    w = p.get("w", LEBAR.get(net, W_MIN))
     kelas = 0 if (net in LEBAR and net != "GND") or w >= 1.0 else 1 if net in USB else 3 if net == "GND" else 2
     return kelas, -w, p["jarak"]
 
@@ -358,8 +361,8 @@ class Router:
 
     def satu(self, p, rute, pres):
         net = p["net"]
-        w0 = p.get("w", LEBAR.get(net, 0.3))      # lebar khusus per sambungan (mis. jalur balik arus motor)
-        for w in [w0] + [x for x in (0.5, 0.3) if x < w0]:
+        w0 = p.get("w", LEBAR.get(net, W_MIN))      # lebar khusus per sambungan (mis. jalur balik arus motor)
+        for w in [w0] + [x for x in (0.5, 0.3) if W_MIN <= x < w0]:
             src, dst = sel_ujung(self.g, p["A"], w), sel_ujung(self.g, p["B"], w)
             b, vb = self.biaya(net, w, rute, pres)
             for penuh in (False, True):
@@ -418,7 +421,7 @@ def tulis(R, d, urut, rute, tb, out, tetap=()):
             gagal.append(p["net"])
             sel, vsel = tb[k]
             x["tabrak"] = [list(R.g.xy(i, j)) for L, i, j in sel[::4]] + [list(R.g.xy(i, j)) for i, j in vsel]
-        elif r["w"] < p.get("w", LEBAR.get(p["net"], 0.3)):
+        elif r["w"] < p.get("w", LEBAR.get(p["net"], W_MIN)):
             sempit.append((p["net"], r["w"]))
         semua.append(x)
     bersih = [x for x in semua if "tabrak" not in x]

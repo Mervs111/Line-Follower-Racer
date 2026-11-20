@@ -5,3 +5,9 @@
   (constraint courtyard_clearance)
   (severity ignore)
   (condition "(A.Reference == 'SW*' || A.Reference == 'H*') && (B.Reference == 'SW*' || B.Reference == 'H*')"))
+
+# Aturan cetak 20/11 (jalur 0,5, jarak 0,7): pad GND header J1 terkepung jalur, cukup 1 jari thermal per sisi
+# (arus OLED + tangga tombol kecil).
+(rule "Spoke GND J1"
+  (constraint min_resolved_spokes 1)
+  (condition "A.Type == 'Pad' && A.memberOfFootprint('J1')"))

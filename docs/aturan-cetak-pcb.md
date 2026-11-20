@@ -1,5 +1,25 @@
 # Aturan cetak PCB (dari tempat cetak, 21/10/2026)
 
+## Aturan terbaru 20/11/2026 (LFM X1: PCB utama, PCB sensor, board interface)
+
+Info user 20/11: **lebar jalur minimal 0,5 mm, clearance 0,7 mm**. Menggantikan angka 0,3 / 0,3 di bawah untuk
+ketiga PCB jalur utama PjBL. Lubang ikut SPECTRA (bor 0,7, pad via 1,3). LFM X2 belum diubah (masih 0,3).
+
+| Isian KiCad (Board Setup → Constraints / Net Classes) | Nilai |
+|---|---|
+| Minimum track width, minimum connection width | 0,5 mm |
+| Minimum clearance | 0,7 mm (PCB utama: 0,3 di Constraints supaya aturan pad pemasang SW1 berlaku, 0,7 lewat net class) |
+| Net class Default dan Power: clearance | 0,7 mm |
+| Lebar jalur | sinyal/GND/+3V3 0,5; +5V 0,6; keluaran motor 0,6; VBAT/BAT+ 0,8 (PCB utama) |
+| Via | 1,3 / 0,7 mm; minimum through hole 0,7, minimum via diameter 1,2 |
+| GND pour | clearance 0,7, tebal minimum 0,5, thermal gap 0,5 / jari 0,5 |
+
+Akibat aturan ini, sebuah jalur 0,5 mm butuh celah 1,9 mm di antara dua rintangan. GND tidak cukup lewat pour (pad
+GND terkurung jalur sinyal dan pour tidak bisa masuk), jadi GND dirouting sebagai jalur biasa dan pour hanya
+tambahan. Rincian perubahan tiap papan ada di `docs/log-kerja.md` (20/11).
+
+## Aturan 21/10/2026
+
 Sumber: gambar "Standard Spesification Product" + "Harap diperhatikan" dari tempat cetak, ditambah pesan
 perubahan dari mereka: **tebal jalur minimal 0,3 mm, jarak ke ground minimal 0,5 mm**. Menggantikan asumsi lama
 13/10 (jalur 0,8 mm, jarak 0,5 mm, via 1,6/0,8).

@@ -14,11 +14,14 @@ Urutan lengkap ada di README.md folder ini.
 """
 import json
 import math
+import os
 import sys
 
 import pcbnew
 
 VIA_D, VIA_DRILL = 1.3, 0.7     # bor 0,7: lubang minimal SPECTRA pcb (17/11)
+W_MIN = float(os.environ.get("W_MIN", "0.3"))         # lebar jalur minimum (X1 aturan 20/11: 0,5)
+POUR_CLR = float(os.environ.get("POUR_CLR", "0.5"))   # jarak pour GND ke net lain (X1: 0,7)
 _SIMPAN = []                              # referensi objek SWIG yang dibuang (lihat gen_pcb_utama_v17.py)
 
 
@@ -270,7 +273,7 @@ def pasang(brd, jfile):
             vx, vy = dekat[0]
             if math.hypot(vx - x, vy - y) > 0.01:
                 for L in ("F", "B"):
-                    tambah_jalur(b, net, L, (x, y), (vx, vy), 0.3)
+                    tambah_jalur(b, net, L, (x, y), (vx, vy), W_MIN)
             continue
         ada.append((net, x, y))
         tambah_via(b, net, x, y)
@@ -294,8 +297,8 @@ def pour(brd):
         z.SetLayer(lay)
         z.SetNet(b.FindNet("GND"))
         z.SetZoneName("GND")
-        z.SetLocalClearance(pcbnew.FromMM(0.5))
-        z.SetMinThickness(pcbnew.FromMM(0.35))
+        z.SetLocalClearance(pcbnew.FromMM(POUR_CLR))
+        z.SetMinThickness(pcbnew.FromMM(max(0.35, W_MIN)))
         z.SetThermalReliefGap(pcbnew.FromMM(0.5))
         z.SetThermalReliefSpokeWidth(pcbnew.FromMM(0.5))
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_THT_THERMAL)
@@ -474,7 +477,7 @@ def gnd_sisa(brd, out, tepi=0.35):
                     if ps.Contains(pcbnew.VECTOR2I(x, y), i) and all(
                             ps.Contains(pcbnew.VECTOR2I(int(x + r_in * math.cos(a)), int(y + r_in * math.sin(a))), i)
                             for a in [k * math.pi / 4 for k in range(8)]):
-                        titik.append([L, mm(x), mm(y), 0.3])
+                        titik.append([L, mm(x), mm(y), W_MIN])
             bentuk[k] = titik
     grup = {}
     for k in induk:

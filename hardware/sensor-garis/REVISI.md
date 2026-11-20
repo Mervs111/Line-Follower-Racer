@@ -4,7 +4,24 @@ Proyek KiCad 10 buatan user (skematik + layout), dirapikan dan dirouting bersama
 Buka `sensor-garis.kicad_pro`. File di folder ini selalu revisi **terbaru**; tiap revisi disalin utuh ke
 `revisi/rev-X/` (file KiCad + gambar) supaya perubahan bisa dibandingkan.
 
-## Rev B (22/10/2026), `revisi/rev-b/` = file terbaru
+## Rev C (20/11/2026), `revisi/rev-c/` = file terbaru
+
+![Rev C tampak bawah](revisi/rev-c/rev-c-bawah.png)
+
+Dirouting ulang untuk aturan cetak baru **jalur min 0,5 mm, jarak 0,7 mm** (`docs/aturan-cetak-pcb.md`). Posisi 12 QRE
+dan bentuk jangkar sama dengan rev B; ukuran luar tetap 94,5 × 51 mm.
+- **Pita busur lebih tebal** ke belakang (lajur 1,2 mm per jalur S + 2 lajur tambahan untuk GND), kait ikut mundur.
+  Outline dari `hardware/tools/sensor_revc_outline.py`.
+- **U13, C1, J1 mundur 2,5 mm** ke tangkai (U13 Y 69,07, J1 Y 83,07): tabrakan terakhir menumpuk tepat di depan mux,
+  tempat semua jalur S masuk. H1/H2 tetap.
+- **24 resistor pindah ke F.Cu** (posisi pad sama): dengan jarak 0,7 pad resistor terkurung di B.Cu.
+- **Pad U13 0,5 × 2,05 mm** (pitch 1,27): dengan pad pustaka celah antar kaki < 0,7.
+- **GND dirouting sebagai jalur** (pour saja pecah jadi 16 kelompok), pour GND dua sisi sebagai tambahan;
+  pad GND J1 disambung penuh ke pour (arus 12 LED masuk lewat situ). H1/H2 diberi atribut "board only" (parity 0).
+- Routing: `hardware/tools/autoroute/` (`x2_router.py` + `x2_cari.py`, setelan di README sana), 725 segmen, 72 via.
+  DRC 0 error / 0 unconnected / parity 0; peringatan: 1 leher pour < 0,5 mm, 1 lib_footprint_mismatch.
+
+## Rev B (22/10/2026), `revisi/rev-b/`
 
 ![Rev B tampak bawah](revisi/rev-b/rev-b-bawah.png)
 
