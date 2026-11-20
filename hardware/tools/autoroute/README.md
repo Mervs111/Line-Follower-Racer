@@ -191,5 +191,9 @@ Pelajaran:
 - Sesudah `pasang`/`pour`/`jahit`: cek peringatan `hole_to_hole`. Via GND yang jatuh dekat kaki THT GND (PCB utama:
   U3.4) dibuang dan jalurnya diteruskan ke tengah pad. Pad GND konektor daya (J1 baterai PCB utama, J1 sensor) disambung
   penuh ke pour; pad GND lain yang sudah tersambung jalur cukup 1 jari (`min_resolved_spokes 1` di `.kicad_dru`).
-- Tebal minimum pour tetap 0,5: dinaikkan ke 0,55 malah memutus satu leher GND. Sisa peringatan `connection_width`
-  (leher pour 0,475 mm) dibiarkan.
+- Tebal minimum pour tetap 0,5: dinaikkan ke 0,55 malah memutus satu leher GND. Peringatan `connection_width` (leher
+  pour 0,46–0,48 mm) dirapikan per titik 21/11. Laporan DRC hanya menyebut pojok zone, jadi letak leher dicari dari
+  bentuk tembaga GND: pasangan titik tepi berjarak < 0,5 yang ruas di antaranya tembaga. Kalau pour di balik leher hanya
+  ujung buntu, leher dipotong dengan rule area kecil tanpa pour ("potong leher GND", 0,3 mm melintang; PCB utama F.Cu
+  BIN2–U1.30 dan B.Cu antara pad C1). Kalau pour di baliknya ikut hilang (pulau dibuang), lebarkan lehernya dengan
+  menggeser rintangan 0,1 mm (sensor: via S8).

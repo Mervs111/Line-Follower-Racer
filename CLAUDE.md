@@ -57,7 +57,7 @@ memakai pin map yang sama.
   95 mm, 12 QRE jarak 8 mm di busur (tengah ±4,25, segmen 5/5/12/25/40°), DRC 0. Koordinat sensor untuk firmware
   dan riwayat revisi di `hardware/sensor-garis/REVISI.md`. **Rev C (20/11, aturan 0,5/0,7)**: posisi QRE sama, pita
   busur lebih tebal ke belakang, U13/C1/J1 mundur 2,5 mm, 24 resistor di F.Cu, GND dirouting sebagai jalur; DRC 0 /
-  0 unconnected / parity 0.
+  0 unconnected / parity 0. 21/11: leher pour 0,48 dirapikan (via S8 geser 0,1 mm), warning tinggal footprint U13.
 - **PCB utama baru**: `hardware/pcb-utama/` (KiCad 10, dibuat 22/10 oleh `hardware/tools/gen_pcb_utama_awal.py`;
   nama folder boleh diganti user). Isi awal: outline **"mobil F1"** 100 × 127 (pilihan user 22/10, `MAIN_R` di
   `ltm_v16.py`; perbandingan opsi https://claude.ai/artifact/PYASQTHgLPKjVaxw33yyMZ), lubang, gambar bantu penempatan
@@ -75,7 +75,8 @@ memakai pin map yang sama.
   0 (warning SW1 pad dikecilkan, jangan Update from Library). Butir "tertunda" rev A di atas sudah tidak berlaku.
   **Routing ulang 20/11 (aturan 0,5/0,7)**: router sendiri, GND dirouting sebagai jalur, VBAT/BAT+ 0,8, motor 0,6,
   pad SW1 1–3 lebar 1,3, pad GND J1 baterai penuh ke pour; outline tetap. DRC 0 error / 0 unconnected; parity 10 =
-  beda nama net otomatis sesudah skematik diedit user 19/11 (netlist sama), hilang dengan F8.
+  beda nama net otomatis sesudah skematik diedit user 19/11 (netlist sama), hilang dengan F8. 21/11: 2 leher pour
+  < 0,5 dipotong rule area kecil "potong leher GND" (F.Cu dekat U1.30, B.Cu antara pad C1); warning tinggal SW1.
   **Board interface**: `hardware/board-interface/` (skematik rev A dari `gen_sch_interface.py`; **PCB rev B 14/11**
   dari `gen_pcb_interface.py` + `autoroute/sisa.py`: **39 × 45 mm simetris**, OLED di tengah, 5 tombol sebaris di
   belakangnya (KEMBALI, ATAS, OK, BAWAH, LANJUT; permintaan user), 4 lubang M2 ke rangka + 4 lubang M2 spacer OLED

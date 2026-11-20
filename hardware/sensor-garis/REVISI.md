@@ -19,7 +19,9 @@ dan bentuk jangkar sama dengan rev B; ukuran luar tetap 94,5 × 51 mm.
 - **GND dirouting sebagai jalur** (pour saja pecah jadi 16 kelompok), pour GND dua sisi sebagai tambahan;
   pad GND J1 disambung penuh ke pour (arus 12 LED masuk lewat situ). H1/H2 diberi atribut "board only" (parity 0).
 - Routing: `hardware/tools/autoroute/` (`x2_router.py` + `x2_cari.py`, setelan di README sana), 725 segmen, 72 via.
-  DRC 0 error / 0 unconnected / parity 0; peringatan: 1 leher pour < 0,5 mm, 1 lib_footprint_mismatch.
+  DRC 0 error / 0 unconnected / parity 0; peringatan tinggal 1 lib_footprint_mismatch (pad U13 dikecilkan, disengaja).
+- 21/11: leher pour GND B.Cu 0,48 mm (< 0,5) antara jalur +5V dan via S8 dirapikan dengan menggeser via S8 0,1 mm ke
+  kanan (209,6 → 209,7; ujung jalurnya ikut). Leher melebar, pour di bawahnya tetap tersambung.
 
 ## Rev B (22/10/2026), `revisi/rev-b/`
 

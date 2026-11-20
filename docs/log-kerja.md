@@ -4,6 +4,17 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 21/11/2026
+- **LFM X1: peringatan leher pour GND < 0,5 mm dirapikan** (permintaan user "RAPIKAN"; X2 tidak disentuh). Letak leher
+  dicari dari bentuk tembaga GND karena laporan DRC hanya menyebut pojok zone:
+  - **PCB utama**: leher F.Cu antara jalur BIN2 dan pad U1.30 (0,47 mm) dan B.Cu antara pad C1 VBAT dan C1 GND
+    (0,47 mm) cuma ujung pour buntu, jadi dipotong dengan rule area kecil "potong leher GND". Pour yang hilang 1,2 dan
+    0,2 mm².
+  - **PCB sensor rev C**: leher B.Cu antara jalur +5V dan via S8 (0,46 mm). Kalau dipotong, pour 8 mm² di baliknya ikut
+    hilang, jadi via S8 digeser 0,1 mm ke kanan. Salinan `revisi/rev-c/` ikut.
+  - DRC: sensor dan PCB utama 0 error / 0 unconnected, warning tinggal footprint U13 / SW1 (disengaja); parity PCB utama
+    masih 10 (nama net, hilang dengan F8). Gerber + drill + PDF cetak kedua papan diekspor ulang, kedua zip dibuat ulang.
+
 ## 20/11/2026
 - **LFM X1 dirouting ulang untuk aturan cetak baru: jalur min 0,5 mm, clearance 0,7 mm** (info user; permintaan "reroute
   semua pcb untuk lfm X1"). Router sendiri `hardware/tools/autoroute/` (setelan `W_MIN`, `GESER`, `POUR_CLR` baru;
