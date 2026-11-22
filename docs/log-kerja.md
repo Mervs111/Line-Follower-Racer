@@ -20,6 +20,11 @@ Entri terbaru di atas.
 - Viewer (rakitan, sorot cetak, susunan 3 alas A1) + setelan slicer, baut, urutan rakit:
   https://claude.ai/artifact/PNojYiuq8fW5ogUY8qWuLw. README `mechanical/cetak-x1/`, `mechanical/README.md`, CLAUDE.md.
 - **Velg X1 diganti gaya jari-jari Y** (permintaan user: "ganti macam gini ... lebih keren", foto velg forged 5 jari-jari bercabang): 5 batang dari hub bercabang dua ke rim, lengan ramping 1,25 mm di bibir, jendela tembus, 5 lubang baut hias + cekungan tutup tengah; logo merek tidak ditiru. Dibandingkan berdampingan dengan foto sebelum dikirim. Lubang D, flens, ban TPU tetap; 5,4 g padat, STL tertutup, viewer versi 2.
+- **Bawah sasis X1 dibuat rata** (permintaan user "sasi bikin bawahnya flat aja gapapa"). Jendela tembus di bawah kaki
+  THT PCB utama dan piringan encoder diganti kantong buntu dari atas (lantai 1,0 mm dan 0,6 mm). Muka bawah tinggal
+  lubang baut, kantong mur/kepala benam, dan 2 celah strap (dicek dengan potongan STL di z 0,3). Celah: ekor kaki THT
+  ke lantai 1,0 mm, PCB encoder (model r 6,2) ke lantai 0,2 mm (dicek di potongan uji dudukan motor). Sasis 33,6 g
+  padat, 0 tabrakan, STL tertutup, viewer versi 3.
 
 ## 21/11/2026
 - **LFM X1: peringatan leher pour GND < 0,5 mm dirapikan** (permintaan user "RAPIKAN"; X2 tidak disentuh). Letak leher

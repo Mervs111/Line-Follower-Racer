@@ -4,7 +4,8 @@ Konsep v18 (mechanical/konsep-v18/) baru berupa kotak-kotak. Skrip ini membuat v
 posisi lubang dan kaki THT dibaca langsung dari KiCad (PCB utama rev B, PCB sensor rev C, board interface rev B):
   sasis             skid plate 2 mm + bibir tepi, dudukan kedua motor N20 (rel + ganjal gearbox), 4 boss M3 PCB utama
                     (baut kepala benam dari bawah), 4 boss baut tutup klem (mur di kantong bawah), lubang PCB sensor,
-                    bibir + 2 celah strap pack 2S, jendela untuk kaki THT PCB utama dan piringan encoder
+                    bibir + 2 celah strap pack 2S, kantong buntu dari atas untuk kaki THT PCB utama dan piringan
+                    encoder (bawah sasis rata, permintaan user 22/11)
   tutup klem        menekan motor dari atas, 2 baut M3 x 16 per motor (kiri = cermin kanan)
   rangka interface  pelat 2,5 mm + 4 kaki di baut M3 PCB utama, memikul board interface (dari konsep v18; boss depan
                     dipapas supaya tidak di atas tepi ESP32 DevKit)
@@ -71,7 +72,10 @@ SLOT_HW = 6.2                               # setengah lebar alur motor (motor 1
 RAIL_X = (14.5, 37.5)
 RAIL_FY, RAIL_RY, RAIL_Z = 8.4, 11.3, 18.0  # rel depan y 6,2..8,4; rel belakang y -11,3..-6,2 = penahan depan pack
 LEDGE = (24.5, GB_X0 - 0.1, 4.8, 13.2)      # ganjal di sudut bawah alur: menahan gearbox masuk ke tengah
-ENC_WIN = (3.5, 14.0, 7.2)                  # jendela pelat di bawah piringan encoder (r 6,2 > setengah tinggi motor)
+ENC_WIN = (3.5, 14.0, 7.2)                  # kantong pelat di bawah piringan encoder (r 6,2 > setengah tinggi motor)
+ENC_R = 6.2                                 # jari-jari PCB encoder (model v16): dasarnya di z 10,8
+ENC_FLOOR = 0.6                             # lantai kantong encoder (3 lapis 0,2): bawah sasis tetap rata
+THT_TAIL, THT_FLOOR = 3.0, 1.0              # ekor kaki THT di bawah PCB utama; lantai kantong THT
 CAP_BOLT = [(26.0, 12.6), (33.0, -12.0)]    # baut tutup klem (sisi kanan), mur di kantong bawah sasis
 CAP_BOSS_R, CAP_BOSS_Z = 3.75, MOT_Z1 - 0.4  # boss 0,4 mm di bawah tutup: tutup melentur menekan motor
 CAP_Z1 = MOT_Z1 + 3.0
@@ -333,12 +337,12 @@ def plate_outline():
 
 
 def tht_windows(utama, outline):
-    """jendela tembus di bawah kaki THT PCB utama: ekor pin socket female +-3 mm, celah PCB-sasis hanya 3 mm"""
+    """kantong di bawah kaki THT PCB utama: ekor pin socket female +-3 mm, celah PCB-sasis hanya 3 mm"""
     pads = [circ(*pd["p"], max(pd["s"]) / 2 + 0.7, 24) for f in utama for pd in f["pads"] if pd["pth"]]
     win = unary_union(pads).buffer(1.2, quad_segs=4).buffer(-1.2, quad_segs=4)
     keep = unary_union([circ(x, y, 4.0) for x, y in MB_HOLE])
     win = clean(win.difference(keep).intersection(outline.buffer(-1.2)))
-    rest = polys(outline.difference(win))                 # pulau pelat yang terkurung jendela ikut dibuang
+    rest = polys(outline.difference(win))                 # pulau pelat yang terkurung kantong ikut diturunkan
     main = max(rest, key=lambda q: q.area)
     return clean(unary_union([win] + [q for q in rest if q is not main]))
 
@@ -363,9 +367,9 @@ def make_sasis(utama, clip=None):
     lips = both(unary_union([sbox(10.0, py0 - 1.6, px1 + 1.6, py0), sbox(px1, py0, px1 + 1.6, py0 + 6.0),
                              sbox(px1, py1 - 6.0, px1 + 1.6, py1)]))
     p.add(CH_Z1, LIP_Z, lips)
-    # potongan
-    p.cut(CH_Z0, RIM_Z, win)
-    p.cut(CH_Z0, CH_Z1, both(sbox(ENC_WIN[0], -ENC_WIN[2], ENC_WIN[1], ENC_WIN[2])))
+    # potongan: kantong THT dan encoder buntu dari atas, bawah sasis rata (hanya lubang baut, kantong mur, celah strap)
+    p.cut(CH_Z0 + THT_FLOOR, RIM_Z, win)
+    p.cut(CH_Z0 + ENC_FLOOR, CH_Z1, both(sbox(ENC_WIN[0], -ENC_WIN[2], ENC_WIN[1], ENC_WIN[2])))
     for y0, y1 in SLOTS:
         p.cut(CH_Z0, CH_Z1, sbox(-STRAP_HW, y0, STRAP_HW, y1))
     for x, y in CAP_BOLT:
@@ -686,7 +690,7 @@ if __name__ == "__main__":
         for pd in f["pads"]:
             if pd["pth"]:
                 x, y = pd["p"]
-                obst.append((f"kaki THT {f['ref']}", x - 0.6, x + 0.6, y - 0.6, y + 0.6, MB_Z0 - 3.2, MB_Z0))
+                obst.append((f"kaki THT {f['ref']}", x - 0.6, x + 0.6, y - 0.6, y + 0.6, MB_Z0 - THT_TAIL - 0.2, MB_Z0))
     # ban + velg baru (posisi rakitan) juga penghalang untuk sasis
     wheel_box = [("ban kanan", WX, WO, -R_W, R_W, 0.0, 2 * R_W), ("ban kiri", -WO, -WX, -R_W, R_W, 0.0, 2 * R_W)]
     probs = []
@@ -712,7 +716,9 @@ if __name__ == "__main__":
     assert math.hypot(ly, AX_Z - lz) > 6.0 + 0.05, "ganjal menabrak kaleng motor"
     pack_box = [o for o in obst if o[0].startswith("Pack Li-ion")][0]
     gaps = {
-        "kaki THT terdekat ke sasis (harus di jendela)": min(gap(slabs["x1_sasis"], *o[1:]) for o in obst if o[0].startswith("kaki THT")),
+        "kaki THT terdekat ke dinding kantong": min(gap(slabs["x1_sasis"], *o[1:]) for o in obst if o[0].startswith("kaki THT")),
+        "ekor kaki THT ke lantai kantong (tegak)": (MB_Z0 - THT_TAIL) - (CH_Z0 + THT_FLOOR),
+        "PCB encoder ke lantai kantong (tegak)": (AX_Z - ENC_R) - (CH_Z0 + ENC_FLOOR),
         "steker J1 sensor ke hidung sasis": gap(slabs["x1_sasis"], *[o for o in obst if o[0] == "sensor J1 + steker"][0][1:]),
         "pack ke rel/bibir": gap(slabs["x1_sasis"], *pack_box[1:]),
         "rangka ke ESP32 PCB": gap(slabs["x1_rangka_interface"], *[o for o in obst if o[0] == "ESP32 PCB"][0][1:]),

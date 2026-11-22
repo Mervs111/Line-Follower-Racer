@@ -110,7 +110,7 @@ section { min-width: 0; }
       <table>
         <thead><tr><th>Bagian</th><th>Jml</th><th>Ukuran cetak (mm)</th><th>Massa</th></tr></thead>
         <tbody>
-          <tr><td><span class="tag t1">1</span> Sasis<br><code>x1_sasis.stl</code></td><td class="n">1</td><td class="n">114,2 × 140,5 × 11,6</td><td class="n">32,2 g</td></tr>
+          <tr><td><span class="tag t1">1</span> Sasis<br><code>x1_sasis.stl</code></td><td class="n">1</td><td class="n">114,2 × 140,5 × 11,6</td><td class="n">33,6 g</td></tr>
           <tr><td><span class="tag t1">1</span> Tutup klem motor<br><code>x1_tutup_klem_kanan.stl</code>, <code>…_kiri.stl</code></td><td class="n">1 + 1</td><td class="n">21,2 × 32,1 × 3,0</td><td class="n">1,9 g</td></tr>
           <tr><td><span class="tag t2">1</span> Rangka interface<br><code>x1_rangka_interface.stl</code></td><td class="n">1</td><td class="n">83,5 × 53,5 × 19,5</td><td class="n">5,4 g</td></tr>
           <tr><td><span class="tag t2">1</span> Velg Ø34 × 18, 5 jari-jari Y<br><code>x1_velg.stl</code></td><td class="n">2</td><td class="n">29,6 × 29,6 × 18,0</td><td class="n">5,4 g</td></tr>
@@ -119,7 +119,7 @@ section { min-width: 0; }
           <tr><td><span class="tag t3">2</span> Ban TPU<br><code>x1_ban_tpu.stl</code></td><td class="n">2</td><td class="n">34,0 × 34,0 × 15,4</td><td class="n">5,7 g</td></tr>
           <tr class="sub"><td><span class="tag t1">3</span> Uji dudukan motor<br><code>x1_uji_dudukan_motor.stl</code></td><td class="n">1</td><td class="n">27,0 × 35,0 × 11,6</td><td class="n">4,3 g</td></tr>
           <tr class="sub"><td><span class="tag t1">3</span> Uji lubang as<br><code>x1_uji_lubang_as.stl</code></td><td class="n">1</td><td class="n">30,0 × 10,0 × 10,0</td><td class="n">3,6 g</td></tr>
-          <tr><td colspan="3"><b>Total badan</b> (tanpa uji, padat)</td><td class="n"><b>64 g</b></td></tr>
+          <tr><td colspan="3"><b>Total badan</b> (tanpa uji, padat)</td><td class="n"><b>66 g</b></td></tr>
         </tbody>
       </table>
       </div>
@@ -178,7 +178,8 @@ section { min-width: 0; }
         <li><span class="check">0 tabrakan</span> antara bagian cetak dan komponen konsep v18 + KiCad (PCB utama, PCB
           sensor rev C, board interface rev B, motor, pack).</li>
         <li>Semua STL tertutup rapat (dicek trimesh); sasis satu keping.</li>
-        <li>Ekor kaki THT PCB utama (3 mm) jatuh di jendela sasis, jarak terdekat ke plastik 0,6 mm.</li>
+        <li>Bawah sasis rata: kaki THT PCB utama dan piringan encoder masuk kantong buntu dari atas (lantai 1,0 / 0,6 mm).
+          Ekor kaki THT (3 mm) ke lantai 1,0 mm, ke dinding kantong 0,6 mm; PCB encoder ke lantai 0,2 mm.</li>
         <li>Steker J1 PCB sensor ke hidung sasis 1,6 mm; pack ke rel motor 0,2 mm; kaki rangka ke PCB ESP32 3,5 mm.</li>
         <li>Panjang robot 178,5 mm, lebar 115 mm (batas lomba 250 × 200 × 100).</li>
       </ul>
