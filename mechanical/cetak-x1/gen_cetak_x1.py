@@ -422,16 +422,53 @@ V_BORE = (3.1, 1.05, 8.0)                         # lubang D: diameter, jarak si
 T_RI, T_W = 13.8, 15.4                            # ban: jari-jari dalam (meregang 1,4 % di dudukan), lebar
 
 
+def polar(r, a):
+    return (r * math.cos(a), r * math.sin(a))
+
+
+def strip(p0, p1, w0, w1):
+    """pita lurus p0 -> p1, lebar w0 di p0 menyempit/melebar ke w1 di p1"""
+    dx, dy = p1[0] - p0[0], p1[1] - p0[1]
+    L = math.hypot(dx, dy)
+    nx, ny = -dy / L, dx / L
+    return Polygon([(p0[0] + nx * w0 / 2, p0[1] + ny * w0 / 2), (p1[0] + nx * w1 / 2, p1[1] + ny * w1 / 2),
+                    (p1[0] - nx * w1 / 2, p1[1] - ny * w1 / 2), (p0[0] - nx * w0 / 2, p0[1] - ny * w0 / 2)])
+
+
+Y_SPLIT, Y_SPREAD = 6.0, math.radians(15.0)    # jari-jari Y: titik cabang, sudut tiap lengan di bibir rim
+
+
+def yspokes():
+    """5 jari-jari Y (permintaan user 22/11, foto velg forged): batang dari hub bercabang dua ke rim, ujungnya melebar
+    masuk hub dan dinding rim; sudut cekung dibulatkan 0,45 mm (lingkaran rim/hub tidak ikut di-buffer supaya titiknya
+    sama dengan selang di atasnya)"""
+    g = []
+    for k in range(5):
+        a = math.pi / 2 + 2 * math.pi / 5 * k
+        g.append(strip(polar(V_RH - 0.2, a), polar(Y_SPLIT + 0.4, a), 3.0, 2.0))
+        for s in (-1, 1):
+            b = a + s * Y_SPREAD
+            g.append(strip(polar(Y_SPLIT, a), polar(11.6, b), 1.6, 1.25))
+            g.append(strip(polar(11.6, b), polar(V_RI + 1.2, b), 1.25, 2.0))
+    return unary_union(g).buffer(0.45, quad_segs=6).buffer(-0.45, quad_segs=6)
+
+
 def make_velg():
+    """posisi cetak: muka luar (jari-jari) di alas z 0, muka dalam (sisi motor) di z 18; jendela antar jari-jari tembus"""
     p = Layered("Velg")
-    holes = unary_union([circ(8.5 * math.cos(math.pi / 3 * k), 8.5 * math.sin(math.pi / 3 * k), 2.5, 32) for k in range(6)])
-    p.add(0.0, 1.2, circ(0, 0, V_RF, 128)).add(1.2, 2.0, circ(0, 0, V_RS, 128)).cut(0.0, 2.0, holes)
-    p.add(2.0, W_T, ring(0, 0, V_RS, V_RI, 128))
+    spokes, hub = yspokes(), circ(0, 0, 4.9, 48)
+    windows = circ(0, 0, V_RI, 128).difference(spokes).difference(hub)
+    p.add(0.0, 1.2, circ(0, 0, V_RF, 128).difference(windows))
+    p.add(1.2, 3.0, circ(0, 0, V_RS, 128).difference(windows))
+    p.add(3.0, 4.5, unary_union([spokes.intersection(circ(0, 0, 10.0, 64)), hub]))   # punggung jari-jari
+    p.add(4.5, 6.5, unary_union([spokes.intersection(circ(0, 0, 7.6, 64)), hub]))    # menebal ke hub
+    p.add(1.2, W_T, ring(0, 0, V_RS, V_RI, 128))
     p.add(W_T - 1.2, W_T - 0.6, ring(0, 0, V_RF, V_RI, 128))                         # flens dalam
     p.add(W_T - 0.6, W_T, ring(0, 0, V_RF - 0.5, V_RI, 128))                         # serong: ban lebih mudah masuk
     p.add(0.0, W_T, circ(0, 0, V_RH, 48))
-    rib = sbox(V_RH - 0.3, -0.8, V_RI + 0.3, 0.8)
-    p.add(2.0, 6.0, unary_union([aff.rotate(rib, 30 + 60 * k, origin=(0, 0)) for k in range(6)]))
+    lugs = unary_union([circ(*polar(3.5, math.pi / 2 + 2 * math.pi / 5 * (k + 0.5)), 0.55, 20) for k in range(5)])
+    p.cut(0.0, 0.8, lugs)                                                              # 5 lubang baut hias
+    p.cut(0.0, 0.4, circ(0, 0, 2.2, 40))                                               # cekungan tutup tengah
     d, flat, depth = V_BORE
     p.cut(W_T - depth, W_T, d_hole(0, 0, d, flat))
     return p

@@ -149,7 +149,8 @@ memakai pin map yang sama.
   diukur). Model dirakit skrip dari mesh v16 (CadQuery tidak ada di laptop); belum ada STEP.
 - **Badan cetak X1** (`mechanical/cetak-x1/`, 22/11, permintaan user "siapkan file 3d ... untuk badannya"): STL siap
   cetak dari konsep v18 untuk **Bambu Lab A1** milik user (PLA/PETG/TPU): sasis + dudukan motor/pack, 2 tutup klem
-  motor (M3 × 16), rangka interface, velg Ø34 × 18 + ban TPU, skid sensor + 2 spacer, 2 potongan uji (dudukan motor,
+  motor (M3 × 16), rangka interface, velg Ø34 × 18 **5 jari-jari Y** (gaya velg forged, permintaan user) + ban TPU, skid
+  sensor + 2 spacer, 2 potongan uji (dudukan motor,
   lubang D as). Lubang/kaki THT dibaca dari KiCad (`gen_cetak_x1.py`), 0 tabrakan, STL tertutup. Viewer
   https://claude.ai/artifact/PNojYiuq8fW5ogUY8qWuLw. Beda dari v18: klem jadi alur terbuka + tutup berbaut, ekor
   sasis −47,5 (celah strap), **skid cetak di bawah H1/H2 PCB sensor sebagai tumpuan depan selama ball caster belum

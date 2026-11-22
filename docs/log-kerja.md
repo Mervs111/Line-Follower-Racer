@@ -19,6 +19,7 @@ Entri terbaru di atas.
   sensor karena ball caster RAB belum punya ukuran (menunggu keputusan user).
 - Viewer (rakitan, sorot cetak, susunan 3 alas A1) + setelan slicer, baut, urutan rakit:
   https://claude.ai/artifact/PNojYiuq8fW5ogUY8qWuLw. README `mechanical/cetak-x1/`, `mechanical/README.md`, CLAUDE.md.
+- **Velg X1 diganti gaya jari-jari Y** (permintaan user: "ganti macam gini ... lebih keren", foto velg forged 5 jari-jari bercabang): 5 batang dari hub bercabang dua ke rim, lengan ramping 1,25 mm di bibir, jendela tembus, 5 lubang baut hias + cekungan tutup tengah; logo merek tidak ditiru. Dibandingkan berdampingan dengan foto sebelum dikirim. Lubang D, flens, ban TPU tetap; 5,4 g padat, STL tertutup, viewer versi 2.
 
 ## 21/11/2026
 - **LFM X1: peringatan leher pour GND < 0,5 mm dirapikan** (permintaan user "RAPIKAN"; X2 tidak disentuh). Letak leher
