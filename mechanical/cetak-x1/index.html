@@ -1,0 +1,335 @@
+<title>Badan Cetak LFM X1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: lembar kerja bengkel. Panggung 3D di atas, lalu tabel file cetak, setelan, baut, urutan rakit. */
+:root {
+  --bg: #eef1f3; --panel: #ffffff; --ink: #1b2127; --muted: #5a6670; --line: #d3dae0;
+  --stage: #e2e7eb; --floor: #d6dce1; --accent: #d4502a; --accent2: #2f6cc0; --tpu: #2b2d31; --ok: #2d7a4b;
+  --f-head: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121519; --panel: #191d22; --ink: #e5e9ed; --muted: #98a3ad; --line: #2b323a;
+  --stage: #1a1f24; --floor: #242a30; --accent: #ff7b4f; --accent2: #6aa3ff; --tpu: #8b9098; --ok: #5cc287; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121519; --panel: #191d22; --ink: #e5e9ed; --muted: #98a3ad; --line: #2b323a;
+  --stage: #1a1f24; --floor: #242a30; --accent: #ff7b4f; --accent2: #6aa3ff; --tpu: #8b9098; --ok: #5cc287; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--f-body); }
+main { max-width: 1180px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 28px; }
+h1, h2 { font-family: var(--f-head); text-wrap: balance; margin: 0; letter-spacing: .01em; }
+h1 { font-size: 30px; font-weight: 700; line-height: 1.1; }
+h2 { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 70ch; margin-top: 6px; }
+code, .mono { font-family: var(--f-mono); font-size: 12.5px; }
+.eyebrow { font: 600 12px var(--f-head); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+
+#stage { position: relative; aspect-ratio: 16 / 9; max-height: 72vh; width: 100%; max-width: 100%;
+  background: var(--stage); border-radius: 6px; overflow: hidden; }
+#stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+#loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); padding: 16px; text-align: center; }
+.bar { position: absolute; left: 10px; right: 10px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.bar.top { top: 10px; } .bar.bot { bottom: 10px; justify-content: space-between; align-items: flex-end; }
+.seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; pointer-events: auto; }
+.seg button { font: 500 13px var(--f-body); color: var(--ink); background: none; border: 0; padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--panel); }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 5px;
+  padding: 5px 10px; font-size: 12.5px; pointer-events: auto; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+.hint { font-size: 12px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 4px 8px; }
+
+.grid2 { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px var(--f-head); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.sub td { color: var(--muted); }
+.tag { display: inline-block; font: 600 11px var(--f-head); letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px;
+  border-radius: 3px; color: var(--panel); }
+.t1 { background: var(--accent); } .t2 { background: var(--accent2); } .t3 { background: var(--tpu); }
+dl.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; margin: 0; }
+dl.kv dt { color: var(--muted); } dl.kv dd { margin: 0; }
+ol.steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; max-width: 80ch; }
+ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 80ch; }
+.check { color: var(--ok); font-weight: 600; }
+section { min-width: 0; }
+</style>
+
+<main>
+  <header>
+    <div class="eyebrow">Mekanik LFM X1 · konsep v18 · Bambu Lab A1</div>
+    <h1>Badan cetak LFM X1</h1>
+    <p class="lead">Sasis, tutup klem motor, rangka interface, velg + ban TPU, skid sensor, dan dua potongan uji. Semua STL
+      sudah di posisi cetak (alas di bawah), tertutup rapat, dan bisa dicetak tanpa support. Lubang dan kaki THT dibaca
+      langsung dari file KiCad yang sama dengan Gerber X1.</p>
+  </header>
+
+  <section aria-label="Model 3D">
+    <div id="stage">
+      <div id="loading">Memuat model 3D…</div>
+      <div class="bar top">
+        <div class="seg" role="group" aria-label="Mode">
+          <button id="m-rakitan" data-mode="rakitan" aria-pressed="true">Rakitan</button>
+          <button id="m-sorot" data-mode="sorot" aria-pressed="false">Sorot cetak</button>
+          <button id="m-alas" data-mode="alas" aria-pressed="false">Alas cetak A1</button>
+        </div>
+        <div class="seg" role="group" aria-label="Sudut pandang" id="views">
+          <button id="v-belakang" data-view="belakang" aria-pressed="true">Belakang</button>
+          <button id="v-depan" data-view="depan" aria-pressed="false">Depan</button>
+          <button id="v-samping" data-view="samping" aria-pressed="false">Samping</button>
+          <button id="v-bawah" data-view="bawah" aria-pressed="false">Bawah</button>
+        </div>
+      </div>
+      <div class="bar bot">
+        <div class="legend">
+          <span><i class="sw" style="background:var(--accent)"></i>PETG/PLA</span>
+          <span><i class="sw" style="background:var(--accent2)"></i>PETG/PLA (rangka, velg)</span>
+          <span><i class="sw" style="background:var(--tpu)"></i>TPU 95A</span>
+        </div>
+        <div class="hint">Seret untuk memutar, gulir untuk zoom</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>File cetak</h2>
+      <p class="lead" style="margin:0 0 10px">Folder <code>mechanical/cetak-x1/stl/</code>. Massa = padat 100 % (batas atas);
+        dengan setelan di samping kira-kira 60–70 % dari angka ini.</p>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Bagian</th><th>Jml</th><th>Ukuran cetak (mm)</th><th>Massa</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag t1">1</span> Sasis<br><code>x1_sasis.stl</code></td><td class="n">1</td><td class="n">114,2 × 140,5 × 11,6</td><td class="n">32,2 g</td></tr>
+          <tr><td><span class="tag t1">1</span> Tutup klem motor<br><code>x1_tutup_klem_kanan.stl</code>, <code>…_kiri.stl</code></td><td class="n">1 + 1</td><td class="n">21,2 × 32,1 × 3,0</td><td class="n">1,9 g</td></tr>
+          <tr><td><span class="tag t2">1</span> Rangka interface<br><code>x1_rangka_interface.stl</code></td><td class="n">1</td><td class="n">83,5 × 53,5 × 19,5</td><td class="n">5,4 g</td></tr>
+          <tr><td><span class="tag t2">1</span> Velg Ø34 × 18<br><code>x1_velg.stl</code></td><td class="n">2</td><td class="n">29,6 × 29,6 × 18,0</td><td class="n">5,8 g</td></tr>
+          <tr><td><span class="tag t1">1</span> Skid sensor<br><code>x1_skid_sensor.stl</code></td><td class="n">1</td><td class="n">17,0 × 9,0 × 4,8</td><td class="n">0,5 g</td></tr>
+          <tr><td><span class="tag t1">1</span> Spacer sensor 3,6 mm<br><code>x1_spacer_sensor.stl</code></td><td class="n">2</td><td class="n">6,4 × 6,4 × 3,6</td><td class="n">0,1 g</td></tr>
+          <tr><td><span class="tag t3">2</span> Ban TPU<br><code>x1_ban_tpu.stl</code></td><td class="n">2</td><td class="n">34,0 × 34,0 × 15,4</td><td class="n">5,7 g</td></tr>
+          <tr class="sub"><td><span class="tag t1">3</span> Uji dudukan motor<br><code>x1_uji_dudukan_motor.stl</code></td><td class="n">1</td><td class="n">27,0 × 35,0 × 11,6</td><td class="n">4,3 g</td></tr>
+          <tr class="sub"><td><span class="tag t1">3</span> Uji lubang as<br><code>x1_uji_lubang_as.stl</code></td><td class="n">1</td><td class="n">30,0 × 10,0 × 10,0</td><td class="n">3,6 g</td></tr>
+          <tr><td colspan="3"><b>Total badan</b> (tanpa uji, padat)</td><td class="n"><b>65 g</b></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="lead" style="margin-top:8px">Angka di kotak = nomor alas cetak di mode <b>Alas cetak A1</b>.</p>
+    </section>
+
+    <section>
+      <h2>Setelan Bambu Studio (A1, nozzle 0,4)</h2>
+      <dl class="kv">
+        <dt>Alas 1 + 3</dt><dd>PETG (lebih tahan benturan) atau PLA, lapisan 0,2 mm, 4 dinding, atas/bawah 5 lapis,
+          infill 40 % gyroid, tanpa support. Velg: infill 60 % supaya lubang D kuat.</dd>
+        <dt>Alas 2</dt><dd>TPU 95A, lapisan 0,2 mm, 3 dinding, infill 30 %, profil TPU (pelan), tanpa support.</dd>
+        <dt>Orientasi</dt><dd>Jangan diputar: STL sudah menghadap alas yang benar. Rangka interface dan skid sengaja
+          terbalik (muka atasnya di alas).</dd>
+      </dl>
+      <h2 style="margin-top:22px">Baut yang perlu disiapkan</h2>
+      <div class="scroll">
+      <table>
+        <tbody>
+          <tr><td class="n">4 ×</td><td>M3 × 30 <b>kepala benam</b> + 4 mur</td><td>PCB utama + rangka interface, dari bawah sasis</td></tr>
+          <tr><td class="n">4 ×</td><td>M3 × 16 + 4 mur</td><td>tutup klem motor; mur di kantong heksagon bawah sasis</td></tr>
+          <tr><td class="n">2 ×</td><td>M3 × 10 + 2 mur</td><td>PCB sensor; kepala di atas hidung sasis, mur di skid</td></tr>
+          <tr><td class="n">4 ×</td><td>sekrup M2 × 6</td><td>board interface ke rangka (langsung ke plastik)</td></tr>
+          <tr><td class="n">±15 cm</td><td>strap velcro 16 mm</td><td>pengikat pack 2S, lewat 2 celah sasis</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </div>
+
+  <section>
+    <h2>Urutan cetak dan rakit</h2>
+    <ol class="steps">
+      <li><b>Cetak alas 3 dulu</b> (±30 menit). Masukkan motor N20 ke potongan dudukan: harus masuk alur tanpa dipaksa,
+        gearbox menempel ganjal kecil di sudut alur, lalu tutup klem + 2 baut M3 × 16 menjepitnya. Tekan as motor ke
+        blok uji: 1, 2, 3 takik = lubang Ø3,0 / 3,1 / 3,2. Velg memakai lubang 2. Kalau yang pas lubang lain, atau
+        motor seret/longgar, kabari saya ukurannya dan STL saya buat ulang.</li>
+      <li>Cetak alas 1 (PETG/PLA) dan alas 2 (TPU).</li>
+      <li>Masukkan 4 mur M3 ke kantong heksagon di bawah sasis (boss tutup klem). Selotip sementara kalau mudah jatuh.</li>
+      <li>Motor: rebahkan di alur, encoder menghadap ke tengah, gearbox menempel ganjal. Pasang tutup klem kanan dan
+        kiri, baut M3 × 16 dari atas. Tutup sengaja 0,4 mm di atas boss supaya melentur dan menekan motor.</li>
+      <li>PCB sensor: mur M3 ke 2 kantong skid. Baut M3 × 10 dari atas hidung sasis → spacer 3,6 mm → lubang H1/H2 PCB
+        sensor → skid. Muka QRE1113GR jadi ±3,1 mm dari lantai.</li>
+      <li>PCB utama + rangka: baut M3 × 30 kepala benam dari bawah sasis → boss → PCB utama → kaki rangka → mur di atas.</li>
+      <li>Board interface ke rangka dengan 4 sekrup M2 × 6.</li>
+      <li>Ban TPU ditarik melewati flens velg (rendam air panas kalau seret). Velg ditekan ke as sampai mentok: lubang D
+        sedalam 8 mm, jadi celah 2 mm ke gearbox terbentuk sendiri. Setetes lem CA kalau longgar.</li>
+      <li>Pack 2S masuk kantong di belakang motor, strap dilewatkan 2 celah sasis lalu diikat di atas pack.</li>
+    </ol>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>Hasil cek otomatis</h2>
+      <ul class="plain">
+        <li><span class="check">0 tabrakan</span> antara bagian cetak dan komponen konsep v18 + KiCad (PCB utama, PCB
+          sensor rev C, board interface rev B, motor, pack).</li>
+        <li>Semua STL tertutup rapat (dicek trimesh); sasis satu keping.</li>
+        <li>Ekor kaki THT PCB utama (3 mm) jatuh di jendela sasis, jarak terdekat ke plastik 0,6 mm.</li>
+        <li>Steker J1 PCB sensor ke hidung sasis 1,6 mm; pack ke rel motor 0,2 mm; kaki rangka ke PCB ESP32 3,5 mm.</li>
+        <li>Panjang robot 178,5 mm, lebar 115 mm (batas lomba 250 × 200 × 100).</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Yang belum pasti</h2>
+      <ul class="plain">
+        <li>Ukuran motor dari model v16 (12 × 10 mm, gearbox 9 mm, piringan encoder ≤ Ø14). Cetak uji yang menjawab.</li>
+        <li>Kantong pack 54 × 31 mm untuk listing 50 × 30 × 15 mm.</li>
+        <li><b>Ball caster</b> di RAB belum punya ukuran, jadi tumpuan depan sementara skid cetak di bawah PCB sensor.
+          Kalau tetap mau ball caster, kirim link barangnya dan saya tambahkan dudukannya.</li>
+        <li>Tinggi rangka interface mengikuti socket J6 8,5 mm + header susun (board di z 36,1 mm).</li>
+        <li>Ekor sasis 4,5 mm lebih panjang dari konsep v18 supaya celah strap belakang muat.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<script type="module">
+const $ = (s) => document.querySelector(s);
+try {
+  const THREE = await import('three');
+  const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+  const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+  const stage = $('#stage');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.prepend(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(30, 1, 1, 6000);
+  camera.up.set(0, 0, 1);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.minDistance = 60; controls.maxDistance = 2200;
+
+  const floorMat = new THREE.MeshStandardMaterial({ roughness: 0.95 });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), floorMat);
+  floor.receiveShadow = true; scene.add(floor);
+  const tape = new THREE.Mesh(new THREE.PlaneGeometry(20, 1400), new THREE.MeshStandardMaterial({ color: '#141414', roughness: 0.8 }));
+  tape.position.set(0, 100, 0.05); tape.receiveShadow = true; scene.add(tape);
+  const css = () => getComputedStyle(document.documentElement);
+  const key = new THREE.DirectionalLight('#ffffff', 2.2);
+  key.position.set(160, -200, 420); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  Object.assign(key.shadow.camera, { left: -200, right: 200, top: 220, bottom: -160, near: 50, far: 1400 });
+  key.shadow.bias = -0.0004;
+  key.target.position.set(0, 40, 0); scene.add(key.target, key);
+  scene.add(new THREE.HemisphereLight('#ffffff', '#c9ced6', 0.6));
+
+  const data = await (await fetch('cetak-x1-model.json')).json();
+  const mats = {}, matsD = {};
+  for (const [k, [c, r, m]] of Object.entries(data.mats)) {
+    mats[k] = new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m });
+    matsD[k] = mats[k].clone(); matsD[k].side = THREE.DoubleSide;
+  }
+  if (mats.screen) { mats.screen.emissive = new THREE.Color('#7fc4ff'); mats.screen.emissiveIntensity = 1.4; }
+  const ghost = new THREE.MeshStandardMaterial({ color: '#8a96a3', transparent: true, opacity: 0.13, depthWrite: false, roughness: 1 });
+  function theme() {
+    const cs = css();
+    scene.background = new THREE.Color(cs.getPropertyValue('--stage').trim());
+    floorMat.color.set(cs.getPropertyValue('--floor').trim());
+    for (const [k, v] of [['print', '--accent'], ['print2', '--accent2']]) {
+      const c = cs.getPropertyValue(v).trim(); mats[k].color.set(c); matsD[k].color.set(c);
+    }
+  }
+  theme();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+  new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  const dec = (s, T) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return new T(u.buffer); };
+  const FLAT = new Set(['cetak', 'alas']);
+  const groups = {};
+  const group = (n) => groups[n] || (groups[n] = scene.add(new THREE.Group()).children.at(-1));
+  const all = [];
+  for (const o of data.meshes) {
+    let g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(dec(o.p, Float32Array), 3));
+    g.setIndex(new THREE.BufferAttribute(dec(o.i, Uint32Array), 1));
+    if (FLAT.has(o.g) || o.n === 'Baut + mur') g = g.toNonIndexed();
+    g.computeVertexNormals();
+    const mat = (o.d ? matsD : mats)[o.m] || mats.print;
+    const mesh = new THREE.Mesh(g, mat);
+    mesh.userData.mat = mat; mesh.castShadow = !['screen', 'silk', 'gold'].includes(o.m); mesh.receiveShadow = true;
+    group(o.g).add(mesh); all.push([o.g, mesh]);
+  }
+  // alas cetak 256 x 256: pelat tipis + garis tepi, judul di tepi depan
+  const plateMat = new THREE.MeshStandardMaterial({ color: '#3b4148', roughness: 0.55, metalness: 0.3 });
+  function textPlane(w, h, px, text) {
+    const cv = document.createElement('canvas'); cv.width = Math.round(w * px); cv.height = Math.round(h * px);
+    const cx = cv.getContext('2d'); cx.fillStyle = '#f2f2ee'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+    cx.font = `600 ${h * 0.62 * px}px "Barlow Semi Condensed", sans-serif`; cx.fillText(text, 0, h / 2 * px);
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+    return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tex, transparent: true }));
+  }
+  for (const p of data.plates) {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(data.bed, data.bed, 1.2), plateMat);
+    b.position.set(p.x, 0, -0.6); b.receiveShadow = true; group('alas').add(b);
+    const t = textPlane(200, 14, 12, p.judul); t.position.set(p.x - data.bed / 2 + 100, -data.bed / 2 - 12, 0.1); group('alas').add(t);
+  }
+  const plates = data.plates.map(p => p.x);
+  const midX = (plates[0] + plates.at(-1)) / 2;
+
+  const VIEWS = {
+    belakang: { pos: [140, -230, 150], tgt: [0, 40, 14] },
+    depan:    { pos: [-170, 290, 160], tgt: [0, 45, 14] },
+    samping:  { pos: [-360, 40, 40],   tgt: [0, 42, 20] },
+    bawah:    { pos: [90, -120, -300], tgt: [0, 40, 8] },
+    alas:     { pos: [midX, -620, 560], tgt: [midX, -10, 0] },
+  };
+  let mode = 'rakitan';
+  function setView(v) {
+    const s = VIEWS[v]; camera.position.set(...s.pos); controls.target.set(...s.tgt); controls.update();
+    document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+  }
+  function setMode(m) {
+    mode = m;
+    document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+    for (const [g, mesh] of all) {
+      mesh.visible = m === 'alas' ? g === 'alas' : g !== 'alas';
+      mesh.material = m === 'sorot' && g !== 'cetak' ? ghost : mesh.userData.mat;
+      mesh.castShadow = !(m === 'sorot' && g !== 'cetak');
+    }
+    group('alas').children.forEach(c => { c.visible = m === 'alas'; });
+    tape.visible = m !== 'alas';
+    $('#views').style.visibility = m === 'alas' ? 'hidden' : 'visible';
+    setView(m === 'alas' ? 'alas' : (document.querySelector('[data-view][aria-pressed="true"]')?.dataset.view || 'belakang'));
+  }
+  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+  setMode('rakitan'); setView('belakang');
+
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h;
+    camera.fov = w / h >= 16 / 9 ? 30 : 2 * THREE.MathUtils.radToDeg(Math.atan(Math.tan(Math.PI / 12) * (16 / 9) / (w / h)));
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+  $('#loading').remove();
+  renderer.setAnimationLoop(() => {
+    floor.visible = camera.position.z > 0;
+    controls.update(); renderer.render(scene, camera);
+  });
+} catch (e) {
+  $('#loading').textContent = 'Model 3D tidak bisa dimuat di perangkat ini (' + e.message + '). Tabel di bawah tetap berlaku.';
+}
+</script>

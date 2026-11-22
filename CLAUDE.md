@@ -146,7 +146,14 @@ memakai pin map yang sama.
   dihitung → puncak ESP32 32,3 mm (dulu 29,8), board interface z 36,1 (dulu 33), header J6 → J1 pakai header susun
   1×6 atau header pin ±19 mm. Belum diputuskan: cas di luar robot (charger balance; modul charger + BMS keluar) atau
   tetap USB-C di robot, harga pack, label 5.000 mAh vs batas 4.000 mAh guidebook, ukuran lubang modul OLED (belum
-  diukur). Model dirakit skrip dari mesh v16 (CadQuery tidak ada di laptop); belum ada STEP/STL.
+  diukur). Model dirakit skrip dari mesh v16 (CadQuery tidak ada di laptop); belum ada STEP.
+- **Badan cetak X1** (`mechanical/cetak-x1/`, 22/11, permintaan user "siapkan file 3d ... untuk badannya"): STL siap
+  cetak dari konsep v18 untuk **Bambu Lab A1** milik user (PLA/PETG/TPU): sasis + dudukan motor/pack, 2 tutup klem
+  motor (M3 × 16), rangka interface, velg Ø34 × 18 + ban TPU, skid sensor + 2 spacer, 2 potongan uji (dudukan motor,
+  lubang D as). Lubang/kaki THT dibaca dari KiCad (`gen_cetak_x1.py`), 0 tabrakan, STL tertutup. Viewer
+  https://claude.ai/artifact/PNojYiuq8fW5ogUY8qWuLw. Beda dari v18: klem jadi alur terbuka + tutup berbaut, ekor
+  sasis −47,5 (celah strap), **skid cetak di bawah H1/H2 PCB sensor sebagai tumpuan depan selama ball caster belum
+  punya ukuran** (belum dikonfirmasi user). Ukuran motor/pack dari model/listing: cetak uji dulu.
 - Versi lama (v11–v14) di `arsip/` (lihat `arsip/README.md`).
 
 ### Anggaran & dokumen

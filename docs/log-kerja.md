@@ -4,6 +4,22 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 22/11/2026
+- **LFM X1: file 3D badan siap cetak** (permintaan user "siapkan file 3d aku mau print untuk badannya"; jawaban user:
+  X1, sasis + dudukan motor/baterai + rangka interface + velg, barang belum dibeli). Printer user = Bambu Lab A1
+  (dari profil Bambu Studio). Generator baru `mechanical/cetak-x1/gen_cetak_x1.py` membaca lubang dan kaki THT
+  langsung dari KiCad (PCB utama, PCB sensor rev C, board interface rev B) dan membangun 10 STL tertutup rapat tanpa
+  support: sasis (skid plate 2 mm + bibir, alur motor + ganjal gearbox, boss PCB utama kepala benam, kantong pack +
+  2 celah strap, jendela kaki THT/encoder), tutup klem kanan/kiri (2 × M3 × 16), rangka interface (boss depan
+  dipapas di atas tepi ESP32), velg Ø34 × 18 (lubang D 3,1 sedalam 8 mm) + ban TPU, skid sensor + 2 spacer 3,6 mm,
+  potongan uji dudukan motor dan blok 3 lubang D. Total 65 g padat. Cek: 0 tabrakan terhadap mesh konsep v18 + KiCad,
+  kaki THT ke plastik 0,6 mm, steker J1 sensor ke hidung 1,6 mm.
+- Beda dari konsep v18: klem cincin tertutup (motor tidak bisa masuk karena encoder lebih besar) → alur terbuka +
+  tutup berbaut; ekor sasis −43 → −47,5 untuk celah strap; tumpuan depan sementara skid cetak di bawah H1/H2 PCB
+  sensor karena ball caster RAB belum punya ukuran (menunggu keputusan user).
+- Viewer (rakitan, sorot cetak, susunan 3 alas A1) + setelan slicer, baut, urutan rakit:
+  https://claude.ai/artifact/PNojYiuq8fW5ogUY8qWuLw. README `mechanical/cetak-x1/`, `mechanical/README.md`, CLAUDE.md.
+
 ## 21/11/2026
 - **LFM X1: peringatan leher pour GND < 0,5 mm dirapikan** (permintaan user "RAPIKAN"; X2 tidak disentuh). Letak leher
   dicari dari bentuk tembaga GND karena laporan DRC hanya menyebut pojok zone:

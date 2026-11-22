@@ -1,5 +1,11 @@
 # Mekanik — Robot Line Tracer Micro
 
+## Badan cetak X1 (22/11/2026): STL siap cetak dari konsep v18
+
+Sasis, tutup klem motor, rangka interface, velg + ban TPU, skid sensor, dan potongan uji untuk Bambu Lab A1, semua di
+`cetak-x1/stl/` (posisi cetak, tanpa support). Viewer + petunjuk: https://claude.ai/artifact/PNojYiuq8fW5ogUY8qWuLw.
+Penjelasan, setelan, baut, dan hasil cek di `cetak-x1/README.md`.
+
 ## Konsep v18 (14/11/2026): susunan A "ransel" dipilih user, semua PCB punya pengikat
 
 Model 3D yang bisa diputar + gambar urai (tombol **Urai**): https://claude.ai/artifact/Q4KdmPtV6vY7v5J78FXZrm
