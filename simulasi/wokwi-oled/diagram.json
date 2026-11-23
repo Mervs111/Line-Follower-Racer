@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "author": "LFM X1",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "board-ssd1306", "id": "oled1", "top": 60, "left": 200, "attrs": { "i2cAddress": "0x3c" } },
+    { "type": "wokwi-potentiometer", "id": "pot1", "top": 20, "left": -170, "attrs": { "value": "590" } },
+    { "type": "wokwi-pushbutton", "id": "btnKembali", "top": 280, "left": -120, "attrs": { "color": "red", "label": "KEMBALI", "key": "ArrowLeft" } },
+    { "type": "wokwi-pushbutton", "id": "btnAtas", "top": 280, "left": -30, "attrs": { "color": "blue", "label": "ATAS", "key": "ArrowUp" } },
+    { "type": "wokwi-pushbutton", "id": "btnOk", "top": 280, "left": 60, "attrs": { "color": "green", "label": "OK", "key": "Enter" } },
+    { "type": "wokwi-pushbutton", "id": "btnBawah", "top": 280, "left": 150, "attrs": { "color": "blue", "label": "BAWAH", "key": "ArrowDown" } },
+    { "type": "wokwi-pushbutton", "id": "btnLanjut", "top": 280, "left": 240, "attrs": { "color": "yellow", "label": "LANJUT", "key": "ArrowRight" } }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "oled1:GND", "esp:GND.2", "black", [] ],
+    [ "oled1:VCC", "esp:3V3", "red", [] ],
+    [ "oled1:SCL", "esp:22", "green", [] ],
+    [ "oled1:SDA", "esp:21", "blue", [] ],
+    [ "pot1:VCC", "esp:3V3", "red", [] ],
+    [ "pot1:GND", "esp:GND.1", "black", [] ],
+    [ "pot1:SIG", "esp:VN", "orange", [] ],
+    [ "btnKembali:1.l", "esp:32", "violet", [] ],
+    [ "btnAtas:1.l", "esp:33", "violet", [] ],
+    [ "btnOk:1.l", "esp:25", "violet", [] ],
+    [ "btnBawah:1.l", "esp:26", "violet", [] ],
+    [ "btnLanjut:1.l", "esp:27", "violet", [] ],
+    [ "btnKembali:2.l", "esp:GND.1", "black", [] ],
+    [ "btnKembali:2.r", "btnAtas:2.l", "black", [] ],
+    [ "btnAtas:2.r", "btnOk:2.l", "black", [] ],
+    [ "btnOk:2.r", "btnBawah:2.l", "black", [] ],
+    [ "btnBawah:2.r", "btnLanjut:2.l", "black", [] ]
+  ],
+  "dependencies": {}
+}

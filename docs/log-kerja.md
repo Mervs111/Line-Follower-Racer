@@ -4,6 +4,15 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 23/11/2026
+- **Simulasi Wokwi tampilan OLED + menu + 5 tombol** (`simulasi/wokwi-oled/`, permintaan user): `sketch.ino` (U8g2,
+  tanpa `delay()`/`String`), `diagram.json` (ESP32 DevKit C V4 + SSD1306 SDA 21/SCL 22 + 5 tombol GPIO 32/33/25/26/27 +
+  potensiometer baterai di GPIO39), `libraries.txt`, langkah di README. Usulan layar: layar utama (baterai, rute,
+  kecepatan, kalibrasi, bar 12 sensor), menu 8 item (Mulai, Pilih rute, Kalibrasi, Lihat sensor, Atur PID, Warna garis,
+  Tes motor, Info), hitung mundur, berjalan per indeks, selesai. Wokwi tidak bisa mensimulasikan tangga resistor
+  (resistor hanya pull-up/down), jadi di simulasi tiap tombol ke GPIO sendiri; kode tangga GPIO34 untuk robot asli
+  ada di balik `#define SIMULASI 0`. Belum di-compile (tidak ada toolchain di laptop), dites user di wokwi.com.
+
 ## 22/11/2026
 - **LFM X1: file 3D badan siap cetak** (permintaan user "siapkan file 3d aku mau print untuk badannya"; jawaban user:
   X1, sasis + dudukan motor/baterai + rangka interface + velg, barang belum dibeli). Printer user = Bambu Lab A1
