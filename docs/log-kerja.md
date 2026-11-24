@@ -4,6 +4,13 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 24/11/2026
+- **LFM X1: toleransi velg + ban dinaikkan** (hasil cetak pertama user: lubang untuk as motor tidak bisa masuk dan
+  terlalu sesak, ban TPU tidak bisa dipasang ke velg). Lubang D velg Ø3,1 / sisi rata 1,05 → **Ø3,4 / sisi rata
+  1,2** (kelonggaran nominal 0,05 → 0,2), mulut lubang diserong 0,8 mm. Ban: Ø dalam 27,6 → **28,0** (sama dengan
+  dudukan), flens dalam tegak Ø29,6 → landai Ø28,2 / 28,5 / 28,8; regangan saat dipasang 7 % → 2,9 %. Blok uji lubang
+  diganti Ø3,3 / 3,4 / 3,5. STL dibuat ulang (semua tertutup, 0 tabrakan), README, viewer, CLAUDE.md ikut.
+
 ## 23/11/2026
 - **Simulasi Wokwi tampilan OLED + menu + 5 tombol** (`simulasi/wokwi-oled/`, permintaan user): `sketch.ino` (U8g2,
   tanpa `delay()`/`String`), `diagram.json` (ESP32 DevKit C V4 + SSD1306 SDA 21/SCL 22 + 5 tombol GPIO 32/33/25/26/27 +

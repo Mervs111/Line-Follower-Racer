@@ -9,7 +9,7 @@ posisi lubang dan kaki THT dibaca langsung dari KiCad (PCB utama rev B, PCB sens
   tutup klem        menekan motor dari atas, 2 baut M3 x 16 per motor (kiri = cermin kanan)
   rangka interface  pelat 2,5 mm + 4 kaki di baut M3 PCB utama, memikul board interface (dari konsep v18; boss depan
                     dipapas supaya tidak di atas tepi ESP32 DevKit)
-  velg + ban TPU    O34 x 18, lubang D untuk as N20 (tekan + lem), ban TPU dipasang meregang di antara 2 flens
+  velg + ban TPU    O34 x 18, lubang D O3,4 untuk as N20 (masuk + lem), ban TPU di antara 2 flens (flens dalam landai)
   skid sensor       tumpuan depan di bawah lubang H1/H2 PCB sensor, mur M3 tertanam (dipakai selama ball caster belum
                     ada; ball caster di RAB belum punya ukuran)
   spacer sensor     cincin 3,6 mm di antara PCB sensor dan sasis
@@ -420,10 +420,23 @@ def make_frame():
 
 
 # velg + ban, dibangun langsung di posisi cetak: sumbu = z, muka luar di alas (z 0), muka dalam (sisi motor) di z 18
-V_RF, V_RS, V_RI, V_RH = 14.8, 14.0, 12.4, 4.6   # flens (ban meregang 7 % saat dipasang), dudukan ban, rim, hub
-V_BORE = (3.1, 1.05, 8.0)                         # lubang D: diameter, jarak sisi rata, dalam (as 10 mm ditekan
-                                                  # sampai mentok -> celah velg-gearbox 2 mm)
-T_RI, T_W = 13.8, 15.4                            # ban: jari-jari dalam (meregang 1,4 % di dudukan), lebar
+V_RF, V_RS, V_RI, V_RH = 14.8, 14.0, 12.4, 4.6   # flens luar (sisi alas), dudukan ban, rim, hub
+# flens dalam = jalan masuk ban, landai 3 tingkat (z dari muka dalam, jari-jari). 24/11: cetakan pertama ban tidak bisa
+# melewati flens 14,8 (meregang 7 %) -> 14,4 (2,9 % dari Ø dalam nominal)
+V_LIP = [(1.2, 0.8, 14.4), (0.8, 0.4, 14.25), (0.4, 0.0, 14.1)]
+# lubang D: diameter, jarak sisi rata dari pusat, dalam (as 10 mm ditekan sampai mentok -> celah velg-gearbox 2 mm).
+# As N20 O3, tebal di sisi rata 2,5 -> kelonggaran nominal 0,2 di jari-jari dan di sisi rata. 24/11: O3,1 / 1,05
+# (kelonggaran 0,05) terlalu sesak di cetakan pertama; lubang kecil FDM jadi ±0,1-0,2 lebih kecil dari STL
+V_BORE = (3.4, 1.2, 8.0)
+BORE_TEST = [(3.3, 1.15), V_BORE[:2], (3.5, 1.25)]   # blok uji: 1 / 2 / 3 takik, velg = lubang 2
+T_RI, T_W = 14.0, 15.4                            # ban: jari-jari dalam (= dudukan; 24/11 dari 13,8), lebar
+
+
+def bore_cut(p, x, y, d, flat, z1, depth):
+    """lubang D dari muka atas z1 ke bawah sedalam depth, mulutnya diserong 2 tingkat supaya as mudah masuk"""
+    p.cut(z1 - depth, z1, d_hole(x, y, d, flat))
+    p.cut(z1 - 0.8, z1, d_hole(x, y, d + 0.4, flat + 0.2))
+    p.cut(z1 - 0.4, z1, d_hole(x, y, d + 0.8, flat + 0.4))
 
 
 def polar(r, a):
@@ -467,14 +480,14 @@ def make_velg():
     p.add(3.0, 4.5, unary_union([spokes.intersection(circ(0, 0, 10.0, 64)), hub]))   # punggung jari-jari
     p.add(4.5, 6.5, unary_union([spokes.intersection(circ(0, 0, 7.6, 64)), hub]))    # menebal ke hub
     p.add(1.2, W_T, ring(0, 0, V_RS, V_RI, 128))
-    p.add(W_T - 1.2, W_T - 0.6, ring(0, 0, V_RF, V_RI, 128))                         # flens dalam
-    p.add(W_T - 0.6, W_T, ring(0, 0, V_RF - 0.5, V_RI, 128))                         # serong: ban lebih mudah masuk
+    for za, zb, r in V_LIP:                                                            # flens dalam landai
+        p.add(W_T - za, W_T - zb, ring(0, 0, r, V_RI, 128))
     p.add(0.0, W_T, circ(0, 0, V_RH, 48))
     lugs = unary_union([circ(*polar(3.5, math.pi / 2 + 2 * math.pi / 5 * (k + 0.5)), 0.55, 20) for k in range(5)])
     p.cut(0.0, 0.8, lugs)                                                              # 5 lubang baut hias
     p.cut(0.0, 0.4, circ(0, 0, 2.2, 40))                                               # cekungan tutup tengah
     d, flat, depth = V_BORE
-    p.cut(W_T - depth, W_T, d_hole(0, 0, d, flat))
+    bore_cut(p, 0, 0, d, flat, W_T, depth)
     return p
 
 
@@ -514,11 +527,11 @@ def make_spacer(x, y):
 
 
 def make_bore_test():
-    """blok uji lubang D: kiri ke kanan O3,0 / 3,1 / 3,2, ditandai 1 / 2 / 3 takik di sisi depan"""
+    """blok uji lubang D (BORE_TEST): kiri ke kanan O3,3 / 3,4 / 3,5, ditandai 1 / 2 / 3 takik di sisi depan"""
     p = Layered("Uji lubang as").add(0.0, 10.0, rrect(-15.0, 15.0, -5.0, 5.0, 1.0))
-    for k, (d, flat) in enumerate([(3.0, 1.0), (3.1, 1.05), (3.2, 1.1)]):
+    for k, (d, flat) in enumerate(BORE_TEST):
         x = -9.0 + 9.0 * k
-        p.cut(10.0 - V_BORE[2], 10.0, d_hole(x, 0.0, d, flat))
+        bore_cut(p, x, 0.0, d, flat, 10.0, V_BORE[2])
         for j in range(k + 1):
             xt = x - 1.2 * k + 2.4 * j
             p.cut(9.0, 10.0, sbox(xt - 0.4, -5.1, xt + 0.4, -4.3))

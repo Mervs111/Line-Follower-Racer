@@ -22,19 +22,30 @@ motor/baterai, rangka interface, velg Ø34 × 18; motor, ball caster, dan batera
 | `x1_sasis` | 1 | 114,2 × 140,5 × 11,6 | 33,6 g | skid plate 2 mm (z 10–12), **bawah rata** (permintaan user 22/11) + bibir tepi 2,5 mm; alur kedua motor (rel 12,4 mm, ganjal gearbox di sudut bawah alur x 24,5–28,4); 4 boss baut tutup klem + kantong mur dari bawah; 4 boss PCB utama 3 mm + kepala benam; lubang H1/H2 PCB sensor; kantong pack 54 × 31 + bibir 4 mm; 2 celah strap 17,5 × 2,2; kantong buntu dari atas di bawah kaki THT PCB utama (lantai 1,0 mm) dan piringan encoder (lantai 0,6 mm). Di muka bawah hanya ada lubang baut, kantong mur/kepala benam, dan celah strap |
 | `x1_tutup_klem_kanan`, `_kiri` | 1+1 | 21,2 × 32,1 × 3,0 | 1,9 g | pelat di atas motor (z 22–25), baut M3 × 16 di (±26; 12,6) dan (±33; −12). Boss 0,4 mm di bawah tutup: tutup melentur dan menekan motor |
 | `x1_rangka_interface` | 1 | 83,5 × 53,5 × 19,5 | 5,4 g | rangka konsep v18 (pelat 2,5 mm + 4 kaki Ø6,5 di baut PCB utama), lubang pilot M2 Ø1,7. Boss depan (y 62) dipapas sampai y 60,4 supaya tidak di atas tepi PCB ESP32 DevKit. Dicetak terbalik |
-| `x1_velg` | 2 | 29,6 × 29,6 × 18,0 | 5,4 g | **5 jari-jari Y** gaya velg forged (permintaan user 22/11, foto referensi): batang dari hub bercabang di r 6 ke bibir rim (±15°), lengan 1,6 → 1,25 mm, sudut cekung dibulatkan 0,45 mm, punggung menebal ke hub (3 → 6,5 mm), jendela tembus; 5 lubang baut hias + cekungan tutup tengah. Flens Ø29,6 dua sisi, dudukan ban Ø28, hub Ø9,2, lubang D Ø3,1 (sisi rata 1,05 dari pusat) sedalam 8 mm: ditekan sampai mentok → celah velg–gearbox 2 mm. Dicetak muka luar di alas |
-| `x1_ban_tpu` | 2 | 34,0 × 34,0 × 15,4 | 5,7 g | TPU 95A, Ø dalam 27,6 (meregang 1,4 % di dudukan, 7 % saat melewati flens) |
+| `x1_velg` | 2 | 29,6 × 29,6 × 18,0 | 5,3 g | **5 jari-jari Y** gaya velg forged (permintaan user 22/11, foto referensi): batang dari hub bercabang di r 6 ke bibir rim (±15°), lengan 1,6 → 1,25 mm, sudut cekung dibulatkan 0,45 mm, punggung menebal ke hub (3 → 6,5 mm), jendela tembus; 5 lubang baut hias + cekungan tutup tengah. Flens luar Ø29,6, flens dalam landai Ø28,2 → 28,5 → 28,8 (jalan masuk ban), dudukan ban Ø28, hub Ø9,2, **lubang D Ø3,4 (sisi rata 1,2 dari pusat, 24/11)** sedalam 8 mm, mulut diserong 0,8 mm: ditekan sampai mentok → celah velg–gearbox 2 mm. Dicetak muka luar di alas |
+| `x1_ban_tpu` | 2 | 34,0 × 34,0 × 15,4 | 5,3 g | TPU 95A, **Ø dalam 28,0** (= dudukan, 24/11; meregang 2,9 % saat melewati flens dalam Ø28,8) |
 | `x1_skid_sensor` | 1 | 17,0 × 9,0 × 4,8 | 0,5 g | tumpuan depan di bawah H1/H2 PCB sensor, dasar tudung bola R 20, 2 kantong mur M3. Dicetak terbalik |
 | `x1_spacer_sensor` | 2 | 6,4 × 6,4 × 3,6 | 0,1 g | antara PCB sensor (z 6,4) dan sasis (z 10) |
 | `x1_uji_dudukan_motor` | 1 | 27,0 × 35,0 × 11,6 | 4,3 g | potongan sasis di sekitar motor kanan (alur, ganjal, 2 boss), dipakai dengan tutup klem kanan |
-| `x1_uji_lubang_as` | 1 | 30,0 × 10,0 × 10,0 | 3,6 g | 3 lubang D Ø3,0 / 3,1 / 3,2 (1 / 2 / 3 takik); velg memakai lubang 2 |
+| `x1_uji_lubang_as` | 1 | 30,0 × 10,0 × 10,0 | 3,5 g | 3 lubang D Ø3,3 / 3,4 / 3,5, sisi rata 1,15 / 1,2 / 1,25 (1 / 2 / 3 takik); velg memakai lubang 2 |
 
-Total badan tanpa uji 66 g padat. Setelan: PETG atau PLA, lapisan 0,2 mm, 4 dinding, infill 40 % gyroid (velg 60 %);
+Total badan tanpa uji 65 g padat. Setelan: PETG atau PLA, lapisan 0,2 mm, 4 dinding, infill 40 % gyroid (velg 60 %);
 TPU 95A 3 dinding, infill 30 %. Semua STL sudah menghadap alas yang benar.
 
 Baut: 4 × M3 × 30 kepala benam + mur (PCB utama + rangka, dari bawah sasis, butuh 28,5 mm), 4 × M3 × 16 + mur (tutup
 klem, butuh 14,8), 2 × M3 × 10 + mur (PCB sensor, kepala di atas hidung sasis, mur di skid, butuh 9,6), 4 × sekrup
 M2 × 6 (board interface), strap velcro 16 mm ±15 cm.
+
+## Revisi 24/11 (hasil cetak pertama user)
+
+- **Lubang D velg terlalu sesak** (as N20 tidak bisa masuk): Ø3,1 / sisi rata 1,05 (kelonggaran nominal 0,05) →
+  **Ø3,4 / sisi rata 1,2** (kelonggaran 0,2 di jari-jari dan di sisi rata; lubang kecil FDM biasanya 0,1–0,2 mm lebih
+  kecil dari STL). Mulut lubang diserong 2 tingkat (Ø4,2 → 3,8 → 3,4 dalam 0,8 mm) supaya as mudah masuk. Blok uji
+  diganti Ø3,3 / 3,4 / 3,5. Kalau masih longgar sesudah dicetak: setetes lem CA di sisi rata.
+- **Ban TPU tidak bisa dipasang**: Ø dalam 27,6 → **28,0** (sama dengan dudukan), flens dalam 29,6 tegak → landai
+  28,2 / 28,5 / 28,8 (tiap 0,4 mm). Regangan saat melewati flens 7 % → 2,9 %. Flens luar (sisi alas) tetap Ø29,6
+  sebagai penahan. Ban dipasang dari sisi motor (sisi yang landai).
+- Konstanta di skrip: `V_BORE`, `BORE_TEST`, `V_LIP`, `T_RI`.
 
 ## Perubahan terhadap konsep v18
 
