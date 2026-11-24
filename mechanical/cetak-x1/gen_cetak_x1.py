@@ -337,14 +337,15 @@ def plate_outline():
 
 
 def tht_windows(utama, outline):
-    """kantong di bawah kaki THT PCB utama: ekor pin socket female +-3 mm, celah PCB-sasis hanya 3 mm"""
-    pads = [circ(*pd["p"], max(pd["s"]) / 2 + 0.7, 24) for f in utama for pd in f["pads"] if pd["pth"]]
-    win = unary_union(pads).buffer(1.2, quad_segs=4).buffer(-1.2, quad_segs=4)
+    """kantong di bawah kaki THT PCB utama: ekor pin socket female +-3 mm, celah PCB-sasis hanya 3 mm.
+    25/11 (permintaan user): satu kantong kosong, tidak mengikuti pola kaki = selubung cembung semua pad PTH (dan
+    cerminnya, supaya simetris) + 1 mm, dibatasi sisi dalam bibir tepi; pulau boss baut PCB utama tetap setebal pelat"""
+    pads = unary_union([circ(*pd["p"], max(pd["s"]) / 2 + 0.7, 24) for f in utama for pd in f["pads"] if pd["pth"]])
     keep = unary_union([circ(x, y, 4.0) for x, y in MB_HOLE])
-    win = clean(win.difference(keep).intersection(outline.buffer(-1.2)))
-    rest = polys(outline.difference(win))                 # pulau pelat yang terkurung kantong ikut diturunkan
-    main = max(rest, key=lambda q: q.area)
-    return clean(unary_union([win] + [q for q in rest if q is not main]))
+    hull = both(pads).convex_hull.buffer(1.0, quad_segs=8).intersection(outline.buffer(-RIM_W))
+    # pad yang dekat tepi boleh memakan bibir sedikit (sama seperti kantong per kaki sebelumnya)
+    win = unary_union([hull, pads.intersection(outline.buffer(-1.2))]).difference(keep)
+    return clean(win)
 
 
 def make_sasis(utama, clip=None):

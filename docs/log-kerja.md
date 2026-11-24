@@ -7,7 +7,10 @@ Entri terbaru di atas.
 ## 25/11/2026
 - Pertanyaan user soal "bolong-bolong seperti jalur PCB" di sasis X1: itu kantong buntu 1 mm dari atas untuk ekor kaki
   THT PCB utama (PCB hanya 3 mm di atas sasis); dicek dari STL, bawah sasis rata, yang tembus hanya lubang baut,
-  kantong mur, dan celah strap. **User memilih tetap dicetak apa adanya**; STL tidak berubah.
+  kantong mur, dan celah strap. User awalnya memilih dicetak apa adanya, lalu minta **"dibuat kosong aja jadi nggak
+  usah ngikut jalur"** → kantong per kaki diganti satu kantong polos simetris (selubung cembung pad PTH + cerminnya
+  + 1 mm, lantai tetap 1,0 mm, boss PCB utama tetap). Bawah tetap rata, 0 tabrakan, kaki THT ke dinding kantong
+  0,6 → 0,9 mm, sasis 33,6 → 29,8 g. README, viewer, CLAUDE.md ikut.
 
 ## 24/11/2026
 - **LFM X1: toleransi velg + ban dinaikkan** (hasil cetak pertama user: lubang untuk as motor tidak bisa masuk dan

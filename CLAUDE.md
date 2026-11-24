@@ -148,7 +148,7 @@ memakai pin map yang sama.
   tetap USB-C di robot, harga pack, label 5.000 mAh vs batas 4.000 mAh guidebook, ukuran lubang modul OLED (belum
   diukur). Model dirakit skrip dari mesh v16 (CadQuery tidak ada di laptop); belum ada STEP.
 - **Badan cetak X1** (`mechanical/cetak-x1/`, 22/11, permintaan user "siapkan file 3d ... untuk badannya"): STL siap
-  cetak dari konsep v18 untuk **Bambu Lab A1** milik user (PLA/PETG/TPU): sasis (bawah rata, kantong THT/encoder buntu dari atas, 22/11; **kantong THT tetap dipakai, dikonfirmasi user 25/11**) + dudukan motor/pack, 2 tutup klem
+  cetak dari konsep v18 untuk **Bambu Lab A1** milik user (PLA/PETG/TPU): sasis (bawah rata, kantong THT/encoder buntu dari atas, 22/11; **25/11 kantong THT jadi satu kantong polos simetris**, permintaan user) + dudukan motor/pack, 2 tutup klem
   motor (M3 × 16), rangka interface, velg Ø34 × 18 **5 jari-jari Y** (gaya velg forged, permintaan user) + ban TPU (**24/11 cetakan pertama: lubang D
   as terlalu sesak, ban tidak bisa dipasang → lubang Ø3,4 / sisi rata 1,2, Ø dalam ban 28,0, flens dalam landai**), skid
   sensor + 2 spacer, 2 potongan uji (dudukan motor,
