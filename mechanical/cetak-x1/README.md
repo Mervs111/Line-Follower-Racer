@@ -36,6 +36,11 @@ Baut: 4 × M3 × 30 kepala benam + mur (PCB utama + rangka, dari bawah sasis, bu
 klem, butuh 14,8), 2 × M3 × 10 + mur (PCB sensor, kepala di atas hidung sasis, mur di skid, butuh 9,6), 4 × sekrup
 M2 × 6 (board interface), strap velcro 16 mm ±15 cm.
 
+## Keputusan 25/11
+
+- Kantong THT buntu di atas sasis (bentuknya mirip jalur PCB) **tetap dipakai** (jawaban user; opsi lain: dihapus
+  dengan syarat ekor kaki THT dipotong ≤ 1,5 mm, atau PCB utama dinaikkan 1 mm). STL sasis tidak berubah.
+
 ## Revisi 24/11 (hasil cetak pertama user)
 
 - **Lubang D velg terlalu sesak** (as N20 tidak bisa masuk): Ø3,1 / sisi rata 1,05 (kelonggaran nominal 0,05) →

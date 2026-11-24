@@ -4,6 +4,11 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 25/11/2026
+- Pertanyaan user soal "bolong-bolong seperti jalur PCB" di sasis X1: itu kantong buntu 1 mm dari atas untuk ekor kaki
+  THT PCB utama (PCB hanya 3 mm di atas sasis); dicek dari STL, bawah sasis rata, yang tembus hanya lubang baut,
+  kantong mur, dan celah strap. **User memilih tetap dicetak apa adanya**; STL tidak berubah.
+
 ## 24/11/2026
 - **LFM X1: toleransi velg + ban dinaikkan** (hasil cetak pertama user: lubang untuk as motor tidak bisa masuk dan
   terlalu sesak, ban TPU tidak bisa dipasang ke velg). Lubang D velg Ø3,1 / sisi rata 1,05 → **Ø3,4 / sisi rata
