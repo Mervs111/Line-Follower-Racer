@@ -18,8 +18,8 @@ blok (user extension Mind+). Target lomba: IARC XII Smart Robotics (9–10/01/20
 | Skematik PCB utama | **Selesai**: 21 komponen, ERC 0, netlist dicek terhadap pin map | `hardware/pcb-utama/pcb-utama.kicad_sch`, PDF `pcb-utama-skematik.pdf` |
 | Layout PCB utama | **Routing pertama selesai** (22/10): bentuk "mobil F1" 100 × 127 mm, semua net tersambung, GND pour 2 sisi. Masih ada 11 error DRC dari footprint Q1 dan SW1 (lihat di bawah) | `hardware/pcb-utama/` (+ `README.md`) |
 | Mekanik | Model 3D **v16**: PCB sensor rev B + PCB utama F1, 0 tabrakan. Body 3D print belum masuk RAB | `mechanical/` |
-| Firmware | **Belum mulai** (M0). `Pins.h` dan `platformio.ini` masih untuk ESP32-S3 lama | `firmware/` |
-| Extension Mind+ | Belum mulai (M6) | `mindplus-ext/` |
+| Firmware | **M0–M5 + path planning + menu OLED ditulis 28/11**, build tanpa warning di core 2.0.17 dan 4.0.0. **Belum dites di robot** (barang belum ada); urutan tes di `docs/firmware-uji.md` | `firmware/` |
+| Extension Mind+ | **M6–M7 ditulis 28/11** (Mind+ V2, 29 blok, 4 contoh program yang sudah dicek bisa dikompilasi). Belum dibangun dengan builder resmi dan belum dicoba di Mind+ | `mindplus-ext/`, `docs/panduan-blok.md` |
 
 ### Lihat hasilnya (artifact claude.ai)
 
@@ -67,12 +67,13 @@ PCB dipesan **paling lambat minggu 10**, prototipe jalan 3× berturut-turut untu
 - [ ] Info printer 3D lab → body 3D print (cover, bumper, dudukan motor & baterai, sayap) masuk RAB atau tidak.
 - [ ] Sinkronkan `docs/perhitungan-motor.md` dengan charter (≥ 0,5 m/s) dan roda Ø34.
 
-### 4. Firmware (mulai sesudah komponen ada)
+### 4. Firmware
 
-- [ ] Perbarui `firmware/lib/LineFollower/src/Pins.h` ke pin map ESP32 DevKit (tabel di `CLAUDE.md`) dan
-      `platformio.ini` ke board ESP32 DevKit.
-- [ ] Kerjakan milestone M0 → M7 berurutan (lihat [Progres firmware](#progres-firmware)). Tiap milestone dites di
-      hardware dulu sebelum lanjut. Sementara PCB belum datang, tes di breadboard (pinjam lab).
+- [x] `Pins.h` dan `platformio.ini` ke ESP32 DevKit (28/11).
+- [x] Kode M0–M7 ditulis (28/11), lihat [Progres firmware](#progres-firmware).
+- [ ] Tes di robot berurutan mengikuti `docs/firmware-uji.md` (Merv), lalu perbaiki dari hasil tes. Konstanta yang
+      harus diukur ada di tabel terakhir panduan itu. Sementara PCB belum datang, bisa di breadboard (pinjam lab).
+- [ ] Bangun extension dengan builder resmi dan coba di Mind+ V2 (`mindplus-ext/README.md`).
 
 ### 5. Dokumen PjBL
 
@@ -127,18 +128,25 @@ Arsitektur perangkat lunak 3 lapis:
 
 ```bash
 cd firmware
-pio run            # compile
+pio run            # compile (env x1 = Arduino-ESP32 core 2.x)
 pio run -t upload  # flash
-pio device monitor # serial 115200
+pio device monitor # serial 115200, ketik "help"
 ```
 
+Env `x1_terbaru` (core 3.x/4.x, pioarduino) dipakai untuk mengecek kompatibilitas; jalankan dari PowerShell, bukan
+Git Bash.
+
 ## Progres firmware
+
+Semua milestone sudah **ditulis dan lolos build** (28/11/2026), tapi **belum ada yang dites di robot**. Centang
+diisi sesudah lulus tes di hardware (`docs/firmware-uji.md`).
 
 - [ ] M0: setup PlatformIO, serial jalan, tanda hidup lewat OLED/buzzer
 - [ ] M1: driver motor + perintah serial `m <kiri> <kanan>`
 - [ ] M2: baca 12 sensor mentah lewat mux, stream ke serial
 - [ ] M3: kalibrasi + posisi + simpan/muat NVS
 - [ ] M4: PID `follow()` + tuning lewat serial
-- [ ] M5: persimpangan, tombol, buzzer, baterai + peringatan baterai lemah
-- [ ] M6: extension Mind+
-- [ ] M7: contoh program + panduan blok
+- [ ] M5: persimpangan, tombol, buzzer, baterai + peringatan baterai lemah; path planning per indeks, gerak
+      terukur encoder, rute terpendek, menu OLED
+- [ ] M6: extension Mind+ V2 (`mindplus-ext/`)
+- [ ] M7: contoh program + panduan blok (`mindplus-ext/contoh/`, `docs/panduan-blok.md`)

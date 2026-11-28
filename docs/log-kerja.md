@@ -4,6 +4,25 @@ Catatan apa yang dikerjakan tiap hari di repo (oleh user dan Claude Code), diran
 logbook utama (`docs/logbook/logbook-utama.md`); logbook itu tetap hanya diisi kegiatan tim yang benar-benar terjadi.
 Entri terbaru di atas.
 
+## 28/11/2026
+- **Program robot LFM X1 ditulis semua** (permintaan user, deadline ±2 minggu; jawaban user: firmware lengkap + blok
+  Mind+, barang belum ada, tulis M0–M5 sekaligus, Mind+ V2). Semua **lolos build tanpa warning** di Arduino-ESP32 core
+  2.0.17 (env `x1`) dan 4.0.0 (env `x1_terbaru`); **belum ada yang dites di robot**.
+  - M0–M5 (`firmware/`): `Pins.h` + `platformio.ini` ke ESP32 DevKit X1, baca 12 sensor lewat mux, kalibrasi min/max
+    ke NVS, posisi −1000..+1000 dari koordinat busur rev B, PID `follow()` 1 kHz, motor TB6612 20 kHz + kompensasi
+    tegangan, encoder PCNT, persimpangan/cabang, 5 tombol tangga resistor, buzzer, baterai + peringatan lemah.
+  - Path planning per indeks (`LfRoute.cpp`, port `Controller` simulasi): pemicu persimpangan/kiri/kanan/kiri+kanan/
+    ujung/langsung, aksi lurus/kiri/kanan/putar balik/berhenti, belok diukur encoder lalu dikunci sensor, maju mm,
+    putar derajat, rute terpendek grid (Dijkstra, belok paling sedikit).
+  - Program bawaan: menu OLED dari simulasi Wokwi (pilih rute, kalibrasi, lihat sensor, atur PID, tes motor, info),
+    perintah serial untuk tes, 5 contoh rute (termasuk rute slide 8 yang lulus CoppeliaSim).
+  - `docs/firmware-uji.md`: urutan tes di robot untuk Merv + daftar konstanta yang harus diukur (arah motor/encoder,
+    PPR encoder, diameter roda, jarak roda, tegangan baterai, tombol).
+  - M6 `mindplus-ext/`: extension **Mind+ V2** 29 blok bahasa Indonesia, format dari builder + dokumentasi resmi
+    DFRobot; `build.js` menyalin library dari `firmware/lib`. Build lewat builder ditolak pengaman Claude Code di
+    laptop → dijalankan user. Belum dicoba di Mind+.
+  - M7: 4 contoh program blok (`mindplus-ext/contoh/`, dibuat dari `func.js` dan dicek kompilasi) + `docs/panduan-blok.md`.
+
 ## 25/11/2026
 - Pertanyaan user soal "bolong-bolong seperti jalur PCB" di sasis X1: itu kantong buntu 1 mm dari atas untuk ekor kaki
   THT PCB utama (PCB hanya 3 mm di atas sasis); dicek dari STL, bawah sasis rata, yang tembus hanya lubang baut,

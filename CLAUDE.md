@@ -38,7 +38,7 @@ Program onsite pakai **Ardublock** (wajib di Day 2), belum dibahas terhadap renc
   09/10: belok 90° di persimpangan pakai selisih encoder lalu dikunci ke garis oleh sensor). **Tanpa MCP23017/LED
   indikator**. I2C hanya untuk OLED.
 
-### Pin ESP32 (dari `docs/skematik-v1.md`, 13/10; `firmware/Pins.h` masih peta S3 lama → wajib diperbarui)
+### Pin ESP32 (dari `docs/skematik-v1.md`, 13/10; sudah di `firmware/lib/LineFollower/src/Pins.h` sejak 28/11)
 | Fungsi | GPIO | | Fungsi | GPIO |
 |---|---|---|---|---|
 | MUX_SIG (ADC1) | 36 | | TB6612 PWMA / AIN1 / AIN2 | 18 / 5 / 17 |
@@ -173,7 +173,7 @@ odejs` ke PATH.
   (0,10 kg·cm) per roda, massa ±0,29 kg (desain 0,30), daya 3,1–4,1 W, baterai 3,3–6,5 jam, rangkaian. Rekomendasi:
   MP1584 5,35 V (kompensasi dioda D1), 100 nF di GPIO39, PWM kompensasi 6,0/V_bat, encoder via PCNT; cek listing motor.
 - Belum ikut rancangan terkini: `docs/skematik-v1.md`, `docs/minsys-v1.md`, `docs/gen_rab_pemeliharaan.py`,
-  generator `hardware/tools/`, `firmware/Pins.h`, `README.md` bagian firmware.
+  generator `hardware/tools/`.
 
 ### Visual (artifact claude.ai)
 - Wiring diagram per blok: https://claude.ai/artifact/Enb11oGXVb5YkwQmU6DhJY (sumber `docs/wiring-diagram.html`;
@@ -265,6 +265,10 @@ odejs` ke PATH.
 - 16/11: user memindah file X2 sendiri (driver J2/J3 siku) dan menilai routing papan utama jelek → **ESP32 di tengah,
   antena depan**, Claude merouting ulang, kabel sensor **JST XH 8** (jawaban AskUserQuestion). Lalu: "WES PAKE QRE AJA
   ... ROUTING SEMUA PCB SEKARANG" → sensor X2 = **12× QRE1113GR**, keempat papan dirouting Claude.
+- 28/11: user minta program dibuat sekarang (deadline ±2 minggu). Jawaban AskUserQuestion: target **firmware lengkap +
+  blok Mind+**, barang X1 belum ada, **tulis M0–M5 sekaligus** (tes menyusul), **Mind+ V2**. Firmware M0–M5 + path
+  planning per indeks (port `Controller` simulasi) + menu OLED (port simulasi Wokwi) + extension Mind+ (M6) + contoh
+  dan panduan blok (M7) ditulis Claude; semua lolos build, belum dites di robot.
 
 ## Aturan teknis firmware
 - **Kompatibel dengan Arduino-ESP32 core 2.x DAN 3.x.** API LEDC berubah di 3.0 (`ledcSetup/ledcAttachPin` →
@@ -273,34 +277,29 @@ odejs` ke PATH.
 - ADC cuma boleh pakai ADC1, atenuasi 11 dB. Sensor dibaca lewat mux (satu pin SIG).
 - LED IR selalu nyala: tidak ada pembacaan ON/OFF; andalkan kalibrasi min/max.
 - Posisi pakai weighted average dari nilai ternormalisasi 0–1000. Kalau garis hilang, return nilai ujung sesuai sisi
-  terakhir. Rentang posisi untuk 12 sensor (dan apakah memakai koordinat busur rev B) belum diputuskan.
+  terakhir. Rentang posisi **−1000..+1000 (+ = garis di kanan robot)** dari rata-rata berbobot koordinat x busur
+  rev B (`SENSOR_X_CMM` di `RobotConfig.h`); dipilih Claude 28/11, belum dikonfirmasi user.
 - `follow()` jalan di rate tetap (mis. 1 kHz, cek pakai `micros()`). Kalau dipanggil lebih cepat, langsung return.
   Nggak boleh ada `delay()`.
 - Nggak pakai `String` dan alokasi dinamis di loop.
 - Semua dokumentasi dan komentar dalam Bahasa Indonesia, nama kode tetap bahasa Inggris.
-- `platformio.ini` masih untuk ESP32-S3 (board `esp32-s3-devkitc-1`, USB CDC); susun ulang untuk ESP32 DevKit
-  sebelum milestone firmware pertama.
+- `platformio.ini` (28/11): env `x1` (default, espressif32@^6.9.0 = Arduino core 2.0.17) dan `x1_terbaru`
+  (pioarduino stable, core 4.0.0; jalankan dari **PowerShell**, Git Bash ditolak; build pertama kadang gagal
+  "TypeError ... NoneType", ulangi). Keduanya wajib lolos tanpa warning. `build_src_flags` tidak mencakup library:
+  cek warning library dengan `PLATFORMIO_BUILD_FLAGS="-Wall -Wextra"` sesudah menghapus `.pio/build/x1/lib*`.
 
-### API library (target, dari rancangan 8 sensor; sesuaikan ke 12 sensor)
-```cpp
-void begin();
-void calibrate(uint16_t durationMs = 3000); // simpan min/max ke NVS (Preferences)
-bool loadCalibration();
-void readRaw(uint16_t out[]);                // nilai mentah tiap sensor
-int  position();                             // 0 = tengah
-bool lineDetected();
-bool junction();                             // sebagian besar sensor lihat garis
-void setLineColor(bool blackOnWhite);
-void motor(int left, int right);             // -255..255
-void stop();
-void follow(int speed, float kp, float kd);  // 1 langkah PID, non-blocking
-float batteryVoltage();
-void beep(uint16_t ms);
-void led(uint8_t r, uint8_t g, uint8_t b);   // WS2812 belum ada di rancangan sekarang
-bool buttonPressed(uint8_t id);
-```
+### API library
+Sumber kebenaran: `firmware/lib/LineFollower/src/LineFollower.h` (sensor, kalibrasi NVS, posisi, cabang/persimpangan,
+motor + kompensasi tegangan, encoder PCNT, `follow()`, rute per indeks `routeBegin/routeUpdate` untuk menu dan
+`runIndex()` menunggu untuk blok, `forwardMm/turnDegrees/turnToLine`, `planGridRoute/runShortestRoute`, buzzer,
+tombol, baterai). Konstanta di `RobotConfig.h`; yang bertanda (UKUR) wajib diukur di robot. Program bawaan
+(`firmware/src/`): menu OLED (`Ui.cpp`), perintah serial (`Console.cpp`), rute contoh (`Routes.cpp`). Tidak ada
+`led()` (WS2812 tidak di rancangan).
 
 ### Milestone (kerjakan berurutan, 1 milestone = 1 commit)
+**28/11: M0–M7 sudah ditulis dan lolos build** (keputusan user: tulis semuanya sekarang karena barang X1 belum ada,
+deadline ±2 minggu), **belum ada yang dites di hardware**. Urutan tes + konstanta yang harus diukur:
+`docs/firmware-uji.md`. Centang diisi sesudah lulus tes Merv; perbaikan dari hasil tes.
 - [ ] M0: setup PlatformIO, serial jalan, blink (WS2812 belum ada di rancangan; pakai OLED/buzzer)
 - [ ] M1: driver motor + perintah serial `m <kiri> <kanan>`
 - [ ] M2: baca sensor mentah lewat mux, stream ke serial
@@ -311,18 +310,25 @@ bool buttonPressed(uint8_t id);
 - [ ] M7: contoh program + `docs/` panduan pemakaian blok
 
 ### Catatan extension Mind+
-- **Cek dulu format user extension Mind+ dari dokumentasi resmi DFRobot** sebelum nulis (struktur config, definisi
-  blok, generator, folder library C++). Jangan nebak formatnya.
-- Daftar blok: `inisialisasi robot`, `kalibrasi sensor`, `muat kalibrasi`, `posisi garis`, `garis terdeteksi?`,
-  `ada persimpangan?`, `warna garis [hitam/putih]`, `ikuti garis kecepatan () Kp () Kd ()`, `motor kiri () kanan ()`,
-  `stop`, `tegangan baterai`, `bunyi () ms`, `LED R G B`, `tombol [A/B] ditekan?`
+- **Mind+ V2** (jawaban user 28/11). Format diambil dari builder resmi https://gitee.com/mind-plus/mindplus-ext2-builder
+  (`examples/example-upload-module`) + dokumentasi https://mindplus.dfrobot.com.cn/mp2/Extensions/: `index.js`
+  (`getInfo()`: blocks + menus, `'---'` = pemisah), `func.js` (method per opcode; `generator.addInclude/addObject/
+  addSetup(id, code, prioritas 0–9, 9 paling awal)`; blok perintah return string, reporter return `[kode, ORDER]`),
+  `public/config.json` (`mode: upload`, papan `dev-DFRobot-Esp32`), library non-resmi di `public/libraries/`.
+  Dokumentasi **tidak** menyebut versi core ESP32 Mind+ dan bentuk `parameter.X.code` (dianggap nilai apa adanya,
+  dari contoh resmi). Mode pengembang Mind+ mematikan simpan proyek. Muat: Mind+ ≥ 2.0.7, mode pengembang,
+  "muat ekstensi uji", pilih `config.json`.
+- Extension di `mindplus-ext/lfm-x1/` (29 blok, teks Indonesia, daftar di `docs/panduan-blok.md`), build
+  `node mindplus-ext/build.js <folder builder>` (menyalin library dari `firmware/lib`). Menjalankan builder di laptop
+  ditolak pengaman Claude Code (28/11) → user menjalankan sendiri. Contoh `.ino` dibuat `mindplus-ext/uji/gen_contoh.mjs`
+  dari `func.js` dan dicek kompilasi dengan `pio ci`.
 
 ## Struktur repo
 ```
 Line-Follower-Racer/
 ├── CLAUDE.md
 ├── firmware/        proyek PlatformIO (lib/LineFollower/src/{LineFollower.h,.cpp, Pins.h}, src/main.cpp)
-├── mindplus-ext/    extension Mind+ (belum dimulai)
+├── mindplus-ext/    extension Mind+ V2 (lfm-x1/, contoh/, build.js; lihat README di sana)
 ├── hardware/        KiCad: sensor-garis/ (PCB sensor), pcb-utama/ (PCB utama baru), board-interface/, lfm-x2/ (side
 │                    project all-in-one), ltm-main/ (v2 lama), tools/
 ├── mechanical/      model 3D v16 (CadQuery, STEP, DXF, STL, render)
