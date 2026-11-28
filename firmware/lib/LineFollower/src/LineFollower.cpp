@@ -17,17 +17,90 @@ void LineFollower::beep(uint16_t ms) {
   esp_timer_start_once(buzzerTimer, (uint64_t)ms * 1000ULL);
 }
 
+// ==================================================================== motor (TB6612FNG)
+// PWM LEDC 20 kHz 8 bit. Core 3.x memakai nomor pin, core 2.x memakai nomor kanal.
+static constexpr uint8_t PWM_CH_LEFT = 0;
+static constexpr uint8_t PWM_CH_RIGHT = 1;
+
+static void pwmInit(uint8_t pin, uint8_t ch) {
+#if LF_CORE3
+  (void)ch;
+  ledcAttach(pin, Config::PWM_FREQ_HZ, Config::PWM_BITS);
+#else
+  ledcSetup(ch, Config::PWM_FREQ_HZ, Config::PWM_BITS);
+  ledcAttachPin(pin, ch);
+#endif
+}
+
+static void pwmWrite(uint8_t pin, uint8_t ch, uint32_t duty) {
+#if LF_CORE3
+  (void)ch;
+  ledcWrite(pin, duty);
+#else
+  (void)pin;
+  ledcWrite(ch, duty);
+#endif
+}
+
+// Satu kanal TB6612: IN1/IN2 menentukan arah, PWM besarnya. v == 0 -> IN1 = IN2 = HIGH = rem.
+static void driveChannel(uint8_t in1, uint8_t in2, uint8_t pwmPin, uint8_t ch, int v) {
+  if (v > 0) {
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+  } else if (v < 0) {
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+  } else {
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, HIGH);
+  }
+  pwmWrite(pwmPin, ch, (uint32_t)abs(v));
+}
+
+void LineFollower::driveRaw(int left, int right) {
+  if (Config::MOTOR_L_INVERT) left = -left;
+  if (Config::MOTOR_R_INVERT) right = -right;
+  left = constrain(left, -255, 255);
+  right = constrain(right, -255, 255);
+  driveChannel(Pins::MOTOR_AIN1, Pins::MOTOR_AIN2, Pins::MOTOR_PWMA, PWM_CH_LEFT, left);
+  driveChannel(Pins::MOTOR_BIN1, Pins::MOTOR_BIN2, Pins::MOTOR_PWMB, PWM_CH_RIGHT, right);
+  if (!motorsEnabled_) {
+    digitalWrite(Pins::MOTOR_STBY, HIGH);
+    motorsEnabled_ = true;
+  }
+}
+
+void LineFollower::motor(int left, int right) {
+  lastLeft_ = constrain(left, -255, 255);
+  lastRight_ = constrain(right, -255, 255);
+  driveRaw(lastLeft_, lastRight_);
+}
+
+void LineFollower::stop() { motor(0, 0); }
+
+void LineFollower::release() {
+  driveChannel(Pins::MOTOR_AIN1, Pins::MOTOR_AIN2, Pins::MOTOR_PWMA, PWM_CH_LEFT, 0);
+  driveChannel(Pins::MOTOR_BIN1, Pins::MOTOR_BIN2, Pins::MOTOR_PWMB, PWM_CH_RIGHT, 0);
+  digitalWrite(Pins::MOTOR_STBY, LOW);
+  motorsEnabled_ = false;
+  lastLeft_ = lastRight_ = 0;
+}
+
 // ==================================================================== begin
 void LineFollower::begin() {
-  // Motor mati dulu: STBY LOW, semua input driver LOW (coast)
+  // Motor mati dulu: STBY LOW, arah LOW, PWM 0
   pinMode(Pins::MOTOR_STBY, OUTPUT);
   digitalWrite(Pins::MOTOR_STBY, LOW);
-  const uint8_t motorPins[] = {Pins::MOTOR_AIN1, Pins::MOTOR_AIN2, Pins::MOTOR_BIN1, Pins::MOTOR_BIN2,
-                               Pins::MOTOR_PWMA, Pins::MOTOR_PWMB};
-  for (uint8_t p : motorPins) {
+  motorsEnabled_ = false;
+  const uint8_t dirPins[] = {Pins::MOTOR_AIN1, Pins::MOTOR_AIN2, Pins::MOTOR_BIN1, Pins::MOTOR_BIN2};
+  for (uint8_t p : dirPins) {
     pinMode(p, OUTPUT);
     digitalWrite(p, LOW);
   }
+  pwmInit(Pins::MOTOR_PWMA, PWM_CH_LEFT);
+  pwmInit(Pins::MOTOR_PWMB, PWM_CH_RIGHT);
+  pwmWrite(Pins::MOTOR_PWMA, PWM_CH_LEFT, 0);
+  pwmWrite(Pins::MOTOR_PWMB, PWM_CH_RIGHT, 0);
 
   // Buzzer
   pinMode(Pins::BUZZER, OUTPUT);

@@ -24,7 +24,21 @@ class LineFollower {
   // Inisialisasi semua pin. Panggil sekali di setup(). Motor tetap mati (STBY LOW) sampai motor() dipanggil.
   void begin();
 
+  // ---------------------------------------------------------------- motor
+  // Kecepatan motor kiri dan kanan -255..255 (+ = maju, 0 = rem). Arah tiap motor bisa dibalik di RobotConfig.h.
+  void motor(int left, int right);
+  // Rem kedua motor (short brake TB6612).
+  void stop();
+  // Lepas kedua motor (STBY LOW, roda bebas). motor() berikutnya menyalakan lagi.
+  void release();
+
   // ---------------------------------------------------------------- buzzer
   // Bunyikan buzzer selama ms milidetik. Tidak menunggu: buzzer dimatikan oleh timer.
   void beep(uint16_t ms);
+
+ private:
+  void driveRaw(int left, int right);
+
+  bool motorsEnabled_ = false;
+  int lastLeft_ = 0, lastRight_ = 0;
 };
