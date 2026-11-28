@@ -1,6 +1,7 @@
 // LineFollower.cpp — implementasi library LFM X1. Penjelasan tiap fungsi ada di LineFollower.h.
 #include "LineFollower.h"
 
+#include <Preferences.h>
 #include <esp_timer.h>
 
 // ==================================================================== buzzer
@@ -32,6 +33,159 @@ void LineFollower::readRaw(uint16_t out[]) {
     delayMicroseconds(Config::MUX_SETTLE_US);  // beberapa us saja, bukan delay() ms
     out[i] = analogRead(Pins::MUX_SIG);
   }
+}
+
+// ==================================================================== kalibrasi (min/max mentah, NVS)
+static const char* const NVS_NAMESPACE = "lfm";
+
+void LineFollower::calibrationStart() {
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    workMin_[i] = 4095;
+    workMax_[i] = 0;
+  }
+}
+
+void LineFollower::calibrationUpdate() {
+  readRaw(raw_);
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    if (raw_[i] < workMin_[i]) workMin_[i] = raw_[i];
+    if (raw_[i] > workMax_[i]) workMax_[i] = raw_[i];
+  }
+  // tampilan bar tetap hidup selama kalibrasi: normalisasi dengan rentang yang sedang dikumpulkan
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    int32_t range = (int32_t)workMax_[i] - workMin_[i];
+    int32_t v = range > 0 ? ((int32_t)raw_[i] - workMin_[i]) * 1000 / range : 0;
+    val_[i] = (uint16_t)constrain(v, 0, 1000);
+  }
+}
+
+bool LineFollower::calibrationFinish(bool save) {
+  // Sensor yang rentangnya cukup memakai hasil baru; yang gagal tetap memakai nilai lama.
+  calBadMask_ = 0;
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    if (workMax_[i] > workMin_[i] && workMax_[i] - workMin_[i] >= Config::MIN_CAL_RANGE) {
+      calMin_[i] = workMin_[i];
+      calMax_[i] = workMax_[i];
+    } else {
+      calBadMask_ |= (uint16_t)(1u << i);
+    }
+  }
+  calibrated_ = (calBadMask_ == 0);
+  if (calibrated_ && save) saveCalibration();
+  haveRead_ = false;  // bacaan berikutnya memakai kalibrasi baru
+  return calibrated_;
+}
+
+bool LineFollower::calibrate(uint16_t durationMs, bool spin) {
+  calibrationStart();
+  uint32_t t0 = millis();
+  for (;;) {
+    uint32_t t = millis() - t0;
+    if (t >= durationMs) break;
+    if (spin) {
+      // ayun: kanan 1 bagian, kiri 2 bagian, kanan 1 bagian -> kembali ke arah awal tiap siklus
+      uint32_t phase = (t / Config::CAL_SWING_MS) % 4;
+      int dir = (phase == 0 || phase == 3) ? 1 : -1;
+      motor(dir * Config::CAL_SPIN_PWM, -dir * Config::CAL_SPIN_PWM);
+    }
+    calibrationUpdate();
+    yield();
+  }
+  if (spin) stop();
+  return calibrationFinish(true);
+}
+
+bool LineFollower::saveCalibration() {
+  Preferences prefs;
+  if (!prefs.begin(NVS_NAMESPACE, false)) return false;
+  size_t a = prefs.putBytes("cmin", calMin_, sizeof(calMin_));
+  size_t b = prefs.putBytes("cmax", calMax_, sizeof(calMax_));
+  prefs.end();
+  return a == sizeof(calMin_) && b == sizeof(calMax_);
+}
+
+bool LineFollower::loadCalibration() {
+  Preferences prefs;
+  if (!prefs.begin(NVS_NAMESPACE, true)) return false;  // namespace belum ada = belum pernah kalibrasi
+  uint16_t mn[SENSOR_COUNT], mx[SENSOR_COUNT];
+  bool ok = prefs.getBytesLength("cmin") == sizeof(mn) && prefs.getBytesLength("cmax") == sizeof(mx) &&
+            prefs.getBytes("cmin", mn, sizeof(mn)) == sizeof(mn) && prefs.getBytes("cmax", mx, sizeof(mx)) == sizeof(mx);
+  prefs.end();
+  if (!ok) return false;
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    if (mx[i] <= mn[i] || mx[i] - mn[i] < Config::MIN_CAL_RANGE) return false;
+  }
+  memcpy(calMin_, mn, sizeof(mn));
+  memcpy(calMax_, mx, sizeof(mx));
+  calibrated_ = true;
+  calBadMask_ = 0;
+  haveRead_ = false;
+  return true;
+}
+
+// ==================================================================== garis & posisi
+void LineFollower::setLineColor(bool blackOnWhite) {
+  blackLine_ = blackOnWhite;
+  haveRead_ = false;
+}
+
+void LineFollower::readSensors() {
+  readRaw(raw_);
+  lastReadUs_ = micros();
+  haveRead_ = true;
+
+  int32_t num = 0;  // jumlah nilai x posisi x (0,01 mm)
+  int32_t den = 0;
+  uint16_t pattern = 0;
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    int32_t range = (int32_t)calMax_[i] - calMin_[i];
+    int32_t v = range > 0 ? ((int32_t)raw_[i] - calMin_[i]) * 1000 / range : 0;
+    v = constrain(v, 0, 1000);
+    if (!blackLine_) v = 1000 - v;  // garis putih: yang terang jadi 1000
+    val_[i] = (uint16_t)v;
+    if (v >= Config::LINE_THRESHOLD) pattern |= (uint16_t)(1u << i);
+    if (v > Config::NOISE_FLOOR) {
+      num += v * Config::SENSOR_X_CMM[i];
+      den += v;
+    }
+  }
+  pattern_ = pattern;
+
+  if (den < Config::LOST_SUM) {
+    lineSeen_ = false;
+    position_ = lastSeenPos_ >= 0 ? 1000 : -1000;
+  } else {
+    const int32_t xOuter = Config::SENSOR_X_CMM[SENSOR_COUNT - 1];
+    int32_t p = (num / den) * 1000 / xOuter;
+    position_ = (int)constrain(p, -1000, 1000);
+    lastSeenPos_ = position_;
+    lineSeen_ = true;
+  }
+}
+
+void LineFollower::refreshSensors() {
+  if (!haveRead_ || (uint32_t)(micros() - lastReadUs_) >= Config::SENSOR_CACHE_US) readSensors();
+}
+
+uint16_t LineFollower::sensorValue(uint8_t n) {
+  if (n < 1 || n > SENSOR_COUNT) return 0;
+  refreshSensors();
+  return val_[n - 1];
+}
+
+uint16_t LineFollower::sensorPattern() {
+  refreshSensors();
+  return pattern_;
+}
+
+int LineFollower::position() {
+  refreshSensors();
+  return position_;
+}
+
+bool LineFollower::lineDetected() {
+  refreshSensors();
+  return lineSeen_;
 }
 
 // ==================================================================== motor (TB6612FNG)
@@ -129,6 +283,14 @@ void LineFollower::begin() {
   analogSetPinAttenuation(Pins::MUX_SIG, ADC_11db);
   analogSetPinAttenuation(Pins::VBAT_SENSE, ADC_11db);
   analogSetPinAttenuation(Pins::BUTTONS, ADC_11db);
+
+  // Kalibrasi bawaan sebelum ada data: rentang ADC penuh. Lalu coba muat hasil kalibrasi terakhir dari NVS.
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    calMin_[i] = 0;
+    calMax_[i] = 4095;
+  }
+  calibrated_ = false;
+  loadCalibration();
 
   // Buzzer
   pinMode(Pins::BUZZER, OUTPUT);

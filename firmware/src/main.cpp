@@ -1,6 +1,7 @@
 // main.cpp — test harness LFM X1: perintah serial + layar OLED.
 // M0: serial jalan, OLED menyala dengan titik berkedip, buzzer bunyi saat start.
 // M1: motor lewat perintah serial "m <kiri> <kanan> [ms]".
+// M2: "raw" stream sensor mentah. M3: "cal", "pos", "muat", "warna".
 #include <Arduino.h>
 #include <LineFollower.h>
 #include <U8g2lib.h>
@@ -15,7 +16,7 @@ SerialCommand cmd;
 uint32_t motorStopAt = 0;  // 0 = motor jalan terus sampai "stop"
 
 // Data yang dikirim terus ke serial tiap 100 ms (perintah yang sama sekali lagi = berhenti)
-enum StreamMode : uint8_t { STREAM_NONE, STREAM_RAW };
+enum StreamMode : uint8_t { STREAM_NONE, STREAM_RAW, STREAM_POS };
 StreamMode streamMode = STREAM_NONE;
 
 static void toggleStream(StreamMode m) {
@@ -31,9 +32,27 @@ static void printStream() {
       for (uint8_t i = 0; i < LineFollower::SENSOR_COUNT; i++) Serial.printf("%4u ", v[i]);
       Serial.println();
       break;
+    case STREAM_POS: {
+      int pos = robot.position();
+      bool seen = robot.lineDetected();
+      const uint16_t* s = robot.sensorValues();
+      for (uint8_t i = 0; i < LineFollower::SENSOR_COUNT; i++) Serial.printf("%4u ", s[i]);
+      Serial.printf("| pos %5d %s\n", pos, seen ? "" : "(hilang)");
+      break;
+    }
     default:
       break;
   }
+}
+
+static void printCalibration() {
+  const uint16_t* mn = robot.calibrationMin();
+  const uint16_t* mx = robot.calibrationMax();
+  Serial.print(F("min: "));
+  for (uint8_t i = 0; i < LineFollower::SENSOR_COUNT; i++) Serial.printf("%4u ", mn[i]);
+  Serial.print(F("\nmax: "));
+  for (uint8_t i = 0; i < LineFollower::SENSOR_COUNT; i++) Serial.printf("%4u ", mx[i]);
+  Serial.printf("\nterkalibrasi: %s\n", robot.isCalibrated() ? "ya" : "BELUM");
 }
 
 // ---------------------------------------------------------------- perintah serial
@@ -47,6 +66,11 @@ static void printHelp() {
   Serial.println(F("  stop            rem motor (Enter kosong tidak menghentikan; ketik stop)"));
   Serial.println(F("  lepas           lepas motor (roda bebas)"));
   Serial.println(F("  raw             stream 12 nilai mentah S1..S12 (0-4095, gelap = besar); raw lagi = berhenti"));
+  Serial.println(F("  cal [ms] [putar] kalibrasi (default 3000 ms, geser robot dengan tangan; putar = robot berayun)"));
+  Serial.println(F("  calshow         tampilkan min/max kalibrasi"));
+  Serial.println(F("  muat            muat kalibrasi dari NVS"));
+  Serial.println(F("  pos             stream nilai 0-1000 + posisi garis (-1000..1000); pos lagi = berhenti"));
+  Serial.println(F("  warna hitam|putih  warna garis"));
 }
 
 static void handleCommand(int argc, char** argv) {
@@ -72,6 +96,29 @@ static void handleCommand(int argc, char** argv) {
     motorStopAt = 0;
   } else if (!strcmp(c, "raw")) {
     toggleStream(STREAM_RAW);
+  } else if (!strcmp(c, "cal")) {
+    uint16_t ms = argc > 1 ? (uint16_t)atoi(argv[1]) : 3000;
+    bool spin = argc > 2 && !strcmp(argv[2], "putar");
+    Serial.printf("kalibrasi %u ms%s...\n", ms, spin ? " (robot berayun)" : ", geser robot melintasi garis");
+    robot.beep(60);
+    bool ok = robot.calibrate(ms, spin);
+    robot.beep(ok ? 60 : 400);
+    if (!ok) {
+      Serial.print(F("GAGAL, sensor tanpa beda gelap-terang:"));
+      for (uint8_t i = 0; i < LineFollower::SENSOR_COUNT; i++)
+        if (robot.calibrationBadMask() & (1u << i)) Serial.printf(" S%u", i + 1);
+      Serial.println();
+    }
+    printCalibration();
+  } else if (!strcmp(c, "calshow")) {
+    printCalibration();
+  } else if (!strcmp(c, "muat")) {
+    Serial.println(robot.loadCalibration() ? F("kalibrasi dimuat") : F("belum ada kalibrasi di NVS"));
+  } else if (!strcmp(c, "pos")) {
+    toggleStream(STREAM_POS);
+  } else if (!strcmp(c, "warna") && argc > 1) {
+    robot.setLineColor(strcmp(argv[1], "putih") != 0);
+    Serial.println(robot.lineIsBlack() ? F("garis hitam") : F("garis putih"));
   } else {
     Serial.printf("Perintah tidak dikenal: %s (ketik help)\n", c);
   }
@@ -87,7 +134,7 @@ void setup() {
   oled.begin();
 
   robot.beep(80);
-  Serial.println(F("\nLFM X1 siap (M1). Ketik help."));
+  Serial.println(F("\nLFM X1 siap (M3). Ketik help."));
 }
 
 void loop() {

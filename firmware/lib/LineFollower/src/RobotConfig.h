@@ -41,6 +41,8 @@ constexpr uint16_t LINE_THRESHOLD = 500;    // nilai ternormalisasi (0-1000) yan
 constexpr uint16_t NOISE_FLOOR = 150;       // nilai di bawah ini tidak ikut rata-rata posisi
 constexpr uint16_t LOST_SUM = 300;          // jumlah nilai di atas NOISE_FLOOR di bawah ini = garis hilang
 constexpr uint16_t MIN_CAL_RANGE = 100;     // selisih max-min mentah minimal supaya sensor dianggap terkalibrasi
+constexpr uint8_t CAL_SPIN_PWM = 70;        // kecepatan ayun saat kalibrasi otomatis
+constexpr uint16_t CAL_SWING_MS = 150;      // lama tiap seperempat ayunan (kanan, kiri, kiri, kanan) (UKUR)
 
 // ---------------------------------------------------------------- motor
 constexpr uint32_t PWM_FREQ_HZ = 20000;     // aturan firmware: 20 kHz, 8 bit
