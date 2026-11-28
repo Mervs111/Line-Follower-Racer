@@ -20,3 +20,6 @@ simulasi/**/__pycache__/
 
 # dibuat otomatis oleh build pioarduino (env x1_terbaru)
 firmware/src/idf_component.yml*
+
+# hasil build extension Mind+ (mindplus-ext/build.js)
+mindplus-ext/build/

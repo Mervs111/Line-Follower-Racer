@@ -177,6 +177,12 @@ class LineFollower {
   static uint8_t planGridRoute(uint8_t cols, uint8_t rows, uint8_t startX, uint8_t startY, uint8_t heading,
                                uint8_t goalX, uint8_t goalY, const uint8_t* blocked, uint8_t nBlocked,
                                LfStep* out, uint8_t maxSteps, uint8_t speed, uint16_t followMm);
+  // Versi blok: simpul terhalang dikumpulkan dulu (maks 16), lalu runShortestRoute() membuat rute dan
+  // menjalankannya indeks demi indeks dengan runIndex() (menunggu sampai berhenti di tujuan).
+  void clearBlockedNodes() { nBlocked_ = 0; }
+  void blockNode(uint8_t x, uint8_t y);
+  bool runShortestRoute(uint8_t cols, uint8_t rows, uint8_t startX, uint8_t startY, uint8_t heading, uint8_t goalX,
+                        uint8_t goalY, int speed, int followMm = 80);
 
   // ---------------------------------------------------------------- buzzer
   // Bunyikan buzzer selama ms milidetik. Tidak menunggu: buzzer dimatikan oleh timer.
@@ -241,6 +247,8 @@ class LineFollower {
   bool encDead_ = false;
   LfStep single_ = {};
   volatile bool chainWdArmed_ = false;
+  uint8_t blocked_[32] = {};  // pasangan x, y simpul terhalang
+  uint8_t nBlocked_ = 0;
 
   // tombol
   uint8_t btnRaw_ = BTN_NONE;

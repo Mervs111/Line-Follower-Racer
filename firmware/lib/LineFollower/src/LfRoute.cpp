@@ -448,6 +448,31 @@ bool LineFollower::turnToLine(bool left, int speed) {
   return true;
 }
 
+// ==================================================================== rute terpendek untuk blok
+void LineFollower::blockNode(uint8_t x, uint8_t y) {
+  if (nBlocked_ >= sizeof(blocked_) / 2) return;
+  blocked_[2 * nBlocked_] = x;
+  blocked_[2 * nBlocked_ + 1] = y;
+  nBlocked_++;
+}
+
+bool LineFollower::runShortestRoute(uint8_t cols, uint8_t rows, uint8_t startX, uint8_t startY, uint8_t heading,
+                                    uint8_t goalX, uint8_t goalY, int speed, int followMm) {
+  static LfStep steps[64];  // grid maks 8 x 8 = 64 simpul
+  uint8_t n = planGridRoute(cols, rows, startX, startY, heading, goalX, goalY, blocked_, nBlocked_, steps,
+                            sizeof(steps) / sizeof(steps[0]), (uint8_t)constrain(speed, 0, 255),
+                            (uint16_t)constrain(followMm, 0, 65535));
+  if (n == 0) {
+    routeMsg_ = "Tidak ada rute";
+    beep(600);
+    return false;
+  }
+  for (uint8_t i = 0; i < n; i++) {
+    if (!runIndex(steps[i].trigger, steps[i].action, steps[i].speed, steps[i].followMm, false)) return false;
+  }
+  return true;
+}
+
 // ==================================================================== rute terpendek grid (Dijkstra)
 uint8_t LineFollower::planGridRoute(uint8_t cols, uint8_t rows, uint8_t startX, uint8_t startY, uint8_t heading,
                                     uint8_t goalX, uint8_t goalY, const uint8_t* blocked, uint8_t nBlocked,

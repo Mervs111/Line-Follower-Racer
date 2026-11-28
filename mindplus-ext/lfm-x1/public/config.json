@@ -1,0 +1,29 @@
+{
+  "id": "LFMX1",
+  "version": "0.1.0",
+  "name": {
+    "id": "Robot LFM X1",
+    "en": "LFM X1 Line Follower Robot",
+    "zh-cn": "LFM X1 巡线机器人"
+  },
+  "description": {
+    "id": "Robot line follower 12 sensor: kalibrasi, ikuti garis PID, persimpangan, path planning per indeks, rute terpendek",
+    "en": "12-sensor line follower: calibration, PID line following, junctions, per-index path planning, shortest route",
+    "zh-cn": "12路巡线机器人：校准、PID巡线、路口识别、按序号路径规划、最短路径"
+  },
+  "cover": "cover.png",
+  "author": "LFM",
+  "supportDevices": {
+    "dev-DFRobot-Esp32": "^0.0.2"
+  },
+  "supportArch": [],
+  "libraryConfig": [],
+  "isDevice": false,
+  "sku": "",
+  "main": "main.js",
+  "mode": "upload",
+  "compatibilityId": "",
+  "meta": {
+    "runtimeVersion": "0.0.2"
+  }
+}
