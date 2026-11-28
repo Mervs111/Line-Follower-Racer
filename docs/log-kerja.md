@@ -22,6 +22,10 @@ Entri terbaru di atas.
     DFRobot; `build.js` menyalin library dari `firmware/lib`. Build lewat builder ditolak pengaman Claude Code di
     laptop → dijalankan user. Belum dicoba di Mind+.
   - M7: 4 contoh program blok (`mindplus-ext/contoh/`, dibuat dari `func.js` dan dicek kompilasi) + `docs/panduan-blok.md`.
+- **Simulasi firmware asli di Wokwi** (`simulasi/wokwi-firmware/`, permintaan user): `siapkan.py` menggabung seluruh
+  firmware jadi `firmware.cpp` untuk wokwi.com (lolos kompilasi core 2.0.17 dan 4.0.0), custom chip `robot-lfm`
+  meniru tangga resistor tombol, baterai, mux + 12 sensor, TB6612 + motor + encoder PCNT di arena grid 4 × 4 (ada
+  layar arena di chip). Belum dicoba di wokwi.com.
 
 ## 25/11/2026
 - Pertanyaan user soal "bolong-bolong seperti jalur PCB" di sasis X1: itu kantong buntu 1 mm dari atas untuk ekor kaki

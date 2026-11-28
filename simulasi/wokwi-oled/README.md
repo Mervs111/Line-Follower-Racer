@@ -1,5 +1,8 @@
 # Simulasi tampilan OLED + menu + tombol (Wokwi, 23/11/2026)
 
+> **28/11: purwarupa lama.** Untuk mencoba firmware asli robot (menu yang sama + kalibrasi, sensor, motor, rute) pakai
+> [`../wokwi-firmware/`](../wokwi-firmware/README.md).
+
 Untuk mencoba tampilan OLED 0,96" (SSD1306 128 × 64, I2C) dan menu 5 tombol board interface sebelum barangnya ada.
 Jalan di **wokwi.com** (browser, akun gratis), board **ESP32 DevKit C V4**. Belum dites di Wokwi oleh Claude (tidak ada
 compiler di laptop); kalau ada error compile, salin pesan errornya.

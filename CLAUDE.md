@@ -332,7 +332,8 @@ Line-Follower-Racer/
 ├── hardware/        KiCad: sensor-garis/ (PCB sensor), pcb-utama/ (PCB utama baru), board-interface/, lfm-x2/ (side
 │                    project all-in-one), ltm-main/ (v2 lama), tools/
 ├── mechanical/      model 3D v16 (CadQuery, STEP, DXF, STL, render)
-├── simulasi/        logika kendali + uji 2D + CoppeliaSim (lihat simulasi/README.md)
+├── simulasi/        logika kendali + uji 2D + CoppeliaSim (lihat simulasi/README.md); wokwi-firmware/ = firmware
+│                    asli di wokwi.com + custom chip tiruan robot (jalankan siapkan.py tiap firmware berubah)
 ├── docs/            charter, skematik, wiring diagram, logbook, referensi
 └── arsip/           file yang sudah digantikan (lihat arsip/README.md)
 ```

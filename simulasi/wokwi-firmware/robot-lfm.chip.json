@@ -1,0 +1,22 @@
+{
+  "name": "Robot LFM X1 (tiruan)",
+  "author": "LFM",
+  "pins": [
+    "KEMBALI", "ATAS", "OK", "BAWAH", "LANJUT", "BTN",
+    "VBAT", "S0", "S1", "S2", "S3", "SIG",
+    "STBY", "AIN1", "AIN2", "PWMA", "BIN1", "BIN2",
+    "PWMB", "ENC_LA", "ENC_LB", "ENC_RA", "ENC_RB", ""
+  ],
+  "display": { "width": 192, "height": 192 },
+  "controls": [
+    { "id": "battery", "label": "Baterai (V), 0 = hanya USB", "type": "range", "min": 0, "max": 8.6, "step": 0.1 },
+    { "id": "shift", "label": "Geser robot ke kanan (mm)", "type": "range", "min": -60, "max": 60, "step": 1 },
+    { "id": "gridSize", "label": "Arena grid N x N simpul", "type": "range", "min": 2, "max": 8, "step": 1 },
+    { "id": "nodeSpacing", "label": "Jarak antar simpul (mm)", "type": "range", "min": 150, "max": 600, "step": 10 },
+    { "id": "startX", "label": "Start: simpul x", "type": "range", "min": 0, "max": 7, "step": 1 },
+    { "id": "startY", "label": "Start: simpul y", "type": "range", "min": 0, "max": 7, "step": 1 },
+    { "id": "startHeading", "label": "Start: arah (0 timur, 1 utara, 2 barat, 3 selatan)", "type": "range", "min": 0, "max": 3, "step": 1 },
+    { "id": "reset", "label": "Geser untuk menaruh robot di start lagi", "type": "range", "min": 0, "max": 1, "step": 1 },
+    { "id": "adcFullScale", "label": "Skala ADC (V penuh); coba 3.3 kalau tombol kacau", "type": "range", "min": 2.5, "max": 5, "step": 0.1 }
+  ]
+}
