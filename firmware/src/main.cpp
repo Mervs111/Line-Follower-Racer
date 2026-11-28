@@ -2,6 +2,7 @@
 // M0: serial jalan, OLED menyala dengan titik berkedip, buzzer bunyi saat start.
 // M1: motor lewat perintah serial "m <kiri> <kanan> [ms]".
 // M2: "raw" stream sensor mentah. M3: "cal", "pos", "muat", "warna". M4: "kp", "kd", "spd", "jalan".
+// M5: "enc", "bat", "btn", "komp", cabang kiri/kanan di "pos", peringatan baterai lemah.
 #include <Arduino.h>
 #include <LineFollower.h>
 #include <U8g2lib.h>
@@ -23,7 +24,8 @@ uint32_t lostSince = 0;  // 0 = garis terlihat
 const uint32_t LOST_STOP_MS = 1000;  // garis hilang selama ini saat "jalan" -> berhenti
 
 // Data yang dikirim terus ke serial tiap 100 ms (perintah yang sama sekali lagi = berhenti)
-enum StreamMode : uint8_t { STREAM_NONE, STREAM_RAW, STREAM_POS };
+enum StreamMode : uint8_t { STREAM_NONE, STREAM_RAW, STREAM_POS, STREAM_ENC, STREAM_BTN };
+const char* const BUTTON_NAMES[] = {"-", "KEMBALI", "ATAS", "OK", "BAWAH", "LANJUT"};
 StreamMode streamMode = STREAM_NONE;
 
 static void toggleStream(StreamMode m) {
@@ -44,7 +46,17 @@ static void printStream() {
       bool seen = robot.lineDetected();
       const uint16_t* s = robot.sensorValues();
       for (uint8_t i = 0; i < LineFollower::SENSOR_COUNT; i++) Serial.printf("%4u ", s[i]);
-      Serial.printf("| pos %5d %s\n", pos, seen ? "" : "(hilang)");
+      Serial.printf("| pos %5d %s%s%s\n", pos, robot.branchLeft() ? "<KIRI " : "",
+                    robot.branchRight() ? "KANAN> " : "", seen ? "" : "(hilang)");
+      break;
+    }
+    case STREAM_ENC:
+      Serial.printf("enc kiri %7ld kanan %7ld | jarak %7.1f mm | sudut %6.1f deg\n", robot.encoderLeft(),
+                    robot.encoderRight(), robot.distanceMm(), robot.headingDeg());
+      break;
+    case STREAM_BTN: {
+      uint8_t b = robot.readButton();
+      Serial.printf("tombol: %s (%u mV di GPIO34)\n", BUTTON_NAMES[b], analogReadMilliVolts(Pins::BUTTONS));
       break;
     }
     default:
@@ -80,6 +92,10 @@ static void printHelp() {
   Serial.println(F("  warna hitam|putih  warna garis"));
   Serial.println(F("  kp <v> / kd <v> / spd <v>  atur PID dan kecepatan dasar (tanpa angka = tampilkan)"));
   Serial.println(F("  jalan           ikuti garis sampai stop (berhenti sendiri kalau garis hilang 1 s)"));
+  Serial.println(F("  enc             stream encoder, jarak, sudut; enc 0 = reset"));
+  Serial.println(F("  bat             tegangan baterai"));
+  Serial.println(F("  btn             stream tombol board interface"));
+  Serial.println(F("  komp on|off     kompensasi tegangan motor (PWM x 6,0 V / V_baterai)"));
 }
 
 static void printPid() { Serial.printf("kp %.3f  kd %.2f  spd %d\n", kp, kd, baseSpeed); }
@@ -144,6 +160,23 @@ static void handleCommand(int argc, char** argv) {
     Serial.println(robot.loadCalibration() ? F("kalibrasi dimuat") : F("belum ada kalibrasi di NVS"));
   } else if (!strcmp(c, "pos")) {
     toggleStream(STREAM_POS);
+  } else if (!strcmp(c, "enc")) {
+    if (argc > 1 && !strcmp(argv[1], "0")) {
+      robot.resetEncoders();
+      Serial.println(F("encoder direset"));
+    } else {
+      toggleStream(STREAM_ENC);
+    }
+  } else if (!strcmp(c, "bat")) {
+    uint16_t mv = robot.batteryMillivolts();
+    if (mv == 0) Serial.println(F("baterai tidak terbaca (hanya USB?)"));
+    else Serial.printf("baterai %.2f V%s\n", mv / 1000.0f, robot.batteryLow() ? " LEMAH, segera cas" : "");
+  } else if (!strcmp(c, "btn")) {
+    toggleStream(STREAM_BTN);
+  } else if (!strcmp(c, "komp") && argc > 1) {
+    bool on = strcmp(argv[1], "off") != 0;
+    robot.setVoltageCompensation(on);
+    Serial.printf("kompensasi tegangan %s\n", on ? "nyala" : "mati");
   } else if (!strcmp(c, "warna") && argc > 1) {
     robot.setLineColor(strcmp(argv[1], "putih") != 0);
     Serial.println(robot.lineIsBlack() ? F("garis hitam") : F("garis putih"));
@@ -162,7 +195,7 @@ void setup() {
   oled.begin();
 
   robot.beep(80);
-  Serial.println(F("\nLFM X1 siap (M4). Ketik help."));
+  Serial.println(F("\nLFM X1 siap (M5). Ketik help."));
 }
 
 void loop() {
@@ -189,6 +222,16 @@ void loop() {
       Serial.println(F("garis hilang 1 s: berhenti"));
     }
     return;  // saat jalan: jangan kirim layar OLED (±25 ms I2C) dan stream, supaya PID tetap 1 kHz
+  }
+
+  // Peringatan baterai lemah: bunyi + pesan tiap 10 s
+  static uint32_t lastBatWarn = 0;
+  if (millis() - lastBatWarn >= 10000) {
+    lastBatWarn = millis();
+    if (robot.batteryLow()) {
+      robot.beep(150);
+      Serial.printf("PERINGATAN: baterai lemah %.2f V\n", robot.batteryVoltage());
+    }
   }
 
   static uint32_t lastStream = 0;

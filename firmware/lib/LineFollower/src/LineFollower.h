@@ -5,17 +5,14 @@
 
 #include <Arduino.h>
 
+#include "LfCompat.h"
 #include "Pins.h"
 #include "RobotConfig.h"
 
-// Core 3.x mengganti API LEDC dan PCNT; core 1.x belum punya makro versi.
-#if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 3
-#define LF_CORE3 1
-#else
-#define LF_CORE3 0
-#endif
-
 #define LF_VERSION "0.1.0"
+
+// Nomor tombol board interface, urut kiri -> kanan.
+enum LfButton : uint8_t { BTN_NONE = 0, BTN_BACK = 1, BTN_UP = 2, BTN_OK = 3, BTN_DOWN = 4, BTN_NEXT = 5 };
 
 class LineFollower {
  public:
@@ -66,6 +63,16 @@ class LineFollower {
   // Rata-rata berbobot memakai koordinat x busur sensor (rev B). Garis hilang -> nilai ujung sisi terakhir.
   int position();
   bool lineDetected();
+  // Jumlah sensor yang melihat garis.
+  uint8_t sensorsOnLine();
+
+  // ---------------------------------------------------------------- persimpangan
+  // Cabang kiri / kanan: sensor lengan (S1-S3 / S10-S12, |x| >= 28 mm) melihat garis. Di garis lurus garis 2 cm
+  // tidak sampai ke sensor ini kecuali robot melenceng > ±16 mm.
+  bool branchLeft();
+  bool branchRight();
+  // Ada persimpangan: cabang kiri atau kanan terlihat (simpang T, simpang 4, ujung garis melintang).
+  bool junction();
 
   // ---------------------------------------------------------------- motor
   // Kecepatan motor kiri dan kanan -255..255 (+ = maju, 0 = rem). Arah tiap motor bisa dibalik di RobotConfig.h.
@@ -74,6 +81,19 @@ class LineFollower {
   void stop();
   // Lepas kedua motor (STBY LOW, roda bebas). motor() berikutnya menyalakan lagi.
   void release();
+  // Kompensasi tegangan (default nyala): PWM dikali 6,0 V / V_baterai supaya motor 6 V tidak kelebihan tegangan
+  // dan kecepatan tidak berubah saat baterai turun. motor(255, 255) = setara 6 V di motor.
+  void setVoltageCompensation(bool on) { voltageComp_ = on; }
+
+  // ---------------------------------------------------------------- encoder
+  // Hitungan encoder sejak begin()/resetEncoders() (+ = maju). 840 hitungan per putaran roda (RobotConfig.h).
+  long encoderLeft();
+  long encoderRight();
+  void resetEncoders();
+  // Jarak tempuh rata-rata kedua roda sejak reset (mm).
+  float distanceMm();
+  // Sudut putar robot sejak reset (derajat, + = berlawanan jarum jam / ke kiri), dari selisih encoder.
+  float headingDeg();
 
   // ---------------------------------------------------------------- PID ikut garis
   // Satu langkah PID ikut garis pada laju tetap 1 kHz; kalau dipanggil lebih cepat langsung return.
@@ -90,9 +110,38 @@ class LineFollower {
   // Bunyikan buzzer selama ms milidetik. Tidak menunggu: buzzer dimatikan oleh timer.
   void beep(uint16_t ms);
 
+  // ---------------------------------------------------------------- tombol (5 tombol tangga resistor, GPIO34)
+  // Tombol yang sedang ditekan saat ini (LfButton, BTN_NONE = tidak ada), tanpa debounce.
+  uint8_t readButton();
+  // true selama tombol id (1..5, lihat LfButton) ditekan, sesudah stabil 20 ms.
+  bool buttonPressed(uint8_t id);
+  // Tombol yang baru saja ditekan (sekali per tekanan), BTN_NONE kalau tidak ada. Panggil berulang-ulang.
+  uint8_t buttonClicked();
+
+  // ---------------------------------------------------------------- baterai
+  // Tegangan baterai (V), dirata-rata. 0 kalau baterai tidak terpasang (mis. hanya USB).
+  float batteryVoltage();
+  uint16_t batteryMillivolts();
+  // true kalau baterai terpasang dan di bawah 6,8 V (3,4 V per sel): segera cas.
+  bool batteryLow();
+
  private:
   void driveRaw(int left, int right);
   void refreshSensors();
+  void updateButtons();
+  void updateBattery(bool force = false);
+
+  // tombol
+  uint8_t btnRaw_ = BTN_NONE;
+  uint8_t btnStable_ = BTN_NONE;
+  uint8_t btnClickPending_ = BTN_NONE;
+  uint32_t btnChangedMs_ = 0;
+
+  // baterai & motor
+  bool voltageComp_ = true;
+  uint16_t vbatMv_ = 0;
+  uint32_t vbatReadMs_ = 0;
+  bool vbatHave_ = false;
 
   // PID
   bool followStarted_ = false;

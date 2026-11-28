@@ -58,5 +58,17 @@ constexpr float VBAT_DIVIDER = 133.0f / 33.0f;  // 100k / 33k
 constexpr uint16_t VBAT_LOW_MV = 6800;          // 3,4 V per sel: peringatan
 constexpr uint16_t VBAT_FULL_MV = 8400;
 constexpr uint16_t VBAT_EMPTY_MV = 6400;
+constexpr uint16_t VBAT_PRESENT_MV = 4000;      // di bawah ini dianggap baterai tidak terpasang
+constexpr float VBAT_TRIM = 1.0f;               // koreksi pembacaan ADC (UKUR: V multimeter / V terbaca)
+
+// ---------------------------------------------------------------- tombol (tegangan BTN, pull-up 10k)
+// ATAS 1k = 0,30 V, BAWAH 3k9 = 0,93 V, KEMBALI 8k2 = 1,49 V, OK 18k = 2,12 V, LANJUT 39k = 2,63 V, lepas 3,3 V.
+// Batas = titik tengah antar tegangan.
+constexpr uint16_t BTN_EDGE_UP_MV = 615;
+constexpr uint16_t BTN_EDGE_DOWN_MV = 1210;
+constexpr uint16_t BTN_EDGE_BACK_MV = 1805;
+constexpr uint16_t BTN_EDGE_OK_MV = 2375;
+constexpr uint16_t BTN_EDGE_NEXT_MV = 2965;
+constexpr uint16_t BTN_DEBOUNCE_MS = 20;
 
 }  // namespace Config

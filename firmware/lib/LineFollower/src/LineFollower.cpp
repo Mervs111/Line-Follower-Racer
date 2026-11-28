@@ -4,6 +4,17 @@
 #include <Preferences.h>
 #include <esp_timer.h>
 
+#include "LfEncoders.h"
+
+// Tegangan di pin ADC (mV). Core >= 2.0 memakai kalibrasi eFuse.
+static uint32_t readPinMv(uint8_t pin) {
+#if LF_HAS_ADC_MV
+  return analogReadMilliVolts(pin);
+#else
+  return (uint32_t)analogRead(pin) * 3300UL / 4095UL;
+#endif
+}
+
 // ==================================================================== buzzer
 // Buzzer dimatikan oleh esp_timer sekali jalan, jadi beep() tidak pernah menahan loop.
 static esp_timer_handle_t buzzerTimer = nullptr;
@@ -188,6 +199,120 @@ bool LineFollower::lineDetected() {
   return lineSeen_;
 }
 
+uint8_t LineFollower::sensorsOnLine() {
+  refreshSensors();
+  return (uint8_t)__builtin_popcount(pattern_);
+}
+
+// ==================================================================== persimpangan
+static constexpr uint16_t ARM_LEFT_MASK = 0x0007;   // S1..S3
+static constexpr uint16_t ARM_RIGHT_MASK = 0x0E00;  // S10..S12
+
+bool LineFollower::branchLeft() {
+  refreshSensors();
+  return (pattern_ & ARM_LEFT_MASK) != 0;
+}
+
+bool LineFollower::branchRight() {
+  refreshSensors();
+  return (pattern_ & ARM_RIGHT_MASK) != 0;
+}
+
+bool LineFollower::junction() {
+  refreshSensors();
+  return (pattern_ & (ARM_LEFT_MASK | ARM_RIGHT_MASK)) != 0;
+}
+
+// ==================================================================== encoder
+long LineFollower::encoderLeft() {
+  int32_t l, r;
+  LfEncoders::read(l, r);
+  return l;
+}
+
+long LineFollower::encoderRight() {
+  int32_t l, r;
+  LfEncoders::read(l, r);
+  return r;
+}
+
+void LineFollower::resetEncoders() { LfEncoders::reset(); }
+
+float LineFollower::distanceMm() {
+  int32_t l, r;
+  LfEncoders::read(l, r);
+  return (float)(l + r) * 0.5f * Config::MM_PER_COUNT;
+}
+
+float LineFollower::headingDeg() {
+  int32_t l, r;
+  LfEncoders::read(l, r);
+  return (float)(r - l) * Config::MM_PER_COUNT / Config::WHEEL_TRACK_MM * 57.29578f;
+}
+
+// ==================================================================== tombol (tangga resistor)
+uint8_t LineFollower::readButton() {
+  uint32_t mv = readPinMv(Pins::BUTTONS);
+  if (mv < Config::BTN_EDGE_UP_MV) return BTN_UP;
+  if (mv < Config::BTN_EDGE_DOWN_MV) return BTN_DOWN;
+  if (mv < Config::BTN_EDGE_BACK_MV) return BTN_BACK;
+  if (mv < Config::BTN_EDGE_OK_MV) return BTN_OK;
+  if (mv < Config::BTN_EDGE_NEXT_MV) return BTN_NEXT;
+  return BTN_NONE;
+}
+
+void LineFollower::updateButtons() {
+  uint8_t raw = readButton();
+  uint32_t now = millis();
+  if (raw != btnRaw_) {
+    btnRaw_ = raw;
+    btnChangedMs_ = now;
+  } else if (raw != btnStable_ && now - btnChangedMs_ >= Config::BTN_DEBOUNCE_MS) {
+    btnStable_ = raw;
+    if (raw != BTN_NONE) btnClickPending_ = raw;
+  }
+}
+
+bool LineFollower::buttonPressed(uint8_t id) {
+  updateButtons();
+  return id != BTN_NONE && btnStable_ == id;
+}
+
+uint8_t LineFollower::buttonClicked() {
+  updateButtons();
+  uint8_t c = btnClickPending_;
+  btnClickPending_ = BTN_NONE;
+  return c;
+}
+
+// ==================================================================== baterai
+void LineFollower::updateBattery(bool force) {
+  uint32_t now = millis();
+  if (!force && vbatHave_ && now - vbatReadMs_ < 20) return;
+  vbatReadMs_ = now;
+  uint32_t mv = (uint32_t)((float)readPinMv(Pins::VBAT_SENSE) * Config::VBAT_DIVIDER * Config::VBAT_TRIM);
+  if (mv < Config::VBAT_PRESENT_MV) {
+    vbatMv_ = 0;  // tidak ada baterai (hanya USB)
+  } else if (!vbatHave_ || vbatMv_ == 0) {
+    vbatMv_ = (uint16_t)mv;
+  } else {
+    vbatMv_ = (uint16_t)(((uint32_t)vbatMv_ * 7 + mv) / 8);  // rata-rata bergerak
+  }
+  vbatHave_ = true;
+}
+
+uint16_t LineFollower::batteryMillivolts() {
+  updateBattery();
+  return vbatMv_;
+}
+
+float LineFollower::batteryVoltage() { return batteryMillivolts() / 1000.0f; }
+
+bool LineFollower::batteryLow() {
+  uint16_t mv = batteryMillivolts();
+  return mv != 0 && mv < Config::VBAT_LOW_MV;
+}
+
 // ==================================================================== motor (TB6612FNG)
 // PWM LEDC 20 kHz 8 bit. Core 3.x memakai nomor pin, core 2.x memakai nomor kanal.
 static constexpr uint8_t PWM_CH_LEFT = 0;
@@ -244,7 +369,15 @@ void LineFollower::driveRaw(int left, int right) {
 void LineFollower::motor(int left, int right) {
   lastLeft_ = constrain(left, -255, 255);
   lastRight_ = constrain(right, -255, 255);
-  driveRaw(lastLeft_, lastRight_);
+  int l = lastLeft_, r = lastRight_;
+  if (voltageComp_) {
+    updateBattery();
+    if (vbatMv_ >= Config::COMP_MIN_VBAT_MV) {  // hanya USB / baterai tidak terbaca: tanpa kompensasi
+      l = (int)((int32_t)l * Config::MOTOR_NOMINAL_MV / vbatMv_);
+      r = (int)((int32_t)r * Config::MOTOR_NOMINAL_MV / vbatMv_);
+    }
+  }
+  driveRaw(l, r);
 }
 
 void LineFollower::stop() { motor(0, 0); }
@@ -322,4 +455,8 @@ void LineFollower::begin() {
     args.name = "lf_buzzer";
     esp_timer_create(&args, &buzzerTimer);
   }
+
+  // Encoder (PCNT) dan baterai
+  LfEncoders::begin();
+  updateBattery(true);
 }
