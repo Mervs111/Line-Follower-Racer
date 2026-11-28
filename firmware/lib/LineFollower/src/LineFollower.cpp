@@ -366,7 +366,30 @@ void LineFollower::driveRaw(int left, int right) {
   }
 }
 
+// Pengaman runIndex(): sesudah satu indeks selesai robot tetap jalan supaya indeks berikutnya menyambung. Kalau
+// program tidak memanggil motor()/runIndex() lagi dalam 300 ms (mis. lupa aksi berhenti), timer ini mengerem.
+static esp_timer_handle_t chainTimer = nullptr;
+
+static void chainWatchdogFire(void*) {
+  driveChannel(Pins::MOTOR_AIN1, Pins::MOTOR_AIN2, Pins::MOTOR_PWMA, PWM_CH_LEFT, 0);
+  driveChannel(Pins::MOTOR_BIN1, Pins::MOTOR_BIN2, Pins::MOTOR_PWMB, PWM_CH_RIGHT, 0);
+}
+
+void LineFollower::armChainWatchdog() {
+  if (chainTimer == nullptr) return;
+  esp_timer_stop(chainTimer);
+  esp_timer_start_once(chainTimer, 300000ULL);
+  chainWdArmed_ = true;
+}
+
+void LineFollower::disarmChainWatchdog() {
+  if (!chainWdArmed_) return;
+  chainWdArmed_ = false;
+  esp_timer_stop(chainTimer);
+}
+
 void LineFollower::motor(int left, int right) {
+  disarmChainWatchdog();
   lastLeft_ = constrain(left, -255, 255);
   lastRight_ = constrain(right, -255, 255);
   int l = lastLeft_, r = lastRight_;
@@ -395,11 +418,14 @@ void LineFollower::follow(int speed, float kp, float kd) {
   const uint32_t period = 1000000UL / Config::FOLLOW_HZ;
   uint32_t now = micros();
   uint32_t since = now - lastFollowUs_;
-  if (followStarted_ && since < period) return;  // laju tetap: terlalu cepat -> langsung kembali
+  // Laju tetap: terlalu cepat -> langsung kembali. Jadwal maju tepat 1 periode tiap langkah (bukan "now"), dan
+  // panggilan sampai 1/8 periode lebih awal diterima, supaya pemanggil yang juga berjalan 1 kHz (routeUpdate)
+  // tidak membuat PID melompati satu siklus karena selisih beberapa mikrodetik.
+  if (followStarted_ && since < period - period / 8) return;
   bool fresh = !followStarted_ || since > 20 * period;  // baru mulai / lama tidak dipanggil: suku D nol
 
-  lastFollowUs_ = now;
-  readSensors();
+  lastFollowUs_ = (fresh || since > 2 * period) ? now : lastFollowUs_ + period;
+  refreshSensors();  // bacaan < 0,5 ms dipakai ulang (routeUpdate sudah membaca di siklus yang sama)
   int err = position_;
   int d = fresh ? 0 : err - prevError_;
   prevError_ = err;
@@ -454,6 +480,13 @@ void LineFollower::begin() {
     args.callback = &buzzerOff;
     args.name = "lf_buzzer";
     esp_timer_create(&args, &buzzerTimer);
+  }
+
+  if (chainTimer == nullptr) {
+    esp_timer_create_args_t args = {};
+    args.callback = &chainWatchdogFire;
+    args.name = "lf_chain";
+    esp_timer_create(&args, &chainTimer);
   }
 
   // Encoder (PCNT) dan baterai

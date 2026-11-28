@@ -53,6 +53,21 @@ constexpr uint16_t COMP_MIN_VBAT_MV = 5000; // di bawah ini (mis. hanya USB) kom
 // ---------------------------------------------------------------- kendali
 constexpr uint16_t FOLLOW_HZ = 1000;        // laju PID follow()
 
+// ---------------------------------------------------------------- path planning (dari simulasi/lfm_control.py)
+constexpr uint8_t APPROACH_PWM = 90;        // maju lurus melewati / menuju tengah persimpangan
+constexpr uint8_t TURN_PWM = 90;            // putar di tempat saat belok
+constexpr float CHECK_MM = 30.0f;           // jendela pengumpulan cabang kiri/kanan sesudah cabang pertama terlihat
+constexpr float CROSS_MM = 50.0f;           // dari cabang pertama terlihat sampai sensor lewat garis melintang
+constexpr float APPROACH_OFFSET_MM = 0.0f;  // koreksi titik belok (+ = belok lebih jauh) (UKUR)
+constexpr float SKIP_IGNORE_MM = 30.0f;     // sesudah melewati persimpangan yang bukan pemicu
+constexpr float END_CONFIRM_MM = 20.0f;     // garis harus hilang sejauh ini dulu untuk pemicu "ujung garis"
+constexpr float TURN_MIN_DEG = 60.0f;       // belok: sensor tengah baru boleh mengunci sesudah sudut ini
+constexpr float UTURN_MIN_DEG = 150.0f;
+constexpr float TURN_MAX_DEG = 200.0f;      // lebih dari ini garis dianggap tidak ketemu
+constexpr float UTURN_MAX_DEG = 300.0f;
+constexpr uint16_t LOST_FAIL_MS = 1500;     // garis hilang selama ini saat ikut garis = rute gagal
+constexpr float HEADING_KP = 4.0f;          // forwardMm(): koreksi PWM per derajat beda arah
+
 // ---------------------------------------------------------------- baterai (Li-ion 2S)
 constexpr float VBAT_DIVIDER = 133.0f / 33.0f;  // 100k / 33k
 constexpr uint16_t VBAT_LOW_MV = 6800;          // 3,4 V per sel: peringatan

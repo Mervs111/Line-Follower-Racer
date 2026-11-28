@@ -14,6 +14,34 @@
 // Nomor tombol board interface, urut kiri -> kanan.
 enum LfButton : uint8_t { BTN_NONE = 0, BTN_BACK = 1, BTN_UP = 2, BTN_OK = 3, BTN_DOWN = 4, BTN_NEXT = 5 };
 
+// ---- Path planning per indeks (gaya blok Ichiduino): tiap indeks = pemicu -> aksi -> ikuti garis sejauh mm.
+// Pemicu: kapan aksi dijalankan.
+enum LfTrigger : uint8_t {
+  TRIG_JUNCTION = 0,  // persimpangan apa saja (cabang kiri atau kanan)
+  TRIG_LEFT = 1,      // ada cabang kiri
+  TRIG_RIGHT = 2,     // ada cabang kanan
+  TRIG_BOTH = 3,      // cabang kiri dan kanan (simpang T dari batang / perempatan)
+  TRIG_END = 4,       // garis habis (ujung garis)
+  TRIG_DIRECT = 5     // langsung, tanpa menunggu sensor
+};
+// Aksi di persimpangan. Belok dan berhenti dilakukan dengan poros roda tepat di tengah persimpangan (encoder).
+enum LfAction : uint8_t {
+  ACT_FORWARD = 0,  // lurus melewati persimpangan
+  ACT_LEFT = 1,     // belok kiri (putar di tempat sampai garis kiri terkunci sensor tengah)
+  ACT_RIGHT = 2,    // belok kanan
+  ACT_UTURN = 3,    // putar balik
+  ACT_STOP = 4      // berhenti (akhir rute)
+};
+enum LfRouteState : uint8_t { ROUTE_IDLE = 0, ROUTE_RUNNING = 1, ROUTE_DONE = 2, ROUTE_FAILED = 3 };
+
+struct LfStep {
+  uint8_t trigger;    // LfTrigger
+  uint8_t action;     // LfAction
+  uint8_t speed;      // PWM ikut garis sesudah aksi (dipakai sampai indeks berikutnya beraksi)
+  uint16_t followMm;  // sesudah aksi: ikuti garis sejauh ini dulu, pemicu berikutnya belum dicek
+  bool whiteLine;     // sesudah aksi ikuti garis putih (false = hitam)
+};
+
 class LineFollower {
  public:
   static constexpr uint8_t SENSOR_COUNT = Config::SENSOR_COUNT;
@@ -106,6 +134,50 @@ class LineFollower {
   // Koreksi PID terakhir (selisih PWM kiri-kanan / 2), untuk tampilan/log.
   int lastCorrection() const { return lastCorrection_; }
 
+  // Kp/Kd yang dipakai rute dan gerak terukur di bawah (follow() tetap menerima kp/kd sendiri).
+  void setPID(float kp, float kd) {
+    kp_ = kp;
+    kd_ = kd;
+  }
+  float routeKp() const { return kp_; }
+  float routeKd() const { return kd_; }
+
+  // ---------------------------------------------------------------- path planning per indeks
+  // Tanpa menunggu (untuk program dengan menu): routeBegin() lalu panggil routeUpdate() terus di loop() sampai
+  // hasilnya bukan ROUTE_RUNNING. steps harus tetap ada selama rute berjalan.
+  void routeBegin(const LfStep* steps, uint8_t count);
+  LfRouteState routeUpdate();
+  void routeStop();  // hentikan rute + rem motor
+  LfRouteState routeState() const { return routeState_; }
+  uint8_t routeIndex() const { return routeIdx_ + 1; }  // indeks yang sedang dikerjakan (1 = pertama)
+  uint8_t routeCount() const { return routeCount_; }
+  const char* routeMessage() const { return routeMsg_; }  // keterangan selesai/gagal
+  void setRouteBeep(bool on) { routeBeep_ = on; }        // bunyi pendek tiap aksi dimulai
+
+  // Menunggu sampai selesai (untuk blok Mind+): kerjakan satu indeks. Panggil berurutan, indeks 1, 2, 3, ...
+  // Antar panggilan robot tetap jalan (tidak berhenti). Tombol apa pun = batal: motor berhenti dan semua
+  // runIndex() berikutnya langsung return false sampai routeReset().
+  bool runIndex(uint8_t trigger, uint8_t action, int speed, int followMm, bool whiteLine = false);
+  void routeReset();
+
+  // ---------------------------------------------------------------- gerak terukur (menunggu sampai selesai)
+  // Maju lurus sejauh mm (negatif = mundur) memakai encoder. Tombol apa pun = batal (return false).
+  bool forwardMm(int speed, int mm);
+  // Putar di tempat sejauh deg derajat (+ = kiri / berlawanan jarum jam), dari selisih encoder.
+  bool turnDegrees(int speed, int deg);
+  // Putar di tempat ke kiri/kanan sampai sensor tengah menemukan garis (minimal 60 derajat).
+  bool turnToLine(bool left, int speed);
+
+  // ---------------------------------------------------------------- rute terpendek (grid)
+  // Rute terpendek di grid cols x rows simpul (simpul (x, y), x ke timur, y ke utara, maks 8 x 8). Robot
+  // diletakkan tepat sesudah simpul start menghadap heading (0 timur, 1 utara, 2 barat, 3 selatan) dan wajib
+  // berangkat ke arah itu. blocked = daftar simpul terlarang sebagai pasangan x, y (nBlocked pasangan).
+  // Dari rute sama panjang dipilih yang beloknya paling sedikit. Hasil ditulis ke out sebagai indeks
+  // (pemicu persimpangan, aksi lurus/kiri/kanan, terakhir berhenti). Return jumlah indeks, 0 = tidak ada rute.
+  static uint8_t planGridRoute(uint8_t cols, uint8_t rows, uint8_t startX, uint8_t startY, uint8_t heading,
+                               uint8_t goalX, uint8_t goalY, const uint8_t* blocked, uint8_t nBlocked,
+                               LfStep* out, uint8_t maxSteps, uint8_t speed, uint16_t followMm);
+
   // ---------------------------------------------------------------- buzzer
   // Bunyikan buzzer selama ms milidetik. Tidak menunggu: buzzer dimatikan oleh timer.
   void beep(uint16_t ms);
@@ -130,6 +202,45 @@ class LineFollower {
   void refreshSensors();
   void updateButtons();
   void updateBattery(bool force = false);
+
+  // path planning (LfRoute.cpp)
+  enum Phase : uint8_t { PH_WATCH, PH_CHECK, PH_SKIP, PH_CROSS, PH_APPROACH, PH_TURN, PH_POST };
+  void routeStart(const LfStep* steps, uint8_t count, bool chain);
+  void phaseBegin(Phase p);
+  void beginAction();
+  void startPost();
+  void finishStep();
+  void routeFail(const char* msg);
+  void straight();
+  float phaseMm();
+  float phaseDeg();
+  bool reached(float targetMm, int pwm);
+  void checkEncoderAlive();
+  bool waitAbort();
+  void syncButtons();
+  void armChainWatchdog();
+  void disarmChainWatchdog();
+
+  float kp_ = 0.07f, kd_ = 3.5f;
+  const LfStep* steps_ = nullptr;
+  uint8_t routeCount_ = 0, routeIdx_ = 0;
+  LfRouteState routeState_ = ROUTE_IDLE;
+  Phase phase_ = PH_WATCH;
+  const char* routeMsg_ = "";
+  bool routeBeep_ = false;
+  bool chain_ = false;       // mode runIndex(): akhir langkah tidak mengerem
+  bool chainFresh_ = true;   // runIndex() pertama sesudah routeReset()
+  bool aborted_ = false;
+  int curSpeed_ = 120;
+  int32_t phEncL_ = 0, phEncR_ = 0;  // encoder saat fase mulai
+  uint32_t phMs_ = 0, routeTickUs_ = 0;
+  float ignoreMm_ = 0, toCenterMm_ = 0;
+  uint32_t lostSinceMs_ = 0;
+  bool endPending_ = false;
+  bool brL_ = false, brR_ = false;
+  bool encDead_ = false;
+  LfStep single_ = {};
+  volatile bool chainWdArmed_ = false;
 
   // tombol
   uint8_t btnRaw_ = BTN_NONE;
