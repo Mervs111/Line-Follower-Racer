@@ -257,6 +257,27 @@ void LineFollower::release() {
   lastLeft_ = lastRight_ = 0;
 }
 
+// ==================================================================== PID ikut garis
+void LineFollower::follow(int speed, float kp, float kd) {
+  const uint32_t period = 1000000UL / Config::FOLLOW_HZ;
+  uint32_t now = micros();
+  uint32_t since = now - lastFollowUs_;
+  if (followStarted_ && since < period) return;  // laju tetap: terlalu cepat -> langsung kembali
+  bool fresh = !followStarted_ || since > 20 * period;  // baru mulai / lama tidak dipanggil: suku D nol
+
+  lastFollowUs_ = now;
+  readSensors();
+  int err = position_;
+  int d = fresh ? 0 : err - prevError_;
+  prevError_ = err;
+  followStarted_ = true;
+
+  float u = kp * (float)err + kd * (float)d;
+  int corr = (int)constrain(u, -510.0f, 510.0f);
+  lastCorrection_ = corr;
+  motor(speed + corr, speed - corr);  // garis di kanan (err > 0) -> roda kiri lebih cepat -> belok kanan
+}
+
 // ==================================================================== begin
 void LineFollower::begin() {
   // Motor mati dulu: STBY LOW, arah LOW, PWM 0

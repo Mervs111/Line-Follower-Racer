@@ -1,7 +1,7 @@
 // main.cpp — test harness LFM X1: perintah serial + layar OLED.
 // M0: serial jalan, OLED menyala dengan titik berkedip, buzzer bunyi saat start.
 // M1: motor lewat perintah serial "m <kiri> <kanan> [ms]".
-// M2: "raw" stream sensor mentah. M3: "cal", "pos", "muat", "warna".
+// M2: "raw" stream sensor mentah. M3: "cal", "pos", "muat", "warna". M4: "kp", "kd", "spd", "jalan".
 #include <Arduino.h>
 #include <LineFollower.h>
 #include <U8g2lib.h>
@@ -14,6 +14,13 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C oled(U8G2_R0, U8X8_PIN_NONE);
 SerialCommand cmd;
 
 uint32_t motorStopAt = 0;  // 0 = motor jalan terus sampai "stop"
+
+// M4: PID ikut garis
+float kp = 0.07f, kd = 3.5f;
+int baseSpeed = 120;
+bool following = false;
+uint32_t lostSince = 0;  // 0 = garis terlihat
+const uint32_t LOST_STOP_MS = 1000;  // garis hilang selama ini saat "jalan" -> berhenti
 
 // Data yang dikirim terus ke serial tiap 100 ms (perintah yang sama sekali lagi = berhenti)
 enum StreamMode : uint8_t { STREAM_NONE, STREAM_RAW, STREAM_POS };
@@ -71,7 +78,11 @@ static void printHelp() {
   Serial.println(F("  muat            muat kalibrasi dari NVS"));
   Serial.println(F("  pos             stream nilai 0-1000 + posisi garis (-1000..1000); pos lagi = berhenti"));
   Serial.println(F("  warna hitam|putih  warna garis"));
+  Serial.println(F("  kp <v> / kd <v> / spd <v>  atur PID dan kecepatan dasar (tanpa angka = tampilkan)"));
+  Serial.println(F("  jalan           ikuti garis sampai stop (berhenti sendiri kalau garis hilang 1 s)"));
 }
+
+static void printPid() { Serial.printf("kp %.3f  kd %.2f  spd %d\n", kp, kd, baseSpeed); }
 
 static void handleCommand(int argc, char** argv) {
   const char* c = argv[0];
@@ -90,7 +101,24 @@ static void handleCommand(int argc, char** argv) {
   } else if (!strcmp(c, "stop")) {
     robot.stop();
     motorStopAt = 0;
+    following = false;
     Serial.println(F("stop"));
+  } else if (!strcmp(c, "kp")) {
+    if (argc > 1) kp = atof(argv[1]);
+    printPid();
+  } else if (!strcmp(c, "kd")) {
+    if (argc > 1) kd = atof(argv[1]);
+    printPid();
+  } else if (!strcmp(c, "spd")) {
+    if (argc > 1) baseSpeed = constrain(atoi(argv[1]), 0, 255);
+    printPid();
+  } else if (!strcmp(c, "jalan")) {
+    if (!robot.isCalibrated()) Serial.println(F("PERINGATAN: belum kalibrasi"));
+    printPid();
+    motorStopAt = 0;
+    lostSince = 0;
+    robot.resetFollow();
+    following = true;
   } else if (!strcmp(c, "lepas")) {
     robot.release();
     motorStopAt = 0;
@@ -134,7 +162,7 @@ void setup() {
   oled.begin();
 
   robot.beep(80);
-  Serial.println(F("\nLFM X1 siap (M3). Ketik help."));
+  Serial.println(F("\nLFM X1 siap (M4). Ketik help."));
 }
 
 void loop() {
@@ -146,6 +174,21 @@ void loop() {
     robot.stop();
     motorStopAt = 0;
     Serial.println(F("motor berhenti (waktu habis)"));
+  }
+
+  if (following) {
+    robot.follow(baseSpeed, kp, kd);
+    if (robot.lineDetected()) {
+      lostSince = 0;
+    } else if (lostSince == 0) {
+      lostSince = millis() | 1;
+    } else if (millis() - lostSince >= LOST_STOP_MS) {
+      robot.stop();
+      following = false;
+      robot.beep(300);
+      Serial.println(F("garis hilang 1 s: berhenti"));
+    }
+    return;  // saat jalan: jangan kirim layar OLED (±25 ms I2C) dan stream, supaya PID tetap 1 kHz
   }
 
   static uint32_t lastStream = 0;

@@ -75,6 +75,17 @@ class LineFollower {
   // Lepas kedua motor (STBY LOW, roda bebas). motor() berikutnya menyalakan lagi.
   void release();
 
+  // ---------------------------------------------------------------- PID ikut garis
+  // Satu langkah PID ikut garis pada laju tetap 1 kHz; kalau dipanggil lebih cepat langsung return.
+  // Panggil terus-menerus di loop() tanpa delay(). speed = PWM dasar 0..255.
+  // kp per satuan posisi (posisi -1000..1000), kd per perubahan posisi tiap 1 ms.
+  // Titik awal tuning (dari simulasi): follow(120, 0.07, 3.5).
+  void follow(int speed, float kp, float kd);
+  // Lupakan error sebelumnya (suku D mulai dari nol). follow() melakukannya sendiri sesudah jeda > 20 ms.
+  void resetFollow() { followStarted_ = false; }
+  // Koreksi PID terakhir (selisih PWM kiri-kanan / 2), untuk tampilan/log.
+  int lastCorrection() const { return lastCorrection_; }
+
   // ---------------------------------------------------------------- buzzer
   // Bunyikan buzzer selama ms milidetik. Tidak menunggu: buzzer dimatikan oleh timer.
   void beep(uint16_t ms);
@@ -82,6 +93,12 @@ class LineFollower {
  private:
   void driveRaw(int left, int right);
   void refreshSensors();
+
+  // PID
+  bool followStarted_ = false;
+  uint32_t lastFollowUs_ = 0;
+  int prevError_ = 0;
+  int lastCorrection_ = 0;
 
   // sensor & kalibrasi
   uint16_t raw_[SENSOR_COUNT] = {};
