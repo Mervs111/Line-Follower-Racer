@@ -17,3 +17,6 @@ node_modules/
 __pycache__/
 mechanical/rakitan-pcb/*_tembaga.step
 simulasi/**/__pycache__/
+
+# dibuat otomatis oleh build pioarduino (env x1_terbaru)
+firmware/src/idf_component.yml*
