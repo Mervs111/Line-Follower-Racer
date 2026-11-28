@@ -24,6 +24,11 @@ class LineFollower {
   // Inisialisasi semua pin. Panggil sekali di setup(). Motor tetap mati (STBY LOW) sampai motor() dipanggil.
   void begin();
 
+  // ---------------------------------------------------------------- sensor mentah
+  // Baca 12 sensor lewat mux ke out[0..11] (S1 paling kiri .. S12 paling kanan), nilai ADC 0-4095.
+  // QRE1113 dengan pull-up: makin gelap permukaan, makin besar nilainya.
+  void readRaw(uint16_t out[]);
+
   // ---------------------------------------------------------------- motor
   // Kecepatan motor kiri dan kanan -255..255 (+ = maju, 0 = rem). Arah tiap motor bisa dibalik di RobotConfig.h.
   void motor(int left, int right);

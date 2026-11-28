@@ -17,6 +17,23 @@ void LineFollower::beep(uint16_t ms) {
   esp_timer_start_once(buzzerTimer, (uint64_t)ms * 1000ULL);
 }
 
+// ==================================================================== sensor mentah (mux CD74HC4067)
+static inline void muxSelect(uint8_t ch) {
+  digitalWrite(Pins::MUX_S0, ch & 0x1);
+  digitalWrite(Pins::MUX_S1, (ch >> 1) & 0x1);
+  digitalWrite(Pins::MUX_S2, (ch >> 2) & 0x1);
+  digitalWrite(Pins::MUX_S3, (ch >> 3) & 0x1);
+}
+
+void LineFollower::readRaw(uint16_t out[]) {
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+    uint8_t s = Config::SENSOR_REVERSED ? (SENSOR_COUNT - 1 - i) : i;
+    muxSelect(Pins::MUX_FIRST_CHANNEL + s);
+    delayMicroseconds(Config::MUX_SETTLE_US);  // beberapa us saja, bukan delay() ms
+    out[i] = analogRead(Pins::MUX_SIG);
+  }
+}
+
 // ==================================================================== motor (TB6612FNG)
 // PWM LEDC 20 kHz 8 bit. Core 3.x memakai nomor pin, core 2.x memakai nomor kanal.
 static constexpr uint8_t PWM_CH_LEFT = 0;
@@ -101,6 +118,17 @@ void LineFollower::begin() {
   pwmInit(Pins::MOTOR_PWMB, PWM_CH_RIGHT);
   pwmWrite(Pins::MOTOR_PWMA, PWM_CH_LEFT, 0);
   pwmWrite(Pins::MOTOR_PWMB, PWM_CH_RIGHT, 0);
+
+  // Mux + ADC1 (atenuasi 11 dB: rentang sampai ±3,1 V)
+  const uint8_t muxPins[] = {Pins::MUX_S0, Pins::MUX_S1, Pins::MUX_S2, Pins::MUX_S3};
+  for (uint8_t p : muxPins) {
+    pinMode(p, OUTPUT);
+    digitalWrite(p, LOW);
+  }
+  analogReadResolution(12);
+  analogSetPinAttenuation(Pins::MUX_SIG, ADC_11db);
+  analogSetPinAttenuation(Pins::VBAT_SENSE, ADC_11db);
+  analogSetPinAttenuation(Pins::BUTTONS, ADC_11db);
 
   // Buzzer
   pinMode(Pins::BUZZER, OUTPUT);

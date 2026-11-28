@@ -14,6 +14,28 @@ SerialCommand cmd;
 
 uint32_t motorStopAt = 0;  // 0 = motor jalan terus sampai "stop"
 
+// Data yang dikirim terus ke serial tiap 100 ms (perintah yang sama sekali lagi = berhenti)
+enum StreamMode : uint8_t { STREAM_NONE, STREAM_RAW };
+StreamMode streamMode = STREAM_NONE;
+
+static void toggleStream(StreamMode m) {
+  streamMode = (streamMode == m) ? STREAM_NONE : m;
+  if (streamMode == STREAM_NONE) Serial.println(F("stream berhenti"));
+}
+
+static void printStream() {
+  uint16_t v[LineFollower::SENSOR_COUNT];
+  switch (streamMode) {
+    case STREAM_RAW:
+      robot.readRaw(v);
+      for (uint8_t i = 0; i < LineFollower::SENSOR_COUNT; i++) Serial.printf("%4u ", v[i]);
+      Serial.println();
+      break;
+    default:
+      break;
+  }
+}
+
 // ---------------------------------------------------------------- perintah serial
 static void printHelp() {
   Serial.println(F("Perintah:"));
@@ -24,6 +46,7 @@ static void printHelp() {
   Serial.println(F("  m <ki> <ka> 0   motor jalan terus sampai stop"));
   Serial.println(F("  stop            rem motor (Enter kosong tidak menghentikan; ketik stop)"));
   Serial.println(F("  lepas           lepas motor (roda bebas)"));
+  Serial.println(F("  raw             stream 12 nilai mentah S1..S12 (0-4095, gelap = besar); raw lagi = berhenti"));
 }
 
 static void handleCommand(int argc, char** argv) {
@@ -47,6 +70,8 @@ static void handleCommand(int argc, char** argv) {
   } else if (!strcmp(c, "lepas")) {
     robot.release();
     motorStopAt = 0;
+  } else if (!strcmp(c, "raw")) {
+    toggleStream(STREAM_RAW);
   } else {
     Serial.printf("Perintah tidak dikenal: %s (ketik help)\n", c);
   }
@@ -74,6 +99,12 @@ void loop() {
     robot.stop();
     motorStopAt = 0;
     Serial.println(F("motor berhenti (waktu habis)"));
+  }
+
+  static uint32_t lastStream = 0;
+  if (streamMode != STREAM_NONE && millis() - lastStream >= 100) {
+    lastStream = millis();
+    printStream();
   }
 
   // Kedip titik di OLED tanpa delay()
